@@ -12,27 +12,20 @@ type mockScrollReader struct {
 	scroll []rune
 }
 
-func (sr mockScrollReader) More() bool {
+func (sr *mockScrollReader) More() bool {
 	return len(sr.scroll) > sr.idx
 }
 
-func (sr mockScrollReader) Peek() (rune, error) {
+func (sr *mockScrollReader) Read() (rune, error) {
 	if !sr.More() {
 		return rune(0), errors.New("EOF")
 	}
-	return sr.scroll[sr.idx], nil
-}
-
-func (sr mockScrollReader) Read() (rune, error) {
-	ru, e := sr.Peek()
-	if e != nil {
-		return rune(0), e
-	}
+	ru := sr.scroll[sr.idx]
 	sr.idx++
 	return ru, nil
 }
 
-func (sr mockScrollReader) PutBack(ru rune) error {
+func (sr *mockScrollReader) PutBack(ru rune) error {
 	last := sr.scroll[sr.idx:]
 	first := append(sr.scroll[:sr.idx], ru)
 	sr.scroll = append(first, last...)
@@ -41,14 +34,19 @@ func (sr mockScrollReader) PutBack(ru rune) error {
 
 func TestScanAll(t *testing.T) {
 
-	sr := mockScrollReader{
+	sr := &mockScrollReader{
 		scroll: []rune("1 + 2"),
 	}
 
-	exp := []string{"1", "+", "2"}
+	exp := []Lexeme{
+		Lexeme{TokenNumber, "1"},
+		Lexeme{TokenSpace, " "},
+		Lexeme{TokenOperator, "+"},
+		Lexeme{TokenSpace, " "},
+		Lexeme{TokenNumber, "2"},
+	}
 	act, e := ScanAll(sr)
 
 	require.Nil(t, e, "%+v", e)
 	require.Equal(t, exp, act)
-
 }

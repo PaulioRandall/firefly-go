@@ -1,11 +1,9 @@
 package scanner
 
 import (
-//"errors"
-//"fmt"
-//"unicode"
-
-//"github.com/PaulioRandall/scarlet-go/mmxxi/scarlet/token"
+	"errors"
+	"fmt"
+	"unicode"
 )
 
 // ScrollReader is the interface for accessing Go runes from a text source.
@@ -26,7 +24,7 @@ type ScrollReader interface {
 // ParseToken is a recursion based tokeniser. It returns the next token and
 // another parse function. On error or while obtaining the last token,
 // the function will be nil.
-type ParseToken func() (string, ParseToken, error)
+type ParseToken func() (Lexeme, ParseToken, error)
 
 // New returns a new ParseToken function.
 func New(sr ScrollReader) ParseToken {
@@ -37,11 +35,11 @@ func New(sr ScrollReader) ParseToken {
 }
 
 // ScanAll scans all remaining tokens as a slice.
-func ScanAll(sr ScrollReader) ([]string, error) {
+func ScanAll(sr ScrollReader) ([]Lexeme, error) {
 
 	var (
-		result []string
-		tk     string
+		result []Lexeme
+		tk     Lexeme
 		f      = New(sr)
 		e      error
 	)
@@ -58,8 +56,45 @@ func ScanAll(sr ScrollReader) ([]string, error) {
 }
 
 func scan(sr ScrollReader) ParseToken {
-	return func() (string, ParseToken, error) {
-		// TODO
-		return "", nil, nil
+	return func() (Lexeme, ParseToken, error) {
+
+		lx, e := parseToken(sr)
+		if e != nil {
+			return lx, nil, e
+		}
+
+		if sr.More() {
+			return lx, scan(sr), nil
+		}
+
+		return lx, nil, nil
 	}
+}
+
+func parseToken(sr ScrollReader) (Lexeme, error) {
+
+	ru, e := sr.Read()
+	if e != nil {
+		return Lexeme{}, e
+	}
+
+	var lx Lexeme
+
+	switch {
+	case unicode.IsSpace(ru):
+		lx = Lexeme{TokenSpace, string(ru)}
+	case unicode.IsDigit(ru):
+		lx = Lexeme{TokenNumber, string(ru)}
+	case ru == '+':
+		lx = Lexeme{TokenOperator, string(ru)}
+	default:
+		return lx, newError("Unknown token '%v'", string(ru))
+	}
+
+	return lx, nil
+}
+
+func newError(msg string, args ...interface{}) error {
+	msg = fmt.Sprintf(msg, args...)
+	return errors.New(msg)
 }
