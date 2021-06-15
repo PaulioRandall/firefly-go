@@ -46,21 +46,6 @@ func doTestScanAll(t *testing.T, scroll string, exp []Lexeme) {
 
 func TestScanAll_1(t *testing.T) {
 
-	scroll := "1 + 2"
-
-	exp := []Lexeme{
-		Lexeme{TokenNumber, "1"},
-		Lexeme{TokenSpace, " "},
-		Lexeme{TokenOperator, "+"},
-		Lexeme{TokenSpace, " "},
-		Lexeme{TokenNumber, "2"},
-	}
-
-	doTestScanAll(t, scroll, exp)
-}
-
-func TestScanAll_2(t *testing.T) {
-
 	scroll := "1 + 2 - 3 * 4 / 5"
 
 	exp := []Lexeme{
@@ -81,6 +66,24 @@ func TestScanAll_2(t *testing.T) {
 		Lexeme{TokenOperator, "/"},
 		Lexeme{TokenSpace, " "},
 		Lexeme{TokenNumber, "5"},
+	}
+
+	doTestScanAll(t, scroll, exp)
+}
+
+func TestScanAll_2(t *testing.T) {
+
+	scroll := `1+2
+3-4`
+
+	exp := []Lexeme{
+		Lexeme{TokenNumber, "1"},
+		Lexeme{TokenOperator, "+"},
+		Lexeme{TokenNumber, "2"},
+		Lexeme{TokenNewline, "\n"},
+		Lexeme{TokenNumber, "3"},
+		Lexeme{TokenOperator, "-"},
+		Lexeme{TokenNumber, "4"},
 	}
 
 	doTestScanAll(t, scroll, exp)

@@ -81,6 +81,8 @@ func parseToken(sr ScrollReader) (Lexeme, error) {
 	var lx Lexeme
 
 	switch {
+	case isNewline(ru):
+		lx = lex(TokenNewline, ru)
 	case isSpace(ru):
 		lx = lex(TokenSpace, ru)
 	case isNumber(ru):
@@ -96,6 +98,10 @@ func parseToken(sr ScrollReader) (Lexeme, error) {
 
 func lex(tk Token, ru rune) Lexeme {
 	return Lexeme{tk, string(ru)}
+}
+
+func isNewline(ru rune) bool {
+	return ru == '\n'
 }
 
 func isSpace(ru rune) bool {
