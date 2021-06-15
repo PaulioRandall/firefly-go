@@ -32,11 +32,21 @@ func (sr *mockScrollReader) PutBack(ru rune) error {
 	return nil
 }
 
-func TestScanAll(t *testing.T) {
+func doTestScanAll(t *testing.T, scroll string, exp []Lexeme) {
 
 	sr := &mockScrollReader{
-		scroll: []rune("1 + 2"),
+		scroll: []rune(scroll),
 	}
+
+	act, e := ScanAll(sr)
+
+	require.Nil(t, e, "%+v", e)
+	require.Equal(t, exp, act)
+}
+
+func TestScanAll_1(t *testing.T) {
+
+	scroll := "1 + 2"
 
 	exp := []Lexeme{
 		Lexeme{TokenNumber, "1"},
@@ -45,8 +55,6 @@ func TestScanAll(t *testing.T) {
 		Lexeme{TokenSpace, " "},
 		Lexeme{TokenNumber, "2"},
 	}
-	act, e := ScanAll(sr)
 
-	require.Nil(t, e, "%+v", e)
-	require.Equal(t, exp, act)
+	doTestScanAll(t, scroll, exp)
 }
