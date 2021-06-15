@@ -5,6 +5,13 @@ import (
 )
 
 func main() {
-	fmt.Println()
-	fmt.Println("Hello, firefly")
+
+	msg := `
+Hello, firefly
+
+NEXT: Write ebnf
+NEXT: Write firefly spec
+`
+
+	fmt.Println(msg)
 }

@@ -45,6 +45,8 @@ func doTestScanAll(t *testing.T, scroll string, exp []Lexeme) {
 }
 
 func TestScanAll_1(t *testing.T) {
+	// GIVEN a valid firefly scroll containing valid numbers and operators
+	// THEN the scroll should be correctly parsed without error
 
 	scroll := "1 + 2 - 3 * 4 / 5"
 
@@ -72,19 +74,29 @@ func TestScanAll_1(t *testing.T) {
 }
 
 func TestScanAll_2(t *testing.T) {
+	// GIVEN a valid firefly scroll containing a newline
+	// THEN the scroll should be correctly parsed without error
 
-	scroll := `1+2
-3-4`
+	scroll := "1\n2"
 
 	exp := []Lexeme{
 		Lexeme{TokenNumber, "1"},
-		Lexeme{TokenOperator, "+"},
-		Lexeme{TokenNumber, "2"},
 		Lexeme{TokenNewline, "\n"},
-		Lexeme{TokenNumber, "3"},
-		Lexeme{TokenOperator, "-"},
-		Lexeme{TokenNumber, "4"},
+		Lexeme{TokenNumber, "2"},
 	}
 
 	doTestScanAll(t, scroll, exp)
+}
+
+func TestScanAll_3(t *testing.T) {
+	// GIVEN a firefly scroll containing an invalid token
+	// THEN the an error should be returned
+
+	sr := &mockScrollReader{
+		scroll: []rune("#"),
+	}
+
+	_, e := ScanAll(sr)
+
+	require.NotNil(t, e, "Expected error when given invalid token")
 }

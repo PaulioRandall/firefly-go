@@ -26,8 +26,8 @@ type ScrollReader interface {
 // the function will be nil.
 type ParseToken func() (Lexeme, ParseToken, error)
 
-// New returns a new ParseToken function.
-func New(sr ScrollReader) ParseToken {
+// NewScanner returns a new ParseToken function.
+func NewScanner(sr ScrollReader) ParseToken {
 	if sr.More() {
 		return scan(sr)
 	}
@@ -40,7 +40,7 @@ func ScanAll(sr ScrollReader) ([]Lexeme, error) {
 	var (
 		result []Lexeme
 		tk     Lexeme
-		f      = New(sr)
+		f      = NewScanner(sr)
 		e      error
 	)
 
