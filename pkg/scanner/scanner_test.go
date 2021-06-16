@@ -46,6 +46,13 @@ func doTestScanAll(t *testing.T, scroll string, exp []token.Lexeme) {
 	require.Equal(t, exp, act)
 }
 
+func lex(tk token.Token, v string) token.Lexeme {
+	return token.Lexeme{
+		Token: tk,
+		Value: v,
+	}
+}
+
 func TestScanAll_1(t *testing.T) {
 	// GIVEN a valid firefly scroll containing valid numbers and operators
 	// THEN the scroll should be correctly parsed without error
@@ -53,23 +60,23 @@ func TestScanAll_1(t *testing.T) {
 	scroll := "1 + 2 - 3 * 4 / 5"
 
 	exp := []token.Lexeme{
-		token.Lexeme{token.TokenNumber, "1"},
-		token.Lexeme{token.TokenSpace, " "},
-		token.Lexeme{token.TokenOperator, "+"},
-		token.Lexeme{token.TokenSpace, " "},
-		token.Lexeme{token.TokenNumber, "2"},
-		token.Lexeme{token.TokenSpace, " "},
-		token.Lexeme{token.TokenOperator, "-"},
-		token.Lexeme{token.TokenSpace, " "},
-		token.Lexeme{token.TokenNumber, "3"},
-		token.Lexeme{token.TokenSpace, " "},
-		token.Lexeme{token.TokenOperator, "*"},
-		token.Lexeme{token.TokenSpace, " "},
-		token.Lexeme{token.TokenNumber, "4"},
-		token.Lexeme{token.TokenSpace, " "},
-		token.Lexeme{token.TokenOperator, "/"},
-		token.Lexeme{token.TokenSpace, " "},
-		token.Lexeme{token.TokenNumber, "5"},
+		lex(token.TokenNumber, "1"),
+		lex(token.TokenSpace, " "),
+		lex(token.TokenOperator, "+"),
+		lex(token.TokenSpace, " "),
+		lex(token.TokenNumber, "2"),
+		lex(token.TokenSpace, " "),
+		lex(token.TokenOperator, "-"),
+		lex(token.TokenSpace, " "),
+		lex(token.TokenNumber, "3"),
+		lex(token.TokenSpace, " "),
+		lex(token.TokenOperator, "*"),
+		lex(token.TokenSpace, " "),
+		lex(token.TokenNumber, "4"),
+		lex(token.TokenSpace, " "),
+		lex(token.TokenOperator, "/"),
+		lex(token.TokenSpace, " "),
+		lex(token.TokenNumber, "5"),
 	}
 
 	doTestScanAll(t, scroll, exp)
@@ -82,9 +89,9 @@ func TestScanAll_2(t *testing.T) {
 	scroll := "1\n2"
 
 	exp := []token.Lexeme{
-		token.Lexeme{token.TokenNumber, "1"},
-		token.Lexeme{token.TokenNewline, "\n"},
-		token.Lexeme{token.TokenNumber, "2"},
+		lex(token.TokenNumber, "1"),
+		lex(token.TokenNewline, "\n"),
+		lex(token.TokenNumber, "2"),
 	}
 
 	doTestScanAll(t, scroll, exp)

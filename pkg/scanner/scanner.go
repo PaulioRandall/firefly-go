@@ -84,13 +84,13 @@ func parseToken(sr ScrollReader) (token.Lexeme, error) {
 
 	switch {
 	case isNewline(ru):
-		lx = lex(token.TokenNewline, ru)
+		lx = lexeme(token.TokenNewline, ru)
 	case isSpace(ru):
-		lx = lex(token.TokenSpace, ru)
+		lx = lexeme(token.TokenSpace, ru)
 	case isNumber(ru):
-		lx = lex(token.TokenNumber, ru)
+		lx = lexeme(token.TokenNumber, ru)
 	case isOperator(ru):
-		lx = lex(token.TokenOperator, ru)
+		lx = lexeme(token.TokenOperator, ru)
 	default:
 		return lx, newError("Unknown token '%v'", string(ru))
 	}
@@ -98,8 +98,11 @@ func parseToken(sr ScrollReader) (token.Lexeme, error) {
 	return lx, nil
 }
 
-func lex(tk token.Token, ru rune) token.Lexeme {
-	return token.Lexeme{tk, string(ru)}
+func lexeme(tk token.Token, ru rune) token.Lexeme {
+	return token.Lexeme{
+		Token: tk,
+		Value: string(ru),
+	}
 }
 
 func isNewline(ru rune) bool {
