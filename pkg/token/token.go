@@ -28,6 +28,3 @@ type Lexeme struct {
 	Token
 	Value string
 }
-
-// Statement in the form of a slice of lexemes
-type Statement []Lexeme
