@@ -9,7 +9,6 @@ func main() {
 	msg := `
 Hello, firefly!
 
-NEXT: Slicer: splits up a slice of tokens into newline separated statements
 THEN: Cleaner: removes redundant tokens (e.g. whitespace) and empty statements
 
 
