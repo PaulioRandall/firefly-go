@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+
+	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
 type mockScrollReader struct {
@@ -32,7 +34,7 @@ func (sr *mockScrollReader) PutBack(ru rune) error {
 	return nil
 }
 
-func doTestScanAll(t *testing.T, scroll string, exp []Lexeme) {
+func doTestScanAll(t *testing.T, scroll string, exp []token.Lexeme) {
 
 	sr := &mockScrollReader{
 		scroll: []rune(scroll),
@@ -50,24 +52,24 @@ func TestScanAll_1(t *testing.T) {
 
 	scroll := "1 + 2 - 3 * 4 / 5"
 
-	exp := []Lexeme{
-		Lexeme{TokenNumber, "1"},
-		Lexeme{TokenSpace, " "},
-		Lexeme{TokenOperator, "+"},
-		Lexeme{TokenSpace, " "},
-		Lexeme{TokenNumber, "2"},
-		Lexeme{TokenSpace, " "},
-		Lexeme{TokenOperator, "-"},
-		Lexeme{TokenSpace, " "},
-		Lexeme{TokenNumber, "3"},
-		Lexeme{TokenSpace, " "},
-		Lexeme{TokenOperator, "*"},
-		Lexeme{TokenSpace, " "},
-		Lexeme{TokenNumber, "4"},
-		Lexeme{TokenSpace, " "},
-		Lexeme{TokenOperator, "/"},
-		Lexeme{TokenSpace, " "},
-		Lexeme{TokenNumber, "5"},
+	exp := []token.Lexeme{
+		token.Lexeme{token.TokenNumber, "1"},
+		token.Lexeme{token.TokenSpace, " "},
+		token.Lexeme{token.TokenOperator, "+"},
+		token.Lexeme{token.TokenSpace, " "},
+		token.Lexeme{token.TokenNumber, "2"},
+		token.Lexeme{token.TokenSpace, " "},
+		token.Lexeme{token.TokenOperator, "-"},
+		token.Lexeme{token.TokenSpace, " "},
+		token.Lexeme{token.TokenNumber, "3"},
+		token.Lexeme{token.TokenSpace, " "},
+		token.Lexeme{token.TokenOperator, "*"},
+		token.Lexeme{token.TokenSpace, " "},
+		token.Lexeme{token.TokenNumber, "4"},
+		token.Lexeme{token.TokenSpace, " "},
+		token.Lexeme{token.TokenOperator, "/"},
+		token.Lexeme{token.TokenSpace, " "},
+		token.Lexeme{token.TokenNumber, "5"},
 	}
 
 	doTestScanAll(t, scroll, exp)
@@ -79,10 +81,10 @@ func TestScanAll_2(t *testing.T) {
 
 	scroll := "1\n2"
 
-	exp := []Lexeme{
-		Lexeme{TokenNumber, "1"},
-		Lexeme{TokenNewline, "\n"},
-		Lexeme{TokenNumber, "2"},
+	exp := []token.Lexeme{
+		token.Lexeme{token.TokenNumber, "1"},
+		token.Lexeme{token.TokenNewline, "\n"},
+		token.Lexeme{token.TokenNumber, "2"},
 	}
 
 	doTestScanAll(t, scroll, exp)

@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"unicode"
+
+	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
 // ScrollReader is the interface for accessing Go runes from a text source.
@@ -24,7 +26,7 @@ type ScrollReader interface {
 // ParseToken is a recursion based tokeniser. It returns the next token and
 // another parse function. On error or while obtaining the last token,
 // the function will be nil.
-type ParseToken func() (Lexeme, ParseToken, error)
+type ParseToken func() (token.Lexeme, ParseToken, error)
 
 // NewScanner returns a new ParseToken function.
 func NewScanner(sr ScrollReader) ParseToken {
@@ -35,11 +37,11 @@ func NewScanner(sr ScrollReader) ParseToken {
 }
 
 // ScanAll scans all remaining tokens as a slice.
-func ScanAll(sr ScrollReader) ([]Lexeme, error) {
+func ScanAll(sr ScrollReader) ([]token.Lexeme, error) {
 
 	var (
-		result []Lexeme
-		tk     Lexeme
+		result []token.Lexeme
+		tk     token.Lexeme
 		f      = NewScanner(sr)
 		e      error
 	)
@@ -56,7 +58,7 @@ func ScanAll(sr ScrollReader) ([]Lexeme, error) {
 }
 
 func scan(sr ScrollReader) ParseToken {
-	return func() (Lexeme, ParseToken, error) {
+	return func() (token.Lexeme, ParseToken, error) {
 
 		lx, e := parseToken(sr)
 		if e != nil {
@@ -71,24 +73,24 @@ func scan(sr ScrollReader) ParseToken {
 	}
 }
 
-func parseToken(sr ScrollReader) (Lexeme, error) {
+func parseToken(sr ScrollReader) (token.Lexeme, error) {
 
 	ru, e := sr.Read()
 	if e != nil {
-		return Lexeme{}, e
+		return token.Lexeme{}, e
 	}
 
-	var lx Lexeme
+	var lx token.Lexeme
 
 	switch {
 	case isNewline(ru):
-		lx = lex(TokenNewline, ru)
+		lx = lex(token.TokenNewline, ru)
 	case isSpace(ru):
-		lx = lex(TokenSpace, ru)
+		lx = lex(token.TokenSpace, ru)
 	case isNumber(ru):
-		lx = lex(TokenNumber, ru)
+		lx = lex(token.TokenNumber, ru)
 	case isOperator(ru):
-		lx = lex(TokenOperator, ru)
+		lx = lex(token.TokenOperator, ru)
 	default:
 		return lx, newError("Unknown token '%v'", string(ru))
 	}
@@ -96,8 +98,8 @@ func parseToken(sr ScrollReader) (Lexeme, error) {
 	return lx, nil
 }
 
-func lex(tk Token, ru rune) Lexeme {
-	return Lexeme{tk, string(ru)}
+func lex(tk token.Token, ru rune) token.Lexeme {
+	return token.Lexeme{tk, string(ru)}
 }
 
 func isNewline(ru rune) bool {
