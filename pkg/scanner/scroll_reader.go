@@ -19,8 +19,8 @@ type ScrollReader interface {
 	PutBack(rune) error
 }
 
-func StringScrollReader(text []rune) stringScrollReader {
-	return stringScrollReader{
+func NewStringScrollReader(text []rune) *stringScrollReader {
+	return &stringScrollReader{
 		text: text,
 	}
 }

@@ -1,7 +1,6 @@
 package scanner
 
 import (
-	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -9,36 +8,11 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
-type mockScrollReader struct {
-	idx    int
-	scroll []rune
-}
-
-func (sr *mockScrollReader) More() bool {
-	return len(sr.scroll) > sr.idx
-}
-
-func (sr *mockScrollReader) Read() (rune, error) {
-	if !sr.More() {
-		return rune(0), errors.New("EOF")
-	}
-	ru := sr.scroll[sr.idx]
-	sr.idx++
-	return ru, nil
-}
-
-func (sr *mockScrollReader) PutBack(ru rune) error {
-	last := sr.scroll[sr.idx:]
-	first := append(sr.scroll[:sr.idx], ru)
-	sr.scroll = append(first, last...)
-	return nil
-}
-
 func doTestScanAll(t *testing.T, scroll string, exp []token.Lexeme) {
 
-	sr := &mockScrollReader{
-		scroll: []rune(scroll),
-	}
+	sr := NewStringScrollReader(
+		[]rune(scroll),
+	)
 
 	act, e := ScanAll(sr)
 
@@ -104,9 +78,9 @@ func TestScanAll_3(t *testing.T) {
 	// WHEN scanning all tokens in the scroll
 	// THEN the an error should be returned
 
-	sr := &mockScrollReader{
-		scroll: []rune("#"),
-	}
+	sr := NewStringScrollReader(
+		[]rune("#"),
+	)
 
 	_, e := ScanAll(sr)
 

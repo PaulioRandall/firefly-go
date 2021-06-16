@@ -16,6 +16,12 @@ type TokenReader interface {
 	Read() (token.Lexeme, error)
 }
 
+func SliceTokenReader(tks []token.Lexeme) sliceTokenReader {
+	return sliceTokenReader{
+		tks: tks,
+	}
+}
+
 type sliceTokenReader struct {
 	idx int
 	tks []token.Lexeme
