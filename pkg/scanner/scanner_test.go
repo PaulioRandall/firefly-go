@@ -55,6 +55,7 @@ func lex(tk token.Token, v string) token.Lexeme {
 
 func TestScanAll_1(t *testing.T) {
 	// GIVEN a valid firefly scroll containing valid numbers and operators
+	// WHEN scanning all tokens in the scroll
 	// THEN the scroll should be correctly parsed without error
 
 	scroll := "1 + 2 - 3 * 4 / 5"
@@ -84,6 +85,7 @@ func TestScanAll_1(t *testing.T) {
 
 func TestScanAll_2(t *testing.T) {
 	// GIVEN a valid firefly scroll containing a newline
+	// WHEN scanning all tokens in the scroll
 	// THEN the scroll should be correctly parsed without error
 
 	scroll := "1\n2"
@@ -99,6 +101,7 @@ func TestScanAll_2(t *testing.T) {
 
 func TestScanAll_3(t *testing.T) {
 	// GIVEN a firefly scroll containing an invalid token
+	// WHEN scanning all tokens in the scroll
 	// THEN the an error should be returned
 
 	sr := &mockScrollReader{
