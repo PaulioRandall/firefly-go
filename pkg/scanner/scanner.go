@@ -14,7 +14,7 @@ import (
 type ParseToken func() (token.Lexeme, ParseToken, error)
 
 // NewScanner returns a new ParseToken function.
-func NewScanner(sr ScrollReader) ParseToken {
+func NewScanner(sr token.ScrollReader) ParseToken {
 	if sr.More() {
 		return scan(sr)
 	}
@@ -22,7 +22,7 @@ func NewScanner(sr ScrollReader) ParseToken {
 }
 
 // ScanAll scans all remaining tokens as a slice.
-func ScanAll(sr ScrollReader) ([]token.Lexeme, error) {
+func ScanAll(sr token.ScrollReader) ([]token.Lexeme, error) {
 
 	var (
 		result []token.Lexeme
@@ -42,7 +42,7 @@ func ScanAll(sr ScrollReader) ([]token.Lexeme, error) {
 	return result, nil
 }
 
-func scan(sr ScrollReader) ParseToken {
+func scan(sr token.ScrollReader) ParseToken {
 	return func() (token.Lexeme, ParseToken, error) {
 
 		lx, e := parseToken(sr)
@@ -58,7 +58,7 @@ func scan(sr ScrollReader) ParseToken {
 	}
 }
 
-func parseToken(sr ScrollReader) (token.Lexeme, error) {
+func parseToken(sr token.ScrollReader) (token.Lexeme, error) {
 
 	ru, e := sr.Read()
 	if e != nil {

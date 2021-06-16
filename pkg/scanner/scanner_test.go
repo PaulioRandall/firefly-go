@@ -18,7 +18,7 @@ func lex(tk token.Token, v string) token.Lexeme {
 func TestScanAll_1(t *testing.T) {
 
 	// GIVEN valid firefly code containing valid numbers and operators
-	sr := NewStringScrollReader(
+	sr := token.NewStringScrollReader(
 		[]rune("1 + 2 - 3 * 4 / 5"),
 	)
 
@@ -53,7 +53,7 @@ func TestScanAll_1(t *testing.T) {
 func TestScanAll_2(t *testing.T) {
 
 	// GIVEN valid firefly code containing a newline
-	sr := NewStringScrollReader(
+	sr := token.NewStringScrollReader(
 		[]rune("1\n2"),
 	)
 
@@ -74,7 +74,7 @@ func TestScanAll_2(t *testing.T) {
 func TestScanAll_3(t *testing.T) {
 
 	// GIVEN firefly code containing an invalid token
-	sr := NewStringScrollReader(
+	sr := token.NewStringScrollReader(
 		[]rune("#"),
 	)
 
