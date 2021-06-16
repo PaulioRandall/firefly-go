@@ -19,6 +19,7 @@ type ScrollReader interface {
 	PutBack(rune) error
 }
 
+// NewStringScrollReader wraps a slice of runes in a scroll reader.
 func NewStringScrollReader(text []rune) *stringScrollReader {
 	return &stringScrollReader{
 		text: text,

@@ -15,13 +15,13 @@ type NextStatement func() (Statement, NextStatement, error)
 // Begin returns a new NextStatement function.
 func Begin(lr LexemeReader) NextStatement {
 	if lr.More() {
-		return slice(lr)
+		return group(lr)
 	}
 	return nil
 }
 
-// SliceAll converts all tokens into a group of statements.
-func SliceAll(lr LexemeReader) ([]Statement, error) {
+// GroupAll converts all tokens into a group of statements.
+func GroupAll(lr LexemeReader) ([]Statement, error) {
 
 	var (
 		stmt []Statement
@@ -41,7 +41,7 @@ func SliceAll(lr LexemeReader) ([]Statement, error) {
 	return stmt, nil
 }
 
-func slice(lr LexemeReader) NextStatement {
+func group(lr LexemeReader) NextStatement {
 	return func() (Statement, NextStatement, error) {
 
 		stmt, e := sliceStmt(lr)
@@ -50,7 +50,7 @@ func slice(lr LexemeReader) NextStatement {
 		}
 
 		if lr.More() {
-			return stmt, slice(lr), nil
+			return stmt, group(lr), nil
 		}
 
 		return stmt, nil, nil

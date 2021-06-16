@@ -17,7 +17,7 @@ func lex(tk token.Token, v string) token.Lexeme {
 
 func TestSliceAll_1(t *testing.T) {
 
-	// GIVEN three statements as a slice of lexemes
+	// GIVEN three statements in a lexeme reader
 	lr := NewSliceLexemeReader(
 		// 1
 		// 2
@@ -43,8 +43,8 @@ func TestSliceAll_1(t *testing.T) {
 		},
 	}
 
-	// WHEN slicing all lexemes into statements
-	act, e := SliceAll(lr)
+	// WHEN grouping all lexemes into statements
+	act, e := GroupAll(lr)
 
 	// THEN the two statments are separated and returned without error
 	require.Nil(t, e, "%+v", e)
@@ -53,7 +53,7 @@ func TestSliceAll_1(t *testing.T) {
 
 func TestSliceAll_2(t *testing.T) {
 
-	// GIVEN a single statement as a slice of lexemes
+	// GIVEN a single statement in a lexeme reader
 	lr := NewSliceLexemeReader(
 		// 1 + 2
 		Statement{
@@ -71,8 +71,8 @@ func TestSliceAll_2(t *testing.T) {
 		},
 	}
 
-	// WHEN slicing all lexemes into statements
-	act, e := SliceAll(lr)
+	// WHEN grouping all lexemes into statements
+	act, e := GroupAll(lr)
 
 	// THEN the one statments is returned without error
 	require.Nil(t, e, "%+v", e)

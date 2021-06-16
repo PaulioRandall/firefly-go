@@ -16,6 +16,7 @@ type LexemeReader interface {
 	Read() (token.Lexeme, error)
 }
 
+// NewSliceLexemeReader wraps a slice of tokens in a Lexeme reader.
 func NewSliceLexemeReader(lxs []token.Lexeme) *sliceLexemeReader {
 	return &sliceLexemeReader{
 		lxs: lxs,
