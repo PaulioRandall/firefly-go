@@ -4,16 +4,6 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
-// TokenReader is the interface for accessing scanned tokens.
-type TokenReader interface {
-
-	// More returns true if there are unread tokens.
-	More() bool
-
-	// Read returns the next token and moves the read head to the next item.
-	Read() (token.Lexeme, error)
-}
-
 // NextStatement is a recursion based function that returns the next slice of
 // tokens that represent a statement. On error or while obtaining the last
 // statement, the function will be nil.

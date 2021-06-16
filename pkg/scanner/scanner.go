@@ -8,21 +8,6 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
-// ScrollReader is the interface for accessing Go runes from a text source.
-type ScrollReader interface {
-
-	// More returns true if there are unread runes from the text source.
-	More() bool
-
-	// Read returns the next rune in the scroll and moves the read head to the
-	// next rune.
-	Read() (rune, error)
-
-	// PutBack puts a rune back into the scoll reader so it becomes the next
-	// rune to be read.
-	PutBack(rune) error
-}
-
 // ParseToken is a recursion based tokeniser. It returns the next token and
 // another parse function. On error or while obtaining the last token,
 // the function will be nil.
