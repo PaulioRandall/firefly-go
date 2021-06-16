@@ -1,10 +1,14 @@
-package slicer
+package token
 
 import (
 	"errors"
-
-	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
+
+// Lexeme is a value with associated token.
+type Lexeme struct {
+	Token
+	Value string
+}
 
 // LexemeReader is the interface for accessing scanned lexemes.
 type LexemeReader interface {
@@ -13,11 +17,11 @@ type LexemeReader interface {
 	More() bool
 
 	// Read returns the next lexeme and moves the read head to the next item.
-	Read() (token.Lexeme, error)
+	Read() (Lexeme, error)
 }
 
 // NewSliceLexemeReader wraps a slice of tokens in a Lexeme reader.
-func NewSliceLexemeReader(lxs []token.Lexeme) *sliceLexemeReader {
+func NewSliceLexemeReader(lxs []Lexeme) *sliceLexemeReader {
 	return &sliceLexemeReader{
 		lxs: lxs,
 	}
@@ -25,16 +29,16 @@ func NewSliceLexemeReader(lxs []token.Lexeme) *sliceLexemeReader {
 
 type sliceLexemeReader struct {
 	idx int
-	lxs []token.Lexeme
+	lxs []Lexeme
 }
 
 func (slr *sliceLexemeReader) More() bool {
 	return len(slr.lxs) > slr.idx
 }
 
-func (slr *sliceLexemeReader) Read() (token.Lexeme, error) {
+func (slr *sliceLexemeReader) Read() (Lexeme, error) {
 	if !slr.More() {
-		return token.Lexeme{}, errors.New("EOF")
+		return Lexeme{}, errors.New("EOF")
 	}
 	lx := slr.lxs[slr.idx]
 	slr.idx++

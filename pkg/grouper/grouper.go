@@ -10,7 +10,7 @@ import (
 type NextStatement func() (token.Statement, NextStatement, error)
 
 // Begin returns a new NextStatement function.
-func Begin(lr LexemeReader) NextStatement {
+func Begin(lr token.LexemeReader) NextStatement {
 	if lr.More() {
 		return group(lr)
 	}
@@ -18,7 +18,7 @@ func Begin(lr LexemeReader) NextStatement {
 }
 
 // GroupAll converts all tokens into a group of statements.
-func GroupAll(lr LexemeReader) ([]token.Statement, error) {
+func GroupAll(lr token.LexemeReader) ([]token.Statement, error) {
 
 	var (
 		stmt []token.Statement
@@ -38,7 +38,7 @@ func GroupAll(lr LexemeReader) ([]token.Statement, error) {
 	return stmt, nil
 }
 
-func group(lr LexemeReader) NextStatement {
+func group(lr token.LexemeReader) NextStatement {
 	return func() (token.Statement, NextStatement, error) {
 
 		stmt, e := sliceStmt(lr)
@@ -54,7 +54,7 @@ func group(lr LexemeReader) NextStatement {
 	}
 }
 
-func sliceStmt(lr LexemeReader) (token.Statement, error) {
+func sliceStmt(lr token.LexemeReader) (token.Statement, error) {
 
 	var stmt token.Statement
 

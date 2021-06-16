@@ -18,7 +18,7 @@ func lex(tk token.Token, v string) token.Lexeme {
 func TestSliceAll_1(t *testing.T) {
 
 	// GIVEN three statements in a lexeme reader
-	lr := NewSliceLexemeReader(
+	lr := token.NewSliceLexemeReader(
 		// 1
 		// 2
 		// 3
@@ -54,7 +54,7 @@ func TestSliceAll_1(t *testing.T) {
 func TestSliceAll_2(t *testing.T) {
 
 	// GIVEN a single statement in a lexeme reader
-	lr := NewSliceLexemeReader(
+	lr := token.NewSliceLexemeReader(
 		// 1 + 2
 		token.Statement{
 			lex(token.TokenNumber, "1"),

@@ -22,9 +22,3 @@ var tokenNames = map[Token]string{
 func (tk Token) Name() string {
 	return tokenNames[tk]
 }
-
-// Lexeme is a value with associated token
-type Lexeme struct {
-	Token
-	Value string
-}
