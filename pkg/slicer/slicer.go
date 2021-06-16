@@ -4,10 +4,13 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
+// Statement in the form of a slice of lexemes
+type Statement []token.Lexeme
+
 // NextStatement is a recursion based function that returns the next slice of
-// tokens that represent a statement. On error or while obtaining the last
+// lexemes that represent a statement. On error or while obtaining the last
 // statement, the function will be nil.
-type NextStatement func() ([]token.Lexeme, NextStatement, error)
+type NextStatement func() (Statement, NextStatement, error)
 
 // Begin returns a new NextStatement function.
 func Begin(lr LexemeReader) NextStatement {
@@ -18,13 +21,13 @@ func Begin(lr LexemeReader) NextStatement {
 }
 
 // SliceAll converts all tokens into a group of statements.
-func SliceAll(lr LexemeReader) ([][]token.Lexeme, error) {
+func SliceAll(lr LexemeReader) ([]Statement, error) {
 
 	var (
-		result [][]token.Lexeme
-		lx     []token.Lexeme
-		f      = Begin(lr)
-		e      error
+		stmt []Statement
+		lx   Statement
+		f    = Begin(lr)
+		e    error
 	)
 
 	for f != nil {
@@ -32,14 +35,14 @@ func SliceAll(lr LexemeReader) ([][]token.Lexeme, error) {
 		if e != nil {
 			return nil, e
 		}
-		result = append(result, lx)
+		stmt = append(stmt, lx)
 	}
 
-	return result, nil
+	return stmt, nil
 }
 
 func slice(lr LexemeReader) NextStatement {
-	return func() ([]token.Lexeme, NextStatement, error) {
+	return func() (Statement, NextStatement, error) {
 
 		stmt, e := sliceStmt(lr)
 		if e != nil {
@@ -54,9 +57,9 @@ func slice(lr LexemeReader) NextStatement {
 	}
 }
 
-func sliceStmt(lr LexemeReader) ([]token.Lexeme, error) {
+func sliceStmt(lr LexemeReader) (Statement, error) {
 
-	var stmt []token.Lexeme
+	var stmt Statement
 
 	for lr.More() {
 

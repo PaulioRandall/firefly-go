@@ -8,18 +8,6 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
-func doTestScanAll(t *testing.T, scroll string, exp []token.Lexeme) {
-
-	sr := NewStringScrollReader(
-		[]rune(scroll),
-	)
-
-	act, e := ScanAll(sr)
-
-	require.Nil(t, e, "%+v", e)
-	require.Equal(t, exp, act)
-}
-
 func lex(tk token.Token, v string) token.Lexeme {
 	return token.Lexeme{
 		Token: tk,
@@ -28,11 +16,11 @@ func lex(tk token.Token, v string) token.Lexeme {
 }
 
 func TestScanAll_1(t *testing.T) {
-	// GIVEN a valid firefly scroll containing valid numbers and operators
-	// WHEN scanning all tokens in the scroll
-	// THEN the scroll should be correctly parsed without error
 
-	scroll := "1 + 2 - 3 * 4 / 5"
+	// GIVEN valid firefly code containing valid numbers and operators
+	sr := NewStringScrollReader(
+		[]rune("1 + 2 - 3 * 4 / 5"),
+	)
 
 	exp := []token.Lexeme{
 		lex(token.TokenNumber, "1"),
@@ -54,15 +42,20 @@ func TestScanAll_1(t *testing.T) {
 		lex(token.TokenNumber, "5"),
 	}
 
-	doTestScanAll(t, scroll, exp)
+	// WHEN scanning all tokens
+	act, e := ScanAll(sr)
+
+	// THEN the code should be correctly parsed without error
+	require.Nil(t, e, "%+v", e)
+	require.Equal(t, exp, act)
 }
 
 func TestScanAll_2(t *testing.T) {
-	// GIVEN a valid firefly scroll containing a newline
-	// WHEN scanning all tokens in the scroll
-	// THEN the scroll should be correctly parsed without error
 
-	scroll := "1\n2"
+	// GIVEN valid firefly code containing a newline
+	sr := NewStringScrollReader(
+		[]rune("1\n2"),
+	)
 
 	exp := []token.Lexeme{
 		lex(token.TokenNumber, "1"),
@@ -70,19 +63,24 @@ func TestScanAll_2(t *testing.T) {
 		lex(token.TokenNumber, "2"),
 	}
 
-	doTestScanAll(t, scroll, exp)
+	// WHEN scanning all tokens
+	act, e := ScanAll(sr)
+
+	// THEN the code should be correctly parsed without error
+	require.Nil(t, e, "%+v", e)
+	require.Equal(t, exp, act)
 }
 
 func TestScanAll_3(t *testing.T) {
-	// GIVEN a firefly scroll containing an invalid token
-	// WHEN scanning all tokens in the scroll
-	// THEN the an error should be returned
 
+	// GIVEN firefly code containing an invalid token
 	sr := NewStringScrollReader(
 		[]rune("#"),
 	)
 
+	// WHEN scanning all tokens
 	_, e := ScanAll(sr)
 
+	// THEN an error should be returned
 	require.NotNil(t, e, "Expected error when given invalid token")
 }
