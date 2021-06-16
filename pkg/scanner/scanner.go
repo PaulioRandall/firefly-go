@@ -22,13 +22,13 @@ func NewScanner(sr token.ScrollReader) ParseToken {
 }
 
 // ScanAll scans all remaining tokens as a slice.
-func ScanAll(sr token.ScrollReader) ([]token.Lexeme, error) {
+func ScanAll(sr token.ScrollReader) (token.Statement, error) {
 
 	var (
-		result []token.Lexeme
-		tk     token.Lexeme
-		f      = NewScanner(sr)
-		e      error
+		stmt token.Statement
+		tk   token.Lexeme
+		f    = NewScanner(sr)
+		e    error
 	)
 
 	for f != nil {
@@ -36,10 +36,10 @@ func ScanAll(sr token.ScrollReader) ([]token.Lexeme, error) {
 		if e != nil {
 			return nil, e
 		}
-		result = append(result, tk)
+		stmt = append(stmt, tk)
 	}
 
-	return result, nil
+	return stmt, nil
 }
 
 func scan(sr token.ScrollReader) ParseToken {

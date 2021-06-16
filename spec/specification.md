@@ -36,7 +36,9 @@ This scroll is a little more advanced. It performs two mathematical operations a
 A set of production rules that define the syntax of a Firefly program.
 
 ```
-PROGRAM := EXPRESSION
+PROGRAM := { STATEMENT }
+
+STATEMENT := { EXPRESSION }
 
 EXPRESSION := EXPRESSION OPERATOR EXPRESSION
 EXPRESSION := OPERAND

@@ -4,6 +4,9 @@ import (
 	"errors"
 )
 
+// Program in the form of a slice of statements formed of a slice of lexemes.
+type Program []Statement
+
 // Statement in the form of a slice of lexemes.
 type Statement []Lexeme
 
@@ -17,23 +20,23 @@ type StmtReader interface {
 	Read() (Statement, error)
 }
 
-// NewSliceStmtReader wraps a slice of tokens in a Lexeme reader.
-func NewSliceStmtReader(stmts []Statement) *sliceStmtReader {
-	return &sliceStmtReader{
-		stmts: stmts,
+// NewProgramReader wraps a slice of tokens in a Lexeme reader.
+func NewProgramReader(p Program) *programReader {
+	return &programReader{
+		stmts: p,
 	}
 }
 
-type sliceStmtReader struct {
+type programReader struct {
 	idx   int
 	stmts []Statement
 }
 
-func (ssr *sliceStmtReader) More() bool {
+func (ssr *programReader) More() bool {
 	return len(ssr.stmts) > ssr.idx
 }
 
-func (ssr *sliceStmtReader) Read() (Statement, error) {
+func (ssr *programReader) Read() (Statement, error) {
 	if !ssr.More() {
 		return nil, errors.New("EOF")
 	}

@@ -9,11 +9,12 @@ func main() {
 	msg := `
 Hello, firefly!
 
-THEN: Cleaner: removes redundant tokens (e.g. whitespace)
+NEXT: Parser: converts statements (slices of tokens) into parse trees
 
 
-LATER: Parser: converts statements (slices of tokens) into parse trees
 LATER: Runner: executes a parse tree or slice of parse trees printing out the results
+
+scanner -> grouper -> cleaner
 `
 
 	fmt.Println(msg)

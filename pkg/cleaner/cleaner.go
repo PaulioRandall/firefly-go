@@ -18,10 +18,10 @@ func Begin(sr token.StmtReader) NextStatement {
 }
 
 // CleanAll removes redundant tokens from a stream of statements.
-func CleanAll(sr token.StmtReader) ([]token.Statement, error) {
+func CleanAll(sr token.StmtReader) (token.Program, error) {
 
 	var (
-		stmts []token.Statement
+		stmts token.Program
 		stmt  token.Statement
 		f     = Begin(sr)
 		e     error
@@ -59,16 +59,15 @@ func clean(sr token.StmtReader) NextStatement {
 func CleanStmt(unclean token.Statement) token.Statement {
 
 	cleaned := token.Statement{}
+	isRedundant := func(tk token.Token) bool {
+		return tk == token.TokenSpace
+	}
 
 	for _, lx := range unclean {
-		if !isTokenRedundant(lx.Token) {
+		if !isRedundant(lx.Token) {
 			cleaned = append(cleaned, lx)
 		}
 	}
 
 	return cleaned
-}
-
-func isTokenRedundant(tk token.Token) bool {
-	return tk == token.TokenSpace
 }

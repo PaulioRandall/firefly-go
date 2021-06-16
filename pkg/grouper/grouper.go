@@ -18,13 +18,13 @@ func Begin(lr token.LexemeReader) NextStatement {
 }
 
 // GroupAll converts all tokens into a group of statements.
-func GroupAll(lr token.LexemeReader) ([]token.Statement, error) {
+func GroupAll(lr token.LexemeReader) (token.Program, error) {
 
 	var (
-		stmts []token.Statement
-		stmt  token.Statement
-		f     = Begin(lr)
-		e     error
+		prog token.Program
+		stmt token.Statement
+		f    = Begin(lr)
+		e    error
 	)
 
 	for f != nil {
@@ -32,10 +32,10 @@ func GroupAll(lr token.LexemeReader) ([]token.Statement, error) {
 		if e != nil {
 			return nil, e
 		}
-		stmts = append(stmts, stmt)
+		prog = append(prog, stmt)
 	}
 
-	return stmts, nil
+	return prog, nil
 }
 
 func group(lr token.LexemeReader) NextStatement {

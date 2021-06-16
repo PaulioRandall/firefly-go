@@ -22,7 +22,7 @@ func TestScanAll_1(t *testing.T) {
 		[]rune("1 + 2 - 3 * 4 / 5"),
 	)
 
-	exp := []token.Lexeme{
+	exp := token.Statement{
 		lex(token.TokenNumber, "1"),
 		lex(token.TokenSpace, " "),
 		lex(token.TokenOperator, "+"),
@@ -57,7 +57,7 @@ func TestScanAll_2(t *testing.T) {
 		[]rune("1\n2"),
 	)
 
-	exp := []token.Lexeme{
+	exp := token.Statement{
 		lex(token.TokenNumber, "1"),
 		lex(token.TokenNewline, "\n"),
 		lex(token.TokenNumber, "2"),
