@@ -15,7 +15,7 @@ func lex(tk token.Token, v string) token.Lexeme {
 	}
 }
 
-func TestSliceAll_1(t *testing.T) {
+func TestGroupAll_1(t *testing.T) {
 
 	// GIVEN three statements in a lexeme reader
 	lr := token.NewSliceLexemeReader(
@@ -51,7 +51,7 @@ func TestSliceAll_1(t *testing.T) {
 	require.Equal(t, exp, act)
 }
 
-func TestSliceAll_2(t *testing.T) {
+func TestGroupAll_2(t *testing.T) {
 
 	// GIVEN a single statement in a lexeme reader
 	lr := token.NewSliceLexemeReader(

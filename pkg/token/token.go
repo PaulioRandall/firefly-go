@@ -1,6 +1,6 @@
 package token
 
-// Token is a unit of meaningful assigned to a non-terminal symbol
+// Token is a unit of meaningful assigned to a non-terminal symbol.
 type Token int
 
 const (
@@ -18,7 +18,7 @@ var tokenNames = map[Token]string{
 	TokenOperator: "OPERATOR",
 }
 
-// Name returns the string representation of the token
+// Name returns the string representation of the token.
 func (tk Token) Name() string {
 	return tokenNames[tk]
 }

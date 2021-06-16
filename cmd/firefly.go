@@ -9,7 +9,7 @@ func main() {
 	msg := `
 Hello, firefly!
 
-THEN: Cleaner: removes redundant tokens (e.g. whitespace) and empty statements
+THEN: Cleaner: removes redundant tokens (e.g. whitespace)
 
 
 LATER: Parser: converts statements (slices of tokens) into parse trees

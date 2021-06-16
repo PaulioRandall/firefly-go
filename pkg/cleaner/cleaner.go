@@ -1,4 +1,4 @@
-package slicer
+package cleaner
 
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
@@ -10,20 +10,20 @@ import (
 type NextStatement func() (token.Statement, NextStatement, error)
 
 // Begin returns a new NextStatement function.
-func Begin(lr token.LexemeReader) NextStatement {
-	if lr.More() {
-		return group(lr)
+func Begin(sr token.StmtReader) NextStatement {
+	if sr.More() {
+		return clean(sr)
 	}
 	return nil
 }
 
-// GroupAll converts all tokens into a group of statements.
-func GroupAll(lr token.LexemeReader) ([]token.Statement, error) {
+// CleanAll removes redundant tokens from a stream of statements.
+func CleanAll(sr token.StmtReader) ([]token.Statement, error) {
 
 	var (
 		stmts []token.Statement
 		stmt  token.Statement
-		f     = Begin(lr)
+		f     = Begin(sr)
 		e     error
 	)
 
@@ -38,39 +38,37 @@ func GroupAll(lr token.LexemeReader) ([]token.Statement, error) {
 	return stmts, nil
 }
 
-func group(lr token.LexemeReader) NextStatement {
+func clean(sr token.StmtReader) NextStatement {
 	return func() (token.Statement, NextStatement, error) {
 
-		stmt, e := sliceStmt(lr)
+		unclean, e := sr.Read()
 		if e != nil {
-			return stmt, nil, e
+			return nil, nil, e
 		}
 
-		if lr.More() {
-			return stmt, group(lr), nil
+		stmt := CleanStmt(unclean)
+
+		if sr.More() {
+			return stmt, clean(sr), nil
 		}
 
 		return stmt, nil, nil
 	}
 }
 
-func sliceStmt(lr token.LexemeReader) (token.Statement, error) {
+func CleanStmt(unclean token.Statement) token.Statement {
 
-	var stmt token.Statement
+	cleaned := token.Statement{}
 
-	for lr.More() {
-
-		lx, e := lr.Read()
-		if e != nil {
-			return nil, e
+	for _, lx := range unclean {
+		if !isTokenRedundant(lx.Token) {
+			cleaned = append(cleaned, lx)
 		}
-
-		if lx.Token == token.TokenNewline {
-			break
-		}
-
-		stmt = append(stmt, lx)
 	}
 
-	return stmt, nil
+	return cleaned
+}
+
+func isTokenRedundant(tk token.Token) bool {
+	return tk == token.TokenSpace
 }
