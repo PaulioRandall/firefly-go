@@ -10,20 +10,20 @@ import (
 type NextStatement func() ([]token.Lexeme, NextStatement, error)
 
 // Begin returns a new NextStatement function.
-func Begin(tr TokenReader) NextStatement {
-	if tr.More() {
-		return slice(tr)
+func Begin(lr LexemeReader) NextStatement {
+	if lr.More() {
+		return slice(lr)
 	}
 	return nil
 }
 
 // SliceAll converts all tokens into a group of statements.
-func SliceAll(tr TokenReader) ([][]token.Lexeme, error) {
+func SliceAll(lr LexemeReader) ([][]token.Lexeme, error) {
 
 	var (
 		result [][]token.Lexeme
 		lx     []token.Lexeme
-		f      = Begin(tr)
+		f      = Begin(lr)
 		e      error
 	)
 
@@ -38,29 +38,29 @@ func SliceAll(tr TokenReader) ([][]token.Lexeme, error) {
 	return result, nil
 }
 
-func slice(tr TokenReader) NextStatement {
+func slice(lr LexemeReader) NextStatement {
 	return func() ([]token.Lexeme, NextStatement, error) {
 
-		stmt, e := sliceStmt(tr)
+		stmt, e := sliceStmt(lr)
 		if e != nil {
 			return stmt, nil, e
 		}
 
-		if tr.More() {
-			return stmt, slice(tr), nil
+		if lr.More() {
+			return stmt, slice(lr), nil
 		}
 
 		return stmt, nil, nil
 	}
 }
 
-func sliceStmt(tr TokenReader) ([]token.Lexeme, error) {
+func sliceStmt(lr LexemeReader) ([]token.Lexeme, error) {
 
 	var stmt []token.Lexeme
 
-	for tr.More() {
+	for lr.More() {
 
-		lx, e := tr.Read()
+		lx, e := lr.Read()
 		if e != nil {
 			return nil, e
 		}
