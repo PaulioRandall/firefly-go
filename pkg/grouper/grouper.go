@@ -4,13 +4,10 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
-// Statement in the form of a slice of lexemes
-type Statement []token.Lexeme
-
 // NextStatement is a recursion based function that returns the next slice of
 // lexemes that represent a statement. On error or while obtaining the last
 // statement, the function will be nil.
-type NextStatement func() (Statement, NextStatement, error)
+type NextStatement func() (token.Statement, NextStatement, error)
 
 // Begin returns a new NextStatement function.
 func Begin(lr LexemeReader) NextStatement {
@@ -21,11 +18,11 @@ func Begin(lr LexemeReader) NextStatement {
 }
 
 // GroupAll converts all tokens into a group of statements.
-func GroupAll(lr LexemeReader) ([]Statement, error) {
+func GroupAll(lr LexemeReader) ([]token.Statement, error) {
 
 	var (
-		stmt []Statement
-		lx   Statement
+		stmt []token.Statement
+		lx   token.Statement
 		f    = Begin(lr)
 		e    error
 	)
@@ -42,7 +39,7 @@ func GroupAll(lr LexemeReader) ([]Statement, error) {
 }
 
 func group(lr LexemeReader) NextStatement {
-	return func() (Statement, NextStatement, error) {
+	return func() (token.Statement, NextStatement, error) {
 
 		stmt, e := sliceStmt(lr)
 		if e != nil {
@@ -57,9 +54,9 @@ func group(lr LexemeReader) NextStatement {
 	}
 }
 
-func sliceStmt(lr LexemeReader) (Statement, error) {
+func sliceStmt(lr LexemeReader) (token.Statement, error) {
 
-	var stmt Statement
+	var stmt token.Statement
 
 	for lr.More() {
 

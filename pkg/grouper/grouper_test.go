@@ -22,7 +22,7 @@ func TestSliceAll_1(t *testing.T) {
 		// 1
 		// 2
 		// 3
-		Statement{
+		token.Statement{
 			lex(token.TokenNumber, "1"),
 			lex(token.TokenNewline, "\n"),
 			lex(token.TokenNumber, "2"),
@@ -31,14 +31,14 @@ func TestSliceAll_1(t *testing.T) {
 		},
 	)
 
-	exp := []Statement{
-		Statement{
+	exp := []token.Statement{
+		token.Statement{
 			lex(token.TokenNumber, "1"),
 		},
-		Statement{
+		token.Statement{
 			lex(token.TokenNumber, "2"),
 		},
-		Statement{
+		token.Statement{
 			lex(token.TokenNumber, "3"),
 		},
 	}
@@ -56,15 +56,15 @@ func TestSliceAll_2(t *testing.T) {
 	// GIVEN a single statement in a lexeme reader
 	lr := NewSliceLexemeReader(
 		// 1 + 2
-		Statement{
+		token.Statement{
 			lex(token.TokenNumber, "1"),
 			lex(token.TokenOperator, "+"),
 			lex(token.TokenNumber, "2"),
 		},
 	)
 
-	exp := []Statement{
-		Statement{
+	exp := []token.Statement{
+		token.Statement{
 			lex(token.TokenNumber, "1"),
 			lex(token.TokenOperator, "+"),
 			lex(token.TokenNumber, "2"),
