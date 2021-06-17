@@ -50,8 +50,9 @@ func (slr *sliceLexemeReader) Read() (Lexeme, error) {
 }
 
 func (slr *sliceLexemeReader) PutBack(lx Lexeme) error {
-	remaining := slr.lxs[slr.idx:]
-	alreadyRead := append(slr.lxs[:slr.idx], lx)
-	slr.lxs = append(alreadyRead, remaining...)
+	head := slr.lxs[:slr.idx]
+	tail := slr.lxs[slr.idx:]
+	tail = append([]Lexeme{lx}, tail...)
+	slr.lxs = append(head, tail...)
 	return nil
 }

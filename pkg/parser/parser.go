@@ -59,7 +59,6 @@ func nextParser(sr token.StmtReader) StmtParser {
 		if sr.More() {
 			return parsed, nextParser(sr), nil
 		}
-
 		return parsed, nil, nil
 	}
 }
@@ -84,16 +83,32 @@ func ParseStmt(stmt token.Statement) (ast.Node, error) {
 }
 
 func beginsWithNumber(lr token.LexemeReader, first token.Lexeme) (ast.Node, error) {
+	node, e := parseNumber(first)
+	if e != nil {
+		return nil, e
+	}
+	return parseComplexExpr(lr, node)
+}
 
-	n, e := parseNumber(first)
+func parseComplexExpr(lr token.LexemeReader, left ast.Node) (ast.Node, error) {
+
+	if !lr.More() {
+		return left, nil
+	}
+
+	node, e := parseExpr(lr, left, 0)
 	if e != nil {
 		return nil, e
 	}
 
-	if lr.More() {
-		return parseExpr(lr, n, first.Precedence())
+	for lr.More() {
+		node, e = parseExpr(lr, node, 0)
+		if e != nil {
+			return nil, e
+		}
 	}
-	return n, nil
+
+	return node, nil
 }
 
 func parseExpr(lr token.LexemeReader, left ast.Node, leftPriority int) (ast.Node, error) {
@@ -109,6 +124,15 @@ func parseExpr(lr token.LexemeReader, left ast.Node, leftPriority int) (ast.Node
 	}
 
 	right, e := parseExprRight(lr)
+	if e != nil {
+		return nil, e
+	}
+
+	if !lr.More() {
+		return buildExpr(op, left, right)
+	}
+
+	right, e = parseExpr(lr, right, op.Precedence())
 	if e != nil {
 		return nil, e
 	}
