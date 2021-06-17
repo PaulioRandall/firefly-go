@@ -53,7 +53,7 @@ DIGIT := "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
 
 | Name | Description | Examples |
 | :--- | :--- | :--- |
-| _Number_ | A non-negative integer | `0`, `21`, `123456` |
+| _Number_ | A 64 bit integer | `0`, `21`, `123456` |
 
 ## Operators
 
