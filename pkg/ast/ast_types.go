@@ -5,12 +5,18 @@ type AstType int
 const (
 	AstTypeUndefined AstType = iota
 	AstTypeNumber
-	AstTypeOperation
+	AstTypeAdd
+	AstTypeSub
+	AstTypeMul
+	AstTypeDiv
 )
 
 var astTypeNames = map[AstType]string{
-	AstTypeNumber:    "NUMBER",
-	AstTypeOperation: "OPERATION",
+	AstTypeNumber: "NUMBER",
+	AstTypeAdd:    "ADD",
+	AstTypeSub:    "SUBTRACT",
+	AstTypeMul:    "MULTIPLY",
+	AstTypeDiv:    "DIVIDE",
 }
 
 func (at AstType) String() string {

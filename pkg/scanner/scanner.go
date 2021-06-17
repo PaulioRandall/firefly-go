@@ -13,8 +13,8 @@ import (
 // the function will be nil.
 type ParseToken func() (token.Lexeme, ParseToken, error)
 
-// NewScanner returns a new ParseToken function.
-func NewScanner(sr token.ScrollReader) ParseToken {
+// begin returns a new ParseToken function.
+func begin(sr token.ScrollReader) ParseToken {
 	if sr.More() {
 		return scan(sr)
 	}
@@ -27,7 +27,7 @@ func ScanAll(sr token.ScrollReader) (token.Statement, error) {
 	var (
 		stmt token.Statement
 		tk   token.Lexeme
-		f    = NewScanner(sr)
+		f    = begin(sr)
 		e    error
 	)
 

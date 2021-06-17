@@ -18,7 +18,7 @@ var tokenNames = map[Token]string{
 	TokenOperator: "OPERATOR",
 }
 
-// Name returns the string representation of the token.
-func (tk Token) Name() string {
+// String returns the string representation of the token.
+func (tk Token) String() string {
 	return tokenNames[tk]
 }

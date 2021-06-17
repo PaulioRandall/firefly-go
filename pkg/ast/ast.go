@@ -1,15 +1,13 @@
 package ast
 
 type (
-	Ast  interface{ Type() AstType }
-	Expr interface{ ExprType() ExprType }
+	Tree interface {
+		Type() AstType
+	}
+
+	Number struct {
+		Value int64
+	}
 )
 
-type astExpr struct{ AstType AstType }
-
-func (e astExpr) Type() AstType { return e.AstType }
-
-type Number struct {
-	astExpr
-	Value int64
-}
+func (t Number) Type() AstType { return AstTypeNumber }
