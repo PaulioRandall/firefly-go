@@ -76,15 +76,33 @@ func ParseStmt(stmt token.Statement) (ast.Node, error) {
 
 	switch first.Token {
 	case token.TokenNumber:
-		return parseNumber(first, lr)
+		return beginsWithNumber(first, lr)
 
 	default:
 		return nil, newError("Unknown Token '%s'", first.Token.String())
 	}
 }
 
-func parseNumber(first token.Lexeme, lr token.LexemeReader) (ast.Node, error) {
-	n, e := strconv.ParseInt(first.Value, 10, 64)
+func beginsWithNumber(first token.Lexeme, lr token.LexemeReader) (ast.Node, error) {
+
+	n, e := parseNumber(first)
+	if e != nil {
+		return nil, e
+	}
+
+	if lr.More() {
+		return parseExpr(n, lr)
+	}
+	return n, nil
+}
+
+func parseExpr(left ast.Node, lr token.LexemeReader) (ast.Node, error) {
+
+	return nil, nil
+}
+
+func parseNumber(num token.Lexeme) (ast.Node, error) {
+	n, e := strconv.ParseInt(num.Value, 10, 64)
 	if e != nil {
 		return nil, e
 	}

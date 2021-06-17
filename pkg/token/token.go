@@ -22,3 +22,11 @@ var tokenNames = map[Token]string{
 func (tk Token) String() string {
 	return tokenNames[tk]
 }
+
+/*
+func (tk Token) Precedence() int {
+	switch {
+	case
+	}
+}
+*/
