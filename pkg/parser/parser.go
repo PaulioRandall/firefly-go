@@ -12,7 +12,7 @@ import (
 // StmtParser is a recursion based function that parses its statement and then
 // returns a parser for the next statement. On error or while obtaining the last
 // AST tree, the function will be nil.
-type StmtParser func() (ast.Tree, StmtParser, error)
+type StmtParser func() (ast.Node, StmtParser, error)
 
 // Begin returns a new StmtParser function.
 func Begin(sr token.StmtReader) StmtParser {
@@ -23,11 +23,11 @@ func Begin(sr token.StmtReader) StmtParser {
 }
 
 // ParseAll parses all statement in the statement reader.
-func ParseAll(sr token.StmtReader) ([]ast.Tree, error) {
+func ParseAll(sr token.StmtReader) ([]ast.Node, error) {
 
 	var (
-		trees []ast.Tree
-		tree  ast.Tree
+		trees []ast.Node
+		tree  ast.Node
 		f     = Begin(sr)
 		e     error
 	)
@@ -44,7 +44,7 @@ func ParseAll(sr token.StmtReader) ([]ast.Tree, error) {
 }
 
 func nextParser(sr token.StmtReader) StmtParser {
-	return func() (ast.Tree, StmtParser, error) {
+	return func() (ast.Node, StmtParser, error) {
 
 		unparsed, e := sr.Read()
 		if e != nil {
@@ -65,7 +65,7 @@ func nextParser(sr token.StmtReader) StmtParser {
 }
 
 // ParseStmt parses the supplied statement into an AST.
-func ParseStmt(stmt token.Statement) (ast.Tree, error) {
+func ParseStmt(stmt token.Statement) (ast.Node, error) {
 
 	lr := token.NewSliceLexemeReader(stmt)
 
@@ -83,7 +83,7 @@ func ParseStmt(stmt token.Statement) (ast.Tree, error) {
 	}
 }
 
-func parseNumber(first token.Lexeme, lr token.LexemeReader) (ast.Tree, error) {
+func parseNumber(first token.Lexeme, lr token.LexemeReader) (ast.Node, error) {
 	n, e := strconv.ParseInt(first.Value, 10, 64)
 	if e != nil {
 		return nil, e

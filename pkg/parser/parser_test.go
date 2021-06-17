@@ -28,7 +28,7 @@ func TestParseAll_1(t *testing.T) {
 		},
 	)
 
-	exp := []ast.Tree{
+	exp := []ast.Node{
 		ast.Number{
 			Value: 1,
 		},
