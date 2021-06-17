@@ -68,7 +68,6 @@ func TestParseAll_2(t *testing.T) {
 	require.Equal(t, exp, act)
 }
 
-/*
 func TestParseAll_3(t *testing.T) {
 
 	// GIVEN an operation statement
@@ -77,7 +76,7 @@ func TestParseAll_3(t *testing.T) {
 		token.Program{
 			token.Statement{
 				lex(token.TokenNumber, "1"),
-				lex(token.TokenOperator, "+"),
+				lex(token.TokenAdd, "+"),
 				lex(token.TokenNumber, "2"),
 			},
 		},
@@ -85,7 +84,7 @@ func TestParseAll_3(t *testing.T) {
 
 	exp := []ast.Node{
 		ast.Add{
-			ast.InfixOperation{
+			InfixOperation: ast.InfixOperation{
 				Left:  ast.Number{Value: 1},
 				Right: ast.Number{Value: 2},
 			},
@@ -99,4 +98,3 @@ func TestParseAll_3(t *testing.T) {
 	require.Nil(t, e, "%+v", e)
 	require.Equal(t, exp, act)
 }
-*/

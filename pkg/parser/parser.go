@@ -76,14 +76,14 @@ func ParseStmt(stmt token.Statement) (ast.Node, error) {
 
 	switch first.Token {
 	case token.TokenNumber:
-		return beginsWithNumber(first, lr)
+		return beginsWithNumber(lr, first)
 
 	default:
 		return nil, newError("Unknown Token '%s'", first.Token.String())
 	}
 }
 
-func beginsWithNumber(first token.Lexeme, lr token.LexemeReader) (ast.Node, error) {
+func beginsWithNumber(lr token.LexemeReader, first token.Lexeme) (ast.Node, error) {
 
 	n, e := parseNumber(first)
 	if e != nil {
@@ -91,14 +91,61 @@ func beginsWithNumber(first token.Lexeme, lr token.LexemeReader) (ast.Node, erro
 	}
 
 	if lr.More() {
-		return parseExpr(n, lr)
+		return parseExpr(lr, n, first.Precedence())
 	}
 	return n, nil
 }
 
-func parseExpr(left ast.Node, lr token.LexemeReader) (ast.Node, error) {
+func parseExpr(lr token.LexemeReader, left ast.Node, leftPriority int) (ast.Node, error) {
 
-	return nil, nil
+	op, e := lr.Read()
+	if e != nil {
+		return nil, e
+	}
+
+	if leftPriority >= op.Precedence() {
+		lr.PutBack(op)
+		return left, nil
+	}
+
+	right, e := parseExprRight(lr)
+	if e != nil {
+		return nil, e
+	}
+
+	return buildExpr(op, left, right)
+}
+
+func parseExprRight(lr token.LexemeReader) (ast.Node, error) {
+	lx, e := lr.Read()
+	if e != nil {
+		return nil, e
+	}
+	return parseNumber(lx)
+}
+
+func buildExpr(op token.Lexeme, left, right ast.Node) (ast.Node, error) {
+	opNode := ast.InfixOperation{
+		Left:  left,
+		Right: right,
+	}
+
+	switch op.Token {
+	case token.TokenAdd:
+		return ast.Add{InfixOperation: opNode}, nil
+
+	case token.TokenSub:
+		return ast.Sub{InfixOperation: opNode}, nil
+
+	case token.TokenMul:
+		return ast.Mul{InfixOperation: opNode}, nil
+
+	case token.TokenDiv:
+		return ast.Div{InfixOperation: opNode}, nil
+
+	default:
+		return nil, newError("Unknown operation '%s'", op.Token.String())
+	}
 }
 
 func parseNumber(num token.Lexeme) (ast.Node, error) {

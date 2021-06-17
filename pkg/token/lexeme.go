@@ -18,6 +18,10 @@ type LexemeReader interface {
 
 	// Read returns the next lexeme and moves the read head to the next item.
 	Read() (Lexeme, error)
+
+	// PutBack puts a lexeme back into the reader so it becomes the next lexeme
+	// to be read.
+	PutBack(Lexeme) error
 }
 
 // NewSliceLexemeReader wraps a slice of tokens in a Lexeme reader.
@@ -43,4 +47,11 @@ func (slr *sliceLexemeReader) Read() (Lexeme, error) {
 	lx := slr.lxs[slr.idx]
 	slr.idx++
 	return lx, nil
+}
+
+func (slr *sliceLexemeReader) PutBack(lx Lexeme) error {
+	remaining := slr.lxs[slr.idx:]
+	alreadyRead := append(slr.lxs[:slr.idx], lx)
+	slr.lxs = append(alreadyRead, remaining...)
+	return nil
 }
