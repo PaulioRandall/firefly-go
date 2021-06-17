@@ -74,8 +74,14 @@ func parseToken(sr token.ScrollReader) (token.Lexeme, error) {
 		lx = lexeme(token.TokenSpace, ru)
 	case isNumber(ru):
 		lx = lexeme(token.TokenNumber, ru)
-	case isOperator(ru):
-		lx = lexeme(token.TokenOperator, ru)
+	case ru == '+':
+		lx = lexeme(token.TokenAdd, ru)
+	case ru == '-':
+		lx = lexeme(token.TokenSub, ru)
+	case ru == '*':
+		lx = lexeme(token.TokenMul, ru)
+	case ru == '/':
+		lx = lexeme(token.TokenDiv, ru)
 	default:
 		return lx, newError("Unknown token '%v'", string(ru))
 	}
@@ -100,15 +106,6 @@ func isSpace(ru rune) bool {
 
 func isNumber(ru rune) bool {
 	return unicode.IsDigit(ru)
-}
-
-func isOperator(ru rune) bool {
-	switch ru {
-	case '+', '-', '*', '/':
-		return true
-	default:
-		return false
-	}
 }
 
 func newError(msg string, args ...interface{}) error {

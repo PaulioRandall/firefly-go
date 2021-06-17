@@ -58,7 +58,7 @@ func TestGroupAll_2(t *testing.T) {
 		// 1 + 2
 		token.Statement{
 			lex(token.TokenNumber, "1"),
-			lex(token.TokenOperator, "+"),
+			lex(token.TokenAdd, "+"),
 			lex(token.TokenNumber, "2"),
 		},
 	)
@@ -66,7 +66,7 @@ func TestGroupAll_2(t *testing.T) {
 	exp := token.Program{
 		token.Statement{
 			lex(token.TokenNumber, "1"),
-			lex(token.TokenOperator, "+"),
+			lex(token.TokenAdd, "+"),
 			lex(token.TokenNumber, "2"),
 		},
 	}

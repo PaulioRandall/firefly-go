@@ -8,14 +8,20 @@ const (
 	TokenNewline
 	TokenSpace
 	TokenNumber
-	TokenOperator
+	TokenAdd
+	TokenSub
+	TokenMul
+	TokenDiv
 )
 
 var tokenNames = map[Token]string{
-	TokenNewline:  "NEWLINE",
-	TokenSpace:    "SPACE",
-	TokenNumber:   "NUMBER",
-	TokenOperator: "OPERATOR",
+	TokenNewline: "NEWLINE",
+	TokenSpace:   "SPACE",
+	TokenNumber:  "NUMBER",
+	TokenAdd:     "ADD",
+	TokenSub:     "SUBTRACT",
+	TokenMul:     "MULTIPLY",
+	TokenDiv:     "DIVIDE",
 }
 
 // String returns the string representation of the token.
@@ -23,10 +29,15 @@ func (tk Token) String() string {
 	return tokenNames[tk]
 }
 
-/*
 func (tk Token) Precedence() int {
-	switch {
-	case
+	switch tk {
+	case TokenMul, TokenDiv:
+		return 2
+
+	case TokenAdd, TokenSub:
+		return 1
+
+	default:
+		return 0
 	}
 }
-*/
