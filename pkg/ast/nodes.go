@@ -6,65 +6,53 @@ import (
 )
 
 type (
-	Node interface{ Type() AST }
+	Node interface {
+		Type() AST
+		String() string
+	}
 
 	Number struct{ Value int64 }
 
-	InfixOperation struct {
+	Infix struct {
+		AST
 		Left  Node
 		Right Node
 	}
 
-	Add struct{ InfixOperation }
-	Sub struct{ InfixOperation }
-	Mul struct{ InfixOperation }
-	Div struct{ InfixOperation }
+	Add Infix
+	Sub Infix
+	Mul Infix
+	Div Infix
 )
 
-func (t Number) Type() AST { return AstNumber }
-func (t Add) Type() AST    { return AstAdd }
-func (t Sub) Type() AST    { return AstSub }
-func (t Mul) Type() AST    { return AstMul }
-func (t Div) Type() AST    { return AstDiv }
+func (n Number) Type() AST { return AstNumber }
+func (n Infix) Type() AST  { return n.AST }
 
-func String(n Node) string {
-	sb := strings.Builder{}
-	writeNode(&sb, 0, n)
+func (n Number) String() string {
+	sb := &strings.Builder{}
+	writeText(sb, 0, n.Type().String())
+	writeLine(sb, 0, strconv.FormatInt(n.Value, 10))
+	return sb.String()
+}
+
+func (n Infix) String() string {
+	sb := &strings.Builder{}
+
+	writeLine(sb, 0, n.AST.String())
+
+	writeText(sb, 1, "L: ")
+	writeNode(sb, 0, n.Left)
+
+	writeText(sb, 1, "R: ")
+	writeNode(sb, 0, n.Right)
+
 	return sb.String()
 }
 
 func writeNode(sb *strings.Builder, indent int, n Node) {
-
 	writeLine(sb, 0, n.Type().String())
-
 	indent++
-
-	if v, ok := n.(Number); ok {
-		num := strconv.FormatInt(v.Value, 10)
-		writeLine(sb, indent, num)
-		return
-	}
-
-	switch v := n.(type) {
-	case Add:
-		writeInfixOperation(sb, indent, v.InfixOperation)
-	case Sub:
-		writeInfixOperation(sb, indent, v.InfixOperation)
-	case Mul:
-		writeInfixOperation(sb, indent, v.InfixOperation)
-	case Div:
-		writeInfixOperation(sb, indent, v.InfixOperation)
-		return
-	}
-
-}
-
-func writeInfixOperation(sb *strings.Builder, indent int, n InfixOperation) {
-	writeText(sb, indent, "L: ")
-	writeNode(sb, indent, n.Left)
-
-	writeText(sb, indent, "R: ")
-	writeNode(sb, indent, n.Right)
+	sb.WriteString(n.String())
 }
 
 func writeLine(sb *strings.Builder, indent int, text string) {

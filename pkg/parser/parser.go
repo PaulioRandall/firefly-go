@@ -154,26 +154,36 @@ func parseExprRight(lr token.LexemeReader, leftPriority int) (ast.Node, error) {
 }
 
 func buildExpr(op token.Lexeme, left, right ast.Node) (ast.Node, error) {
-	opNode := ast.InfixOperation{
+
+	n := ast.Infix{
+		AST:   mapInfixTokenToAST(op.Token),
 		Left:  left,
 		Right: right,
 	}
 
-	switch op.Token {
+	if n.AST == ast.AstUndefined {
+		return nil, newError("Unknown operation '%s'", op.Token.String())
+	}
+
+	return n, nil
+}
+
+func mapInfixTokenToAST(tk token.Token) ast.AST {
+	switch tk {
 	case token.TokenAdd:
-		return ast.Add{InfixOperation: opNode}, nil
+		return ast.AstAdd
 
 	case token.TokenSub:
-		return ast.Sub{InfixOperation: opNode}, nil
+		return ast.AstSub
 
 	case token.TokenMul:
-		return ast.Mul{InfixOperation: opNode}, nil
+		return ast.AstMul
 
 	case token.TokenDiv:
-		return ast.Div{InfixOperation: opNode}, nil
+		return ast.AstDiv
 
 	default:
-		return nil, newError("Unknown operation '%s'", op.Token.String())
+		return ast.AstUndefined
 	}
 }
 

@@ -22,39 +22,11 @@ func numNode(n int64) ast.Node {
 	}
 }
 
-func addNode(left, right ast.Node) ast.Node {
-	return ast.Add{
-		InfixOperation: ast.InfixOperation{
-			Left:  left,
-			Right: right,
-		},
-	}
-}
-
-func subNode(left, right ast.Node) ast.Node {
-	return ast.Sub{
-		InfixOperation: ast.InfixOperation{
-			Left:  left,
-			Right: right,
-		},
-	}
-}
-
-func mulNode(left, right ast.Node) ast.Node {
-	return ast.Mul{
-		InfixOperation: ast.InfixOperation{
-			Left:  left,
-			Right: right,
-		},
-	}
-}
-
-func divNode(left, right ast.Node) ast.Node {
-	return ast.Div{
-		InfixOperation: ast.InfixOperation{
-			Left:  left,
-			Right: right,
-		},
+func infix(t ast.AST, left, right ast.Node) ast.Node {
+	return ast.Infix{
+		AST:   t,
+		Left:  left,
+		Right: right,
 	}
 }
 
@@ -121,7 +93,7 @@ func TestParseAll_3(t *testing.T) {
 	)
 
 	exp := []ast.Node{
-		addNode(
+		infix(ast.AstAdd,
 			numNode(1),
 			numNode(2),
 		),
@@ -153,8 +125,8 @@ func TestParseAll_4(t *testing.T) {
 	)
 
 	exp := []ast.Node{
-		subNode(
-			addNode(
+		infix(ast.AstSub,
+			infix(ast.AstAdd,
 				numNode(1),
 				numNode(2),
 			),
@@ -190,9 +162,9 @@ func TestParseAll_5(t *testing.T) {
 	)
 
 	exp := []ast.Node{
-		addNode(
+		infix(ast.AstAdd,
 			numNode(1),
-			mulNode(
+			infix(ast.AstMul,
 				numNode(2),
 				numNode(3),
 			),
@@ -228,12 +200,12 @@ func TestParseAll_6(t *testing.T) {
 	)
 
 	exp := []ast.Node{
-		addNode(
-			divNode(
+		infix(ast.AstAdd,
+			infix(ast.AstDiv,
 				numNode(9),
 				numNode(3),
 			),
-			mulNode(
+			infix(ast.AstMul,
 				numNode(2),
 				numNode(3),
 			),
@@ -273,38 +245,36 @@ func TestParseAll_7(t *testing.T) {
 	)
 
 	// 8 + [4 / 3] * 3 - 2 * 5
-	n1 := divNode(
+	ex1 := infix(ast.AstDiv,
 		numNode(4),
 		numNode(3),
 	)
 
 	// 8 + [4 / 3 * 3] - 2 * 5
-	n2 := mulNode(
-		n1,
+	ex2 := infix(ast.AstMul,
+		ex1,
 		numNode(3),
 	)
 
 	// [8 + 4 / 3 * 3] - 2 * 5
-	n3 := addNode(
+	ex3 := infix(ast.AstAdd,
 		numNode(8),
-		n2,
+		ex2,
 	)
 
 	// 8 + 4 / 3 * 3 - [2 * 5]
-	n4 := mulNode(
+	ex4 := infix(ast.AstMul,
 		numNode(2),
 		numNode(5),
 	)
 
 	// [8 + 4 / 3 * 3 - 2 * 5]
 	exp := []ast.Node{
-		subNode(n3, n4),
+		infix(ast.AstSub, ex3, ex4),
 	}
 
 	// WHEN parsing all statements
 	act, e := ParseAll(lr)
-
-	println(ast.String(act[0]))
 
 	// THEN the expression is parsed
 	// AND returned without error
