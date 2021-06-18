@@ -244,25 +244,25 @@ func TestParseAll_7(t *testing.T) {
 		},
 	)
 
-	// 8 + [4 / 3] * 3 - 2 * 5
+	// [4 / 3]
 	ex1 := infix(ast.AstDiv,
 		num(4),
 		num(3),
 	)
 
-	// 8 + [4 / 3 * 3] - 2 * 5
+	// [4 / 3 * 3]
 	ex2 := infix(ast.AstMul,
 		ex1,
 		num(3),
 	)
 
-	// [8 + 4 / 3 * 3] - 2 * 5
+	// [8 + 4 / 3 * 3]
 	ex3 := infix(ast.AstAdd,
 		num(8),
 		ex2,
 	)
 
-	// 8 + 4 / 3 * 3 - [2 * 5]
+	// [2 * 5]
 	ex4 := infix(ast.AstMul,
 		num(2),
 		num(5),
