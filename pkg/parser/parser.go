@@ -123,7 +123,7 @@ func parseExpr(lr token.LexemeReader, left ast.Node, leftPriority int) (ast.Node
 		return left, nil
 	}
 
-	right, e := parseExprRight(lr)
+	right, e := parseExprRight(lr, op.Precedence())
 	if e != nil {
 		return nil, e
 	}
@@ -140,12 +140,17 @@ func parseExpr(lr token.LexemeReader, left ast.Node, leftPriority int) (ast.Node
 	return buildExpr(op, left, right)
 }
 
-func parseExprRight(lr token.LexemeReader) (ast.Node, error) {
-	lx, e := lr.Read()
+func parseExprRight(lr token.LexemeReader, leftPriority int) (ast.Node, error) {
+	n, e := expectNumber(lr)
 	if e != nil {
 		return nil, e
 	}
-	return parseNumber(lx)
+
+	if !lr.More() {
+		return n, nil
+	}
+
+	return parseExpr(lr, n, leftPriority)
 }
 
 func buildExpr(op token.Lexeme, left, right ast.Node) (ast.Node, error) {
@@ -170,6 +175,17 @@ func buildExpr(op token.Lexeme, left, right ast.Node) (ast.Node, error) {
 	default:
 		return nil, newError("Unknown operation '%s'", op.Token.String())
 	}
+}
+
+func expectNumber(lr token.LexemeReader) (ast.Node, error) {
+	lx, e := lr.Read()
+	if e != nil {
+		return nil, e
+	}
+	if lx.Token != token.TokenNumber {
+		return nil, newError("Expected number, got '%s'", lx.Token.String())
+	}
+	return parseNumber(lx)
 }
 
 func parseNumber(num token.Lexeme) (ast.Node, error) {

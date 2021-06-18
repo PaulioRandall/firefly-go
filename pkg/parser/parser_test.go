@@ -16,6 +16,48 @@ func lex(tk token.Token, v string) token.Lexeme {
 	}
 }
 
+func numNode(n int64) ast.Node {
+	return ast.Number{
+		Value: n,
+	}
+}
+
+func addNode(left, right ast.Node) ast.Node {
+	return ast.Add{
+		InfixOperation: ast.InfixOperation{
+			Left:  left,
+			Right: right,
+		},
+	}
+}
+
+func subNode(left, right ast.Node) ast.Node {
+	return ast.Sub{
+		InfixOperation: ast.InfixOperation{
+			Left:  left,
+			Right: right,
+		},
+	}
+}
+
+func mulNode(left, right ast.Node) ast.Node {
+	return ast.Mul{
+		InfixOperation: ast.InfixOperation{
+			Left:  left,
+			Right: right,
+		},
+	}
+}
+
+func divNode(left, right ast.Node) ast.Node {
+	return ast.Div{
+		InfixOperation: ast.InfixOperation{
+			Left:  left,
+			Right: right,
+		},
+	}
+}
+
 func TestParseAll_1(t *testing.T) {
 
 	// GIVEN a single digit number
@@ -29,9 +71,7 @@ func TestParseAll_1(t *testing.T) {
 	)
 
 	exp := []ast.Node{
-		ast.Number{
-			Value: 9,
-		},
+		numNode(9),
 	}
 
 	// WHEN parsing all statements
@@ -55,9 +95,7 @@ func TestParseAll_2(t *testing.T) {
 	)
 
 	exp := []ast.Node{
-		ast.Number{
-			Value: 99,
-		},
+		numNode(99),
 	}
 
 	// WHEN parsing all statements
@@ -83,12 +121,10 @@ func TestParseAll_3(t *testing.T) {
 	)
 
 	exp := []ast.Node{
-		ast.Add{
-			InfixOperation: ast.InfixOperation{
-				Left:  ast.Number{Value: 1},
-				Right: ast.Number{Value: 2},
-			},
-		},
+		addNode(
+			numNode(1),
+			numNode(2),
+		),
 	}
 
 	// WHEN parsing all statements
@@ -117,17 +153,13 @@ func TestParseAll_4(t *testing.T) {
 	)
 
 	exp := []ast.Node{
-		ast.Sub{
-			InfixOperation: ast.InfixOperation{
-				Left: ast.Add{
-					InfixOperation: ast.InfixOperation{
-						Left:  ast.Number{Value: 1},
-						Right: ast.Number{Value: 2},
-					},
-				},
-				Right: ast.Number{Value: 3},
-			},
-		},
+		subNode(
+			addNode(
+				numNode(1),
+				numNode(2),
+			),
+			numNode(3),
+		),
 	}
 
 	// WHEN parsing all statements
@@ -158,17 +190,13 @@ func TestParseAll_5(t *testing.T) {
 	)
 
 	exp := []ast.Node{
-		ast.Add{
-			InfixOperation: ast.InfixOperation{
-				Left: ast.Number{Value: 1},
-				Right: ast.Mul{
-					InfixOperation: ast.InfixOperation{
-						Left:  ast.Number{Value: 2},
-						Right: ast.Number{Value: 3},
-					},
-				},
-			},
-		},
+		addNode(
+			numNode(1),
+			mulNode(
+				numNode(2),
+				numNode(3),
+			),
+		),
 	}
 
 	// WHEN parsing all statements
@@ -200,28 +228,85 @@ func TestParseAll_6(t *testing.T) {
 	)
 
 	exp := []ast.Node{
-		ast.Add{
-			InfixOperation: ast.InfixOperation{
-				Left: ast.Div{
-					InfixOperation: ast.InfixOperation{
-						Left:  ast.Number{Value: 9},
-						Right: ast.Number{Value: 3},
-					},
-				},
-				Right: ast.Mul{
-					InfixOperation: ast.InfixOperation{
-						Left:  ast.Number{Value: 2},
-						Right: ast.Number{Value: 3},
-					},
-				},
-			},
-		},
+		addNode(
+			divNode(
+				numNode(9),
+				numNode(3),
+			),
+			mulNode(
+				numNode(2),
+				numNode(3),
+			),
+		),
 	}
 
 	// WHEN parsing all statements
 	act, e := ParseAll(lr)
 
 	// THEN the number is parsed
+	// AND returned without error
+	require.Nil(t, e, "%+v", e)
+	require.Equal(t, exp, act)
+}
+
+func TestParseAll_7(t *testing.T) {
+
+	// GIVEN a long compound expression
+	lr := token.NewProgramReader(
+		// 8 + 4 / 3 * 3 - 2 * 5
+		// (8 + ((4 / 3) * 3)) - (2 * 5)
+		token.Program{
+			token.Statement{
+				lex(token.TokenNumber, "8"),
+				lex(token.TokenAdd, "+"),
+				lex(token.TokenNumber, "4"),
+				lex(token.TokenDiv, "/"),
+				lex(token.TokenNumber, "3"),
+				lex(token.TokenMul, "*"),
+				lex(token.TokenNumber, "3"),
+				lex(token.TokenSub, "-"),
+				lex(token.TokenNumber, "2"),
+				lex(token.TokenMul, "*"),
+				lex(token.TokenNumber, "5"),
+			},
+		},
+	)
+
+	// 8 + [4 / 3] * 3 - 2 * 5
+	n1 := divNode(
+		numNode(4),
+		numNode(3),
+	)
+
+	// 8 + [4 / 3 * 3] - 2 * 5
+	n2 := mulNode(
+		n1,
+		numNode(3),
+	)
+
+	// [8 + 4 / 3 * 3] - 2 * 5
+	n3 := addNode(
+		numNode(8),
+		n2,
+	)
+
+	// 8 + 4 / 3 * 3 - [2 * 5]
+	n4 := mulNode(
+		numNode(2),
+		numNode(5),
+	)
+
+	// [8 + 4 / 3 * 3 - 2 * 5]
+	exp := []ast.Node{
+		subNode(n3, n4),
+	}
+
+	// WHEN parsing all statements
+	act, e := ParseAll(lr)
+
+	println(ast.String(act[0]))
+
+	// THEN the expression is parsed
 	// AND returned without error
 	require.Nil(t, e, "%+v", e)
 	require.Equal(t, exp, act)
