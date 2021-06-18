@@ -13,20 +13,15 @@ type (
 
 	Number struct{ Value int64 }
 
-	Infix struct {
+	InfixNode struct {
 		AST
 		Left  Node
 		Right Node
 	}
-
-	Add Infix
-	Sub Infix
-	Mul Infix
-	Div Infix
 )
 
-func (n Number) Type() AST { return AstNumber }
-func (n Infix) Type() AST  { return n.AST }
+func (n Number) Type() AST    { return AstNumber }
+func (n InfixNode) Type() AST { return n.AST }
 
 func (n Number) String() string {
 	sb := &strings.Builder{}
@@ -35,7 +30,7 @@ func (n Number) String() string {
 	return sb.String()
 }
 
-func (n Infix) String() string {
+func (n InfixNode) String() string {
 	sb := &strings.Builder{}
 
 	writeLine(sb, 0, n.AST.String())
