@@ -38,7 +38,7 @@ A set of production rules that define the syntax of a Firefly program.
 ```
 PROGRAM := { STATEMENT }
 
-STATEMENT := { EXPRESSION }
+STATEMENT := EXPRESSION
 
 EXPRESSION := EXPRESSION OPERATOR EXPRESSION
 EXPRESSION := OPERAND
