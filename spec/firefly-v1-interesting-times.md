@@ -8,7 +8,7 @@ Firefly is a toy programming language built on the following ideas:
 - No install
 - Easily modifiable and extendable (to the extent that is reasonable possible)
 
-This specification defines V1: 鳥取県:鳥取市 (Tottori-ken:Tottori-shi).
+This specification defines `v1: Interesting times`.
 
 ## Definitions
 

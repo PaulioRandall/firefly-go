@@ -52,6 +52,5 @@ func divNumbers(left, right ast.NumberNode) (ast.NumberNode, error) {
 	if right.Value == 0 {
 		return zero, newError("Can't divide by zero")
 	}
-
 	return newNumber(left.Value / right.Value), nil
 }

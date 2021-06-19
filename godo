@@ -21,7 +21,7 @@ GO_MAIN="cmd/firefly.go"
 BUILD_FLAGS=""
 #BUILD_FLAGS=-gcflags -m -ldflags "-s -w"
 TEST_TIMEOUT="2s"
-DEV_SCROLL="./scrolls/dev.ff"
+DEV_SCROLL="./scrolls/dev.scroll"
 
 printUsage() {
   println "Usage:"

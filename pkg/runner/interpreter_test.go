@@ -153,10 +153,7 @@ func TestInterpreter_5(t *testing.T) {
 	// GIVEN an expression which attempts to divide by zero
 	p := ast.Program{
 		// 1 + 2
-		infix(ast.AstDiv,
-			num(1),
-			num(0),
-		),
+		infix(ast.AstDiv, num(1), num(0)),
 	}
 
 	// AND an interpreter initialised with the program
