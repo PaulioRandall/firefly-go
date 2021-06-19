@@ -34,10 +34,10 @@ func infix(astType ast.AST, left, right ast.Node) ast.InfixExprNode {
 func setupInterpreter(p ast.Program) (Interpreter, *mockWriter, *mockWriter) {
 	in := NewInterpreter(p)
 
-	std := &mockWriter{}
+	std := &mockWriter{output: []byte{}}
 	in.SetStdout(std)
 
-	err := &mockWriter{}
+	err := &mockWriter{output: []byte{}}
 	in.SetStderr(err)
 
 	return in, std, err
@@ -146,4 +146,32 @@ func TestInterpreter_4(t *testing.T) {
 	// AND only the expression result and a linefeed are written to stdout
 	exp := []byte("6\n")
 	require.Equal(t, exp, stdout.output)
+}
+
+func TestInterpreter_5(t *testing.T) {
+
+	// GIVEN an expression which attempts to divide by zero
+	p := ast.Program{
+		// 1 + 2
+		infix(ast.AstDiv,
+			num(1),
+			num(0),
+		),
+	}
+
+	// AND an interpreter initialised with the program
+	in, stdout, errout := setupInterpreter(p)
+
+	// WHEN the program is executed
+	in.Exe()
+
+	// THEN an error is set
+	e := in.ExeErr()
+	require.NotNil(t, e, "Expected error")
+
+	// AND something is written out to errout
+	require.True(t, len(errout.output) > 0, "Expected error output")
+
+	// AND nothing is written out to stdout
+	require.Equal(t, []byte{}, stdout.output)
 }

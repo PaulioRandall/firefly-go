@@ -16,8 +16,7 @@ func computeInfix(n ast.Node, compute infixComputer) (ast.NumberNode, error) {
 		return zero, e
 	}
 
-	result := compute(left, right)
-	return result, nil
+	return compute(left, right)
 }
 
 func computeInfixExpr(n ast.InfixExprNode) (left, right ast.NumberNode, e error) {
@@ -35,20 +34,24 @@ func computeInfixExpr(n ast.InfixExprNode) (left, right ast.NumberNode, e error)
 	return left, right, nil
 }
 
-type infixComputer func(left, right ast.NumberNode) ast.NumberNode
+type infixComputer func(left, right ast.NumberNode) (ast.NumberNode, error)
 
-func addNumbers(left, right ast.NumberNode) ast.NumberNode {
-	return newNumber(left.Value + right.Value)
+func addNumbers(left, right ast.NumberNode) (ast.NumberNode, error) {
+	return newNumber(left.Value + right.Value), nil
 }
 
-func subNumbers(left, right ast.NumberNode) ast.NumberNode {
-	return newNumber(left.Value - right.Value)
+func subNumbers(left, right ast.NumberNode) (ast.NumberNode, error) {
+	return newNumber(left.Value - right.Value), nil
 }
 
-func mulNumbers(left, right ast.NumberNode) ast.NumberNode {
-	return newNumber(left.Value * right.Value)
+func mulNumbers(left, right ast.NumberNode) (ast.NumberNode, error) {
+	return newNumber(left.Value * right.Value), nil
 }
 
-func divNumbers(left, right ast.NumberNode) ast.NumberNode {
-	return newNumber(left.Value / right.Value)
+func divNumbers(left, right ast.NumberNode) (ast.NumberNode, error) {
+	if right.Value == 0 {
+		return zero, newError("Can't divide by zero")
+	}
+
+	return newNumber(left.Value / right.Value), nil
 }
