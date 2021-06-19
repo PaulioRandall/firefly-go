@@ -44,7 +44,6 @@ func setupInterpreter(p ast.Program) (Interpreter, *mockWriter, *mockWriter) {
 }
 
 func Test_auto_fail(t *testing.T) {
-	// Modify test
 	require.Fail(t, "Failed it!")
 }
 
