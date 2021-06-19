@@ -9,11 +9,11 @@ import (
 )
 
 type mockWriter struct {
-	output [][]byte
+	output []byte
 }
 
 func (w *mockWriter) Write(bytes []byte) (int, error) {
-	w.output = append(w.output, bytes)
+	w.output = append(w.output, bytes...)
 	return len(bytes), nil
 }
 
@@ -61,9 +61,30 @@ func TestInterpreter_1(t *testing.T) {
 	require.Nil(t, e, "%+v", e)
 
 	// AND only the number is written to stdout
-	exp := [][]byte{
-		[]byte("9"),
+	exp := []byte("9\n")
+	require.Equal(t, exp, stdout.output)
+}
+
+func TestInterpreter_2(t *testing.T) {
+
+	// GIVEN a program that prints numbers on multiple lines
+	p := ast.Program{
+		num(1),
+		num(2),
+		num(3),
 	}
-	require.Equal(t, 1, len(stdout.output))
+
+	// AND an interpreter initialised with the program
+	in, stdout, _ := setupInterpreter(p)
+
+	// WHEN the program is executed
+	in.Exe()
+
+	// THEN no error is set
+	e := in.ExeErr()
+	require.Nil(t, e, "%+v", e)
+
+	// AND only the number is written to stdout
+	exp := []byte("1\n2\n3\n")
 	require.Equal(t, exp, stdout.output)
 }

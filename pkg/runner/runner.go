@@ -87,11 +87,18 @@ func (in *interpreter) exeAstNumber(n ast.Node) {
 		in.bug("ast.NumberNode node expected")
 		return
 	}
-	in.stdPrint(num.String())
+	in.stdPrintln(num.String())
 }
 
 func (in *interpreter) stdPrint(s string) {
 	_, e := fmt.Fprint(in.stdout, s)
+	if e != nil {
+		panic(e)
+	}
+}
+
+func (in *interpreter) stdPrintln(s string) {
+	_, e := fmt.Fprint(in.stdout, s+"\n")
 	if e != nil {
 		panic(e)
 	}
@@ -104,10 +111,17 @@ func (in *interpreter) errPrint(s string) {
 	}
 }
 
+func (in *interpreter) errPrintln(s string) {
+	_, e := fmt.Fprintf(in.stderr, s+"\n")
+	if e != nil {
+		panic(e)
+	}
+}
+
 func (in *interpreter) bug(msg string, args ...interface{}) {
 	msg = "[BUG] " + msg
 	in.exeErr = newError(msg, args...)
-	in.errPrint(in.exeErr.Error())
+	in.errPrintln(in.exeErr.Error())
 }
 
 func newError(msg string, args ...interface{}) error {
