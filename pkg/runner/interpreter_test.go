@@ -23,9 +23,9 @@ func num(n int64) ast.NumberNode {
 	}
 }
 
-func infix(t ast.AST, left, right ast.Node) ast.InfixExprNode {
+func infix(astType ast.AST, left, right ast.Node) ast.InfixExprNode {
 	return ast.InfixExprNode{
-		AST:   t,
+		AST:   astType,
 		Left:  left,
 		Right: right,
 	}
