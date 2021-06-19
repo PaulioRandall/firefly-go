@@ -60,7 +60,7 @@ func TestInterpreter_1(t *testing.T) {
 	e := in.ExeErr()
 	require.Nil(t, e, "%+v", e)
 
-	// AND only the number is written to stdout
+	// AND only the number and a linefeed are written to stdout
 	exp := []byte("9\n")
 	require.Equal(t, exp, stdout.output)
 }
@@ -84,7 +84,33 @@ func TestInterpreter_2(t *testing.T) {
 	e := in.ExeErr()
 	require.Nil(t, e, "%+v", e)
 
-	// AND only the number is written to stdout
+	// AND only the number and a linefeed are written to stdout
 	exp := []byte("1\n2\n3\n")
+	require.Equal(t, exp, stdout.output)
+}
+
+func TestInterpreter_3(t *testing.T) {
+
+	// GIVEN a program with a single expression
+	p := ast.Program{
+		// 1 + 2
+		infix(ast.AstAdd,
+			num(1),
+			num(2),
+		),
+	}
+
+	// AND an interpreter initialised with the program
+	in, stdout, _ := setupInterpreter(p)
+
+	// WHEN the program is executed
+	in.Exe()
+
+	// THEN no error is set
+	e := in.ExeErr()
+	require.Nil(t, e, "%+v", e)
+
+	// AND only the expression result and a linefeed are written to stdout
+	exp := []byte("3\n")
 	require.Equal(t, exp, stdout.output)
 }

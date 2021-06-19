@@ -72,22 +72,92 @@ func (in *interpreter) continueExe() {
 }
 
 func (in *interpreter) exeAstNode(n ast.Node) {
-	switch n.Type() {
-	case ast.AstNumber:
-		in.exeAstNumber(n)
 
-	default:
-		in.bug("Unknown AST node")
-	}
-}
+	result, e := in.computeAstNode(n)
 
-func (in *interpreter) exeAstNumber(n ast.Node) {
-	num, ok := n.(ast.NumberNode)
-	if !ok {
-		in.bug("ast.NumberNode node expected")
+	if e != nil {
+		in.logBug(e)
 		return
 	}
-	in.stdPrintln(num.String())
+
+	in.stdPrintln(result.String())
+}
+
+func (in *interpreter) computeAstNode(n ast.Node) (ast.NumberNode, error) {
+
+	var zero ast.NumberNode
+	var result ast.NumberNode
+	var e error
+
+	switch n.Type() {
+	case ast.AstNumber:
+		result, e = in.computeAstNumber(n)
+
+	case ast.AstAdd, ast.AstSub, ast.AstMul, ast.AstDiv:
+		result, e = in.computeAstInfixExpr(n)
+
+	default:
+		e = in.newBug("Unknown AST node")
+	}
+
+	if e != nil {
+		return zero, e
+	}
+	return result, nil
+}
+
+func (in *interpreter) computeAstNumber(n ast.Node) (ast.NumberNode, error) {
+	num, ok := n.(ast.NumberNode)
+	if !ok {
+		return ast.NumberNode{}, in.newBug("ast.NumberNode node expected")
+	}
+	return num, nil
+}
+
+func (in *interpreter) computeAstInfixExpr(n ast.Node) (ast.NumberNode, error) {
+
+	var zero ast.NumberNode
+
+	ien, ok := n.(ast.InfixExprNode)
+	if !ok {
+		return zero, in.newBug("ast.InfixExprNode node expected")
+	}
+
+	var result ast.NumberNode
+	var e error
+
+	left, e := in.computeAstNode(ien.Left)
+	if e != nil {
+		return zero, e
+	}
+
+	right, e := in.computeAstNode(ien.Right)
+	if e != nil {
+		return zero, e
+	}
+
+	switch n.Type() {
+	case ast.AstAdd:
+		result.Value = left.Value + right.Value
+
+	case ast.AstSub:
+		result.Value = left.Value - right.Value
+
+	case ast.AstMul:
+		result.Value = left.Value * right.Value
+
+	case ast.AstDiv:
+		result.Value = left.Value / right.Value
+
+	default:
+		return zero, in.newBug("Unknown AST infix expresion node")
+	}
+
+	if e != nil {
+		return zero, e
+	}
+
+	return result, nil
 }
 
 func (in *interpreter) stdPrint(s string) {
@@ -118,9 +188,13 @@ func (in *interpreter) errPrintln(s string) {
 	}
 }
 
-func (in *interpreter) bug(msg string, args ...interface{}) {
+func (in *interpreter) newBug(msg string, args ...interface{}) error {
 	msg = "[BUG] " + msg
-	in.exeErr = newError(msg, args...)
+	return newError(msg, args...)
+}
+
+func (in *interpreter) logBug(e error) {
+	in.exeErr = e
 	in.errPrintln(in.exeErr.Error())
 }
 
