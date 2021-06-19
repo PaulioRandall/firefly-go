@@ -16,14 +16,14 @@ func lex(tk token.Token, v string) token.Lexeme {
 	}
 }
 
-func num(n int64) ast.Node {
+func num(n int64) ast.Number {
 	return ast.Number{
 		Value: n,
 	}
 }
 
-func infix(t ast.AST, left, right ast.Node) ast.Node {
-	return ast.InfixNode{
+func infix(t ast.AST, left, right ast.Node) ast.InfixExprNode {
+	return ast.InfixExprNode{
 		AST:   t,
 		Left:  left,
 		Right: right,
