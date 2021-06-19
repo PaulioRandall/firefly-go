@@ -17,8 +17,8 @@ func (w *mockWriter) Write(bytes []byte) (int, error) {
 	return len(bytes), nil
 }
 
-func num(n int64) ast.Number {
-	return ast.Number{
+func num(n int64) ast.NumberNode {
+	return ast.NumberNode{
 		Value: n,
 	}
 }

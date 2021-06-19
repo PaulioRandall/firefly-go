@@ -203,7 +203,7 @@ func parseNumber(num token.Lexeme) (ast.Node, error) {
 	if e != nil {
 		return nil, e
 	}
-	return ast.Number{Value: n}, nil
+	return ast.NumberNode{Value: n}, nil
 }
 
 func newError(msg string, args ...interface{}) error {

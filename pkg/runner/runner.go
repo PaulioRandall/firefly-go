@@ -82,9 +82,9 @@ func (in *interpreter) exeAstNode(n ast.Node) {
 }
 
 func (in *interpreter) exeAstNumber(n ast.Node) {
-	num, ok := n.(ast.Number)
+	num, ok := n.(ast.NumberNode)
 	if !ok {
-		in.bug("ast.Number node expected")
+		in.bug("ast.NumberNode node expected")
 		return
 	}
 	in.stdPrint(num.String())

@@ -16,8 +16,8 @@ func lex(tk token.Token, v string) token.Lexeme {
 	}
 }
 
-func num(n int64) ast.Number {
-	return ast.Number{
+func num(n int64) ast.NumberNode {
+	return ast.NumberNode{
 		Value: n,
 	}
 }
@@ -270,7 +270,10 @@ func TestParseAll_7(t *testing.T) {
 
 	// [8 + 4 / 3 * 3 - 2 * 5]
 	exp := []ast.Node{
-		infix(ast.AstSub, ex3, ex4),
+		infix(ast.AstSub,
+			ex3,
+			ex4,
+		),
 	}
 
 	// WHEN parsing all statements
