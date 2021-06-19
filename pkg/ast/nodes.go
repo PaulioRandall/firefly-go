@@ -6,6 +6,8 @@ import (
 )
 
 type (
+	Program []Node
+
 	Node interface {
 		Type() AST
 		String() string

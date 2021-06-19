@@ -25,12 +25,13 @@ DEV_SCROLL="./scrolls/dev.ff"
 
 printUsage() {
   println "Usage:"
-  println "\t" "./godo [-noclear] [help]    " "\t" "Show usage"
-  println "\t" "./godo [-noclear] clean     " "\t" "Clean Go caches and build folder"
-  println "\t" "./godo [-noclear] build     " "\t" "Build -> format"
-  println "\t" "./godo [-noclear] test | vet" "\t" "Build -> format -> test -> vet"
-  println "\t" "./godo [-noclear] dev       " "\t" "Build -> format -> test -> vet -> exe (dev scroll)"
-  println "\t" "./godo [-noclear] prod      " "\t" "Build -> format -> test -> vet -> exe"
+  println "\t" "./godo [-noclear] [help]" "\t" "Show usage"
+  println "\t" "./godo [-noclear] clean " "\t" "Clean Go caches and build folder"
+  println "\t" "./godo [-noclear] build " "\t" "Build -> format"
+  println "\t" "./godo [-noclear] test  " "\t" "Build -> format -> test"
+  println "\t" "./godo [-noclear] test  " "\t" "Build -> format -> test -> vet"
+  println "\t" "./godo [-noclear] dev   " "\t" "Build -> format -> test -> vet -> exe (dev scroll)"
+  println "\t" "./godo [-noclear] prod  " "\t" "Build -> format -> test -> vet -> exe"
   println "Option:"
   println "\t" "'-noclear'" "\t" "skips screen clearing"
 }
@@ -103,7 +104,15 @@ if [[ "$1" == "build" ]]; then
   exit 0
 fi
 
-if [[ "$1" == "test" || "$1" == "vet" ]]; then
+if [[ "$1" == "test" ]]; then
+  setup
+  goBuild
+  goFmt
+  goTest
+  exit 0
+fi
+
+if [[ "$1" == "vet" ]]; then
   setup
   goBuild
   goFmt
