@@ -114,3 +114,36 @@ func TestInterpreter_3(t *testing.T) {
 	exp := []byte("3\n")
 	require.Equal(t, exp, stdout.output)
 }
+
+func TestInterpreter_4(t *testing.T) {
+
+	// GIVEN a program with a complex expression
+	p := ast.Program{
+		// 8 + 6 / 3 * 5 - 4 * 3
+		// (8 + ((6 / 3) * 5)) - (4 * 3)
+		infix(ast.AstSub,
+			infix(ast.AstAdd,
+				num(8),
+				infix(ast.AstMul,
+					infix(ast.AstDiv, num(6), num(3)), // =2
+					num(5),
+				), // =10
+			), // =18
+			infix(ast.AstMul, num(4), num(3)), // =12
+		), // =6
+	}
+
+	// AND an interpreter initialised with the program
+	in, stdout, _ := setupInterpreter(p)
+
+	// WHEN the program is executed
+	in.Exe()
+
+	// THEN no error is set
+	e := in.ExeErr()
+	require.Nil(t, e, "%+v", e)
+
+	// AND only the expression result and a linefeed are written to stdout
+	exp := []byte("6\n")
+	require.Equal(t, exp, stdout.output)
+}
