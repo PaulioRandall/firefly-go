@@ -11,6 +11,7 @@ type (
 	Node interface {
 		Type() AST
 		String() string
+		Debug() string
 	}
 
 	Number struct{ Value int64 }
@@ -26,13 +27,21 @@ func (n Number) Type() AST    { return AstNumber }
 func (n InfixNode) Type() AST { return n.AST }
 
 func (n Number) String() string {
-	sb := &strings.Builder{}
-	writeText(sb, 0, n.Type().String())
-	writeLine(sb, 0, strconv.FormatInt(n.Value, 10))
-	return sb.String()
+	return strconv.FormatInt(n.Value, 10)
 }
 
 func (n InfixNode) String() string {
+	// TODO
+	panic("Not yet implemented!")
+}
+
+func (n Number) Debug() string {
+	sb := &strings.Builder{}
+	writeText(sb, 0, n.Type().String()+" "+n.String())
+	return sb.String()
+}
+
+func (n InfixNode) Debug() string {
 	sb := &strings.Builder{}
 
 	writeLine(sb, 0, n.AST.String())
