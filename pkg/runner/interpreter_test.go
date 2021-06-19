@@ -43,10 +43,6 @@ func setupInterpreter(p ast.Program) (Interpreter, *mockWriter, *mockWriter) {
 	return in, std, err
 }
 
-func Test_auto_fail(t *testing.T) {
-	require.Fail(t, "Failed it!")
-}
-
 func TestInterpreter_1(t *testing.T) {
 
 	// GIVEN a program that prints a number
