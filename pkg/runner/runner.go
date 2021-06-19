@@ -72,19 +72,15 @@ func (in *interpreter) continueExe() {
 }
 
 func (in *interpreter) exeAstNode(n ast.Node) {
-
 	result, e := in.computeAstNode(n)
-
 	if e != nil {
 		in.logBug(e)
 		return
 	}
-
 	in.stdPrintln(result.String())
 }
 
 func (in *interpreter) computeAstNode(n ast.Node) (ast.NumberNode, error) {
-
 	var zero ast.NumberNode
 	var result ast.NumberNode
 	var e error
@@ -93,8 +89,17 @@ func (in *interpreter) computeAstNode(n ast.Node) (ast.NumberNode, error) {
 	case ast.AstNumber:
 		result, e = in.computeAstNumber(n)
 
-	case ast.AstAdd, ast.AstSub, ast.AstMul, ast.AstDiv:
-		result, e = in.computeAstInfixExpr(n)
+	case ast.AstAdd:
+		result, e = in.computeAstInfixExpr(n, addNumbers)
+
+	case ast.AstSub:
+		result, e = in.computeAstInfixExpr(n, subNumbers)
+
+	case ast.AstMul:
+		result, e = in.computeAstInfixExpr(n, mulNumbers)
+
+	case ast.AstDiv:
+		result, e = in.computeAstInfixExpr(n, divNumbers)
 
 	default:
 		e = in.newBug("Unknown AST node")
@@ -114,8 +119,7 @@ func (in *interpreter) computeAstNumber(n ast.Node) (ast.NumberNode, error) {
 	return num, nil
 }
 
-func (in *interpreter) computeAstInfixExpr(n ast.Node) (ast.NumberNode, error) {
-
+func (in *interpreter) computeAstInfixExpr(n ast.Node, compute infixExprComputer) (ast.NumberNode, error) {
 	var zero ast.NumberNode
 
 	ien, ok := n.(ast.InfixExprNode)
@@ -123,41 +127,53 @@ func (in *interpreter) computeAstInfixExpr(n ast.Node) (ast.NumberNode, error) {
 		return zero, in.newBug("ast.InfixExprNode node expected")
 	}
 
-	var result ast.NumberNode
-	var e error
-
-	left, e := in.computeAstNode(ien.Left)
+	left, right, e := in.computeInfixExpr(ien)
 	if e != nil {
 		return zero, e
 	}
 
-	right, e := in.computeAstNode(ien.Right)
-	if e != nil {
-		return zero, e
-	}
-
-	switch n.Type() {
-	case ast.AstAdd:
-		result.Value = left.Value + right.Value
-
-	case ast.AstSub:
-		result.Value = left.Value - right.Value
-
-	case ast.AstMul:
-		result.Value = left.Value * right.Value
-
-	case ast.AstDiv:
-		result.Value = left.Value / right.Value
-
-	default:
-		return zero, in.newBug("Unknown AST infix expresion node")
-	}
-
-	if e != nil {
-		return zero, e
-	}
-
+	result := compute(left, right)
 	return result, nil
+}
+
+func (in *interpreter) computeInfixExpr(n ast.InfixExprNode) (left, right ast.NumberNode, e error) {
+	var zero ast.NumberNode
+
+	left, e = in.computeAstNode(n.Left)
+	if e != nil {
+		return zero, zero, e
+	}
+
+	right, e = in.computeAstNode(n.Right)
+	if e != nil {
+		return zero, zero, e
+	}
+
+	return left, right, nil
+}
+
+type infixExprComputer func(left, right ast.NumberNode) ast.NumberNode
+
+func addNumbers(left, right ast.NumberNode) ast.NumberNode {
+	return newNumber(left.Value + right.Value)
+}
+
+func subNumbers(left, right ast.NumberNode) ast.NumberNode {
+	return newNumber(left.Value - right.Value)
+}
+
+func mulNumbers(left, right ast.NumberNode) ast.NumberNode {
+	return newNumber(left.Value * right.Value)
+}
+
+func divNumbers(left, right ast.NumberNode) ast.NumberNode {
+	return newNumber(left.Value / right.Value)
+}
+
+func newNumber(n int64) ast.NumberNode {
+	return ast.NumberNode{
+		Value: n,
+	}
 }
 
 func (in *interpreter) stdPrint(s string) {
