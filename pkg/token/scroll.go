@@ -45,8 +45,9 @@ func (ssr *stringScrollReader) Read() (rune, error) {
 }
 
 func (ssr *stringScrollReader) PutBack(ru rune) error {
-	remaining := ssr.text[ssr.idx:]
-	alreadyRead := append(ssr.text[:ssr.idx], ru)
-	ssr.text = append(alreadyRead, remaining...)
+	head := ssr.text[:ssr.idx]
+	tail := ssr.text[ssr.idx:]
+	tail = append([]rune{ru}, tail...)
+	ssr.text = append(head, tail...)
 	return nil
 }

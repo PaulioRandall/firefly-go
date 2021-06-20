@@ -3,6 +3,7 @@ package scanner
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"unicode"
 
 	"github.com/PaulioRandall/firefly-go/pkg/token"
@@ -60,53 +61,80 @@ func scan(sr token.ScrollReader) ParseToken {
 
 func parseToken(sr token.ScrollReader) (token.Lexeme, error) {
 
+	var lx token.Lexeme
+	var e error
+
 	ru, e := sr.Read()
 	if e != nil {
 		return token.Lexeme{}, e
 	}
 
-	var lx token.Lexeme
-
 	switch {
 	case isNewline(ru):
-		lx = lexeme(token.TokenNewline, ru)
+		lx = lexemeRune(token.TokenNewline, ru)
 	case isSpace(ru):
-		lx = lexeme(token.TokenSpace, ru)
+		lx = lexemeRune(token.TokenSpace, ru)
 	case isNumber(ru):
-		lx = lexeme(token.TokenNumber, ru)
+		lx, e = scanNumber(sr, ru)
 	case ru == '+':
-		lx = lexeme(token.TokenAdd, ru)
+		lx = lexemeRune(token.TokenAdd, ru)
 	case ru == '-':
-		lx = lexeme(token.TokenSub, ru)
+		lx = lexemeRune(token.TokenSub, ru)
 	case ru == '*':
-		lx = lexeme(token.TokenMul, ru)
+		lx = lexemeRune(token.TokenMul, ru)
 	case ru == '/':
-		lx = lexeme(token.TokenDiv, ru)
+		lx = lexemeRune(token.TokenDiv, ru)
 	default:
-		return lx, newError("Unknown token '%v'", string(ru))
+		e = newError("Unknown token '%v'", string(ru))
+	}
+
+	if e != nil {
+		return token.Lexeme{}, e
 	}
 
 	return lx, nil
 }
 
-func lexeme(tk token.Token, ru rune) token.Lexeme {
+func lexemeRune(tk token.Token, ru rune) token.Lexeme {
+	return lexemeStr(tk, string(ru))
+}
+
+func lexemeStr(tk token.Token, v string) token.Lexeme {
 	return token.Lexeme{
 		Token: tk,
-		Value: string(ru),
+		Value: v,
 	}
 }
 
-func isNewline(ru rune) bool {
-	return ru == '\n'
+func scanNumber(sr token.ScrollReader, first rune) (token.Lexeme, error) {
+
+	if !sr.More() {
+		return lexemeRune(token.TokenNumber, first), nil
+	}
+
+	sb := strings.Builder{}
+	sb.WriteRune(first)
+
+	for sr.More() {
+		ru, e := sr.Read()
+		if e != nil {
+			return token.Lexeme{}, e
+		}
+
+		if !isNumber(ru) {
+			sr.PutBack(ru)
+			break
+		}
+
+		sb.WriteRune(ru)
+	}
+
+	return lexemeStr(token.TokenNumber, sb.String()), nil
 }
 
-func isSpace(ru rune) bool {
-	return unicode.IsSpace(ru)
-}
-
-func isNumber(ru rune) bool {
-	return unicode.IsDigit(ru)
-}
+func isNewline(ru rune) bool { return ru == '\n' }
+func isSpace(ru rune) bool   { return unicode.IsSpace(ru) && ru != '\n' }
+func isNumber(ru rune) bool  { return unicode.IsDigit(ru) }
 
 func newError(msg string, args ...interface{}) error {
 	msg = fmt.Sprintf(msg, args...)

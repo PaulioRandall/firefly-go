@@ -37,14 +37,13 @@ func TestScanAll_1(t *testing.T) {
 	happyTest(t, in, exp)
 }
 
-/*
 func TestScanAll_2(t *testing.T) {
 
 	// GIVEN a multi-digit number
-	in := []rune("99")
+	in := []rune("999")
 
 	exp := token.Statement{
-		lex(token.TokenNumber, "99"),
+		lex(token.TokenNumber, "999"),
 	}
 
 	// WHEN scanning all tokens
@@ -52,7 +51,6 @@ func TestScanAll_2(t *testing.T) {
 	// AND the output should match the 'exp'
 	happyTest(t, in, exp)
 }
-*/
 
 func TestScanAll_3(t *testing.T) {
 
