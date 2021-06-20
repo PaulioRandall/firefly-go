@@ -4,6 +4,7 @@ type AST int
 
 const (
 	AstUndefined AST = iota
+	AstEmpty
 	AstNumber
 	AstAdd
 	AstSub
@@ -12,6 +13,7 @@ const (
 )
 
 var astNames = map[AST]string{
+	AstEmpty:  "EMPTY",
 	AstNumber: "NUMBER",
 	AstAdd:    "ADD",
 	AstSub:    "SUBTRACT",

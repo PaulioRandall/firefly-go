@@ -72,12 +72,17 @@ func (in *interpreter) continueExe() {
 }
 
 func (in *interpreter) exeStmt(n ast.Node) {
-	result, e := computeNode(n)
+	if n.Type() == ast.AstEmpty {
+		in.println("")
+		return
+	}
 
+	result, e := computeNode(n)
 	if e != nil {
 		in.exeErr = e
 		in.printlnErr(in.exeErr.Error())
-	} else {
-		in.println(result.String())
+		return
 	}
+
+	in.println(result.String())
 }

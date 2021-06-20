@@ -43,6 +43,28 @@ func setupInterpreter(p ast.Program) (Interpreter, *mockWriter, *mockWriter) {
 	return in, std, err
 }
 
+func TestInterpreter_0(t *testing.T) {
+
+	// GIVEN a program with an empty statement
+	p := ast.Program{
+		ast.EmptyNode{},
+	}
+
+	// AND an interpreter initialised with the program
+	in, stdout, _ := setupInterpreter(p)
+
+	// WHEN the program is executed
+	in.Exe()
+
+	// THEN no error is set
+	e := in.ExeErr()
+	require.Nil(t, e, "%+v", e)
+
+	// AND only a linefeed is written to stdout
+	exp := []byte("\n")
+	require.Equal(t, exp, stdout.output)
+}
+
 func TestInterpreter_1(t *testing.T) {
 
 	// GIVEN a program that prints a number

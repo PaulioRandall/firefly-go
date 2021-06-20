@@ -37,6 +37,22 @@ func infix(t ast.AST, left, right ast.Node) ast.InfixExprNode {
 	}
 }
 
+func TestParseAll_0(t *testing.T) {
+
+	// GIVEN an empty statement
+	p := token.Program{
+		token.Statement{},
+	}
+
+	exp := ast.Program{
+		ast.EmptyNode{},
+	}
+
+	// WHEN parsing all statements
+	// THEN an empty node is returned without error
+	happyTest(t, p, exp)
+}
+
 func TestParseAll_1(t *testing.T) {
 
 	// GIVEN a single digit number

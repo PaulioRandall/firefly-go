@@ -66,6 +66,9 @@ func nextParser(sr token.StmtReader) StmtParser {
 // ParseStmt parses the supplied statement into an AST.
 func ParseStmt(stmt token.Statement) (n ast.Node, e error) {
 	lr := token.NewSliceLexemeReader(stmt)
+	if !lr.More() {
+		return ast.EmptyNode{}, nil
+	}
 	return expectExpr(lr, 0)
 }
 

@@ -14,6 +14,7 @@ type (
 		Debug() string
 	}
 
+	EmptyNode  struct{}
 	NumberNode struct{ Value int64 }
 
 	InfixExprNode struct {
@@ -23,22 +24,24 @@ type (
 	}
 )
 
+func (n EmptyNode) Type() AST     { return AstEmpty }
 func (n NumberNode) Type() AST    { return AstNumber }
 func (n InfixExprNode) Type() AST { return n.AST }
 
-func (n NumberNode) String() string {
-	return strconv.FormatInt(n.Value, 10)
-}
+func (n EmptyNode) String() string  { return "" }
+func (n NumberNode) String() string { return strconv.FormatInt(n.Value, 10) }
 
 func (n InfixExprNode) String() string {
 	// TODO
 	panic("Not yet implemented!")
 }
 
+func (n EmptyNode) Debug() string {
+	return n.Type().String()
+}
+
 func (n NumberNode) Debug() string {
-	sb := &strings.Builder{}
-	writeText(sb, 0, n.Type().String()+" "+n.String())
-	return sb.String()
+	return n.Type().String() + " " + n.String()
 }
 
 func (n InfixExprNode) Debug() string {
