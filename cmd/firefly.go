@@ -11,6 +11,7 @@ Hello, firefly!
 
 NEXT: Parenthesis
 NEXT: Multi-digit numbers
+NEXT: Empty statements
 NEXT: Update main to execute scroll
 NEXT: Add godoc support to godo
 NEXT: Write documentation
