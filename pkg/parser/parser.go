@@ -23,24 +23,24 @@ func Begin(sr token.StmtReader) StmtParser {
 }
 
 // ParseAll parses all statement in the statement reader.
-func ParseAll(sr token.StmtReader) ([]ast.Node, error) {
+func ParseAll(sr token.StmtReader) (ast.Program, error) {
 
 	var (
-		trees []ast.Node
-		tree  ast.Node
-		f     = Begin(sr)
-		e     error
+		p ast.Program
+		n ast.Node
+		f = Begin(sr)
+		e error
 	)
 
 	for f != nil {
-		tree, f, e = f()
+		n, f, e = f()
 		if e != nil {
 			return nil, e
 		}
-		trees = append(trees, tree)
+		p = append(p, n)
 	}
 
-	return trees, nil
+	return p, nil
 }
 
 func nextParser(sr token.StmtReader) StmtParser {

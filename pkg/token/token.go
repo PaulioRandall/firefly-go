@@ -48,3 +48,7 @@ func (tk Token) Precedence() int {
 		return 0
 	}
 }
+
+func (tk Token) IsRedundant() bool {
+	return tk == TokenSpace
+}

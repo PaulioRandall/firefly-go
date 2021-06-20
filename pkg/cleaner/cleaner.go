@@ -59,12 +59,9 @@ func clean(sr token.StmtReader) NextStatement {
 func CleanStmt(unclean token.Statement) token.Statement {
 
 	cleaned := token.Statement{}
-	isRedundant := func(tk token.Token) bool {
-		return tk == token.TokenSpace
-	}
 
 	for _, lx := range unclean {
-		if !isRedundant(lx.Token) {
+		if !lx.Token.IsRedundant() {
 			cleaned = append(cleaned, lx)
 		}
 	}
