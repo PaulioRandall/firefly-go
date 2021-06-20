@@ -52,3 +52,7 @@ func (tk Token) Precedence() int {
 func (tk Token) IsRedundant() bool {
 	return tk == TokenSpace
 }
+
+func (tk Token) IsCloser() bool {
+	return tk == TokenParenClose
+}

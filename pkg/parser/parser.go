@@ -1,9 +1,9 @@
 package parser
 
 import (
-	"errors"
 	"fmt"
-	"strconv"
+
+	"github.com/go-errors/errors"
 
 	"github.com/PaulioRandall/firefly-go/pkg/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/token"
@@ -64,149 +64,12 @@ func nextParser(sr token.StmtReader) StmtParser {
 }
 
 // ParseStmt parses the supplied statement into an AST.
-func ParseStmt(stmt token.Statement) (ast.Node, error) {
-
+func ParseStmt(stmt token.Statement) (n ast.Node, e error) {
 	lr := token.NewSliceLexemeReader(stmt)
-
-	first, e := lr.Read()
-	if e != nil {
-		return nil, e
-	}
-
-	switch first.Token {
-	case token.TokenNumber:
-		return beginsWithNumber(lr, first)
-
-	default:
-		return nil, newError("Unknown Token '%s'", first.Token.String())
-	}
-}
-
-func beginsWithNumber(lr token.LexemeReader, first token.Lexeme) (ast.Node, error) {
-	node, e := parseNumber(first)
-	if e != nil {
-		return nil, e
-	}
-	return parseComplexExpr(lr, node)
-}
-
-func parseComplexExpr(lr token.LexemeReader, left ast.Node) (ast.Node, error) {
-
-	if !lr.More() {
-		return left, nil
-	}
-
-	node, e := parseExpr(lr, left, 0)
-	if e != nil {
-		return nil, e
-	}
-
-	for lr.More() {
-		node, e = parseExpr(lr, node, 0)
-		if e != nil {
-			return nil, e
-		}
-	}
-
-	return node, nil
-}
-
-func parseExpr(lr token.LexemeReader, left ast.Node, leftPriority int) (ast.Node, error) {
-
-	op, e := lr.Read()
-	if e != nil {
-		return nil, e
-	}
-
-	if leftPriority >= op.Precedence() {
-		lr.PutBack(op)
-		return left, nil
-	}
-
-	right, e := parseExprRight(lr, op.Precedence())
-	if e != nil {
-		return nil, e
-	}
-
-	if !lr.More() {
-		return buildExpr(op, left, right)
-	}
-
-	right, e = parseExpr(lr, right, op.Precedence())
-	if e != nil {
-		return nil, e
-	}
-
-	return buildExpr(op, left, right)
-}
-
-func parseExprRight(lr token.LexemeReader, leftPriority int) (ast.Node, error) {
-	n, e := expectNumber(lr)
-	if e != nil {
-		return nil, e
-	}
-
-	if !lr.More() {
-		return n, nil
-	}
-
-	return parseExpr(lr, n, leftPriority)
-}
-
-func buildExpr(op token.Lexeme, left, right ast.Node) (ast.Node, error) {
-
-	n := ast.InfixExprNode{
-		AST:   mapInfixTokenToAST(op.Token),
-		Left:  left,
-		Right: right,
-	}
-
-	if n.AST == ast.AstUndefined {
-		return nil, newError("Unknown operation '%s'", op.Token.String())
-	}
-
-	return n, nil
-}
-
-func mapInfixTokenToAST(tk token.Token) ast.AST {
-	switch tk {
-	case token.TokenAdd:
-		return ast.AstAdd
-
-	case token.TokenSub:
-		return ast.AstSub
-
-	case token.TokenMul:
-		return ast.AstMul
-
-	case token.TokenDiv:
-		return ast.AstDiv
-
-	default:
-		return ast.AstUndefined
-	}
-}
-
-func expectNumber(lr token.LexemeReader) (ast.Node, error) {
-	lx, e := lr.Read()
-	if e != nil {
-		return nil, e
-	}
-	if lx.Token != token.TokenNumber {
-		return nil, newError("Expected number, got '%s'", lx.Token.String())
-	}
-	return parseNumber(lx)
-}
-
-func parseNumber(num token.Lexeme) (ast.Node, error) {
-	n, e := strconv.ParseInt(num.Value, 10, 64)
-	if e != nil {
-		return nil, e
-	}
-	return ast.NumberNode{Value: n}, nil
+	return expectExpr(lr, 0)
 }
 
 func newError(msg string, args ...interface{}) error {
-	msg = fmt.Sprintf(msg, args...)
-	return errors.New(msg)
+	e := fmt.Errorf(msg, args...)
+	return errors.Wrap(e, 1)
 }
