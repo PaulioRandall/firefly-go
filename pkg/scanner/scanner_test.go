@@ -70,7 +70,23 @@ func TestScanAll_3(t *testing.T) {
 	doTest("/", token.TokenDiv)
 }
 
-func TestScanAll_90(t *testing.T) {
+func TestScanAll_4(t *testing.T) {
+
+	// GIVEN parentheses
+	// WHEN scanning all tokens
+	// THEN the parentheses should be parsed without error
+	// AND the output should match the 'exp'
+	doTest := func(op string, tk token.Token) {
+		in := []rune(op)
+		exp := token.Statement{lex(tk, op)}
+		happyTest(t, in, exp)
+	}
+
+	doTest("(", token.TokenParenOpen)
+	doTest(")", token.TokenParenClose)
+}
+
+func TestScanAll_100(t *testing.T) {
 
 	// GIVEN an long expression
 	sr := token.NewStringScrollReader(
@@ -105,7 +121,7 @@ func TestScanAll_90(t *testing.T) {
 	require.Equal(t, exp, act)
 }
 
-func TestScanAll_91(t *testing.T) {
+func TestScanAll_101(t *testing.T) {
 
 	// GIVEN multiple statements
 	sr := token.NewStringScrollReader(
@@ -129,7 +145,7 @@ func TestScanAll_91(t *testing.T) {
 	require.Equal(t, exp, act)
 }
 
-func TestScanAll_92(t *testing.T) {
+func TestScanAll_102(t *testing.T) {
 
 	// GIVEN firefly code containing an invalid token
 	sr := token.NewStringScrollReader(

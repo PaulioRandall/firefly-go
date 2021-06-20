@@ -7,6 +7,8 @@ const (
 	TokenUndefined Token = iota
 	TokenNewline
 	TokenSpace
+	TokenParenOpen
+	TokenParenClose
 	TokenNumber
 	TokenAdd
 	TokenSub
@@ -15,13 +17,15 @@ const (
 )
 
 var tokenNames = map[Token]string{
-	TokenNewline: "NEWLINE",
-	TokenSpace:   "SPACE",
-	TokenNumber:  "NUMBER",
-	TokenAdd:     "ADD",
-	TokenSub:     "SUBTRACT",
-	TokenMul:     "MULTIPLY",
-	TokenDiv:     "DIVIDE",
+	TokenNewline:    "NEWLINE",
+	TokenSpace:      "SPACE",
+	TokenParenOpen:  "PAREN_OPEN",
+	TokenParenClose: "PAREN_CLOSE",
+	TokenNumber:     "NUMBER",
+	TokenAdd:        "ADD",
+	TokenSub:        "SUBTRACT",
+	TokenMul:        "MULTIPLY",
+	TokenDiv:        "DIVIDE",
 }
 
 // String returns the string representation of the token.
@@ -31,6 +35,9 @@ func (tk Token) String() string {
 
 func (tk Token) Precedence() int {
 	switch tk {
+	case TokenParenOpen, TokenParenClose:
+		return 3
+
 	case TokenMul, TokenDiv:
 		return 2
 
