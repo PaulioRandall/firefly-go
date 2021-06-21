@@ -14,22 +14,15 @@ import (
 // the function will be nil.
 type ParseToken func() (token.Lexeme, ParseToken, error)
 
-// begin returns a new ParseToken function.
-func begin(sr token.ScrollReader) ParseToken {
-	if sr.More() {
-		return scan(sr)
-	}
-	return nil
-}
-
-// ScanAll scans all remaining tokens as a slice.
-func ScanAll(sr token.ScrollReader) (token.Statement, error) {
+// ScanAll scans all remaining tokens from the Scroll reader and returns them
+// as a slice.
+func ScanAll(sr token.ScrollReader) ([]token.Lexeme, error) {
 
 	var (
-		stmt token.Statement
-		tk   token.Lexeme
-		f    = begin(sr)
-		e    error
+		tks []token.Lexeme
+		tk  token.Lexeme
+		f   = Begin(sr)
+		e   error
 	)
 
 	for f != nil {
@@ -37,10 +30,18 @@ func ScanAll(sr token.ScrollReader) (token.Statement, error) {
 		if e != nil {
 			return nil, e
 		}
-		stmt = append(stmt, tk)
+		tks = append(tks, tk)
 	}
 
-	return stmt, nil
+	return tks, nil
+}
+
+// Begin returns a new function from which to begin parsing tokens.
+func Begin(sr token.ScrollReader) ParseToken {
+	if sr.More() {
+		return scan(sr)
+	}
+	return nil
 }
 
 func scan(sr token.ScrollReader) ParseToken {
