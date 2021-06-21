@@ -7,8 +7,16 @@ import (
 
 func expectExpr(lr token.LexemeReader, leftPriority int) (ast.Node, error) {
 
-	var expr ast.Node
-	var e error
+	expr, e := expectTerm(lr)
+
+	if e != nil {
+		return nil, e
+	}
+
+	return parseInfix(lr, expr, leftPriority)
+}
+
+func expectTerm(lr token.LexemeReader) (ast.Node, error) {
 
 	lx, e := lr.Read()
 	if e != nil {
@@ -17,41 +25,31 @@ func expectExpr(lr token.LexemeReader, leftPriority int) (ast.Node, error) {
 
 	switch lx.Token {
 	case token.TokenNumber:
-		expr, e = parseNumber(lx)
+		return parseNumber(lx)
 
 	case token.TokenParenOpen:
-		expr, e = parseParenExpr(lr, lx)
+		return parseParenExpr(lr, lx)
 
 	case token.TokenParenClose:
-		e = newError("Unexpected closing parenthesis")
+		return nil, newError("Unexpected closing parenthesis")
 
 	default:
-		e = newError("Unexpected Token '%s'", lx.Token.String())
+		return nil, newError("Unexpected Token '%s'", lx.Token.String())
 	}
-
-	if e != nil {
-		return nil, e
-	}
-
-	return parseInfixExpr(lr, expr, leftPriority)
 }
 
-func parseInfixExpr(lr token.LexemeReader, left ast.Node, leftPriority int) (ast.Node, error) {
+func parseInfix(lr token.LexemeReader, left ast.Node, leftPriority int) (ast.Node, error) {
 
 	if !lr.More() {
 		return left, nil
 	}
 
-	op, e := lr.Read()
+	op, leftAssoc, e := leftHasPriority(lr, leftPriority)
 	if e != nil {
 		return nil, e
 	}
 
-	if op.IsCloser() || leftPriority >= op.Precedence() {
-		e = lr.PutBack(op)
-		if e != nil {
-			return nil, e
-		}
+	if leftAssoc {
 		return left, nil
 	}
 
@@ -65,7 +63,27 @@ func parseInfixExpr(lr token.LexemeReader, left ast.Node, leftPriority int) (ast
 		return nil, e
 	}
 
-	return parseInfixExpr(lr, n, leftPriority)
+	return parseInfix(lr, n, leftPriority)
+}
+
+func leftHasPriority(lr token.LexemeReader, leftPriority int) (token.Lexeme, bool, error) {
+	var zero token.Lexeme
+
+	op, e := lr.Read()
+	if e != nil {
+		return zero, false, e
+	}
+
+	if !op.Token.IsOperator() {
+		return zero, false, newError("Expected operator, got '%s'", op.Token.String())
+	}
+
+	if op.IsCloser() || leftPriority >= op.Precedence() {
+		e = lr.PutBack(op)
+		return zero, true, e
+	}
+
+	return op, false, nil
 }
 
 func buildExpr(op token.Lexeme, left, right ast.Node) (ast.Node, error) {

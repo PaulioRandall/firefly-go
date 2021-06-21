@@ -64,12 +64,37 @@ func nextParser(sr token.StmtReader) StmtParser {
 }
 
 // ParseStmt parses the supplied statement into an AST.
-func ParseStmt(stmt token.Statement) (n ast.Node, e error) {
+func ParseStmt(stmt token.Statement) (ast.Node, error) {
+
 	lr := token.NewSliceLexemeReader(stmt)
 	if !lr.More() {
 		return ast.EmptyNode{}, nil
 	}
-	return expectExpr(lr, 0)
+
+	n, e := expectExpr(lr, 0)
+	if e != nil {
+		return nil, e
+	}
+
+	e = validateNoMoreTokens(lr)
+	if e != nil {
+		return nil, e
+	}
+
+	return n, nil
+}
+
+func validateNoMoreTokens(lr token.LexemeReader) error {
+	if !lr.More() {
+		return nil
+	}
+
+	lx, e := lr.Read()
+	if e != nil {
+		return e
+	}
+
+	return newError("Unexpected dangling token '%s'", lx.Token.String())
 }
 
 func newError(msg string, args ...interface{}) error {

@@ -16,6 +16,12 @@ func happyTest(t *testing.T, p token.Program, exp ast.Program) {
 	require.Equal(t, exp, act)
 }
 
+func unhappyTest(t *testing.T, p token.Program) {
+	pr := token.NewProgramReader(p)
+	_, e := ParseAll(pr)
+	require.NotNil(t, e, "Expected error")
+}
+
 func lex(tk token.Token, v string) token.Lexeme {
 	return token.Lexeme{
 		Token: tk,
@@ -312,4 +318,117 @@ func TestParseAll_9(t *testing.T) {
 	// THEN the expression is parsed
 	// AND returned without error
 	happyTest(t, p, exp)
+}
+
+func TestParseAll_10(t *testing.T) {
+
+	// GIVEN an expression with two consecutive operators
+	// 1 + + 2
+	p := token.Program{
+		token.Statement{
+			lex(token.TokenNumber, "1"),
+			lex(token.TokenAdd, "+"),
+			lex(token.TokenAdd, "+"),
+			lex(token.TokenNumber, "2"),
+		},
+	}
+
+	// WHEN parsing all statements
+	// THEN an error is returned
+	unhappyTest(t, p)
+}
+
+func TestParseAll_11(t *testing.T) {
+
+	// GIVEN an expression with two consecutive operands
+	// 1 2
+	p := token.Program{
+		token.Statement{
+			lex(token.TokenNumber, "1"),
+			lex(token.TokenNumber, "2"),
+		},
+	}
+
+	// WHEN parsing all statements
+	// THEN an error is returned
+	unhappyTest(t, p)
+}
+
+func TestParseAll_12(t *testing.T) {
+
+	// GIVEN an expression that begins with an invalid operator
+	// +
+	p := token.Program{
+		token.Statement{
+			lex(token.TokenAdd, "+"),
+		},
+	}
+
+	// WHEN parsing all statements
+	// THEN an error is returned
+	unhappyTest(t, p)
+}
+
+func TestParseAll_13(t *testing.T) {
+
+	// GIVEN an expression that ends with an invalid operator
+	// 1 +
+	p := token.Program{
+		token.Statement{
+			lex(token.TokenNumber, "1"),
+			lex(token.TokenAdd, "+"),
+		},
+	}
+
+	// WHEN parsing all statements
+	// THEN an error is returned
+	unhappyTest(t, p)
+}
+
+func TestParseAll_14(t *testing.T) {
+
+	// GIVEN an expression without closing parenthesis
+	// (1
+	p := token.Program{
+		token.Statement{
+			lex(token.TokenParenOpen, "("),
+			lex(token.TokenNumber, "1"),
+		},
+	}
+
+	// WHEN parsing all statements
+	// THEN an error is returned
+	unhappyTest(t, p)
+}
+
+func TestParseAll_15(t *testing.T) {
+
+	// GIVEN an expression with a closing parenthesis but now open one
+	// 1)
+	p := token.Program{
+		token.Statement{
+			lex(token.TokenNumber, "1"),
+			lex(token.TokenParenClose, ")"),
+		},
+	}
+
+	// WHEN parsing all statements
+	// THEN an error is returned
+	unhappyTest(t, p)
+}
+
+func TestParseAll_16(t *testing.T) {
+
+	// GIVEN an expression with empty parentheses
+	// ()
+	p := token.Program{
+		token.Statement{
+			lex(token.TokenParenOpen, "("),
+			lex(token.TokenParenClose, ")"),
+		},
+	}
+
+	// WHEN parsing all statements
+	// THEN an error is returned
+	unhappyTest(t, p)
 }

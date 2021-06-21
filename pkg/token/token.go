@@ -56,3 +56,14 @@ func (tk Token) IsRedundant() bool {
 func (tk Token) IsCloser() bool {
 	return tk == TokenParenClose
 }
+
+func (tk Token) IsOperator() bool {
+	switch tk {
+	case TokenParenOpen, TokenParenClose:
+		fallthrough
+	case TokenAdd, TokenSub, TokenMul, TokenDiv:
+		return true
+	default:
+		return false
+	}
+}
