@@ -10,7 +10,6 @@ func main() {
 Hello, firefly!
 
 NEXT: Do unhappy tests for parser
-NEXT: Implement InfixExprNode.String()
 NEXT: Update main to execute scroll
 NEXT: Add godoc support to godo
 NEXT: Write documentation

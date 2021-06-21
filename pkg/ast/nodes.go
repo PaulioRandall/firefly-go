@@ -30,10 +30,11 @@ func (n InfixNode) Type() AST  { return n.AST }
 
 func (n EmptyNode) String() string  { return "" }
 func (n NumberNode) String() string { return strconv.FormatInt(n.Value, 10) }
-
 func (n InfixNode) String() string {
-	// TODO
-	panic("Not yet implemented!")
+	op := n.AST.String()
+	left := n.Left.String()
+	right := n.Right.String()
+	return "(" + left + " " + op + " " + right + ")"
 }
 
 func (n EmptyNode) Debug() string {
