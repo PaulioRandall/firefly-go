@@ -403,7 +403,7 @@ func TestParseAll_14(t *testing.T) {
 
 func TestParseAll_15(t *testing.T) {
 
-	// GIVEN an expression with a closing parenthesis but now open one
+	// GIVEN an expression with a closing parenthesis but no open one
 	// 1)
 	p := token.Program{
 		token.Statement{
