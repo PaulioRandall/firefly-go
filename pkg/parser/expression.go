@@ -70,7 +70,7 @@ func parseInfixExpr(lr token.LexemeReader, left ast.Node, leftPriority int) (ast
 
 func buildExpr(op token.Lexeme, left, right ast.Node) (ast.Node, error) {
 
-	n := ast.InfixExprNode{
+	n := ast.InfixNode{
 		AST:   mapInfixTokenToAST(op.Token),
 		Left:  left,
 		Right: right,

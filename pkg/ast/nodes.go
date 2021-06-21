@@ -17,21 +17,21 @@ type (
 	EmptyNode  struct{}
 	NumberNode struct{ Value int64 }
 
-	InfixExprNode struct {
+	InfixNode struct {
 		AST
 		Left  Node
 		Right Node
 	}
 )
 
-func (n EmptyNode) Type() AST     { return AstEmpty }
-func (n NumberNode) Type() AST    { return AstNumber }
-func (n InfixExprNode) Type() AST { return n.AST }
+func (n EmptyNode) Type() AST  { return AstEmpty }
+func (n NumberNode) Type() AST { return AstNumber }
+func (n InfixNode) Type() AST  { return n.AST }
 
 func (n EmptyNode) String() string  { return "" }
 func (n NumberNode) String() string { return strconv.FormatInt(n.Value, 10) }
 
-func (n InfixExprNode) String() string {
+func (n InfixNode) String() string {
 	// TODO
 	panic("Not yet implemented!")
 }
@@ -44,7 +44,7 @@ func (n NumberNode) Debug() string {
 	return n.Type().String() + " " + n.String()
 }
 
-func (n InfixExprNode) Debug() string {
+func (n InfixNode) Debug() string {
 	sb := &strings.Builder{}
 
 	writeLine(sb, 0, n.AST.String())

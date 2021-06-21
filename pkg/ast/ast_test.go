@@ -9,7 +9,7 @@ func TestEnforceTypes(t *testing.T) {
 
 	n = EmptyNode{}
 	n = NumberNode{}
-	n = InfixExprNode{}
+	n = InfixNode{}
 
 	_ = n
 }

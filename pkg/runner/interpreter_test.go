@@ -23,8 +23,8 @@ func num(n int64) ast.NumberNode {
 	}
 }
 
-func infix(astType ast.AST, left, right ast.Node) ast.InfixExprNode {
-	return ast.InfixExprNode{
+func infix(astType ast.AST, left, right ast.Node) ast.InfixNode {
+	return ast.InfixNode{
 		AST:   astType,
 		Left:  left,
 		Right: right,

@@ -6,9 +6,9 @@ import (
 
 func computeInfix(n ast.Node, compute infixComputer) (ast.NumberNode, error) {
 
-	ien, ok := n.(ast.InfixExprNode)
+	ien, ok := n.(ast.InfixNode)
 	if !ok {
-		return zero, newBug("ast.InfixExprNode node expected")
+		return zero, newBug("ast.InfixNode node expected")
 	}
 
 	left, right, e := computeInfixExpr(ien)
@@ -19,7 +19,7 @@ func computeInfix(n ast.Node, compute infixComputer) (ast.NumberNode, error) {
 	return compute(left, right)
 }
 
-func computeInfixExpr(n ast.InfixExprNode) (left, right ast.NumberNode, e error) {
+func computeInfixExpr(n ast.InfixNode) (left, right ast.NumberNode, e error) {
 
 	left, e = computeNode(n.Left)
 	if e != nil {
