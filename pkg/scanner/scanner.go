@@ -19,7 +19,7 @@ type ParseToken func() (token.Lexeme, ParseToken, error)
 func ScanAll(sr token.ScrollReader) ([]token.Lexeme, error) {
 
 	var (
-		tks []token.Lexeme
+		tks = []token.Lexeme{}
 		tk  token.Lexeme
 		f   = Begin(sr)
 		e   error

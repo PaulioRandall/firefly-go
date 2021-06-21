@@ -21,7 +21,7 @@ func Begin(sr token.StmtReader) NextStatement {
 func CleanAll(sr token.StmtReader) (token.Program, error) {
 
 	var (
-		stmts token.Program
+		stmts = token.Program{}
 		stmt  token.Statement
 		f     = Begin(sr)
 		e     error

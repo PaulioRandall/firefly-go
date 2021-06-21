@@ -26,7 +26,7 @@ func Begin(sr token.StmtReader) StmtParser {
 func ParseAll(sr token.StmtReader) (ast.Program, error) {
 
 	var (
-		p ast.Program
+		p = ast.Program{}
 		n ast.Node
 		f = Begin(sr)
 		e error

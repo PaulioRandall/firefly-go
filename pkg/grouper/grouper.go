@@ -1,4 +1,4 @@
-package slicer
+package grouper
 
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
@@ -21,7 +21,7 @@ func Begin(lr token.LexemeReader) NextStatement {
 func GroupAll(lr token.LexemeReader) (token.Program, error) {
 
 	var (
-		prog token.Program
+		prog = token.Program{}
 		stmt token.Statement
 		f    = Begin(lr)
 		e    error

@@ -1,4 +1,4 @@
-package slicer
+package grouper
 
 import (
 	"testing"
