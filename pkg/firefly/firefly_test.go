@@ -63,3 +63,28 @@ func TestParseFile_2(t *testing.T) {
 	require.Nil(t, e, "%+v", e)
 	require.Equal(t, exp, act)
 }
+
+func TestParseFile_3(t *testing.T) {
+
+	// GIVEN a scroll with a multiple lines of expressions
+	file := "testdata/multiline.scroll"
+
+	// WHEN parsing the scroll
+	act, e := ParseFile(file)
+
+	exp := ast.Program{
+		infix(ast.AstSub, num(9), num(1)),
+		infix(ast.AstAdd,
+			infix(ast.AstDiv, num(32), num(8)),
+			infix(ast.AstMul,
+				infix(ast.AstSub, num(0), num(4)),
+				num(2),
+			),
+		),
+	}
+
+	// THEN no errors are returned
+	// AND the resultant program contains the parsed ASTs in the order specified
+	require.Nil(t, e, "%+v", e)
+	require.Equal(t, exp, act)
+}

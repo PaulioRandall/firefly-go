@@ -432,3 +432,21 @@ func TestParseAll_16(t *testing.T) {
 	// THEN an error is returned
 	unhappyTest(t, p)
 }
+
+func TestParseAll_17(t *testing.T) {
+
+	// GIVEN a number followed by an opening parenthesis
+	// 9 (1)
+	p := token.Program{
+		token.Statement{
+			lex(token.TokenNumber, "9"),
+			lex(token.TokenParenOpen, "("),
+			lex(token.TokenNumber, "1"),
+			lex(token.TokenParenClose, ")"),
+		},
+	}
+
+	// WHEN parsing all statements
+	// THEN an error is returned
+	unhappyTest(t, p)
+}
