@@ -79,11 +79,13 @@ goVet() {
 
 goDev() {
   println "Development..."
+  println "./$BUILD_DIR/$EXE_NAME $DEV_SCROLL"
   go run "$GO_MAIN" "$DEV_SCROLL" $@
 }
 
 exeProd() {
   println "Production..."
+  println "./$BUILD_DIR/$EXE_NAME " $@
   ./"$BUILD_DIR"/"$EXE_NAME" $@
 }
 
