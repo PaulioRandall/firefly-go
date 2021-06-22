@@ -18,7 +18,7 @@ func lex(tk token.Token, v string) token.Lexeme {
 func TestCleanAll_1(t *testing.T) {
 
 	// GIVEN multiple statements with redundant tokens
-	lr := token.NewProgramReader(
+	lr := token.NewStmtReader(
 		// 1 + 1
 		// 2 * 2
 		token.Program{
@@ -64,7 +64,7 @@ func TestCleanAll_1(t *testing.T) {
 func TestCleanAll_2(t *testing.T) {
 
 	// GIVEN a statement without redundant tokens
-	lr := token.NewProgramReader(
+	lr := token.NewStmtReader(
 		// 1 + 1
 		token.Program{
 			token.Statement{

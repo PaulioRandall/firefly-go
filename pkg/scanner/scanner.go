@@ -16,12 +16,12 @@ type ParseToken func() (token.Lexeme, ParseToken, error)
 
 // ScanAll scans all remaining tokens from the Scroll reader and returns them
 // as a slice.
-func ScanAll(sr token.ScrollReader) ([]token.Lexeme, error) {
+func ScanAll(r token.RuneReader) ([]token.Lexeme, error) {
 
 	var (
 		tks = []token.Lexeme{}
 		tk  token.Lexeme
-		f   = Begin(sr)
+		f   = Begin(r)
 		e   error
 	)
 
@@ -37,35 +37,35 @@ func ScanAll(sr token.ScrollReader) ([]token.Lexeme, error) {
 }
 
 // Begin returns a new function from which to begin parsing tokens.
-func Begin(sr token.ScrollReader) ParseToken {
-	if sr.More() {
-		return scan(sr)
+func Begin(r token.RuneReader) ParseToken {
+	if r.More() {
+		return scan(r)
 	}
 	return nil
 }
 
-func scan(sr token.ScrollReader) ParseToken {
+func scan(r token.RuneReader) ParseToken {
 	return func() (token.Lexeme, ParseToken, error) {
 
-		lx, e := parseToken(sr)
+		lx, e := parseToken(r)
 		if e != nil {
 			return lx, nil, e
 		}
 
-		if sr.More() {
-			return lx, scan(sr), nil
+		if r.More() {
+			return lx, scan(r), nil
 		}
 
 		return lx, nil, nil
 	}
 }
 
-func parseToken(sr token.ScrollReader) (token.Lexeme, error) {
+func parseToken(r token.RuneReader) (token.Lexeme, error) {
 
 	var lx token.Lexeme
 	var e error
 
-	ru, e := sr.Read()
+	ru, e := r.Read()
 	if e != nil {
 		return token.Lexeme{}, e
 	}
@@ -83,7 +83,7 @@ func parseToken(sr token.ScrollReader) (token.Lexeme, error) {
 		lx = lexemeRune(token.TokenParenClose, ru)
 
 	case isNumber(ru):
-		lx, e = scanNumber(sr, ru)
+		lx, e = scanNumber(r, ru)
 
 	case ru == '+':
 		lx = lexemeRune(token.TokenAdd, ru)
@@ -116,23 +116,23 @@ func lexemeStr(tk token.Token, v string) token.Lexeme {
 	}
 }
 
-func scanNumber(sr token.ScrollReader, first rune) (token.Lexeme, error) {
+func scanNumber(r token.RuneReader, first rune) (token.Lexeme, error) {
 
-	if !sr.More() {
+	if !r.More() {
 		return lexemeRune(token.TokenNumber, first), nil
 	}
 
 	sb := strings.Builder{}
 	sb.WriteRune(first)
 
-	for sr.More() {
-		ru, e := sr.Read()
+	for r.More() {
+		ru, e := r.Read()
 		if e != nil {
 			return token.Lexeme{}, e
 		}
 
 		if !isNumber(ru) {
-			sr.PutBack(ru)
+			r.PutBack(ru)
 			break
 		}
 

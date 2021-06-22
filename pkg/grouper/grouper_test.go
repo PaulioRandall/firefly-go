@@ -18,7 +18,7 @@ func lex(tk token.Token, v string) token.Lexeme {
 func TestGroupAll_1(t *testing.T) {
 
 	// GIVEN three statements in a lexeme reader
-	lr := token.NewSliceLexemeReader(
+	r := token.NewLexemeReader(
 		// 1
 		// 2
 		// 3
@@ -44,7 +44,7 @@ func TestGroupAll_1(t *testing.T) {
 	}
 
 	// WHEN grouping all lexemes into statements
-	act, e := GroupAll(lr)
+	act, e := GroupAll(r)
 
 	// THEN the two statments are separated and returned without error
 	require.Nil(t, e, "%+v", e)
@@ -54,7 +54,7 @@ func TestGroupAll_1(t *testing.T) {
 func TestGroupAll_2(t *testing.T) {
 
 	// GIVEN a single statement in a lexeme reader
-	lr := token.NewSliceLexemeReader(
+	r := token.NewLexemeReader(
 		// 1 + 2
 		token.Statement{
 			lex(token.TokenNumber, "1"),
@@ -72,7 +72,7 @@ func TestGroupAll_2(t *testing.T) {
 	}
 
 	// WHEN grouping all lexemes into statements
-	act, e := GroupAll(lr)
+	act, e := GroupAll(r)
 
 	// THEN the one statments is returned without error
 	require.Nil(t, e, "%+v", e)

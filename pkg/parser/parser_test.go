@@ -10,14 +10,14 @@ import (
 )
 
 func happyTest(t *testing.T, p token.Program, exp ast.Program) {
-	pr := token.NewProgramReader(p)
+	pr := token.NewStmtReader(p)
 	act, e := ParseAll(pr)
 	require.Nil(t, e, "%+v", e)
 	require.Equal(t, exp, act)
 }
 
 func unhappyTest(t *testing.T, p token.Program) {
-	pr := token.NewProgramReader(p)
+	pr := token.NewStmtReader(p)
 	_, e := ParseAll(pr)
 	require.NotNil(t, e, "Expected error")
 }
@@ -54,7 +54,7 @@ func TestParseAll_0(t *testing.T) {
 		ast.EmptyNode{},
 	}
 
-	// WHEN parsing all statements
+	// WHEN parsing the statement
 	// THEN an empty node is returned without error
 	happyTest(t, p, exp)
 }
@@ -73,7 +73,7 @@ func TestParseAll_1(t *testing.T) {
 		num(9),
 	}
 
-	// WHEN parsing all statements
+	// WHEN parsing the statement
 	// THEN the number is parsed and returned without error
 	happyTest(t, p, exp)
 }
@@ -92,7 +92,7 @@ func TestParseAll_2(t *testing.T) {
 		num(99),
 	}
 
-	// WHEN parsing all statements
+	// WHEN parsing the statement
 	// THEN the number is parsed and returned without error
 	happyTest(t, p, exp)
 }
@@ -113,7 +113,7 @@ func TestParseAll_3(t *testing.T) {
 		infix(ast.AstAdd, num(1), num(2)),
 	}
 
-	// WHEN parsing all statements
+	// WHEN parsing the statement
 	// THEN the number is parsed
 	// AND returned without error
 	happyTest(t, p, exp)
@@ -140,7 +140,7 @@ func TestParseAll_4(t *testing.T) {
 		),
 	}
 
-	// WHEN parsing all statements
+	// WHEN parsing the statement
 	// THEN the number is parsed
 	// AND returned without error
 	happyTest(t, p, exp)
@@ -170,7 +170,7 @@ func TestParseAll_5(t *testing.T) {
 		),
 	}
 
-	// WHEN parsing all statements
+	// WHEN parsing the statement
 	// THEN the number is parsed
 	// AND returned without error
 	happyTest(t, p, exp)
@@ -200,7 +200,7 @@ func TestParseAll_6(t *testing.T) {
 		),
 	}
 
-	// WHEN parsing all statements
+	// WHEN parsing the statement
 	// THEN the number is parsed
 	// AND returned without error
 	happyTest(t, p, exp)
@@ -244,7 +244,7 @@ func TestParseAll_7(t *testing.T) {
 		infix(ast.AstSub, ex3, ex4),
 	}
 
-	// WHEN parsing all statements
+	// WHEN parsing the statement
 	// THEN the expression is parsed
 	// AND returned without error
 	happyTest(t, p, exp)
@@ -266,7 +266,7 @@ func TestParseAll_8(t *testing.T) {
 		num(9),
 	}
 
-	// WHEN parsing all statements
+	// WHEN parsing the statement
 	// THEN the number is parsed
 	// AND returned without error
 	happyTest(t, p, exp)
@@ -314,7 +314,7 @@ func TestParseAll_9(t *testing.T) {
 		infix(ast.AstAdd, num(8), ex4),
 	}
 
-	// WHEN parsing all statements
+	// WHEN parsing the statement
 	// THEN the expression is parsed
 	// AND returned without error
 	happyTest(t, p, exp)
@@ -333,7 +333,7 @@ func TestParseAll_10(t *testing.T) {
 		},
 	}
 
-	// WHEN parsing all statements
+	// WHEN parsing the statement
 	// THEN an error is returned
 	unhappyTest(t, p)
 }
@@ -349,7 +349,7 @@ func TestParseAll_11(t *testing.T) {
 		},
 	}
 
-	// WHEN parsing all statements
+	// WHEN parsing the statement
 	// THEN an error is returned
 	unhappyTest(t, p)
 }
@@ -364,7 +364,7 @@ func TestParseAll_12(t *testing.T) {
 		},
 	}
 
-	// WHEN parsing all statements
+	// WHEN parsing the statement
 	// THEN an error is returned
 	unhappyTest(t, p)
 }
@@ -380,7 +380,7 @@ func TestParseAll_13(t *testing.T) {
 		},
 	}
 
-	// WHEN parsing all statements
+	// WHEN parsing the statement
 	// THEN an error is returned
 	unhappyTest(t, p)
 }
@@ -396,7 +396,7 @@ func TestParseAll_14(t *testing.T) {
 		},
 	}
 
-	// WHEN parsing all statements
+	// WHEN parsing the statement
 	// THEN an error is returned
 	unhappyTest(t, p)
 }
@@ -412,7 +412,7 @@ func TestParseAll_15(t *testing.T) {
 		},
 	}
 
-	// WHEN parsing all statements
+	// WHEN parsing the statement
 	// THEN an error is returned
 	unhappyTest(t, p)
 }
@@ -428,7 +428,7 @@ func TestParseAll_16(t *testing.T) {
 		},
 	}
 
-	// WHEN parsing all statements
+	// WHEN parsing the statement
 	// THEN an error is returned
 	unhappyTest(t, p)
 }
@@ -446,7 +446,36 @@ func TestParseAll_17(t *testing.T) {
 		},
 	}
 
-	// WHEN parsing all statements
+	// WHEN parsing the statement
 	// THEN an error is returned
 	unhappyTest(t, p)
+}
+
+func TestParseAll_18(t *testing.T) {
+
+	// GIVEN multiple statements
+	// 1
+	// 2
+	// 3
+	p := token.Program{
+		token.Statement{
+			lex(token.TokenNumber, "1"),
+		},
+		token.Statement{
+			lex(token.TokenNumber, "2"),
+		},
+		token.Statement{
+			lex(token.TokenNumber, "3"),
+		},
+	}
+
+	exp := ast.Program{
+		num(1),
+		num(2),
+		num(3),
+	}
+
+	// WHEN parsing all statements
+	// THEN the number is parsed and returned without error
+	happyTest(t, p, exp)
 }

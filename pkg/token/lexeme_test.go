@@ -15,7 +15,7 @@ func lex(tk Token, v string) Lexeme {
 
 func TestPutBack_1(t *testing.T) {
 
-	exp := &sliceLexemeReader{
+	exp := &lexemeReader{
 		idx: 2,
 		lxs: []Lexeme{
 			lex(TokenNumber, "1"),
@@ -25,7 +25,7 @@ func TestPutBack_1(t *testing.T) {
 		},
 	}
 
-	lr := &sliceLexemeReader{
+	r := &lexemeReader{
 		lxs: []Lexeme{
 			lex(TokenNumber, "1"),
 			lex(TokenAdd, "+"),
@@ -33,13 +33,13 @@ func TestPutBack_1(t *testing.T) {
 		},
 	}
 
-	_, e := lr.Read()
+	_, e := r.Read()
 	require.Nil(t, e, "%+v", e)
 
-	lx, e := lr.Read()
+	lx, e := r.Read()
 	require.Nil(t, e, "%+v", e)
 
-	_ = lr.PutBack(lx)
+	_ = r.PutBack(lx)
 
-	require.Equal(t, exp, lr)
+	require.Equal(t, exp, r)
 }

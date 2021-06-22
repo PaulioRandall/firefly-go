@@ -32,26 +32,26 @@ func ParseFile(file string) (ast.Program, error) {
 	}
 
 	runes := []rune(string(data))
-	sr := token.NewStringScrollReader(runes)
-	lxs, e := scanner.ScanAll(sr)
+	runeReader := token.NewRuneReader(runes)
+	lxs, e := scanner.ScanAll(runeReader)
 	if e != nil {
 		return nil, e
 	}
 
-	lr := token.NewSliceLexemeReader(lxs)
-	stmts, e := grouper.GroupAll(lr)
+	lexemeReader := token.NewLexemeReader(lxs)
+	stmts, e := grouper.GroupAll(lexemeReader)
 	if e != nil {
 		return nil, e
 	}
 
-	pr := token.NewProgramReader(stmts)
-	stmts, e = cleaner.CleanAll(pr)
+	stmtReader := token.NewStmtReader(stmts)
+	stmts, e = cleaner.CleanAll(stmtReader)
 	if e != nil {
 		return nil, e
 	}
 
-	pr = token.NewProgramReader(stmts)
-	program, e := parser.ParseAll(pr)
+	stmtReader = token.NewStmtReader(stmts)
+	program, e := parser.ParseAll(stmtReader)
 	if e != nil {
 		return nil, e
 	}

@@ -24,35 +24,35 @@ type LexemeReader interface {
 	PutBack(Lexeme) error
 }
 
-// NewSliceLexemeReader wraps a slice of tokens in a Lexeme reader.
-func NewSliceLexemeReader(lxs []Lexeme) *sliceLexemeReader {
-	return &sliceLexemeReader{
+// NewLexemeReader wraps a slice of tokens in a Lexeme reader.
+func NewLexemeReader(lxs []Lexeme) *lexemeReader {
+	return &lexemeReader{
 		lxs: lxs,
 	}
 }
 
-type sliceLexemeReader struct {
+type lexemeReader struct {
 	idx int
 	lxs []Lexeme
 }
 
-func (slr *sliceLexemeReader) More() bool {
-	return len(slr.lxs) > slr.idx
+func (r *lexemeReader) More() bool {
+	return len(r.lxs) > r.idx
 }
 
-func (slr *sliceLexemeReader) Read() (Lexeme, error) {
-	if !slr.More() {
+func (r *lexemeReader) Read() (Lexeme, error) {
+	if !r.More() {
 		return Lexeme{}, errors.New("EOF")
 	}
-	lx := slr.lxs[slr.idx]
-	slr.idx++
+	lx := r.lxs[r.idx]
+	r.idx++
 	return lx, nil
 }
 
-func (slr *sliceLexemeReader) PutBack(lx Lexeme) error {
-	head := slr.lxs[:slr.idx]
-	tail := slr.lxs[slr.idx:]
+func (r *lexemeReader) PutBack(lx Lexeme) error {
+	head := r.lxs[:r.idx]
+	tail := r.lxs[r.idx:]
 	tail = append([]Lexeme{lx}, tail...)
-	slr.lxs = append(head, tail...)
+	r.lxs = append(head, tail...)
 	return nil
 }

@@ -15,20 +15,20 @@ import (
 type StmtParser func() (ast.Node, StmtParser, error)
 
 // Begin returns a new StmtParser function.
-func Begin(sr token.StmtReader) StmtParser {
-	if sr.More() {
-		return nextParser(sr)
+func Begin(r token.StmtReader) StmtParser {
+	if r.More() {
+		return nextParser(r)
 	}
 	return nil
 }
 
 // ParseAll parses all statement in the statement reader.
-func ParseAll(sr token.StmtReader) (ast.Program, error) {
+func ParseAll(r token.StmtReader) (ast.Program, error) {
 
 	var (
 		p = ast.Program{}
 		n ast.Node
-		f = Begin(sr)
+		f = Begin(r)
 		e error
 	)
 
@@ -43,10 +43,10 @@ func ParseAll(sr token.StmtReader) (ast.Program, error) {
 	return p, nil
 }
 
-func nextParser(sr token.StmtReader) StmtParser {
+func nextParser(r token.StmtReader) StmtParser {
 	return func() (ast.Node, StmtParser, error) {
 
-		unparsed, e := sr.Read()
+		unparsed, e := r.Read()
 		if e != nil {
 			return nil, nil, e
 		}
@@ -56,8 +56,8 @@ func nextParser(sr token.StmtReader) StmtParser {
 			return nil, nil, e
 		}
 
-		if sr.More() {
-			return parsed, nextParser(sr), nil
+		if r.More() {
+			return parsed, nextParser(r), nil
 		}
 		return parsed, nil, nil
 	}
@@ -66,17 +66,17 @@ func nextParser(sr token.StmtReader) StmtParser {
 // ParseStmt parses the supplied statement into an AST.
 func ParseStmt(stmt token.Statement) (ast.Node, error) {
 
-	lr := token.NewSliceLexemeReader(stmt)
-	if !lr.More() {
+	r := token.NewLexemeReader(stmt)
+	if !r.More() {
 		return ast.EmptyNode{}, nil
 	}
 
-	n, e := expectExpr(lr, 0)
+	n, e := expectExpr(r, 0)
 	if e != nil {
 		return nil, e
 	}
 
-	e = validateNoMoreTokens(lr)
+	e = validateNoMoreTokens(r)
 	if e != nil {
 		return nil, e
 	}
@@ -84,12 +84,12 @@ func ParseStmt(stmt token.Statement) (ast.Node, error) {
 	return n, nil
 }
 
-func validateNoMoreTokens(lr token.LexemeReader) error {
-	if !lr.More() {
+func validateNoMoreTokens(r token.LexemeReader) error {
+	if !r.More() {
 		return nil
 	}
 
-	lx, e := lr.Read()
+	lx, e := r.Read()
 	if e != nil {
 		return e
 	}

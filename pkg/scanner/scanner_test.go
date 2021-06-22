@@ -9,8 +9,8 @@ import (
 )
 
 func happyTest(t *testing.T, in []rune, exp []token.Lexeme) {
-	sr := token.NewStringScrollReader(in)
-	act, e := ScanAll(sr)
+	r := token.NewRuneReader(in)
+	act, e := ScanAll(r)
 	require.Nil(t, e, "%+v", e)
 	require.Equal(t, exp, act)
 }
@@ -88,8 +88,8 @@ func TestScanAll_4(t *testing.T) {
 
 func TestScanAll_100(t *testing.T) {
 
-	// GIVEN an long expression
-	sr := token.NewStringScrollReader(
+	// GIVEN a long expression
+	r := token.NewRuneReader(
 		[]rune("1 + 2 - 3 * 4 / 5"),
 	)
 
@@ -114,7 +114,7 @@ func TestScanAll_100(t *testing.T) {
 	}
 
 	// WHEN scanning all tokens
-	act, e := ScanAll(sr)
+	act, e := ScanAll(r)
 
 	// THEN the code should be correctly parsed without error
 	require.Nil(t, e, "%+v", e)
@@ -124,7 +124,7 @@ func TestScanAll_100(t *testing.T) {
 func TestScanAll_101(t *testing.T) {
 
 	// GIVEN multiple statements
-	sr := token.NewStringScrollReader(
+	r := token.NewRuneReader(
 		[]rune("1\n2\n3\n"),
 	)
 
@@ -138,7 +138,7 @@ func TestScanAll_101(t *testing.T) {
 	}
 
 	// WHEN scanning all tokens
-	act, e := ScanAll(sr)
+	act, e := ScanAll(r)
 
 	// THEN the code should be correctly parsed without error
 	require.Nil(t, e, "%+v", e)
@@ -148,12 +148,12 @@ func TestScanAll_101(t *testing.T) {
 func TestScanAll_102(t *testing.T) {
 
 	// GIVEN firefly code containing an invalid token
-	sr := token.NewStringScrollReader(
+	r := token.NewRuneReader(
 		[]rune("#"),
 	)
 
-	// WHEN scanning all tokens
-	_, e := ScanAll(sr)
+	// WHEN scanning the token
+	_, e := ScanAll(r)
 
 	// THEN an error should be returned
 	require.NotNil(t, e, "Expected error when given invalid token")
