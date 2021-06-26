@@ -44,22 +44,35 @@ func ParseAll(r token.StmtReader) (ast.Program, error) {
 }
 
 func nextParser(r token.StmtReader) StmtParser {
-	return func() (ast.Node, StmtParser, error) {
+	return func() (n ast.Node, f StmtParser, e error) {
+
+		defer func() {
+			r := recover()
+			if r == nil {
+				return
+			}
+
+			var ok bool
+			if e, ok = r.(error); !ok {
+				panic("[BUG] All parse panics must recover as an error!")
+			}
+		}()
 
 		unparsed, e := r.Read()
 		if e != nil {
-			return nil, nil, e
+			return
 		}
 
-		parsed, e := ParseStmt(unparsed)
+		n, e = ParseStmt(unparsed)
 		if e != nil {
-			return nil, nil, e
+			return
 		}
 
 		if r.More() {
-			return parsed, nextParser(r), nil
+			f = nextParser(r)
 		}
-		return parsed, nil, nil
+
+		return
 	}
 }
 

@@ -17,13 +17,14 @@ func expectNumber(lr token.LexemeReader) (ast.Node, error) {
 	if lx.Token != token.TokenNumber {
 		return nil, newError("Expected number, got '%s'", lx.Token.String())
 	}
+	
 	return parseNumber(lx)
 }
 
 func parseNumber(num token.Lexeme) (ast.Node, error) {
 	n, e := strconv.ParseInt(num.Value, 10, 64)
 	if e != nil {
-		return nil, e
+		wrapThenPanic(e, "Unable to parse number '%s'", num.Value)
 	}
 	return ast.NumberNode{Value: n}, nil
 }

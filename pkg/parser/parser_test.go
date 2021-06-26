@@ -479,3 +479,18 @@ func TestParseAll_18(t *testing.T) {
 	// THEN the number is parsed and returned without error
 	happyTest(t, p, exp)
 }
+
+func TestParseAll_19(t *testing.T) {
+
+	// GIVEN a number that will fail number parsing
+	// abc9
+	p := token.Program{
+		token.Statement{
+			lex(token.TokenNumber, "abc9"),
+		},
+	}
+
+	// WHEN parsing the statement
+	// THEN an error is returned
+	unhappyTest(t, p)
+}

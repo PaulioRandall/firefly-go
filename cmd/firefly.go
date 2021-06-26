@@ -31,6 +31,9 @@ func printTaskList() {
 	fmt.Print(`
 Hello, firefly!
 
+NEXT: Convert to panic for error handling in the parser and catching them just
+			before they hit the interface.
+NEXT: Readers should use a special EOF error type
 NEXT: Add godoc support to godo
 NEXT: Write documentation for pkgs
 	- token
