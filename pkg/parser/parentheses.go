@@ -8,7 +8,7 @@ import (
 func parseParenExpr(r lexReader, opener token.Lexeme) ast.Node {
 
 	if !r.More() {
-		panicParseErr(nil, "Expected expression after opening parenthesis '('")
+		parsingPanic(nil, "Expected expression after opening parenthesis '('")
 	}
 
 	n := expectExpr(r, 0)
@@ -18,11 +18,9 @@ func parseParenExpr(r lexReader, opener token.Lexeme) ast.Node {
 }
 
 func expectParenClose(r lexReader) {
-
 	lx := r.Read()
-
 	if lx.Token != token.TokenParenClose {
 		tk := lx.Token.String()
-		panicParseErr(nil, "Expected closing parenthesis but got '%s'", tk)
+		parsingPanic(nil, "Expected closing parenthesis but got '%s'", tk)
 	}
 }

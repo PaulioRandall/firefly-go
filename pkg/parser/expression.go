@@ -22,11 +22,13 @@ func expectTerm(r lexReader) ast.Node {
 		return parseParenExpr(r, lx)
 
 	case token.TokenParenClose:
-		panicParseErr(nil, "Unexpected closing parenthesis")
+		parsingPanic(nil, "Unexpected closing parenthesis")
+
+	default:
+		parsingPanic(nil, "Unexpected Token '%s'", lx.Token.String())
 	}
 
-	panicParseErr(nil, "Unexpected Token '%s'", lx.Token.String())
-	return nil
+	return nil // Unreachable but required
 }
 
 func parseInfix(r lexReader, left ast.Node, leftPriority int) ast.Node {
@@ -35,8 +37,8 @@ func parseInfix(r lexReader, left ast.Node, leftPriority int) ast.Node {
 		return left
 	}
 
-	op, leftAssoc := leftHasPriority(r, leftPriority)
-	if leftAssoc {
+	op, leftWins := leftHasPriority(r, leftPriority)
+	if leftWins {
 		return left
 	}
 
@@ -49,9 +51,8 @@ func parseInfix(r lexReader, left ast.Node, leftPriority int) ast.Node {
 func leftHasPriority(r lexReader, leftPriority int) (token.Lexeme, bool) {
 
 	op := r.Read()
-
 	if !op.Token.IsOperator() {
-		panicParseErr(nil, "Expected operator, got '%s'", op.Token.String())
+		parsingPanic(nil, "Expected operator, got '%s'", op.Token.String())
 	}
 
 	if !op.IsCloser() && leftPriority < op.Precedence() {
@@ -64,17 +65,16 @@ func leftHasPriority(r lexReader, leftPriority int) (token.Lexeme, bool) {
 
 func buildExpr(op token.Lexeme, left, right ast.Node) ast.Node {
 
-	n := ast.InfixNode{
-		AST:   mapInfixTokenToAST(op.Token),
+	astType := mapInfixTokenToAST(op.Token)
+	if astType == ast.AstUndefined {
+		parsingPanic(nil, "Unknown operation '%s'", op.Token.String())
+	}
+
+	return ast.InfixNode{
+		AST:   astType,
 		Left:  left,
 		Right: right,
 	}
-
-	if n.AST == ast.AstUndefined {
-		panicParseErr(nil, "Unknown operation '%s'", op.Token.String())
-	}
-
-	return n
 }
 
 func mapInfixTokenToAST(tk token.Token) ast.AST {

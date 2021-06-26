@@ -22,21 +22,21 @@ func Begin(r token.StmtReader) StmtParser {
 func ParseAll(r token.StmtReader) (ast.Program, error) {
 
 	var (
-		p = ast.Program{}
-		n ast.Node
-		f = Begin(r)
-		e error
+		parsed        = ast.Program{}
+		node          ast.Node
+		nextParseFunc = Begin(r)
+		e             error
 	)
 
-	for f != nil {
-		n, f, e = f()
+	for nextParseFunc != nil {
+		node, nextParseFunc, e = nextParseFunc()
 		if e != nil {
 			return nil, e
 		}
-		p = append(p, n)
+		parsed = append(parsed, node)
 	}
 
-	return p, nil
+	return parsed, nil
 }
 
 func nextParser(r token.StmtReader) StmtParser {
@@ -52,12 +52,12 @@ func nextParser(r token.StmtReader) StmtParser {
 			return nil, nil, e
 		}
 
-		var f StmtParser
+		var nextParseFunc StmtParser
 		if r.More() {
-			f = nextParser(r)
+			nextParseFunc = nextParser(r)
 		}
 
-		return parsed, f, nil
+		return parsed, nextParseFunc, nil
 	}
 }
 
@@ -65,33 +65,38 @@ func nextParser(r token.StmtReader) StmtParser {
 func ParseStmt(stmt token.Statement) (n ast.Node, e error) {
 
 	defer func() {
-		r := recover()
-		if r == nil {
+		err := recover()
+		if err == nil {
 			return
 		}
 
 		var ok bool
-		if e, ok = r.(error); !ok {
+		if e, ok = err.(error); !ok {
 			panic("[BUG] All parse panics must recover as an error!")
 		}
 	}()
 
 	lr := token.NewLexemeReader(stmt)
-	r := lexReader{lr: lr}
 
-	if !r.More() {
-		return ast.EmptyNode{}, nil
+	if lr.More() {
+		n = parseStmt(lr)
+	} else {
+		n = ast.EmptyNode{}
 	}
 
-	n = expectExpr(r, 0)
-	validateNoMoreTokens(r)
+	return n, e
+}
 
-	return n, nil
+func parseStmt(lr token.LexemeReader) ast.Node {
+	r := lexReader{lr: lr}
+	n := expectExpr(r, 0)
+	validateNoMoreTokens(r)
+	return n
 }
 
 func validateNoMoreTokens(r lexReader) {
 	if r.More() {
 		lx := r.Read()
-		panicParseErr(nil, "Unexpected dangling token '%s'", lx.Token.String())
+		parsingPanic(nil, "Unexpected dangling token '%s'", lx.Token.String())
 	}
 }

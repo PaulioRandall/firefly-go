@@ -28,5 +28,5 @@ func (r lexReader) PutBack(lx token.Lexeme) {
 }
 
 func lexemeReadPanic(cause error) {
-	panicParseErr(cause, "Lexeme read error")
+	parsingPanic(cause, "Lexeme read error")
 }
