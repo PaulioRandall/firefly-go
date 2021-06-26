@@ -17,10 +17,23 @@ import (
 // obtaining the last token, the returned ParseToken function will be nil.
 type ParseToken func() (token.Lexeme, ParseToken, error)
 
+// RuneReader interface is for accessing Go runes from a text source.
+type RuneReader interface {
+
+	// More returns true if there are unread runes.
+	More() bool
+
+	// Peek returns the next rune without incrementing.
+	Peek() (rune, error)
+
+	// Read returns the next rune and increments to the next item.
+	Read() (rune, error)
+}
+
 // Begin returns a new ParseToken function from which to begin parsing tokens.
 // Nil is returned if the supplied reader has already reached the end of
 // its stream.
-func Begin(r token.RuneReader) ParseToken {
+func Begin(r RuneReader) ParseToken {
 	if r.More() {
 		return scan(r)
 	}
@@ -29,7 +42,7 @@ func Begin(r token.RuneReader) ParseToken {
 
 // ScanAll is a convenience function and example for scanning all [remaining]
 // tokens from a RuneReader.
-func ScanAll(r token.RuneReader) ([]token.Lexeme, error) {
+func ScanAll(r RuneReader) ([]token.Lexeme, error) {
 
 	var (
 		lxs = []token.Lexeme{}
@@ -49,7 +62,7 @@ func ScanAll(r token.RuneReader) ([]token.Lexeme, error) {
 	return lxs, nil
 }
 
-func scan(r token.RuneReader) ParseToken {
+func scan(r RuneReader) ParseToken {
 	return func() (token.Lexeme, ParseToken, error) {
 
 		lx, e := parseToken(r)
@@ -65,7 +78,7 @@ func scan(r token.RuneReader) ParseToken {
 	}
 }
 
-func parseToken(r token.RuneReader) (token.Lexeme, error) {
+func parseToken(r RuneReader) (token.Lexeme, error) {
 
 	var lx token.Lexeme
 	var e error
@@ -121,7 +134,7 @@ func lexemeStr(tk token.Token, v string) token.Lexeme {
 	}
 }
 
-func scanNumber(r token.RuneReader, first rune) (token.Lexeme, error) {
+func scanNumber(r RuneReader, first rune) (token.Lexeme, error) {
 	undefined := token.Lexeme{}
 
 	if !r.More() {

@@ -1,18 +1,5 @@
 package token
 
-// RuneReader interface is for accessing Go runes from a text source.
-type RuneReader interface {
-
-	// More returns true if there are unread runes.
-	More() bool
-
-	// Peek returns the next rune without incrementing.
-	Peek() (rune, error)
-
-	// Read returns the next rune and increments to the next item.
-	Read() (rune, error)
-}
-
 // NewRuneReader wraps a slice of runes for reading as a stream.
 func NewRuneReader(text []rune) *runeReader {
 	return &runeReader{
