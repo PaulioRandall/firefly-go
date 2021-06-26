@@ -1,9 +1,5 @@
 package token
 
-import (
-	"errors"
-)
-
 // Program in the form of a slice of statements.
 type Program []Statement
 
@@ -38,7 +34,7 @@ func (r *stmtReader) More() bool {
 
 func (r *stmtReader) Read() (Statement, error) {
 	if !r.More() {
-		return nil, errors.New("EOF")
+		return nil, EOF
 	}
 	stmt := r.stmts[r.idx]
 	r.idx++

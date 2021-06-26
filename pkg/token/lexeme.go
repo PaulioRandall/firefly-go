@@ -1,9 +1,5 @@
 package token
 
-import (
-	"errors"
-)
-
 // Lexeme is a value with associated token.
 type Lexeme struct {
 	Token
@@ -42,7 +38,7 @@ func (r *lexemeReader) More() bool {
 
 func (r *lexemeReader) Read() (Lexeme, error) {
 	if !r.More() {
-		return Lexeme{}, errors.New("EOF")
+		return Lexeme{}, EOF
 	}
 	lx := r.lxs[r.idx]
 	r.idx++

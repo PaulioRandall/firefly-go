@@ -1,9 +1,5 @@
 package token
 
-import (
-	"errors"
-)
-
 // RuneReader is the interface for accessing Go runes from a text source.
 type RuneReader interface {
 
@@ -36,7 +32,7 @@ func (r *runeReader) More() bool {
 
 func (r *runeReader) Read() (rune, error) {
 	if !r.More() {
-		return rune(0), errors.New("EOF")
+		return rune(0), EOF
 	}
 	ru := r.text[r.idx]
 	r.idx++
