@@ -1,13 +1,19 @@
+// Package cleaner removes redundant tokens and applies any replacement rules
+// to a stream of token statements, a statement or fragement of a statement
+// comprised of the tokens that are parsed to form it. To use, call the Begin
+// function with a StmtReader to get the first CleanStatement function.
+// Invoking it will return a cleaned token statement and the next
+// CleanStatement function.
 package cleaner
 
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
-// NextStatement is a recursion based function that returns the next slice of
-// lexemes that represent a statement. On error or while obtaining the last
-// statement, the function will be nil.
-type NextStatement func() (token.Statement, NextStatement, error)
+// CleanStatement is a recursion based function that returns the next token
+// statement, list of tokens that form a statement or statement fragment. On
+// error or while obtaining the last token statement, the function will be nil.
+type CleanStatement func() (token.Statement, CleanStatement, error)
 
 // StmtReader interface is for reading statements from a stream.
 type StmtReader interface {
@@ -19,15 +25,18 @@ type StmtReader interface {
 	Read() (token.Statement, error)
 }
 
-// Begin returns a new NextStatement function.
-func Begin(sr StmtReader) NextStatement {
+// Begin returns a new CleanStatement function from which to begin cleaning
+// token statements. Nil is returned if the supplied reader has already reached
+// the end of its stream.
+func Begin(sr StmtReader) CleanStatement {
 	if sr.More() {
 		return clean(sr)
 	}
 	return nil
 }
 
-// CleanAll removes redundant tokens from a stream of statements.
+// CleanAll is a convenience function and example for cleaning all [remaining]
+// token statements from a reader into a token block.
 func CleanAll(sr StmtReader) (token.Block, error) {
 
 	var (
@@ -48,8 +57,8 @@ func CleanAll(sr StmtReader) (token.Block, error) {
 	return stmts, nil
 }
 
-func clean(sr StmtReader) NextStatement {
-	return func() (token.Statement, NextStatement, error) {
+func clean(sr StmtReader) CleanStatement {
+	return func() (token.Statement, CleanStatement, error) {
 
 		unclean, e := sr.Read()
 		if e != nil {
