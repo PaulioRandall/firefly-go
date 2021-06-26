@@ -72,27 +72,27 @@ func parseToken(r token.RuneReader) (token.Lexeme, error) {
 
 	switch {
 	case isNewline(ru):
-		lx = lexemeRune(token.TokenNewline, ru)
+		lx = lexemeRune(token.TK_NEWLINE, ru)
 
 	case isSpace(ru):
-		lx = lexemeRune(token.TokenSpace, ru)
+		lx = lexemeRune(token.TK_SPACE, ru)
 
 	case ru == '(':
-		lx = lexemeRune(token.TokenParenOpen, ru)
+		lx = lexemeRune(token.TK_PAREN_OPEN, ru)
 	case ru == ')':
-		lx = lexemeRune(token.TokenParenClose, ru)
+		lx = lexemeRune(token.TK_PAREN_CLOSE, ru)
 
 	case isNumber(ru):
 		lx, e = scanNumber(r, ru)
 
 	case ru == '+':
-		lx = lexemeRune(token.TokenAdd, ru)
+		lx = lexemeRune(token.TK_ADD, ru)
 	case ru == '-':
-		lx = lexemeRune(token.TokenSub, ru)
+		lx = lexemeRune(token.TK_SUB, ru)
 	case ru == '*':
-		lx = lexemeRune(token.TokenMul, ru)
+		lx = lexemeRune(token.TK_MUL, ru)
 	case ru == '/':
-		lx = lexemeRune(token.TokenDiv, ru)
+		lx = lexemeRune(token.TK_DIV, ru)
 
 	default:
 		e = newError("Unknown token '%v'", string(ru))
@@ -119,7 +119,7 @@ func lexemeStr(tk token.Token, v string) token.Lexeme {
 func scanNumber(r token.RuneReader, first rune) (token.Lexeme, error) {
 
 	if !r.More() {
-		return lexemeRune(token.TokenNumber, first), nil
+		return lexemeRune(token.TK_NUMBER, first), nil
 	}
 
 	sb := strings.Builder{}
@@ -139,7 +139,7 @@ func scanNumber(r token.RuneReader, first rune) (token.Lexeme, error) {
 		sb.WriteRune(ru)
 	}
 
-	return lexemeStr(token.TokenNumber, sb.String()), nil
+	return lexemeStr(token.TK_NUMBER, sb.String()), nil
 }
 
 func isNewline(ru rune) bool { return ru == '\n' }

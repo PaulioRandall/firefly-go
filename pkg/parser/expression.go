@@ -15,13 +15,13 @@ func expectTerm(r lexReader) ast.Node {
 	lx := r.Read()
 
 	switch lx.Token {
-	case token.TokenNumber:
+	case token.TK_NUMBER:
 		return parseNumber(lx)
 
-	case token.TokenParenOpen:
+	case token.TK_PAREN_OPEN:
 		return parseParenExpr(r, lx)
 
-	case token.TokenParenClose:
+	case token.TK_PAREN_CLOSE:
 		parsingPanic(nil, "Unexpected closing parenthesis")
 
 	default:
@@ -79,16 +79,16 @@ func buildExpr(op token.Lexeme, left, right ast.Node) ast.Node {
 
 func mapInfixTokenToAST(tk token.Token) ast.AST {
 	switch tk {
-	case token.TokenAdd:
+	case token.TK_ADD:
 		return ast.AstAdd
 
-	case token.TokenSub:
+	case token.TK_SUB:
 		return ast.AstSub
 
-	case token.TokenMul:
+	case token.TK_MUL:
 		return ast.AstMul
 
-	case token.TokenDiv:
+	case token.TK_DIV:
 		return ast.AstDiv
 
 	default:

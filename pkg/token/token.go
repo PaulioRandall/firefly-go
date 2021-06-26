@@ -4,28 +4,28 @@ package token
 type Token int
 
 const (
-	TokenUndefined Token = iota
-	TokenNewline
-	TokenSpace
-	TokenParenOpen
-	TokenParenClose
-	TokenNumber
-	TokenAdd
-	TokenSub
-	TokenMul
-	TokenDiv
+	TK_UNDEFINED Token = iota
+	TK_NEWLINE
+	TK_SPACE
+	TK_PAREN_OPEN
+	TK_PAREN_CLOSE
+	TK_NUMBER
+	TK_ADD
+	TK_SUB
+	TK_MUL
+	TK_DIV
 )
 
 var tokenNames = map[Token]string{
-	TokenNewline:    "NEWLINE",
-	TokenSpace:      "SPACE",
-	TokenParenOpen:  "PAREN_OPEN",
-	TokenParenClose: "PAREN_CLOSE",
-	TokenNumber:     "NUMBER",
-	TokenAdd:        "ADD",
-	TokenSub:        "SUBTRACT",
-	TokenMul:        "MULTIPLY",
-	TokenDiv:        "DIVIDE",
+	TK_NEWLINE:     "NEWLINE",
+	TK_SPACE:       "SPACE",
+	TK_PAREN_OPEN:  "PAREN_OPEN",
+	TK_PAREN_CLOSE: "PAREN_CLOSE",
+	TK_NUMBER:      "NUMBER",
+	TK_ADD:         "ADD",
+	TK_SUB:         "SUBTRACT",
+	TK_MUL:         "MULTIPLY",
+	TK_DIV:         "DIVIDE",
 }
 
 // String returns the string representation of the token.
@@ -35,13 +35,13 @@ func (tk Token) String() string {
 
 func (tk Token) Precedence() int {
 	switch tk {
-	case TokenParenOpen, TokenParenClose:
+	case TK_PAREN_OPEN, TK_PAREN_CLOSE:
 		return 3
 
-	case TokenMul, TokenDiv:
+	case TK_MUL, TK_DIV:
 		return 2
 
-	case TokenAdd, TokenSub:
+	case TK_ADD, TK_SUB:
 		return 1
 
 	default:
@@ -50,18 +50,18 @@ func (tk Token) Precedence() int {
 }
 
 func (tk Token) IsRedundant() bool {
-	return tk == TokenSpace
+	return tk == TK_SPACE
 }
 
 func (tk Token) IsCloser() bool {
-	return tk == TokenParenClose
+	return tk == TK_PAREN_CLOSE
 }
 
 func (tk Token) IsOperator() bool {
 	switch tk {
-	case TokenParenOpen, TokenParenClose:
+	case TK_PAREN_OPEN, TK_PAREN_CLOSE:
 		fallthrough
-	case TokenAdd, TokenSub, TokenMul, TokenDiv:
+	case TK_ADD, TK_SUB, TK_MUL, TK_DIV:
 		return true
 	default:
 		return false

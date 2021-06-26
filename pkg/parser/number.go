@@ -10,7 +10,7 @@ import (
 func expectNumber(r lexReader) ast.Node {
 
 	lx := r.Read()
-	if lx.Token != token.TokenNumber {
+	if lx.Token != token.TK_NUMBER {
 		parsingPanic(nil, "Expected number, got '%s'", lx.Token.String())
 	}
 

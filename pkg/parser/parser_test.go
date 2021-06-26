@@ -65,7 +65,7 @@ func TestParseAll_1(t *testing.T) {
 	// 9
 	p := token.Program{
 		token.Statement{
-			lex(token.TokenNumber, "9"),
+			lex(token.TK_NUMBER, "9"),
 		},
 	}
 
@@ -84,7 +84,7 @@ func TestParseAll_2(t *testing.T) {
 	// 99
 	p := token.Program{
 		token.Statement{
-			lex(token.TokenNumber, "99"),
+			lex(token.TK_NUMBER, "99"),
 		},
 	}
 
@@ -103,9 +103,9 @@ func TestParseAll_3(t *testing.T) {
 	// 1 + 2
 	p := token.Program{
 		token.Statement{
-			lex(token.TokenNumber, "1"),
-			lex(token.TokenAdd, "+"),
-			lex(token.TokenNumber, "2"),
+			lex(token.TK_NUMBER, "1"),
+			lex(token.TK_ADD, "+"),
+			lex(token.TK_NUMBER, "2"),
 		},
 	}
 
@@ -125,11 +125,11 @@ func TestParseAll_4(t *testing.T) {
 	// 1 + 2 - 3
 	p := token.Program{
 		token.Statement{
-			lex(token.TokenNumber, "1"),
-			lex(token.TokenAdd, "+"),
-			lex(token.TokenNumber, "2"),
-			lex(token.TokenSub, "-"),
-			lex(token.TokenNumber, "3"),
+			lex(token.TK_NUMBER, "1"),
+			lex(token.TK_ADD, "+"),
+			lex(token.TK_NUMBER, "2"),
+			lex(token.TK_SUB, "-"),
+			lex(token.TK_NUMBER, "3"),
 		},
 	}
 
@@ -155,11 +155,11 @@ func TestParseAll_5(t *testing.T) {
 	// 1 + (2 * 3)
 	p := token.Program{
 		token.Statement{
-			lex(token.TokenNumber, "1"),
-			lex(token.TokenAdd, "+"),
-			lex(token.TokenNumber, "2"),
-			lex(token.TokenMul, "*"),
-			lex(token.TokenNumber, "3"),
+			lex(token.TK_NUMBER, "1"),
+			lex(token.TK_ADD, "+"),
+			lex(token.TK_NUMBER, "2"),
+			lex(token.TK_MUL, "*"),
+			lex(token.TK_NUMBER, "3"),
 		},
 	}
 
@@ -183,13 +183,13 @@ func TestParseAll_6(t *testing.T) {
 	// (9 / 3) + (2 * 3)
 	p := token.Program{
 		token.Statement{
-			lex(token.TokenNumber, "9"),
-			lex(token.TokenDiv, "/"),
-			lex(token.TokenNumber, "3"),
-			lex(token.TokenAdd, "+"),
-			lex(token.TokenNumber, "2"),
-			lex(token.TokenMul, "*"),
-			lex(token.TokenNumber, "3"),
+			lex(token.TK_NUMBER, "9"),
+			lex(token.TK_DIV, "/"),
+			lex(token.TK_NUMBER, "3"),
+			lex(token.TK_ADD, "+"),
+			lex(token.TK_NUMBER, "2"),
+			lex(token.TK_MUL, "*"),
+			lex(token.TK_NUMBER, "3"),
 		},
 	}
 
@@ -213,17 +213,17 @@ func TestParseAll_7(t *testing.T) {
 	// (8 + ((4 / 3) * 3)) - (2 * 5)
 	p := token.Program{
 		token.Statement{
-			lex(token.TokenNumber, "8"),
-			lex(token.TokenAdd, "+"),
-			lex(token.TokenNumber, "4"),
-			lex(token.TokenDiv, "/"),
-			lex(token.TokenNumber, "3"),
-			lex(token.TokenMul, "*"),
-			lex(token.TokenNumber, "3"),
-			lex(token.TokenSub, "-"),
-			lex(token.TokenNumber, "2"),
-			lex(token.TokenMul, "*"),
-			lex(token.TokenNumber, "5"),
+			lex(token.TK_NUMBER, "8"),
+			lex(token.TK_ADD, "+"),
+			lex(token.TK_NUMBER, "4"),
+			lex(token.TK_DIV, "/"),
+			lex(token.TK_NUMBER, "3"),
+			lex(token.TK_MUL, "*"),
+			lex(token.TK_NUMBER, "3"),
+			lex(token.TK_SUB, "-"),
+			lex(token.TK_NUMBER, "2"),
+			lex(token.TK_MUL, "*"),
+			lex(token.TK_NUMBER, "5"),
 		},
 	}
 
@@ -256,9 +256,9 @@ func TestParseAll_8(t *testing.T) {
 	// (9)
 	p := token.Program{
 		token.Statement{
-			lex(token.TokenParenOpen, "("),
-			lex(token.TokenNumber, "9"),
-			lex(token.TokenParenClose, ")"),
+			lex(token.TK_PAREN_OPEN, "("),
+			lex(token.TK_NUMBER, "9"),
+			lex(token.TK_PAREN_CLOSE, ")"),
 		},
 	}
 
@@ -279,21 +279,21 @@ func TestParseAll_9(t *testing.T) {
 	// 8 + (((4 / 3) * (3 - 2)) * 5)
 	p := token.Program{
 		token.Statement{
-			lex(token.TokenNumber, "8"),
-			lex(token.TokenAdd, "+"),
-			lex(token.TokenParenOpen, "("),
-			lex(token.TokenNumber, "4"),
-			lex(token.TokenDiv, "/"),
-			lex(token.TokenNumber, "3"),
-			lex(token.TokenMul, "*"),
-			lex(token.TokenParenOpen, "("),
-			lex(token.TokenNumber, "3"),
-			lex(token.TokenSub, "-"),
-			lex(token.TokenNumber, "2"),
-			lex(token.TokenParenClose, ")"),
-			lex(token.TokenParenClose, ")"),
-			lex(token.TokenMul, "*"),
-			lex(token.TokenNumber, "5"),
+			lex(token.TK_NUMBER, "8"),
+			lex(token.TK_ADD, "+"),
+			lex(token.TK_PAREN_OPEN, "("),
+			lex(token.TK_NUMBER, "4"),
+			lex(token.TK_DIV, "/"),
+			lex(token.TK_NUMBER, "3"),
+			lex(token.TK_MUL, "*"),
+			lex(token.TK_PAREN_OPEN, "("),
+			lex(token.TK_NUMBER, "3"),
+			lex(token.TK_SUB, "-"),
+			lex(token.TK_NUMBER, "2"),
+			lex(token.TK_PAREN_CLOSE, ")"),
+			lex(token.TK_PAREN_CLOSE, ")"),
+			lex(token.TK_MUL, "*"),
+			lex(token.TK_NUMBER, "5"),
 		},
 	}
 
@@ -326,10 +326,10 @@ func TestParseAll_10(t *testing.T) {
 	// 1 + + 2
 	p := token.Program{
 		token.Statement{
-			lex(token.TokenNumber, "1"),
-			lex(token.TokenAdd, "+"),
-			lex(token.TokenAdd, "+"),
-			lex(token.TokenNumber, "2"),
+			lex(token.TK_NUMBER, "1"),
+			lex(token.TK_ADD, "+"),
+			lex(token.TK_ADD, "+"),
+			lex(token.TK_NUMBER, "2"),
 		},
 	}
 
@@ -344,8 +344,8 @@ func TestParseAll_11(t *testing.T) {
 	// 1 2
 	p := token.Program{
 		token.Statement{
-			lex(token.TokenNumber, "1"),
-			lex(token.TokenNumber, "2"),
+			lex(token.TK_NUMBER, "1"),
+			lex(token.TK_NUMBER, "2"),
 		},
 	}
 
@@ -360,7 +360,7 @@ func TestParseAll_12(t *testing.T) {
 	// +
 	p := token.Program{
 		token.Statement{
-			lex(token.TokenAdd, "+"),
+			lex(token.TK_ADD, "+"),
 		},
 	}
 
@@ -375,8 +375,8 @@ func TestParseAll_13(t *testing.T) {
 	// 1 +
 	p := token.Program{
 		token.Statement{
-			lex(token.TokenNumber, "1"),
-			lex(token.TokenAdd, "+"),
+			lex(token.TK_NUMBER, "1"),
+			lex(token.TK_ADD, "+"),
 		},
 	}
 
@@ -391,8 +391,8 @@ func TestParseAll_14(t *testing.T) {
 	// (1
 	p := token.Program{
 		token.Statement{
-			lex(token.TokenParenOpen, "("),
-			lex(token.TokenNumber, "1"),
+			lex(token.TK_PAREN_OPEN, "("),
+			lex(token.TK_NUMBER, "1"),
 		},
 	}
 
@@ -407,8 +407,8 @@ func TestParseAll_15(t *testing.T) {
 	// 1)
 	p := token.Program{
 		token.Statement{
-			lex(token.TokenNumber, "1"),
-			lex(token.TokenParenClose, ")"),
+			lex(token.TK_NUMBER, "1"),
+			lex(token.TK_PAREN_CLOSE, ")"),
 		},
 	}
 
@@ -423,8 +423,8 @@ func TestParseAll_16(t *testing.T) {
 	// ()
 	p := token.Program{
 		token.Statement{
-			lex(token.TokenParenOpen, "("),
-			lex(token.TokenParenClose, ")"),
+			lex(token.TK_PAREN_OPEN, "("),
+			lex(token.TK_PAREN_CLOSE, ")"),
 		},
 	}
 
@@ -439,10 +439,10 @@ func TestParseAll_17(t *testing.T) {
 	// 9 (1)
 	p := token.Program{
 		token.Statement{
-			lex(token.TokenNumber, "9"),
-			lex(token.TokenParenOpen, "("),
-			lex(token.TokenNumber, "1"),
-			lex(token.TokenParenClose, ")"),
+			lex(token.TK_NUMBER, "9"),
+			lex(token.TK_PAREN_OPEN, "("),
+			lex(token.TK_NUMBER, "1"),
+			lex(token.TK_PAREN_CLOSE, ")"),
 		},
 	}
 
@@ -459,13 +459,13 @@ func TestParseAll_18(t *testing.T) {
 	// 3
 	p := token.Program{
 		token.Statement{
-			lex(token.TokenNumber, "1"),
+			lex(token.TK_NUMBER, "1"),
 		},
 		token.Statement{
-			lex(token.TokenNumber, "2"),
+			lex(token.TK_NUMBER, "2"),
 		},
 		token.Statement{
-			lex(token.TokenNumber, "3"),
+			lex(token.TK_NUMBER, "3"),
 		},
 	}
 
@@ -486,7 +486,7 @@ func TestParseAll_19(t *testing.T) {
 	// abc9
 	p := token.Program{
 		token.Statement{
-			lex(token.TokenNumber, "abc9"),
+			lex(token.TK_NUMBER, "abc9"),
 		},
 	}
 

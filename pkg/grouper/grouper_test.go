@@ -23,23 +23,23 @@ func TestGroupAll_1(t *testing.T) {
 		// 2
 		// 3
 		token.Statement{
-			lex(token.TokenNumber, "1"),
-			lex(token.TokenNewline, "\n"),
-			lex(token.TokenNumber, "2"),
-			lex(token.TokenNewline, "\n"),
-			lex(token.TokenNumber, "3"),
+			lex(token.TK_NUMBER, "1"),
+			lex(token.TK_NEWLINE, "\n"),
+			lex(token.TK_NUMBER, "2"),
+			lex(token.TK_NEWLINE, "\n"),
+			lex(token.TK_NUMBER, "3"),
 		},
 	)
 
 	exp := token.Program{
 		token.Statement{
-			lex(token.TokenNumber, "1"),
+			lex(token.TK_NUMBER, "1"),
 		},
 		token.Statement{
-			lex(token.TokenNumber, "2"),
+			lex(token.TK_NUMBER, "2"),
 		},
 		token.Statement{
-			lex(token.TokenNumber, "3"),
+			lex(token.TK_NUMBER, "3"),
 		},
 	}
 
@@ -57,17 +57,17 @@ func TestGroupAll_2(t *testing.T) {
 	r := token.NewLexemeReader(
 		// 1 + 2
 		token.Statement{
-			lex(token.TokenNumber, "1"),
-			lex(token.TokenAdd, "+"),
-			lex(token.TokenNumber, "2"),
+			lex(token.TK_NUMBER, "1"),
+			lex(token.TK_ADD, "+"),
+			lex(token.TK_NUMBER, "2"),
 		},
 	)
 
 	exp := token.Program{
 		token.Statement{
-			lex(token.TokenNumber, "1"),
-			lex(token.TokenAdd, "+"),
-			lex(token.TokenNumber, "2"),
+			lex(token.TK_NUMBER, "1"),
+			lex(token.TK_ADD, "+"),
+			lex(token.TK_NUMBER, "2"),
 		},
 	}
 

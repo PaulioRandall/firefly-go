@@ -28,7 +28,7 @@ func TestScanAll_1(t *testing.T) {
 	in := []rune("9")
 
 	exp := []token.Lexeme{
-		lex(token.TokenNumber, "9"),
+		lex(token.TK_NUMBER, "9"),
 	}
 
 	// WHEN scanning all tokens
@@ -43,7 +43,7 @@ func TestScanAll_2(t *testing.T) {
 	in := []rune("999")
 
 	exp := []token.Lexeme{
-		lex(token.TokenNumber, "999"),
+		lex(token.TK_NUMBER, "999"),
 	}
 
 	// WHEN scanning all tokens
@@ -64,10 +64,10 @@ func TestScanAll_3(t *testing.T) {
 		happyTest(t, in, exp)
 	}
 
-	doTest("+", token.TokenAdd)
-	doTest("-", token.TokenSub)
-	doTest("*", token.TokenMul)
-	doTest("/", token.TokenDiv)
+	doTest("+", token.TK_ADD)
+	doTest("-", token.TK_SUB)
+	doTest("*", token.TK_MUL)
+	doTest("/", token.TK_DIV)
 }
 
 func TestScanAll_4(t *testing.T) {
@@ -82,8 +82,8 @@ func TestScanAll_4(t *testing.T) {
 		happyTest(t, in, exp)
 	}
 
-	doTest("(", token.TokenParenOpen)
-	doTest(")", token.TokenParenClose)
+	doTest("(", token.TK_PAREN_OPEN)
+	doTest(")", token.TK_PAREN_CLOSE)
 }
 
 func TestScanAll_100(t *testing.T) {
@@ -94,23 +94,23 @@ func TestScanAll_100(t *testing.T) {
 	)
 
 	exp := []token.Lexeme{
-		lex(token.TokenNumber, "1"),
-		lex(token.TokenSpace, " "),
-		lex(token.TokenAdd, "+"),
-		lex(token.TokenSpace, " "),
-		lex(token.TokenNumber, "2"),
-		lex(token.TokenSpace, " "),
-		lex(token.TokenSub, "-"),
-		lex(token.TokenSpace, " "),
-		lex(token.TokenNumber, "3"),
-		lex(token.TokenSpace, " "),
-		lex(token.TokenMul, "*"),
-		lex(token.TokenSpace, " "),
-		lex(token.TokenNumber, "4"),
-		lex(token.TokenSpace, " "),
-		lex(token.TokenDiv, "/"),
-		lex(token.TokenSpace, " "),
-		lex(token.TokenNumber, "5"),
+		lex(token.TK_NUMBER, "1"),
+		lex(token.TK_SPACE, " "),
+		lex(token.TK_ADD, "+"),
+		lex(token.TK_SPACE, " "),
+		lex(token.TK_NUMBER, "2"),
+		lex(token.TK_SPACE, " "),
+		lex(token.TK_SUB, "-"),
+		lex(token.TK_SPACE, " "),
+		lex(token.TK_NUMBER, "3"),
+		lex(token.TK_SPACE, " "),
+		lex(token.TK_MUL, "*"),
+		lex(token.TK_SPACE, " "),
+		lex(token.TK_NUMBER, "4"),
+		lex(token.TK_SPACE, " "),
+		lex(token.TK_DIV, "/"),
+		lex(token.TK_SPACE, " "),
+		lex(token.TK_NUMBER, "5"),
 	}
 
 	// WHEN scanning all tokens
@@ -129,12 +129,12 @@ func TestScanAll_101(t *testing.T) {
 	)
 
 	exp := []token.Lexeme{
-		lex(token.TokenNumber, "1"),
-		lex(token.TokenNewline, "\n"),
-		lex(token.TokenNumber, "2"),
-		lex(token.TokenNewline, "\n"),
-		lex(token.TokenNumber, "3"),
-		lex(token.TokenNewline, "\n"),
+		lex(token.TK_NUMBER, "1"),
+		lex(token.TK_NEWLINE, "\n"),
+		lex(token.TK_NUMBER, "2"),
+		lex(token.TK_NEWLINE, "\n"),
+		lex(token.TK_NUMBER, "3"),
+		lex(token.TK_NEWLINE, "\n"),
 	}
 
 	// WHEN scanning all tokens

@@ -65,7 +65,7 @@ func sliceStmt(r token.LexemeReader) (token.Statement, error) {
 			return nil, e
 		}
 
-		if lx.Token == token.TokenNewline {
+		if lx.Token == token.TK_NEWLINE {
 			break
 		}
 

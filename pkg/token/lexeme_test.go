@@ -18,18 +18,18 @@ func TestPutBack_1(t *testing.T) {
 	exp := &lexemeReader{
 		idx: 2,
 		lxs: []Lexeme{
-			lex(TokenNumber, "1"),
-			lex(TokenAdd, "+"),
-			lex(TokenAdd, "+"),
-			lex(TokenNumber, "2"),
+			lex(TK_NUMBER, "1"),
+			lex(TK_ADD, "+"),
+			lex(TK_ADD, "+"),
+			lex(TK_NUMBER, "2"),
 		},
 	}
 
 	r := &lexemeReader{
 		lxs: []Lexeme{
-			lex(TokenNumber, "1"),
-			lex(TokenAdd, "+"),
-			lex(TokenNumber, "2"),
+			lex(TK_NUMBER, "1"),
+			lex(TK_ADD, "+"),
+			lex(TK_NUMBER, "2"),
 		},
 	}
 

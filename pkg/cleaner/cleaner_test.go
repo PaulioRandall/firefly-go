@@ -23,32 +23,32 @@ func TestCleanAll_1(t *testing.T) {
 		// 2 * 2
 		token.Program{
 			token.Statement{
-				lex(token.TokenNumber, "1"),
-				lex(token.TokenSpace, " "),
-				lex(token.TokenAdd, "+"),
-				lex(token.TokenSpace, " "),
-				lex(token.TokenNumber, "1"),
+				lex(token.TK_NUMBER, "1"),
+				lex(token.TK_SPACE, " "),
+				lex(token.TK_ADD, "+"),
+				lex(token.TK_SPACE, " "),
+				lex(token.TK_NUMBER, "1"),
 			},
 			token.Statement{
-				lex(token.TokenNumber, "2"),
-				lex(token.TokenSpace, " "),
-				lex(token.TokenMul, "*"),
-				lex(token.TokenSpace, " "),
-				lex(token.TokenNumber, "2"),
+				lex(token.TK_NUMBER, "2"),
+				lex(token.TK_SPACE, " "),
+				lex(token.TK_MUL, "*"),
+				lex(token.TK_SPACE, " "),
+				lex(token.TK_NUMBER, "2"),
 			},
 		},
 	)
 
 	exp := token.Program{
 		token.Statement{
-			lex(token.TokenNumber, "1"),
-			lex(token.TokenAdd, "+"),
-			lex(token.TokenNumber, "1"),
+			lex(token.TK_NUMBER, "1"),
+			lex(token.TK_ADD, "+"),
+			lex(token.TK_NUMBER, "1"),
 		},
 		token.Statement{
-			lex(token.TokenNumber, "2"),
-			lex(token.TokenMul, "*"),
-			lex(token.TokenNumber, "2"),
+			lex(token.TK_NUMBER, "2"),
+			lex(token.TK_MUL, "*"),
+			lex(token.TK_NUMBER, "2"),
 		},
 	}
 
@@ -68,18 +68,18 @@ func TestCleanAll_2(t *testing.T) {
 		// 1 + 1
 		token.Program{
 			token.Statement{
-				lex(token.TokenNumber, "1"),
-				lex(token.TokenAdd, "+"),
-				lex(token.TokenNumber, "1"),
+				lex(token.TK_NUMBER, "1"),
+				lex(token.TK_ADD, "+"),
+				lex(token.TK_NUMBER, "1"),
 			},
 		},
 	)
 
 	exp := token.Program{
 		token.Statement{
-			lex(token.TokenNumber, "1"),
-			lex(token.TokenAdd, "+"),
-			lex(token.TokenNumber, "1"),
+			lex(token.TK_NUMBER, "1"),
+			lex(token.TK_ADD, "+"),
+			lex(token.TK_NUMBER, "1"),
 		},
 	}
 
