@@ -3,8 +3,8 @@ package parser
 import (
 	"strconv"
 
-	"github.com/PaulioRandall/firefly-go/pkg/ast"
-	"github.com/PaulioRandall/firefly-go/pkg/token"
+	"github.com/PaulioRandall/firefly-go/firefly/ast"
+	"github.com/PaulioRandall/firefly-go/firefly/token"
 )
 
 func expectNumber(r lexReader) ast.Tree {

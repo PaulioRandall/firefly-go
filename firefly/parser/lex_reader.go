@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"github.com/PaulioRandall/firefly-go/pkg/token"
+	"github.com/PaulioRandall/firefly-go/firefly/token"
 )
 
 // LexReader interface is for accessing a stream of lexemes.

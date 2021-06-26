@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"github.com/PaulioRandall/firefly-go/pkg/ast"
-	"github.com/PaulioRandall/firefly-go/pkg/token"
+	"github.com/PaulioRandall/firefly-go/firefly/ast"
+	"github.com/PaulioRandall/firefly-go/firefly/token"
 )
 
 // StmtParser is a recursion based function that parses its statement and then

@@ -1,7 +1,7 @@
 package runner
 
 import (
-	"github.com/PaulioRandall/firefly-go/pkg/ast"
+	"github.com/PaulioRandall/firefly-go/firefly/ast"
 )
 
 func computeInfix(tr ast.Tree, compute infixComputer) (ast.NumberTree, error) {

@@ -4,7 +4,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/PaulioRandall/firefly-go/pkg/ast"
+	"github.com/PaulioRandall/firefly-go/firefly/ast"
 )
 
 type Interpreter interface {

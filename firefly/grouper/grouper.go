@@ -1,12 +1,13 @@
 // Package grouper splits a token stream into a lists of tokens that each
-// represent a token statement, a statement or fragement of a statement
-// comprised of the tokens that are parsed to form it. To use, call the Begin
-// function with a LexemeReader to get the first GroupTokens function. Invoking
-// it will return a token statement and the next GroupTokens function.
+// represent a token statement.
+//
+// To use, call the Begin function with a LexReader to get the first
+// GroupTokens function. Invoking it will return a token statement and the next
+// GroupTokens function.
 package grouper
 
 import (
-	"github.com/PaulioRandall/firefly-go/pkg/token"
+	"github.com/PaulioRandall/firefly-go/firefly/token"
 )
 
 // GroupTokens is a recursion based function that returns the next token

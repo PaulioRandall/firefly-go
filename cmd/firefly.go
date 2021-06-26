@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/PaulioRandall/firefly-go/pkg/firefly"
+	"github.com/PaulioRandall/firefly-go/firefly/firefly"
 )
 
 func main() {
@@ -33,7 +33,6 @@ Hello, firefly!
 
 
 NEXT: Write documentation for pkgs:
-	- ast
 	- parser
 	- runner
 

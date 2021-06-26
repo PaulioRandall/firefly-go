@@ -1,13 +1,13 @@
 // Package cleaner removes redundant tokens and applies any replacement rules
-// to a stream of token statements, a statement or fragement of a statement
-// comprised of the tokens that are parsed to form it. To use, call the Begin
-// function with a StmtReader to get the first CleanStatement function.
-// Invoking it will return a cleaned token statement and the next
-// CleanStatement function.
+// to a stream of token statements.
+//
+// To use, call the Begin function with a StmtReader to get the first
+// CleanStatement function. Invoking it will return a cleaned token statement
+// and the next CleanStatement function.
 package cleaner
 
 import (
-	"github.com/PaulioRandall/firefly-go/pkg/token"
+	"github.com/PaulioRandall/firefly-go/firefly/token"
 )
 
 // CleanStatement is a recursion based function that returns the next token

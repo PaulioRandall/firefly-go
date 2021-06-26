@@ -24,10 +24,11 @@ This scroll adds together two numbers and prints the result to standard output, 
 7 + 1
 ```
 
-This scroll is a little more advanced. It performs two mathematical operations and prints them on their own line.
+This scroll is a little more advanced. It performs two mathematical operations and prints them on their own line with an empty line in between.
 
 ```
 2 * (10 - 6)
+
 24 / 4
 ```
 
@@ -59,7 +60,7 @@ DIGIT := "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
 
 | Symbol | Precedence | Description | 
 | :---: | :---: | :--- |
-| `(` `)` | 3 | Parentheses for encapsulating expressions |
+| `(` `)` | 3 | Parentheses for encapsulating sub expressions |
 | `*` | 2 | Numeric [multiplication](https://en.wikipedia.org/wiki/Multiplication) |
 | `/` | 2 | Numeric [division](https://en.wikipedia.org/wiki/Division_(mathematics)) |
 | `+` | 1 | Numeric [addition](https://en.wikipedia.org/wiki/Addition) |
@@ -70,8 +71,9 @@ DIGIT := "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
 1. Whitespace is ignored and used only to separate non-terminal symbols
 2. Linefeeds `\n` are not considered whitespace
 3. Each instruction starts at the first non-whitespace symbol on a line
-4. Each instruction is terminated by a linefeed `\n`, the linefeed is consumed in the process 
-5. Each instruction is a mathematical calculation
-6. The result of each instruction is printed, on its own line, to the standard output
-7. Instructions are performed in the order specified within a scroll
-8. If an error is encountered it is printed to the error output and the program will immediately terminate
+4. Lines with only whitespace or no characters are called empty statements
+5. Each instruction is terminated by a linefeed `\n`, the linefeed is consumed in the process 
+6. Each instruction is a mathematical calculation except for empty statements
+7. The result of each instruction is printed, on its own line, to the standard output with empty statements printing nothing except for a linefeed
+8. Instructions are performed in the order specified within a scroll
+9. If an error is encountered it is printed to the error output and the program will immediately terminate

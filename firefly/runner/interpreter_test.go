@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/PaulioRandall/firefly-go/pkg/ast"
+	"github.com/PaulioRandall/firefly-go/firefly/ast"
 )
 
 type mockWriter struct {

@@ -1,6 +1,8 @@
 // Package ast (Abstract Syntax Tree) defines the set of ASTs that are used to
-// drive interpretation. Each tree represents a program statement with many
-// also capable of being sub trees.
+// drive interpretation or compilation.
+//
+// Each tree represents a program statement with many also capable of being
+// sub trees.
 package ast
 
 import (
@@ -83,15 +85,15 @@ func (tr InfixTree) Debug() string {
 	writeLine(sb, 0, tr.Node.String())
 
 	writeText(sb, 1, "L: ")
-	writeAST(sb, 0, tr.Left)
+	writeTree(sb, 0, tr.Left)
 
 	writeText(sb, 1, "R: ")
-	writeAST(sb, 0, tr.Right)
+	writeTree(sb, 0, tr.Right)
 
 	return sb.String()
 }
 
-func writeAST(sb *strings.Builder, indent int, tr Tree) {
+func writeTree(sb *strings.Builder, indent int, tr Tree) {
 	writeLine(sb, 0, tr.Type().String())
 	indent++
 	sb.WriteString(tr.String())

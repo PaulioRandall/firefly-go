@@ -1,6 +1,8 @@
-// Package scanner scans Firefly language tokens from a text source. To use,
-// call the Begin function with a RuneReader to get the first ParseToken
-// function. Invoking it will return a token and the next ParseToken function.
+// Package scanner scans Firefly language tokens from a text source.
+//
+// To use, call the Begin function with a RuneReader to get the first
+// ParseToken function. Invoking it will return a token and the next ParseToken
+// function.
 package scanner
 
 import (
@@ -9,7 +11,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/PaulioRandall/firefly-go/pkg/token"
+	"github.com/PaulioRandall/firefly-go/firefly/token"
 )
 
 // ParseToken is a recursion based tokeniser. It returns the next token and

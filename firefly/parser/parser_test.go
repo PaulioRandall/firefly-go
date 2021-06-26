@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/PaulioRandall/firefly-go/pkg/ast"
-	"github.com/PaulioRandall/firefly-go/pkg/token"
+	"github.com/PaulioRandall/firefly-go/firefly/ast"
+	"github.com/PaulioRandall/firefly-go/firefly/token"
 )
 
 func happyTest(t *testing.T, b token.Block, exp ast.Block) {

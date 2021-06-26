@@ -3,13 +3,13 @@ package firefly
 import (
 	"io/ioutil"
 
-	"github.com/PaulioRandall/firefly-go/pkg/ast"
-	"github.com/PaulioRandall/firefly-go/pkg/cleaner"
-	"github.com/PaulioRandall/firefly-go/pkg/grouper"
-	"github.com/PaulioRandall/firefly-go/pkg/parser"
-	"github.com/PaulioRandall/firefly-go/pkg/runner"
-	"github.com/PaulioRandall/firefly-go/pkg/scanner"
-	"github.com/PaulioRandall/firefly-go/pkg/token"
+	"github.com/PaulioRandall/firefly-go/firefly/ast"
+	"github.com/PaulioRandall/firefly-go/firefly/cleaner"
+	"github.com/PaulioRandall/firefly-go/firefly/grouper"
+	"github.com/PaulioRandall/firefly-go/firefly/parser"
+	"github.com/PaulioRandall/firefly-go/firefly/runner"
+	"github.com/PaulioRandall/firefly-go/firefly/scanner"
+	"github.com/PaulioRandall/firefly-go/firefly/token"
 )
 
 func RunFile(file string) error {
