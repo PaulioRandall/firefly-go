@@ -5,36 +5,24 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
-func parseParenExpr(lr token.LexemeReader, opener token.Lexeme) (ast.Node, error) {
+func parseParenExpr(r lexReader, opener token.Lexeme) ast.Node {
 
-	if !lr.More() {
-		return nil, newError("Expected expression after opening parenthesis '('")
+	if !r.More() {
+		panicParseErr(nil, "Expected expression after opening parenthesis '('")
 	}
 
-	n, e := expectExpr(lr, 0)
-	if e != nil {
-		return nil, e
-	}
+	n := expectExpr(r, 0)
+	expectParenClose(r)
 
-	e = expectParenClose(lr)
-	if e != nil {
-		return nil, e
-	}
-
-	return n, nil
+	return n
 }
 
-func expectParenClose(lr token.LexemeReader) error {
+func expectParenClose(r lexReader) {
 
-	lx, e := lr.Read()
-	if e != nil {
-		return e
-	}
+	lx := r.Read()
 
 	if lx.Token != token.TokenParenClose {
 		tk := lx.Token.String()
-		return newError("Expected closing parenthesis but got '%s'", tk)
+		panicParseErr(nil, "Expected closing parenthesis but got '%s'", tk)
 	}
-
-	return nil
 }

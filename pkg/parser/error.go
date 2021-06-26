@@ -22,7 +22,7 @@ func (e parseErr) Cause() error {
 	return e.cause
 }
 
-func parsePanic(cause error, msg string, args ...interface{}) {
+func panicParseErr(cause error, msg string, args ...interface{}) {
 	panic(newParseErr(cause, msg, args...))
 }
 

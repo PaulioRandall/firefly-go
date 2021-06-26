@@ -5,89 +5,64 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
-func expectExpr(lr token.LexemeReader, leftPriority int) (ast.Node, error) {
-
-	expr, e := expectTerm(lr)
-
-	if e != nil {
-		return nil, e
-	}
-
-	return parseInfix(lr, expr, leftPriority)
+func expectExpr(r lexReader, leftPriority int) ast.Node {
+	expr := expectTerm(r)
+	return parseInfix(r, expr, leftPriority)
 }
 
-func expectTerm(lr token.LexemeReader) (ast.Node, error) {
+func expectTerm(r lexReader) ast.Node {
 
-	lx, e := lr.Read()
-	if e != nil {
-		return nil, e
-	}
+	lx := r.Read()
 
 	switch lx.Token {
 	case token.TokenNumber:
-		n := parseNumber(lx)
-		return n, nil
+		return parseNumber(lx)
 
 	case token.TokenParenOpen:
-		return parseParenExpr(lr, lx)
+		return parseParenExpr(r, lx)
 
 	case token.TokenParenClose:
-		return nil, newError("Unexpected closing parenthesis")
-
-	default:
-		return nil, newError("Unexpected Token '%s'", lx.Token.String())
+		panicParseErr(nil, "Unexpected closing parenthesis")
 	}
+
+	panicParseErr(nil, "Unexpected Token '%s'", lx.Token.String())
+	return nil
 }
 
-func parseInfix(lr token.LexemeReader, left ast.Node, leftPriority int) (ast.Node, error) {
+func parseInfix(r lexReader, left ast.Node, leftPriority int) ast.Node {
 
-	if !lr.More() {
-		return left, nil
+	if !r.More() {
+		return left
 	}
 
-	op, leftAssoc, e := leftHasPriority(lr, leftPriority)
-	if e != nil {
-		return nil, e
-	}
-
+	op, leftAssoc := leftHasPriority(r, leftPriority)
 	if leftAssoc {
-		return left, nil
+		return left
 	}
 
-	right, e := expectExpr(lr, op.Precedence())
-	if e != nil {
-		return nil, e
-	}
+	right := expectExpr(r, op.Precedence())
+	n := buildExpr(op, left, right)
 
-	n, e := buildExpr(op, left, right)
-	if e != nil {
-		return nil, e
-	}
-
-	return parseInfix(lr, n, leftPriority)
+	return parseInfix(r, n, leftPriority)
 }
 
-func leftHasPriority(lr token.LexemeReader, leftPriority int) (token.Lexeme, bool, error) {
-	var zero token.Lexeme
+func leftHasPriority(r lexReader, leftPriority int) (token.Lexeme, bool) {
 
-	op, e := lr.Read()
-	if e != nil {
-		return zero, false, e
-	}
+	op := r.Read()
 
 	if !op.Token.IsOperator() {
-		return zero, false, newError("Expected operator, got '%s'", op.Token.String())
+		panicParseErr(nil, "Expected operator, got '%s'", op.Token.String())
 	}
 
-	if op.IsCloser() || leftPriority >= op.Precedence() {
-		e = lr.PutBack(op)
-		return zero, true, e
+	if !op.IsCloser() && leftPriority < op.Precedence() {
+		return op, false
 	}
 
-	return op, false, nil
+	r.PutBack(op)
+	return token.Lexeme{}, true
 }
 
-func buildExpr(op token.Lexeme, left, right ast.Node) (ast.Node, error) {
+func buildExpr(op token.Lexeme, left, right ast.Node) ast.Node {
 
 	n := ast.InfixNode{
 		AST:   mapInfixTokenToAST(op.Token),
@@ -96,10 +71,10 @@ func buildExpr(op token.Lexeme, left, right ast.Node) (ast.Node, error) {
 	}
 
 	if n.AST == ast.AstUndefined {
-		return nil, newError("Unknown operation '%s'", op.Token.String())
+		panicParseErr(nil, "Unknown operation '%s'", op.Token.String())
 	}
 
-	return n, nil
+	return n
 }
 
 func mapInfixTokenToAST(tk token.Token) ast.AST {

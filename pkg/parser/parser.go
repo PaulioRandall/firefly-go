@@ -1,10 +1,6 @@
 package parser
 
 import (
-	"fmt"
-
-	"github.com/go-errors/errors"
-
 	"github.com/PaulioRandall/firefly-go/pkg/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
@@ -44,73 +40,58 @@ func ParseAll(r token.StmtReader) (ast.Program, error) {
 }
 
 func nextParser(r token.StmtReader) StmtParser {
-	return func() (n ast.Node, f StmtParser, e error) {
-
-		defer func() {
-			r := recover()
-			if r == nil {
-				return
-			}
-
-			var ok bool
-			if e, ok = r.(error); !ok {
-				panic("[BUG] All parse panics must recover as an error!")
-			}
-		}()
+	return func() (ast.Node, StmtParser, error) {
 
 		unparsed, e := r.Read()
 		if e != nil {
-			return
+			return nil, nil, e
 		}
 
-		n, e = ParseStmt(unparsed)
+		parsed, e := ParseStmt(unparsed)
 		if e != nil {
-			return
+			return nil, nil, e
 		}
 
+		var f StmtParser
 		if r.More() {
 			f = nextParser(r)
 		}
 
-		return
+		return parsed, f, nil
 	}
 }
 
 // ParseStmt parses the supplied statement into an AST.
-func ParseStmt(stmt token.Statement) (ast.Node, error) {
+func ParseStmt(stmt token.Statement) (n ast.Node, e error) {
 
-	r := token.NewLexemeReader(stmt)
+	defer func() {
+		r := recover()
+		if r == nil {
+			return
+		}
+
+		var ok bool
+		if e, ok = r.(error); !ok {
+			panic("[BUG] All parse panics must recover as an error!")
+		}
+	}()
+
+	lr := token.NewLexemeReader(stmt)
+	r := lexReader{lr: lr}
+
 	if !r.More() {
 		return ast.EmptyNode{}, nil
 	}
 
-	n, e := expectExpr(r, 0)
-	if e != nil {
-		return nil, e
-	}
-
-	e = validateNoMoreTokens(r)
-	if e != nil {
-		return nil, e
-	}
+	n = expectExpr(r, 0)
+	validateNoMoreTokens(r)
 
 	return n, nil
 }
 
-func validateNoMoreTokens(r token.LexemeReader) error {
-	if !r.More() {
-		return nil
+func validateNoMoreTokens(r lexReader) {
+	if r.More() {
+		lx := r.Read()
+		panicParseErr(nil, "Unexpected dangling token '%s'", lx.Token.String())
 	}
-
-	lx, e := r.Read()
-	if e != nil {
-		return e
-	}
-
-	return newError("Unexpected dangling token '%s'", lx.Token.String())
-}
-
-func newError(msg string, args ...interface{}) error {
-	e := fmt.Errorf(msg, args...)
-	return errors.Wrap(e, 1)
 }
