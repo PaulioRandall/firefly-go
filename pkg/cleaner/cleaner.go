@@ -9,8 +9,18 @@ import (
 // statement, the function will be nil.
 type NextStatement func() (token.Statement, NextStatement, error)
 
+// StmtReader interface is for reading statements from a stream.
+type StmtReader interface {
+
+	// More returns true if there are unread statements.
+	More() bool
+
+	// Read returns the next statement and increments to the next item.
+	Read() (token.Statement, error)
+}
+
 // Begin returns a new NextStatement function.
-func Begin(sr token.StmtReader) NextStatement {
+func Begin(sr StmtReader) NextStatement {
 	if sr.More() {
 		return clean(sr)
 	}
@@ -18,7 +28,7 @@ func Begin(sr token.StmtReader) NextStatement {
 }
 
 // CleanAll removes redundant tokens from a stream of statements.
-func CleanAll(sr token.StmtReader) (token.Block, error) {
+func CleanAll(sr StmtReader) (token.Block, error) {
 
 	var (
 		stmts = token.Block{}
@@ -38,7 +48,7 @@ func CleanAll(sr token.StmtReader) (token.Block, error) {
 	return stmts, nil
 }
 
-func clean(sr token.StmtReader) NextStatement {
+func clean(sr StmtReader) NextStatement {
 	return func() (token.Statement, NextStatement, error) {
 
 		unclean, e := sr.Read()

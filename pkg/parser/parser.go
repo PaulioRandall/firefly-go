@@ -10,8 +10,18 @@ import (
 // AST tree, the function will be nil.
 type StmtParser func() (ast.Node, StmtParser, error)
 
+// StmtReader interface is for reading statements from a stream.
+type StmtReader interface {
+
+	// More returns true if there are unread statements.
+	More() bool
+
+	// Read returns the next statement and increments to the next item.
+	Read() (token.Statement, error)
+}
+
 // Begin returns a new StmtParser function.
-func Begin(r token.StmtReader) StmtParser {
+func Begin(r StmtReader) StmtParser {
 	if r.More() {
 		return nextParser(r)
 	}
@@ -19,7 +29,7 @@ func Begin(r token.StmtReader) StmtParser {
 }
 
 // ParseAll parses all statement in the statement reader.
-func ParseAll(r token.StmtReader) (ast.Program, error) {
+func ParseAll(r StmtReader) (ast.Program, error) {
 
 	var (
 		parsed        = ast.Program{}
@@ -39,7 +49,7 @@ func ParseAll(r token.StmtReader) (ast.Program, error) {
 	return parsed, nil
 }
 
-func nextParser(r token.StmtReader) StmtParser {
+func nextParser(r StmtReader) StmtParser {
 	return func() (ast.Node, StmtParser, error) {
 
 		unparsed, e := r.Read()
