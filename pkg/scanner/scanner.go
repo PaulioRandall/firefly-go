@@ -1,3 +1,6 @@
+// Package scanner scans Firefly language tokens from a text source. To use,
+// call the Begin function with a RuneReader to get the first ParseToken
+// function. Invoking it will return a token and the next ParseToken function.
 package scanner
 
 import (
@@ -10,38 +13,40 @@ import (
 )
 
 // ParseToken is a recursion based tokeniser. It returns the next token and
-// another parse function. On error or while obtaining the last token,
-// the function will be nil.
+// a ParseToken function for parsing the next token. On error or while
+// obtaining the last token, the returned ParseToken function will be nil.
 type ParseToken func() (token.Lexeme, ParseToken, error)
 
-// ScanAll scans all remaining tokens from the Scroll reader and returns them
-// as a slice.
-func ScanAll(r token.RuneReader) ([]token.Lexeme, error) {
-
-	var (
-		tks = []token.Lexeme{}
-		tk  token.Lexeme
-		f   = Begin(r)
-		e   error
-	)
-
-	for f != nil {
-		tk, f, e = f()
-		if e != nil {
-			return nil, e
-		}
-		tks = append(tks, tk)
-	}
-
-	return tks, nil
-}
-
-// Begin returns a new function from which to begin parsing tokens.
+// Begin returns a new ParseToken function from which to begin parsing tokens.
+// Nil is returned if the supplied RuneReader has already reached the end of
+// its stream.
 func Begin(r token.RuneReader) ParseToken {
 	if r.More() {
 		return scan(r)
 	}
 	return nil
+}
+
+// ScanAll is a convenience function and example for scanning all [remaining]
+// tokens from a RuneReader.
+func ScanAll(r token.RuneReader) ([]token.Lexeme, error) {
+
+	var (
+		lxs = []token.Lexeme{}
+		lx  token.Lexeme
+		f   = Begin(r)
+		e   error
+	)
+
+	for f != nil {
+		lx, f, e = f()
+		if e != nil {
+			return nil, e
+		}
+		lxs = append(lxs, lx)
+	}
+
+	return lxs, nil
 }
 
 func scan(r token.RuneReader) ParseToken {

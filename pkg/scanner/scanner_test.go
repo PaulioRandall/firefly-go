@@ -33,7 +33,7 @@ func TestScanAll_1(t *testing.T) {
 
 	// WHEN scanning all tokens
 	// THEN the code should be parsed without error
-	// AND the output should match the 'exp'
+	// AND the output should match 'exp'
 	happyTest(t, in, exp)
 }
 
@@ -57,7 +57,7 @@ func TestScanAll_3(t *testing.T) {
 	// GIVEN an operator
 	// WHEN scanning all tokens
 	// THEN the code should be parsed without error
-	// AND the output should match the 'exp'
+	// AND the output should match 'exp'
 	doTest := func(op string, tk token.Token) {
 		in := []rune(op)
 		exp := []token.Lexeme{lex(tk, op)}
@@ -75,7 +75,7 @@ func TestScanAll_4(t *testing.T) {
 	// GIVEN parentheses
 	// WHEN scanning all tokens
 	// THEN the parentheses should be parsed without error
-	// AND the output should match the 'exp'
+	// AND the output should match 'exp'
 	doTest := func(op string, tk token.Token) {
 		in := []rune(op)
 		exp := []token.Lexeme{lex(tk, op)}
@@ -86,7 +86,7 @@ func TestScanAll_4(t *testing.T) {
 	doTest(")", token.TK_PAREN_CLOSE)
 }
 
-func TestScanAll_100(t *testing.T) {
+func TestScanAll_5(t *testing.T) {
 
 	// GIVEN a long expression
 	r := token.NewRuneReader(
@@ -121,7 +121,7 @@ func TestScanAll_100(t *testing.T) {
 	require.Equal(t, exp, act)
 }
 
-func TestScanAll_101(t *testing.T) {
+func TestScanAll_6(t *testing.T) {
 
 	// GIVEN multiple statements
 	r := token.NewRuneReader(
@@ -145,9 +145,9 @@ func TestScanAll_101(t *testing.T) {
 	require.Equal(t, exp, act)
 }
 
-func TestScanAll_102(t *testing.T) {
+func TestScanAll_7(t *testing.T) {
 
-	// GIVEN firefly code containing an invalid token
+	// GIVEN an invalid token
 	r := token.NewRuneReader(
 		[]rune("#"),
 	)

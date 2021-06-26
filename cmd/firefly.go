@@ -32,9 +32,7 @@ func printTaskList() {
 Hello, firefly!
 
 
-NEXT: Write documentation for pkgs
-	- token
-	- scanner
+NEXT: Write documentation for pkgs:
 	- grouper
 	- cleaner
 	- ast
