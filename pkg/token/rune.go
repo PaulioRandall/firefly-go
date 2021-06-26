@@ -6,12 +6,11 @@ type RuneReader interface {
 	// More returns true if there are unread runes.
 	More() bool
 
+	// Peek returns the next rune without moving the read head.
+	Peek() (rune, error)
+
 	// Read returns the next rune and moves the read head to the next item.
 	Read() (rune, error)
-
-	// PutBack puts a rune back into the reader so it becomes the next one to be
-	// read.
-	PutBack(rune) error
 }
 
 // NewRuneReader wraps a slice of runes for reading.
@@ -30,6 +29,13 @@ func (r *runeReader) More() bool {
 	return len(r.text) > r.idx
 }
 
+func (r *runeReader) Peek() (rune, error) {
+	if !r.More() {
+		return rune(0), EOF
+	}
+	return r.text[r.idx], nil
+}
+
 func (r *runeReader) Read() (rune, error) {
 	if !r.More() {
 		return rune(0), EOF
@@ -37,12 +43,4 @@ func (r *runeReader) Read() (rune, error) {
 	ru := r.text[r.idx]
 	r.idx++
 	return ru, nil
-}
-
-func (r *runeReader) PutBack(ru rune) error {
-	head := r.text[:r.idx]
-	tail := r.text[r.idx:]
-	tail = append([]rune{ru}, tail...)
-	r.text = append(head, tail...)
-	return nil
 }

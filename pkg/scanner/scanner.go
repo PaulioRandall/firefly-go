@@ -117,6 +117,7 @@ func lexemeStr(tk token.Token, v string) token.Lexeme {
 }
 
 func scanNumber(r token.RuneReader, first rune) (token.Lexeme, error) {
+	undefined := token.Lexeme{}
 
 	if !r.More() {
 		return lexemeRune(token.TK_NUMBER, first), nil
@@ -126,16 +127,16 @@ func scanNumber(r token.RuneReader, first rune) (token.Lexeme, error) {
 	sb.WriteRune(first)
 
 	for r.More() {
-		ru, e := r.Read()
+		ru, e := r.Peek()
 		if e != nil {
-			return token.Lexeme{}, e
+			return undefined, e
 		}
 
 		if !isNumber(ru) {
-			r.PutBack(ru)
 			break
 		}
 
+		_, _ = r.Read()
 		sb.WriteRune(ru)
 	}
 
