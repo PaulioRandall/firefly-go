@@ -26,6 +26,7 @@ DEV_SCROLL="./cmd/dev.scroll"
 printUsage() {
   println "Usage:"
   println "\t" "./godo [-noclear] [help]" "\t" "Show usage"
+  println "\t" "./godo [-noclear] doc   " "\t" "Show documentation"
   println "\t" "./godo [-noclear] clean " "\t" "Clean Go caches and build folder"
   println "\t" "./godo [-noclear] build " "\t" "Build -> format"
   println "\t" "./godo [-noclear] test  " "\t" "Build -> format -> test"
@@ -45,12 +46,45 @@ println() {
   printf "\n"
 }
 
+# Requires two parameters:
+# 1. Command to check
+# 2. Message if command is not found
+checkInstall() {
+  # Original author: Remy van Elst
+  # https://raymii.org/s/snippets/Bash_Bits_Check_if_command_is_available.html
+  command -v "$1" >/dev/null 2>&1
+  if [[ $? -ne 0 ]]; then
+      echo "$2"
+      exit 1
+  fi
+}
+
+# Requires two parameters:
+# 1. Time to sleep before opening
+# 2. URL to open
+tryOpenBrowser() {
+  command -v "xdg-open" >/dev/null 2>&1
+  if [[ $? -eq 0 ]]; then
+    sleep "$1"
+    # Original author: TheWanderer
+    # https://askubuntu.com/questions/682542/is-there-a-way-to-open-browser-using-terminal
+    xdg-open $2 </dev/null >/dev/null 2>&1 & disown
+  fi
+}
+
+goDoc() {
+  println "Documentation..."
+  checkInstall "godoc" "Can't find godoc command on your system!"
+  tryOpenBrowser "1s" "http://localhost:3000/pkg/#thirdparty" &
+  godoc -http=:3000 
+}
+
 clean() {
   println "Cleaning..."
   rm -r -f "$BUILD_DIR"
 }
 
-deepClean() {
+goClean() {
   clean
   go clean -cache -testcache
 }
@@ -98,8 +132,13 @@ if [[ "$1" == "" || "$1" == "help" ]]; then
   exit 0
 fi
 
+if [[ "$1" == "doc" ]]; then
+  goDoc
+  exit 0
+fi
+
 if [[ "$1" == "clean" ]]; then
-  deepClean
+  goClean
   exit 0
 fi
 
