@@ -38,7 +38,7 @@ func ParseFile(file string) (ast.Program, error) {
 		return nil, e
 	}
 
-	lexemeReader := token.NewLexemeReader(lxs)
+	lexemeReader := token.NewLexReader(lxs)
 	stmts, e := grouper.GroupAll(lexemeReader)
 	if e != nil {
 		return nil, e

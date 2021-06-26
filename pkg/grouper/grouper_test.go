@@ -18,7 +18,7 @@ func lex(tk token.Token, v string) token.Lexeme {
 func TestGroupAll_1(t *testing.T) {
 
 	// GIVEN three statements in a lexeme reader
-	r := token.NewLexemeReader(
+	r := token.NewLexReader(
 		// 1
 		// 2
 		// 3
@@ -54,7 +54,7 @@ func TestGroupAll_1(t *testing.T) {
 func TestGroupAll_2(t *testing.T) {
 
 	// GIVEN a single statement in a lexeme reader
-	r := token.NewLexemeReader(
+	r := token.NewLexReader(
 		// 1 + 2
 		token.Statement{
 			lex(token.TK_NUMBER, "1"),

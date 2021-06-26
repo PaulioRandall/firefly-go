@@ -76,7 +76,7 @@ func ParseStmt(stmt token.Statement) (n ast.Node, e error) {
 		}
 	}()
 
-	lr := token.NewLexemeReader(stmt)
+	lr := token.NewLexReader(stmt)
 
 	if lr.More() {
 		n = parseStmt(lr)
@@ -87,7 +87,7 @@ func ParseStmt(stmt token.Statement) (n ast.Node, e error) {
 	return n, e
 }
 
-func parseStmt(lr token.LexemeReader) ast.Node {
+func parseStmt(lr LexReader) ast.Node {
 	r := lexReader{lr: lr}
 	n := expectExpr(r, 0)
 	validateNoMoreTokens(r)

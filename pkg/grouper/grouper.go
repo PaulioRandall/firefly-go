@@ -14,10 +14,23 @@ import (
 // error or while obtaining the last token statement, the function will be nil.
 type GroupTokens func() (token.Statement, GroupTokens, error)
 
+// LexReader interface is for accessing a stream of lexemes.
+type LexReader interface {
+
+	// More returns true if there are unread lexemes.
+	More() bool
+
+	// Peek returns the next lexeme without incrementing to the next.
+	Peek() (token.Lexeme, error)
+
+	// Read returns the next lexeme and increments to the next item.
+	Read() (token.Lexeme, error)
+}
+
 // Begin returns a new GroupTokens function from which to begin parsing token
 // statements. Nil is returned if the supplied reader has already reached the
 // end of its stream.
-func Begin(r token.LexemeReader) GroupTokens {
+func Begin(r LexReader) GroupTokens {
 	if r.More() {
 		return group(r)
 	}
@@ -26,7 +39,7 @@ func Begin(r token.LexemeReader) GroupTokens {
 
 // GroupAll is a convenience function and example for grouping all [remaining]
 // tokens from a reader into a token block of token statements.
-func GroupAll(r token.LexemeReader) (token.Block, error) {
+func GroupAll(r LexReader) (token.Block, error) {
 
 	var (
 		block = token.Block{}
@@ -46,7 +59,7 @@ func GroupAll(r token.LexemeReader) (token.Block, error) {
 	return block, nil
 }
 
-func group(r token.LexemeReader) GroupTokens {
+func group(r LexReader) GroupTokens {
 	return func() (token.Statement, GroupTokens, error) {
 
 		stmt, e := sliceStmt(r)
@@ -62,7 +75,7 @@ func group(r token.LexemeReader) GroupTokens {
 	}
 }
 
-func sliceStmt(r token.LexemeReader) (token.Statement, error) {
+func sliceStmt(r LexReader) (token.Statement, error) {
 
 	var stmt token.Statement
 
