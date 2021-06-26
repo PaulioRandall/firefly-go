@@ -12,20 +12,20 @@ func expectExpr(r lexReader, leftPriority int) ast.Node {
 
 func expectTerm(r lexReader) ast.Node {
 
-	lx := r.Read()
+	tk := r.Peek().Token
 
-	switch lx.Token {
+	switch tk {
 	case token.TK_NUMBER:
-		return parseNumber(lx)
+		return parseNumber(r.Read())
 
 	case token.TK_PAREN_OPEN:
-		return parseParenExpr(r, lx)
+		return parseParenExpr(r, r.Read())
 
 	case token.TK_PAREN_CLOSE:
 		parsingPanic(nil, "Unexpected closing parenthesis")
 
 	default:
-		parsingPanic(nil, "Unexpected Token '%s'", lx.Token.String())
+		parsingPanic(nil, "Unexpected Token '%s'", tk.String())
 	}
 
 	return nil // Unreachable but required
@@ -37,37 +37,37 @@ func parseInfix(r lexReader, left ast.Node, leftPriority int) ast.Node {
 		return left
 	}
 
-	op, leftWins := leftHasPriority(r, leftPriority)
+	opToken, leftWins := leftHasPriority(r, leftPriority)
 	if leftWins {
 		return left
 	}
 
-	right := expectExpr(r, op.Precedence())
-	n := buildExpr(op, left, right)
+	right := expectExpr(r, opToken.Precedence())
+	n := buildExpr(opToken, left, right)
 
 	return parseInfix(r, n, leftPriority)
 }
 
-func leftHasPriority(r lexReader, leftPriority int) (token.Lexeme, bool) {
+func leftHasPriority(r lexReader, leftPriority int) (token.Token, bool) {
 
-	op := r.Read()
-	if !op.Token.IsOperator() {
-		parsingPanic(nil, "Expected operator, got '%s'", op.Token.String())
+	opToken := r.Peek().Token
+
+	if !opToken.IsOperator() {
+		parsingPanic(nil, "Expected operator, got '%s'", opToken.String())
 	}
 
-	if !op.IsCloser() && leftPriority < op.Precedence() {
-		return op, false
+	if !opToken.IsCloser() && leftPriority < opToken.Precedence() {
+		return r.Read().Token, false
 	}
 
-	r.PutBack(op)
-	return token.Lexeme{}, true
+	return token.TK_UNDEFINED, true
 }
 
-func buildExpr(op token.Lexeme, left, right ast.Node) ast.Node {
+func buildExpr(opToken token.Token, left, right ast.Node) ast.Node {
 
-	astType := mapInfixTokenToAST(op.Token)
+	astType := mapInfixTokenToAST(opToken)
 	if astType == ast.AstUndefined {
-		parsingPanic(nil, "Unknown operation '%s'", op.Token.String())
+		parsingPanic(nil, "Unknown operation '%s'", opToken.String())
 	}
 
 	return ast.InfixNode{

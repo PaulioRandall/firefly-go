@@ -12,12 +12,11 @@ type LexemeReader interface {
 	// More returns true if there are unread lexemes.
 	More() bool
 
+	// Peek returns the next lexeme without moving the read head.
+	Peek() (Lexeme, error)
+
 	// Read returns the next lexeme and moves the read head to the next item.
 	Read() (Lexeme, error)
-
-	// PutBack puts a lexeme back into the reader so it becomes the next lexeme
-	// to be read.
-	PutBack(Lexeme) error
 }
 
 // NewLexemeReader wraps a slice of tokens in a Lexeme reader.
@@ -36,6 +35,13 @@ func (r *lexemeReader) More() bool {
 	return len(r.lxs) > r.idx
 }
 
+func (r *lexemeReader) Peek() (Lexeme, error) {
+	if !r.More() {
+		return Lexeme{}, EOF
+	}
+	return r.lxs[r.idx], nil
+}
+
 func (r *lexemeReader) Read() (Lexeme, error) {
 	if !r.More() {
 		return Lexeme{}, EOF
@@ -43,12 +49,4 @@ func (r *lexemeReader) Read() (Lexeme, error) {
 	lx := r.lxs[r.idx]
 	r.idx++
 	return lx, nil
-}
-
-func (r *lexemeReader) PutBack(lx Lexeme) error {
-	head := r.lxs[:r.idx]
-	tail := r.lxs[r.idx:]
-	tail = append([]Lexeme{lx}, tail...)
-	r.lxs = append(head, tail...)
-	return nil
 }

@@ -18,9 +18,8 @@ func parseParenExpr(r lexReader, opener token.Lexeme) ast.Node {
 }
 
 func expectParenClose(r lexReader) {
-	lx := r.Read()
-	if lx.Token != token.TK_PAREN_CLOSE {
-		tk := lx.Token.String()
-		parsingPanic(nil, "Expected closing parenthesis but got '%s'", tk)
+	tk := r.Read().Token
+	if tk != token.TK_PAREN_CLOSE {
+		parsingPanic(nil, "Expected closing parenthesis but got '%s'", tk.String())
 	}
 }

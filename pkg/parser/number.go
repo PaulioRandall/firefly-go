@@ -9,12 +9,12 @@ import (
 
 func expectNumber(r lexReader) ast.Node {
 
-	lx := r.Read()
+	lx := r.Peek()
 	if lx.Token != token.TK_NUMBER {
 		parsingPanic(nil, "Expected number, got '%s'", lx.Token.String())
 	}
 
-	return parseNumber(lx)
+	return parseNumber(r.Read())
 }
 
 func parseNumber(num token.Lexeme) ast.Node {

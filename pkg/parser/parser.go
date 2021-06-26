@@ -96,7 +96,7 @@ func parseStmt(lr token.LexemeReader) ast.Node {
 
 func validateNoMoreTokens(r lexReader) {
 	if r.More() {
-		lx := r.Read()
-		parsingPanic(nil, "Unexpected dangling token '%s'", lx.Token.String())
+		tk := r.Peek().Token.String()
+		parsingPanic(nil, "Unexpected dangling token '%s'", tk)
 	}
 }

@@ -12,19 +12,20 @@ func (r lexReader) More() bool {
 	return r.lr.More()
 }
 
-func (r lexReader) Read() token.Lexeme {
-	lx, e := r.lr.Read()
+func (r lexReader) Peek() token.Lexeme {
+	lx, e := r.lr.Peek()
 	if e != nil {
 		lexemeReadPanic(e)
 	}
 	return lx
 }
 
-func (r lexReader) PutBack(lx token.Lexeme) {
-	e := r.lr.PutBack(lx)
+func (r lexReader) Read() token.Lexeme {
+	lx, e := r.lr.Read()
 	if e != nil {
 		lexemeReadPanic(e)
 	}
+	return lx
 }
 
 func lexemeReadPanic(cause error) {
