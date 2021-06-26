@@ -18,10 +18,10 @@ func Begin(sr token.StmtReader) NextStatement {
 }
 
 // CleanAll removes redundant tokens from a stream of statements.
-func CleanAll(sr token.StmtReader) (token.Program, error) {
+func CleanAll(sr token.StmtReader) (token.Block, error) {
 
 	var (
-		stmts = token.Program{}
+		stmts = token.Block{}
 		stmt  token.Statement
 		f     = Begin(sr)
 		e     error

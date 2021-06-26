@@ -18,7 +18,7 @@ import (
 type ParseToken func() (token.Lexeme, ParseToken, error)
 
 // Begin returns a new ParseToken function from which to begin parsing tokens.
-// Nil is returned if the supplied RuneReader has already reached the end of
+// Nil is returned if the supplied reader has already reached the end of
 // its stream.
 func Begin(r token.RuneReader) ParseToken {
 	if r.More() {

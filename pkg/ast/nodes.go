@@ -14,8 +14,12 @@ type (
 		Debug() string
 	}
 
-	EmptyNode  struct{}
-	NumberNode struct{ Value int64 }
+	EmptyNode struct {
+	}
+
+	NumberNode struct {
+		Value int64
+	}
 
 	InfixNode struct {
 		AST

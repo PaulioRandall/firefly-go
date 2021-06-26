@@ -21,7 +21,7 @@ func TestCleanAll_1(t *testing.T) {
 	lr := token.NewStmtReader(
 		// 1 + 1
 		// 2 * 2
-		token.Program{
+		token.Block{
 			token.Statement{
 				lex(token.TK_NUMBER, "1"),
 				lex(token.TK_SPACE, " "),
@@ -39,7 +39,7 @@ func TestCleanAll_1(t *testing.T) {
 		},
 	)
 
-	exp := token.Program{
+	exp := token.Block{
 		token.Statement{
 			lex(token.TK_NUMBER, "1"),
 			lex(token.TK_ADD, "+"),
@@ -66,7 +66,7 @@ func TestCleanAll_2(t *testing.T) {
 	// GIVEN a statement without redundant tokens
 	lr := token.NewStmtReader(
 		// 1 + 1
-		token.Program{
+		token.Block{
 			token.Statement{
 				lex(token.TK_NUMBER, "1"),
 				lex(token.TK_ADD, "+"),
@@ -75,7 +75,7 @@ func TestCleanAll_2(t *testing.T) {
 		},
 	)
 
-	exp := token.Program{
+	exp := token.Block{
 		token.Statement{
 			lex(token.TK_NUMBER, "1"),
 			lex(token.TK_ADD, "+"),

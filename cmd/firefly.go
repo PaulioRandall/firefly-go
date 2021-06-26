@@ -33,7 +33,6 @@ Hello, firefly!
 
 
 NEXT: Write documentation for pkgs:
-	- grouper
 	- cleaner
 	- ast
 	- parser

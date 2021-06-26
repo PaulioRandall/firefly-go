@@ -1,7 +1,7 @@
 package token
 
-// Program in the form of a slice of statements.
-type Program []Statement
+// Block in the form of a slice of statements.
+type Block []Statement
 
 // Statement in the form of a slice of lexemes.
 type Statement []Lexeme
@@ -17,15 +17,15 @@ type StmtReader interface {
 }
 
 // NewStmtReader wraps a slice of statements (program) for reading as a stream.
-func NewStmtReader(p Program) *stmtReader {
+func NewStmtReader(b Block) *stmtReader {
 	return &stmtReader{
-		stmts: p,
+		stmts: b,
 	}
 }
 
 type stmtReader struct {
 	idx   int
-	stmts Program
+	stmts Block
 }
 
 func (r *stmtReader) More() bool {
