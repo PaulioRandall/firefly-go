@@ -22,22 +22,12 @@ func (e parseErr) Cause() error {
 	return e.cause
 }
 
-func newThenPanic(msg string, args ...interface{}) {
-	panic(newErr(msg, args...))
+func parsePanic(cause error, msg string, args ...interface{}) {
+	panic(newParseErr(cause, msg, args...))
 }
 
-func wrapThenPanic(cause error, msg string, args ...interface{}) {
-	panic(wrapErr(cause, msg, args...))
-}
-
-func newErr(msg string, args ...interface{}) parseErr {
-	return parseErr{
-		msg: fmt.Sprintf(msg, args...),
-	}
-}
-
-func wrapErr(cause error, msg string, args ...interface{}) parseErr {
-	return parseErr{
+func newParseErr(cause error, msg string, args ...interface{}) *parseErr {
+	return &parseErr{
 		msg:   fmt.Sprintf(msg, args...),
 		cause: cause,
 	}

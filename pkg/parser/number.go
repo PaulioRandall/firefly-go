@@ -7,24 +7,24 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
-func expectNumber(lr token.LexemeReader) (ast.Node, error) {
+func expectNumber(lr token.LexemeReader) ast.Node {
 
 	lx, e := lr.Read()
 	if e != nil {
-		return nil, e
+		parsePanic(e, "Lexeme reader error")
 	}
 
 	if lx.Token != token.TokenNumber {
-		return nil, newError("Expected number, got '%s'", lx.Token.String())
+		parsePanic(nil, "Expected number, got '%s'", lx.Token.String())
 	}
-	
+
 	return parseNumber(lx)
 }
 
-func parseNumber(num token.Lexeme) (ast.Node, error) {
+func parseNumber(num token.Lexeme) ast.Node {
 	n, e := strconv.ParseInt(num.Value, 10, 64)
 	if e != nil {
-		wrapThenPanic(e, "Unable to parse number '%s'", num.Value)
+		parsePanic(e, "Unable to parse number '%s'", num.Value)
 	}
-	return ast.NumberNode{Value: n}, nil
+	return ast.NumberNode{Value: n}
 }

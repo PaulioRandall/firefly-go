@@ -25,7 +25,8 @@ func expectTerm(lr token.LexemeReader) (ast.Node, error) {
 
 	switch lx.Token {
 	case token.TokenNumber:
-		return parseNumber(lx)
+		n := parseNumber(lx)
+		return n, nil
 
 	case token.TokenParenOpen:
 		return parseParenExpr(lr, lx)
