@@ -6,17 +6,17 @@ type Program []Statement
 // Statement in the form of a slice of lexemes.
 type Statement []Lexeme
 
-// StmtReader is the interface for reading statements from some source.
+// StmtReader interface is for reading statements from a stream.
 type StmtReader interface {
 
 	// More returns true if there are unread statements.
 	More() bool
 
-	// Read returns the next statement and moves the read head to the next item.
+	// Read returns the next statement and increments to the next item.
 	Read() (Statement, error)
 }
 
-// NewStmtReader wraps a programs (slice of statements) for reading.
+// NewStmtReader wraps a slice of statements (program) for reading as a stream.
 func NewStmtReader(p Program) *stmtReader {
 	return &stmtReader{
 		stmts: p,

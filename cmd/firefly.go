@@ -32,7 +32,6 @@ func printTaskList() {
 Hello, firefly!
 
 
-NEXT: Add godoc support to godo
 NEXT: Write documentation for pkgs
 	- token
 	- scanner

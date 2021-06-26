@@ -1,25 +1,27 @@
 package token
 
-// Lexeme is a value with associated token.
+// Lexeme is a container for a value and the token it evaluates to. Sometimes
+// a lexeme will be referred to as a token. This is because the token drives
+// the logic, the value is required only in some cases, e.g. for number tokens.
 type Lexeme struct {
 	Token
 	Value string
 }
 
-// LexemeReader is the interface for accessing scanned lexemes.
+// LexemeReader interface is for accessing a stream of lexemes.
 type LexemeReader interface {
 
 	// More returns true if there are unread lexemes.
 	More() bool
 
-	// Peek returns the next lexeme without moving the read head.
+	// Peek returns the next lexeme without incrementing to the next.
 	Peek() (Lexeme, error)
 
-	// Read returns the next lexeme and moves the read head to the next item.
+	// Read returns the next lexeme and increments to the next item.
 	Read() (Lexeme, error)
 }
 
-// NewLexemeReader wraps a slice of tokens in a Lexeme reader.
+// NewLexemeReader wraps a slice of lexemes for reading as a stream.
 func NewLexemeReader(lxs []Lexeme) *lexemeReader {
 	return &lexemeReader{
 		lxs: lxs,
