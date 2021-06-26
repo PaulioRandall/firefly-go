@@ -71,13 +71,13 @@ func (in *interpreter) continueExe() {
 	}
 }
 
-func (in *interpreter) exeStmt(n ast.Node) {
-	if n.Type() == ast.AstEmpty {
+func (in *interpreter) exeStmt(tr ast.Tree) {
+	if tr.Type() == ast.NODE_EMPTY {
 		in.println("")
 		return
 	}
 
-	result, e := computeNode(n)
+	result, e := computeTree(tr)
 	if e != nil {
 		in.exeErr = e
 		in.printlnErr(in.exeErr.Error())

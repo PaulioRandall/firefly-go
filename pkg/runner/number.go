@@ -4,18 +4,18 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/ast"
 )
 
-var zero ast.NumberNode
+var zero ast.NumberTree
 
-func computeNumber(n ast.Node) (ast.NumberNode, error) {
-	num, ok := n.(ast.NumberNode)
+func computeNumber(tr ast.Tree) (ast.NumberTree, error) {
+	num, ok := tr.(ast.NumberTree)
 	if !ok {
-		return ast.NumberNode{}, newBug("ast.NumberNode node expected")
+		return ast.NumberTree{}, newBug("ast.NumberTree node expected")
 	}
 	return num, nil
 }
 
-func newNumber(n int64) ast.NumberNode {
-	return ast.NumberNode{
+func newNumber(n int64) ast.NumberTree {
+	return ast.NumberTree{
 		Value: n,
 	}
 }

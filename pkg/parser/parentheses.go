@@ -5,16 +5,16 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
-func parseParenExpr(r lexReader, opener token.Lexeme) ast.Node {
+func parseParenExpr(r lexReader, opener token.Lexeme) ast.Tree {
 
 	if !r.More() {
 		parsingPanic(nil, "Expected expression after opening parenthesis '('")
 	}
 
-	n := expectExpr(r, 0)
+	tr := expectExpr(r, 0)
 	expectParenClose(r)
 
-	return n
+	return tr
 }
 
 func expectParenClose(r lexReader) {

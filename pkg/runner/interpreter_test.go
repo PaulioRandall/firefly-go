@@ -17,15 +17,15 @@ func (w *mockWriter) Write(bytes []byte) (int, error) {
 	return len(bytes), nil
 }
 
-func num(n int64) ast.NumberNode {
-	return ast.NumberNode{
+func num(n int64) ast.NumberTree {
+	return ast.NumberTree{
 		Value: n,
 	}
 }
 
-func infix(astType ast.AST, left, right ast.Node) ast.InfixNode {
-	return ast.InfixNode{
-		AST:   astType,
+func infix(n ast.Node, left, right ast.Tree) ast.InfixTree {
+	return ast.InfixTree{
+		Node:  n,
 		Left:  left,
 		Right: right,
 	}
@@ -47,7 +47,7 @@ func TestInterpreter_0(t *testing.T) {
 
 	// GIVEN a program with an empty statement
 	p := ast.Block{
-		ast.EmptyNode{},
+		ast.EmptyTree{},
 	}
 
 	// AND an interpreter initialised with the program
@@ -116,7 +116,7 @@ func TestInterpreter_3(t *testing.T) {
 	// GIVEN a program with a single expression
 	p := ast.Block{
 		// 1 + 2
-		infix(ast.AstAdd,
+		infix(ast.NODE_ADD,
 			num(1),
 			num(2),
 		),
@@ -143,15 +143,15 @@ func TestInterpreter_4(t *testing.T) {
 	p := ast.Block{
 		// 8 + 6 / 3 * 5 - 4 * 3
 		// (8 + ((6 / 3) * 5)) - (4 * 3)
-		infix(ast.AstSub,
-			infix(ast.AstAdd,
+		infix(ast.NODE_SUB,
+			infix(ast.NODE_ADD,
 				num(8),
-				infix(ast.AstMul,
-					infix(ast.AstDiv, num(6), num(3)), // =2
+				infix(ast.NODE_MUL,
+					infix(ast.NODE_DIV, num(6), num(3)), // =2
 					num(5),
 				), // =10
 			), // =18
-			infix(ast.AstMul, num(4), num(3)), // =12
+			infix(ast.NODE_MUL, num(4), num(3)), // =12
 		), // =6
 	}
 
@@ -174,8 +174,8 @@ func TestInterpreter_5(t *testing.T) {
 
 	// GIVEN an expression which attempts to divide by zero
 	p := ast.Block{
-		// 1 + 2
-		infix(ast.AstDiv, num(1), num(0)),
+		// 1 / 0
+		infix(ast.NODE_DIV, num(1), num(0)),
 	}
 
 	// AND an interpreter initialised with the program

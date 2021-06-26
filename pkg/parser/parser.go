@@ -8,7 +8,7 @@ import (
 // StmtParser is a recursion based function that parses its statement and then
 // returns a parser for the next statement. On error or while obtaining the last
 // AST tree, the function will be nil.
-type StmtParser func() (ast.Node, StmtParser, error)
+type StmtParser func() (ast.Tree, StmtParser, error)
 
 // StmtReader interface is for reading statements from a stream.
 type StmtReader interface {
@@ -33,24 +33,24 @@ func ParseAll(r StmtReader) (ast.Block, error) {
 
 	var (
 		parsed        = ast.Block{}
-		node          ast.Node
+		tree          ast.Tree
 		nextParseFunc = Begin(r)
 		e             error
 	)
 
 	for nextParseFunc != nil {
-		node, nextParseFunc, e = nextParseFunc()
+		tree, nextParseFunc, e = nextParseFunc()
 		if e != nil {
 			return nil, e
 		}
-		parsed = append(parsed, node)
+		parsed = append(parsed, tree)
 	}
 
 	return parsed, nil
 }
 
 func nextParser(r StmtReader) StmtParser {
-	return func() (ast.Node, StmtParser, error) {
+	return func() (ast.Tree, StmtParser, error) {
 
 		unparsed, e := r.Read()
 		if e != nil {
@@ -72,7 +72,7 @@ func nextParser(r StmtReader) StmtParser {
 }
 
 // ParseStmt parses the supplied statement into an AST.
-func ParseStmt(stmt token.Statement) (n ast.Node, e error) {
+func ParseStmt(stmt token.Statement) (tr ast.Tree, e error) {
 
 	defer func() {
 		err := recover()
@@ -89,19 +89,19 @@ func ParseStmt(stmt token.Statement) (n ast.Node, e error) {
 	lr := token.NewLexReader(stmt)
 
 	if lr.More() {
-		n = parseStmt(lr)
+		tr = parseStmt(lr)
 	} else {
-		n = ast.EmptyNode{}
+		tr = ast.EmptyTree{}
 	}
 
-	return n, e
+	return tr, e
 }
 
-func parseStmt(lr LexReader) ast.Node {
+func parseStmt(lr LexReader) ast.Tree {
 	r := lexReader{lr: lr}
-	n := expectExpr(r, 0)
+	tr := expectExpr(r, 0)
 	validateNoMoreTokens(r)
-	return n
+	return tr
 }
 
 func validateNoMoreTokens(r lexReader) {

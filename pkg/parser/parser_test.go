@@ -29,15 +29,15 @@ func lex(tk token.Token, v string) token.Lexeme {
 	}
 }
 
-func num(n int64) ast.NumberNode {
-	return ast.NumberNode{
+func num(n int64) ast.NumberTree {
+	return ast.NumberTree{
 		Value: n,
 	}
 }
 
-func infix(t ast.AST, left, right ast.Node) ast.InfixNode {
-	return ast.InfixNode{
-		AST:   t,
+func infix(n ast.Node, left, right ast.Tree) ast.InfixTree {
+	return ast.InfixTree{
+		Node:  n,
 		Left:  left,
 		Right: right,
 	}
@@ -51,7 +51,7 @@ func TestParseAll_0(t *testing.T) {
 	}
 
 	exp := ast.Block{
-		ast.EmptyNode{},
+		ast.EmptyTree{},
 	}
 
 	// WHEN parsing the statement
@@ -110,7 +110,7 @@ func TestParseAll_3(t *testing.T) {
 	}
 
 	exp := ast.Block{
-		infix(ast.AstAdd, num(1), num(2)),
+		infix(ast.NODE_ADD, num(1), num(2)),
 	}
 
 	// WHEN parsing the statement
@@ -134,8 +134,8 @@ func TestParseAll_4(t *testing.T) {
 	}
 
 	exp := ast.Block{
-		infix(ast.AstSub,
-			infix(ast.AstAdd, num(1), num(2)),
+		infix(ast.NODE_SUB,
+			infix(ast.NODE_ADD, num(1), num(2)),
 			num(3),
 		),
 	}
@@ -164,9 +164,9 @@ func TestParseAll_5(t *testing.T) {
 	}
 
 	exp := ast.Block{
-		infix(ast.AstAdd,
+		infix(ast.NODE_ADD,
 			num(1),
-			infix(ast.AstMul, num(2), num(3)),
+			infix(ast.NODE_MUL, num(2), num(3)),
 		),
 	}
 
@@ -194,9 +194,9 @@ func TestParseAll_6(t *testing.T) {
 	}
 
 	exp := ast.Block{
-		infix(ast.AstAdd,
-			infix(ast.AstDiv, num(9), num(3)),
-			infix(ast.AstMul, num(2), num(3)),
+		infix(ast.NODE_ADD,
+			infix(ast.NODE_DIV, num(9), num(3)),
+			infix(ast.NODE_MUL, num(2), num(3)),
 		),
 	}
 
@@ -228,20 +228,20 @@ func TestParseAll_7(t *testing.T) {
 	}
 
 	// 4 / 3
-	ex1 := infix(ast.AstDiv, num(4), num(3))
+	ex1 := infix(ast.NODE_DIV, num(4), num(3))
 
 	// (4 / 3) * 3
-	ex2 := infix(ast.AstMul, ex1, num(3))
+	ex2 := infix(ast.NODE_MUL, ex1, num(3))
 
 	// 8 + (4 / 3 * 3)
-	ex3 := infix(ast.AstAdd, num(8), ex2)
+	ex3 := infix(ast.NODE_ADD, num(8), ex2)
 
 	// 2 * 5
-	ex4 := infix(ast.AstMul, num(2), num(5))
+	ex4 := infix(ast.NODE_MUL, num(2), num(5))
 
 	// (8 + 4 / 3 * 3) - (2 * 5)
 	exp := ast.Block{
-		infix(ast.AstSub, ex3, ex4),
+		infix(ast.NODE_SUB, ex3, ex4),
 	}
 
 	// WHEN parsing the statement
@@ -298,20 +298,20 @@ func TestParseAll_9(t *testing.T) {
 	}
 
 	// 4 / 3
-	ex1 := infix(ast.AstDiv, num(4), num(3))
+	ex1 := infix(ast.NODE_DIV, num(4), num(3))
 
 	// 3 - 2)
-	ex2 := infix(ast.AstSub, num(3), num(2))
+	ex2 := infix(ast.NODE_SUB, num(3), num(2))
 
 	// (4 / 3) * (3 - 2)
-	ex3 := infix(ast.AstMul, ex1, ex2)
+	ex3 := infix(ast.NODE_MUL, ex1, ex2)
 
 	// ... * 5
-	ex4 := infix(ast.AstMul, ex3, num(5))
+	ex4 := infix(ast.NODE_MUL, ex3, num(5))
 
 	// 8 + ...
 	exp := ast.Block{
-		infix(ast.AstAdd, num(8), ex4),
+		infix(ast.NODE_ADD, num(8), ex4),
 	}
 
 	// WHEN parsing the statement

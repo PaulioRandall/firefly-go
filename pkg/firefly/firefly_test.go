@@ -16,15 +16,15 @@ func lex(tk token.Token, v string) token.Lexeme {
 	}
 }
 
-func num(n int64) ast.NumberNode {
-	return ast.NumberNode{
+func num(n int64) ast.NumberTree {
+	return ast.NumberTree{
 		Value: n,
 	}
 }
 
-func infix(t ast.AST, left, right ast.Node) ast.InfixNode {
-	return ast.InfixNode{
-		AST:   t,
+func infix(n ast.Node, left, right ast.Tree) ast.InfixTree {
+	return ast.InfixTree{
+		Node:  n,
 		Left:  left,
 		Right: right,
 	}
@@ -55,7 +55,7 @@ func TestParseFile_2(t *testing.T) {
 	act, e := ParseFile(file)
 
 	exp := ast.Block{
-		infix(ast.AstAdd, num(2), num(2)),
+		infix(ast.NODE_ADD, num(2), num(2)),
 	}
 
 	// THEN no errors are returned
@@ -73,11 +73,11 @@ func TestParseFile_3(t *testing.T) {
 	act, e := ParseFile(file)
 
 	exp := ast.Block{
-		infix(ast.AstSub, num(9), num(1)),
-		infix(ast.AstAdd,
-			infix(ast.AstDiv, num(32), num(8)),
-			infix(ast.AstMul,
-				infix(ast.AstSub, num(0), num(4)),
+		infix(ast.NODE_SUB, num(9), num(1)),
+		infix(ast.NODE_ADD,
+			infix(ast.NODE_DIV, num(32), num(8)),
+			infix(ast.NODE_MUL,
+				infix(ast.NODE_SUB, num(0), num(4)),
 				num(2),
 			),
 		),

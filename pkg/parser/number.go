@@ -7,7 +7,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
-func expectNumber(r lexReader) ast.Node {
+func expectNumber(r lexReader) ast.Tree {
 
 	lx := r.Peek()
 	if lx.Token != token.TK_NUMBER {
@@ -17,12 +17,12 @@ func expectNumber(r lexReader) ast.Node {
 	return parseNumber(r.Read())
 }
 
-func parseNumber(num token.Lexeme) ast.Node {
+func parseNumber(num token.Lexeme) ast.Tree {
 
 	n, e := strconv.ParseInt(num.Value, 10, 64)
 	if e != nil {
 		parsingPanic(e, "Unable to parse number '%s'", num.Value)
 	}
 
-	return ast.NumberNode{Value: n}
+	return ast.NumberTree{Value: n}
 }

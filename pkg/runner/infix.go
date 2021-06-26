@@ -4,11 +4,11 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/ast"
 )
 
-func computeInfix(n ast.Node, compute infixComputer) (ast.NumberNode, error) {
+func computeInfix(tr ast.Tree, compute infixComputer) (ast.NumberTree, error) {
 
-	ien, ok := n.(ast.InfixNode)
+	ien, ok := tr.(ast.InfixTree)
 	if !ok {
-		return zero, newBug("ast.InfixNode node expected")
+		return zero, newBug("ast.InfixTree node expected")
 	}
 
 	left, right, e := computeInfixExpr(ien)
@@ -19,14 +19,14 @@ func computeInfix(n ast.Node, compute infixComputer) (ast.NumberNode, error) {
 	return compute(left, right)
 }
 
-func computeInfixExpr(n ast.InfixNode) (left, right ast.NumberNode, e error) {
+func computeInfixExpr(tr ast.InfixTree) (left, right ast.NumberTree, e error) {
 
-	left, e = computeNode(n.Left)
+	left, e = computeTree(tr.Left)
 	if e != nil {
 		return zero, zero, e
 	}
 
-	right, e = computeNode(n.Right)
+	right, e = computeTree(tr.Right)
 	if e != nil {
 		return zero, zero, e
 	}
@@ -34,21 +34,21 @@ func computeInfixExpr(n ast.InfixNode) (left, right ast.NumberNode, e error) {
 	return left, right, nil
 }
 
-type infixComputer func(left, right ast.NumberNode) (ast.NumberNode, error)
+type infixComputer func(left, right ast.NumberTree) (ast.NumberTree, error)
 
-func addNumbers(left, right ast.NumberNode) (ast.NumberNode, error) {
+func addNumbers(left, right ast.NumberTree) (ast.NumberTree, error) {
 	return newNumber(left.Value + right.Value), nil
 }
 
-func subNumbers(left, right ast.NumberNode) (ast.NumberNode, error) {
+func subNumbers(left, right ast.NumberTree) (ast.NumberTree, error) {
 	return newNumber(left.Value - right.Value), nil
 }
 
-func mulNumbers(left, right ast.NumberNode) (ast.NumberNode, error) {
+func mulNumbers(left, right ast.NumberTree) (ast.NumberTree, error) {
 	return newNumber(left.Value * right.Value), nil
 }
 
-func divNumbers(left, right ast.NumberNode) (ast.NumberNode, error) {
+func divNumbers(left, right ast.NumberTree) (ast.NumberTree, error) {
 	if right.Value == 0 {
 		return zero, newError("Can't divide by zero")
 	}

@@ -5,12 +5,12 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
-func expectExpr(r lexReader, leftPriority int) ast.Node {
+func expectExpr(r lexReader, leftPriority int) ast.Tree {
 	expr := expectTerm(r)
 	return parseInfix(r, expr, leftPriority)
 }
 
-func expectTerm(r lexReader) ast.Node {
+func expectTerm(r lexReader) ast.Tree {
 
 	tk := r.Peek().Token
 
@@ -31,7 +31,7 @@ func expectTerm(r lexReader) ast.Node {
 	return nil // Unreachable but required
 }
 
-func parseInfix(r lexReader, left ast.Node, leftPriority int) ast.Node {
+func parseInfix(r lexReader, left ast.Tree, leftPriority int) ast.Tree {
 
 	if !r.More() {
 		return left
@@ -63,35 +63,35 @@ func leftHasPriority(r lexReader, leftPriority int) (token.Token, bool) {
 	return token.TK_UNDEFINED, true
 }
 
-func buildExpr(opToken token.Token, left, right ast.Node) ast.Node {
+func buildExpr(opToken token.Token, left, right ast.Tree) ast.Tree {
 
-	astType := mapInfixTokenToAST(opToken)
-	if astType == ast.AstUndefined {
+	n := mapInfixTokenToAST(opToken)
+	if n == ast.NODE_UNDEFINED {
 		parsingPanic(nil, "Unknown operation '%s'", opToken.String())
 	}
 
-	return ast.InfixNode{
-		AST:   astType,
+	return ast.InfixTree{
+		Node:  n,
 		Left:  left,
 		Right: right,
 	}
 }
 
-func mapInfixTokenToAST(tk token.Token) ast.AST {
+func mapInfixTokenToAST(tk token.Token) ast.Node {
 	switch tk {
 	case token.TK_ADD:
-		return ast.AstAdd
+		return ast.NODE_ADD
 
 	case token.TK_SUB:
-		return ast.AstSub
+		return ast.NODE_SUB
 
 	case token.TK_MUL:
-		return ast.AstMul
+		return ast.NODE_MUL
 
 	case token.TK_DIV:
-		return ast.AstDiv
+		return ast.NODE_DIV
 
 	default:
-		return ast.AstUndefined
+		return ast.NODE_UNDEFINED
 	}
 }
