@@ -9,7 +9,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
-func happyTest(t *testing.T, b token.Block, exp ast.Program) {
+func happyTest(t *testing.T, b token.Block, exp ast.Block) {
 	pr := token.NewStmtReader(b)
 	act, e := ParseAll(pr)
 	require.Nil(t, e, "%+v", e)
@@ -50,7 +50,7 @@ func TestParseAll_0(t *testing.T) {
 		token.Statement{},
 	}
 
-	exp := ast.Program{
+	exp := ast.Block{
 		ast.EmptyNode{},
 	}
 
@@ -69,7 +69,7 @@ func TestParseAll_1(t *testing.T) {
 		},
 	}
 
-	exp := ast.Program{
+	exp := ast.Block{
 		num(9),
 	}
 
@@ -88,7 +88,7 @@ func TestParseAll_2(t *testing.T) {
 		},
 	}
 
-	exp := ast.Program{
+	exp := ast.Block{
 		num(99),
 	}
 
@@ -109,7 +109,7 @@ func TestParseAll_3(t *testing.T) {
 		},
 	}
 
-	exp := ast.Program{
+	exp := ast.Block{
 		infix(ast.AstAdd, num(1), num(2)),
 	}
 
@@ -133,7 +133,7 @@ func TestParseAll_4(t *testing.T) {
 		},
 	}
 
-	exp := ast.Program{
+	exp := ast.Block{
 		infix(ast.AstSub,
 			infix(ast.AstAdd, num(1), num(2)),
 			num(3),
@@ -163,7 +163,7 @@ func TestParseAll_5(t *testing.T) {
 		},
 	}
 
-	exp := ast.Program{
+	exp := ast.Block{
 		infix(ast.AstAdd,
 			num(1),
 			infix(ast.AstMul, num(2), num(3)),
@@ -193,7 +193,7 @@ func TestParseAll_6(t *testing.T) {
 		},
 	}
 
-	exp := ast.Program{
+	exp := ast.Block{
 		infix(ast.AstAdd,
 			infix(ast.AstDiv, num(9), num(3)),
 			infix(ast.AstMul, num(2), num(3)),
@@ -240,7 +240,7 @@ func TestParseAll_7(t *testing.T) {
 	ex4 := infix(ast.AstMul, num(2), num(5))
 
 	// (8 + 4 / 3 * 3) - (2 * 5)
-	exp := ast.Program{
+	exp := ast.Block{
 		infix(ast.AstSub, ex3, ex4),
 	}
 
@@ -262,7 +262,7 @@ func TestParseAll_8(t *testing.T) {
 		},
 	}
 
-	exp := ast.Program{
+	exp := ast.Block{
 		num(9),
 	}
 
@@ -310,7 +310,7 @@ func TestParseAll_9(t *testing.T) {
 	ex4 := infix(ast.AstMul, ex3, num(5))
 
 	// 8 + ...
-	exp := ast.Program{
+	exp := ast.Block{
 		infix(ast.AstAdd, num(8), ex4),
 	}
 
@@ -469,7 +469,7 @@ func TestParseAll_18(t *testing.T) {
 		},
 	}
 
-	exp := ast.Program{
+	exp := ast.Block{
 		num(1),
 		num(2),
 		num(3),

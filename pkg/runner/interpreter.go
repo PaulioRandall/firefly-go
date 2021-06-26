@@ -16,16 +16,16 @@ type Interpreter interface {
 }
 
 type interpreter struct {
-	program ast.Program
+	program ast.Block
 	counter int
 	stdout  io.Writer
 	stderr  io.Writer
 	exeErr  error
 }
 
-func NewInterpreter(p ast.Program) *interpreter {
+func NewInterpreter(b ast.Block) *interpreter {
 	return &interpreter{
-		program: p,
+		program: b,
 		stdout:  os.Stdout,
 		stderr:  os.Stderr,
 	}

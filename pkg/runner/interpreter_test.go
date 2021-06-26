@@ -31,7 +31,7 @@ func infix(astType ast.AST, left, right ast.Node) ast.InfixNode {
 	}
 }
 
-func setupInterpreter(p ast.Program) (Interpreter, *mockWriter, *mockWriter) {
+func setupInterpreter(p ast.Block) (Interpreter, *mockWriter, *mockWriter) {
 	in := NewInterpreter(p)
 
 	std := &mockWriter{output: []byte{}}
@@ -46,7 +46,7 @@ func setupInterpreter(p ast.Program) (Interpreter, *mockWriter, *mockWriter) {
 func TestInterpreter_0(t *testing.T) {
 
 	// GIVEN a program with an empty statement
-	p := ast.Program{
+	p := ast.Block{
 		ast.EmptyNode{},
 	}
 
@@ -68,7 +68,7 @@ func TestInterpreter_0(t *testing.T) {
 func TestInterpreter_1(t *testing.T) {
 
 	// GIVEN a program that prints a number
-	p := ast.Program{
+	p := ast.Block{
 		num(9),
 	}
 
@@ -90,7 +90,7 @@ func TestInterpreter_1(t *testing.T) {
 func TestInterpreter_2(t *testing.T) {
 
 	// GIVEN a program that prints numbers on multiple lines
-	p := ast.Program{
+	p := ast.Block{
 		num(1),
 		num(2),
 		num(3),
@@ -114,7 +114,7 @@ func TestInterpreter_2(t *testing.T) {
 func TestInterpreter_3(t *testing.T) {
 
 	// GIVEN a program with a single expression
-	p := ast.Program{
+	p := ast.Block{
 		// 1 + 2
 		infix(ast.AstAdd,
 			num(1),
@@ -140,7 +140,7 @@ func TestInterpreter_3(t *testing.T) {
 func TestInterpreter_4(t *testing.T) {
 
 	// GIVEN a program with a complex expression
-	p := ast.Program{
+	p := ast.Block{
 		// 8 + 6 / 3 * 5 - 4 * 3
 		// (8 + ((6 / 3) * 5)) - (4 * 3)
 		infix(ast.AstSub,
@@ -173,7 +173,7 @@ func TestInterpreter_4(t *testing.T) {
 func TestInterpreter_5(t *testing.T) {
 
 	// GIVEN an expression which attempts to divide by zero
-	p := ast.Program{
+	p := ast.Block{
 		// 1 + 2
 		infix(ast.AstDiv, num(1), num(0)),
 	}

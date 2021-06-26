@@ -6,27 +6,52 @@ import (
 )
 
 type (
-	Program []Node
+	// Block represents a block of statements and may represent a whole program.
+	Block []Node
 
+	// Node is a common interface for all AST nodes.
 	Node interface {
+
+		// Type returns the AST type.
 		Type() AST
+
+		// String returns a human readable representation of the node.
 		String() string
+
+		// Debug returns a string suitable for debugging.
 		Debug() string
 	}
 
+	// EmptyNode represents an empty statement. This should only be used as a
+	// root node, never as member of another node.
 	EmptyNode struct {
 	}
 
+	// NumberNode represents an 64 btit integer value.
 	NumberNode struct {
 		Value int64
 	}
 
+	// InfixNode represents an infix operation such as addition or multipication.
 	InfixNode struct {
 		AST
 		Left  Node
 		Right Node
 	}
 )
+
+// enforceTypes should be ignored and never used. It only serves to generate
+// compiler errors if a node struct does not fully implement the required
+// interfaces within this package.
+func enforceTypes() {
+	var n Node
+
+	n = EmptyNode{}
+	n = NumberNode{}
+	n = InfixNode{}
+
+	_ = n
+}
 
 func (n EmptyNode) Type() AST  { return AstEmpty }
 func (n NumberNode) Type() AST { return AstNumber }

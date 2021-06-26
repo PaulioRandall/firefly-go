@@ -29,10 +29,10 @@ func Begin(r StmtReader) StmtParser {
 }
 
 // ParseAll parses all statement in the statement reader.
-func ParseAll(r StmtReader) (ast.Program, error) {
+func ParseAll(r StmtReader) (ast.Block, error) {
 
 	var (
-		parsed        = ast.Program{}
+		parsed        = ast.Block{}
 		node          ast.Node
 		nextParseFunc = Begin(r)
 		e             error

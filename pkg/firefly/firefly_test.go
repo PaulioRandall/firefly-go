@@ -38,7 +38,7 @@ func TestParseFile_1(t *testing.T) {
 	// WHEN parsing the scroll
 	act, e := ParseFile(file)
 
-	exp := ast.Program{}
+	exp := ast.Block{}
 
 	//  THEN no errors are returned
 	// AND the resultant program will contain no ASTs
@@ -54,7 +54,7 @@ func TestParseFile_2(t *testing.T) {
 	// WHEN parsing the scroll
 	act, e := ParseFile(file)
 
-	exp := ast.Program{
+	exp := ast.Block{
 		infix(ast.AstAdd, num(2), num(2)),
 	}
 
@@ -72,7 +72,7 @@ func TestParseFile_3(t *testing.T) {
 	// WHEN parsing the scroll
 	act, e := ParseFile(file)
 
-	exp := ast.Program{
+	exp := ast.Block{
 		infix(ast.AstSub, num(9), num(1)),
 		infix(ast.AstAdd,
 			infix(ast.AstDiv, num(32), num(8)),

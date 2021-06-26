@@ -24,7 +24,7 @@ func RunFile(file string) error {
 	return in.ExeErr()
 }
 
-func ParseFile(file string) (ast.Program, error) {
+func ParseFile(file string) (ast.Block, error) {
 
 	data, e := ioutil.ReadFile(file)
 	if e != nil {
