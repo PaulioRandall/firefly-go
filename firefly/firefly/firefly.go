@@ -1,3 +1,8 @@
+// Package firefly provides convenience functions for parsing and interpreting
+// firefly scrolls.
+//
+// If more control is needed the underlying packages can be used directly and
+// this package can serve as an example of usage.
 package firefly
 
 import (
@@ -12,6 +17,8 @@ import (
 	"github.com/PaulioRandall/firefly-go/firefly/token"
 )
 
+// RunFile parses and then executes the specified file returning an error if
+// one is encountered.
 func RunFile(file string) error {
 
 	p, e := ParseFile(file)
@@ -24,6 +31,12 @@ func RunFile(file string) error {
 	return in.ExeErr()
 }
 
+// ParseFile parses the specified file returning an AST block or an error if
+// one is encountered. It performs th following steps in order:
+//		1. scanning: scans tokens from the file
+//		2. grouping: groups tokens into statements
+//		3. cleaning: cleans these statements, e.g. removes whitespace etc
+//		4. parsing:  parses the statements into Abstract Syntax Trees
 func ParseFile(file string) (ast.Block, error) {
 
 	data, e := ioutil.ReadFile(file)
