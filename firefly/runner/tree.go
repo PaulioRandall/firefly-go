@@ -34,3 +34,22 @@ func computeTree(tr ast.Tree) (ast.NumberTree, error) {
 	}
 	return result, nil
 }
+
+func addNumbers(left, right ast.NumberTree) (ast.NumberTree, error) {
+	return newNumber(left.Value + right.Value), nil
+}
+
+func subNumbers(left, right ast.NumberTree) (ast.NumberTree, error) {
+	return newNumber(left.Value - right.Value), nil
+}
+
+func mulNumbers(left, right ast.NumberTree) (ast.NumberTree, error) {
+	return newNumber(left.Value * right.Value), nil
+}
+
+func divNumbers(left, right ast.NumberTree) (ast.NumberTree, error) {
+	if right.Value == 0 {
+		return zero, newError("Can't divide by zero")
+	}
+	return newNumber(left.Value / right.Value), nil
+}

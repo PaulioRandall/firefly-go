@@ -4,6 +4,8 @@ import (
 	"github.com/PaulioRandall/firefly-go/firefly/ast"
 )
 
+type infixComputer func(left, right ast.NumberTree) (ast.NumberTree, error)
+
 func computeInfix(tr ast.Tree, compute infixComputer) (ast.NumberTree, error) {
 
 	ien, ok := tr.(ast.InfixTree)
@@ -32,25 +34,4 @@ func computeInfixExpr(tr ast.InfixTree) (left, right ast.NumberTree, e error) {
 	}
 
 	return left, right, nil
-}
-
-type infixComputer func(left, right ast.NumberTree) (ast.NumberTree, error)
-
-func addNumbers(left, right ast.NumberTree) (ast.NumberTree, error) {
-	return newNumber(left.Value + right.Value), nil
-}
-
-func subNumbers(left, right ast.NumberTree) (ast.NumberTree, error) {
-	return newNumber(left.Value - right.Value), nil
-}
-
-func mulNumbers(left, right ast.NumberTree) (ast.NumberTree, error) {
-	return newNumber(left.Value * right.Value), nil
-}
-
-func divNumbers(left, right ast.NumberTree) (ast.NumberTree, error) {
-	if right.Value == 0 {
-		return zero, newError("Can't divide by zero")
-	}
-	return newNumber(left.Value / right.Value), nil
 }
