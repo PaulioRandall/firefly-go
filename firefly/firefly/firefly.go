@@ -32,7 +32,7 @@ func RunFile(file string) error {
 }
 
 // ParseFile parses the specified file returning an AST block or an error if
-// one is encountered. It performs th following steps in order:
+// one is encountered. It performs the sfollowing steps in order:
 //		1. scanning: scans tokens from the file
 //		2. grouping: groups tokens into statements
 //		3. cleaning: cleans these statements, e.g. removes whitespace etc
