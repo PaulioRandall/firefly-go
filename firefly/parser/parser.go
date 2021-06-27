@@ -1,3 +1,8 @@
+// Package parser converts a token statements into Abstract Syntax Trees (AST).
+//
+// To use, call the Begin function with a StmtReader to get the first
+// ParseStatement function. Invoking it will return a token statement and the
+// next ParseStatement function.
 package parser
 
 import (
@@ -5,10 +10,10 @@ import (
 	"github.com/PaulioRandall/firefly-go/firefly/token"
 )
 
-// StmtParser is a recursion based function that parses its statement and then
-// returns a parser for the next statement. On error or while obtaining the last
-// AST tree, the function will be nil.
-type StmtParser func() (ast.Tree, StmtParser, error)
+// ParseStatement is a recursion based function that parses its token statement
+// into an AST. On error or while obtaining the last AST, the function will be
+// nil.
+type ParseStatement func() (ast.Tree, ParseStatement, error)
 
 // StmtReader interface is for reading statements from a stream.
 type StmtReader interface {
@@ -20,15 +25,18 @@ type StmtReader interface {
 	Read() (token.Statement, error)
 }
 
-// Begin returns a new StmtParser function.
-func Begin(r StmtReader) StmtParser {
+// Begin returns a new ParseStatement function from which to begin parsing
+// token statements. Nil is returned if the supplied reader has already reached
+// the end of its stream.
+func Begin(r StmtReader) ParseStatement {
 	if r.More() {
 		return nextParser(r)
 	}
 	return nil
 }
 
-// ParseAll parses all statement in the statement reader.
+// ParseAll is a convenience function and example for parsing all [remaining]
+// token statements from a reader into a AST block.
 func ParseAll(r StmtReader) (ast.Block, error) {
 
 	var (
@@ -49,20 +57,20 @@ func ParseAll(r StmtReader) (ast.Block, error) {
 	return parsed, nil
 }
 
-func nextParser(r StmtReader) StmtParser {
-	return func() (ast.Tree, StmtParser, error) {
+func nextParser(r StmtReader) ParseStatement {
+	return func() (ast.Tree, ParseStatement, error) {
 
 		unparsed, e := r.Read()
 		if e != nil {
 			return nil, nil, e
 		}
 
-		parsed, e := ParseStmt(unparsed)
+		parsed, e := Parse(unparsed)
 		if e != nil {
 			return nil, nil, e
 		}
 
-		var nextParseFunc StmtParser
+		var nextParseFunc ParseStatement
 		if r.More() {
 			nextParseFunc = nextParser(r)
 		}
@@ -71,9 +79,11 @@ func nextParser(r StmtReader) StmtParser {
 	}
 }
 
-// ParseStmt parses the supplied statement into an AST.
-func ParseStmt(stmt token.Statement) (tr ast.Tree, e error) {
+// Parse parses a statement into an AST.
+func Parse(stmt token.Statement) (tr ast.Tree, e error) {
 
+	// Due to the intrinsic complexity of parsing, panics are generated for error
+	// handling and recovered here. The error is then returned.
 	defer func() {
 		err := recover()
 		if err == nil {

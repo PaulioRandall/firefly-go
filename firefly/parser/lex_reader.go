@@ -4,7 +4,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/firefly/token"
 )
 
-// LexReader interface is for accessing a stream of lexemes.
+// LexReader interface is for accessing a stream of lexemes in a statement.
 type LexReader interface {
 
 	// More returns true if there are unread lexemes.
