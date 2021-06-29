@@ -115,7 +115,7 @@ func parseToken(r RuneReader) (token.Lexeme, error) {
 		lx = lexemeRune(token.TK_DIV, ru)
 
 	default:
-		e = newError("Unknown token '%v'", string(ru))
+		e = newError("unknown token '%v'", string(ru))
 	}
 
 	if e != nil {

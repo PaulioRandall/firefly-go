@@ -42,5 +42,5 @@ func (r lexReader) Read() token.Lexeme {
 }
 
 func lexemeReadPanic(cause error) {
-	parsingPanic(cause, "Lexeme read error")
+	parsingPanic(cause, "lexeme read error")
 }

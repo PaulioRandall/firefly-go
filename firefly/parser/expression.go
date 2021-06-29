@@ -22,10 +22,10 @@ func expectTerm(r lexReader) ast.Tree {
 		return parseParenExpr(r, r.Read())
 
 	case token.TK_PAREN_CLOSE:
-		parsingPanic(nil, "Unexpected closing parenthesis")
+		parsingPanic(nil, "unexpected closing parenthesis")
 
 	default:
-		parsingPanic(nil, "Unexpected Token '%s'", tk.String())
+		parsingPanic(nil, "unexpected Token '%s'", tk.String())
 	}
 
 	return nil // Unreachable but required
@@ -53,7 +53,7 @@ func leftHasPriority(r lexReader, leftPriority int) (token.Token, bool) {
 	opToken := r.Peek().Token
 
 	if !opToken.IsOperator() {
-		parsingPanic(nil, "Expected operator, got '%s'", opToken.String())
+		parsingPanic(nil, "expected operator, got '%s'", opToken.String())
 	}
 
 	if !opToken.IsCloser() && leftPriority < opToken.Precedence() {
@@ -67,7 +67,7 @@ func buildExpr(opToken token.Token, left, right ast.Tree) ast.Tree {
 
 	n := mapInfixTokenToAST(opToken)
 	if n == ast.NODE_UNDEFINED {
-		parsingPanic(nil, "Unknown operation '%s'", opToken.String())
+		parsingPanic(nil, "unknown operation '%s'", opToken.String())
 	}
 
 	return ast.InfixTree{

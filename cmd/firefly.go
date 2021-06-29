@@ -15,7 +15,7 @@ func main() {
 func getFilenameArg() string {
 	args := os.Args
 	if len(args) < 2 {
-		panic("Expected filename argument")
+		panic("expected filename argument")
 	}
 	return args[1]
 }

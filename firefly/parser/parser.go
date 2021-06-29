@@ -117,6 +117,6 @@ func parseStmt(lr LexReader) ast.Tree {
 func validateNoMoreTokens(r lexReader) {
 	if r.More() {
 		tk := r.Peek().Token.String()
-		parsingPanic(nil, "Unexpected dangling token '%s'", tk)
+		parsingPanic(nil, "unexpected dangling token '%s'", tk)
 	}
 }

@@ -26,7 +26,7 @@ func computeTree(tr ast.Tree) (ast.NumberTree, error) {
 		result, e = computeInfix(tr, divNumbers)
 
 	default:
-		e = newBug("Unknown AST node")
+		e = newBug("unknown AST node")
 	}
 
 	if e != nil {
@@ -49,7 +49,7 @@ func mulNumbers(left, right ast.NumberTree) (ast.NumberTree, error) {
 
 func divNumbers(left, right ast.NumberTree) (ast.NumberTree, error) {
 	if right.Value == 0 {
-		return zero, newError("Can't divide by zero")
+		return zero, newError("can't divide by zero")
 	}
 	return newNumber(left.Value / right.Value), nil
 }
