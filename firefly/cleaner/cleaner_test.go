@@ -15,6 +15,23 @@ func lex(tk token.Token, v string) token.Lexeme {
 	}
 }
 
+func TestCleanAll_0(t *testing.T) {
+
+	// GIVEN nothing
+	lr := token.NewStmtReader(nil)
+
+	var exp token.Block
+
+	// WHEN cleaning all statements
+	act, e := CleanAll(lr)
+
+	// THEN no error is returned
+	require.Nil(t, e, "%+v", e)
+
+	// AND redundant tokens are removed
+	require.Equal(t, exp, act)
+}
+
 func TestCleanAll_1(t *testing.T) {
 
 	// GIVEN multiple statements with redundant tokens
@@ -55,9 +72,10 @@ func TestCleanAll_1(t *testing.T) {
 	// WHEN cleaning all statements
 	act, e := CleanAll(lr)
 
-	// THEN the redundant tokens are removed and the rest of the statement is
-	// returned without error
+	// THEN no error is returned
 	require.Nil(t, e, "%+v", e)
+
+	// AND redundant tokens are removed
 	require.Equal(t, exp, act)
 }
 
@@ -86,7 +104,9 @@ func TestCleanAll_2(t *testing.T) {
 	// WHEN cleaning all statements
 	act, e := CleanAll(lr)
 
-	// THEN the statement is returned unchanged and without error
+	// THEN no error is returned
 	require.Nil(t, e, "%+v", e)
+
+	// AND the input is returned unchanged
 	require.Equal(t, exp, act)
 }

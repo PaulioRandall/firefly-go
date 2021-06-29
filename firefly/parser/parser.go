@@ -32,7 +32,10 @@ func Begin(r StmtReader) ParseStatement {
 	if r.More() {
 		return nextParser(r)
 	}
-	return nil
+
+	return func() (ast.Tree, ParseStatement, error) {
+		return ast.EmptyTree{}, nil, nil
+	}
 }
 
 // ParseAll is a convenience function and example for parsing all [remaining]
@@ -40,7 +43,7 @@ func Begin(r StmtReader) ParseStatement {
 func ParseAll(r StmtReader) (ast.Block, error) {
 
 	var (
-		parsed        = ast.Block{}
+		parsed        ast.Block
 		tree          ast.Tree
 		nextParseFunc = Begin(r)
 		e             error

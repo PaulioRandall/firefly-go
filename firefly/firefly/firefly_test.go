@@ -38,7 +38,7 @@ func TestParseFile_1(t *testing.T) {
 	// WHEN parsing the scroll
 	act, e := ParseFile(file)
 
-	exp := ast.Block{}
+	var exp ast.Block
 
 	//  THEN no errors are returned
 	// AND the resultant program will contain no ASTs

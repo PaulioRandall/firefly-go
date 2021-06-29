@@ -47,7 +47,7 @@ func Begin(r RuneReader) ParseToken {
 func ScanAll(r RuneReader) ([]token.Lexeme, error) {
 
 	var (
-		lxs = []token.Lexeme{}
+		lxs []token.Lexeme
 		lx  token.Lexeme
 		f   = Begin(r)
 		e   error

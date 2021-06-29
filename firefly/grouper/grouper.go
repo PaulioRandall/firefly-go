@@ -43,7 +43,7 @@ func Begin(r LexReader) GroupTokens {
 func GroupAll(r LexReader) (token.Block, error) {
 
 	var (
-		block = token.Block{}
+		block token.Block
 		stmt  token.Statement
 		f     = Begin(r)
 		e     error

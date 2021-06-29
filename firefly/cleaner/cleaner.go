@@ -40,7 +40,7 @@ func Begin(sr StmtReader) CleanStatement {
 func CleanAll(sr StmtReader) (token.Block, error) {
 
 	var (
-		stmts = token.Block{}
+		stmts token.Block
 		stmt  token.Statement
 		f     = Begin(sr)
 		e     error

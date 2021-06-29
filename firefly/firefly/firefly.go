@@ -21,12 +21,16 @@ import (
 // one is encountered.
 func RunFile(file string) error {
 
-	p, e := ParseFile(file)
+	b, e := ParseFile(file)
 	if e != nil {
 		return e
 	}
 
-	in := runner.NewInterpreter(p)
+	if len(b) == 0 {
+		return nil
+	}
+
+	in := runner.NewInterpreter(b)
 	in.Exe()
 	return in.ExeErr()
 }
@@ -51,6 +55,10 @@ func ParseFile(file string) (ast.Block, error) {
 		return nil, e
 	}
 
+	if len(lxs) == 0 {
+		return nil, nil
+	}
+
 	lexemeReader := token.NewLexReader(lxs)
 	stmts, e := grouper.GroupAll(lexemeReader)
 	if e != nil {
@@ -61,6 +69,10 @@ func ParseFile(file string) (ast.Block, error) {
 	stmts, e = cleaner.CleanAll(stmtReader)
 	if e != nil {
 		return nil, e
+	}
+
+	if len(stmts) == 0 {
+		return nil, nil
 	}
 
 	stmtReader = token.NewStmtReader(stmts)

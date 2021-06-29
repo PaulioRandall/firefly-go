@@ -45,10 +45,8 @@ func infix(n ast.Node, left, right ast.Tree) ast.InfixTree {
 
 func TestParseAll_0(t *testing.T) {
 
-	// GIVEN an empty statement
-	p := token.Block{
-		token.Statement{},
-	}
+	// GIVEN nothing
+	var b token.Block
 
 	exp := ast.Block{
 		ast.EmptyTree{},
@@ -56,14 +54,14 @@ func TestParseAll_0(t *testing.T) {
 
 	// WHEN parsing the statement
 	// THEN an empty node is returned without error
-	happyTest(t, p, exp)
+	happyTest(t, b, exp)
 }
 
 func TestParseAll_1(t *testing.T) {
 
 	// GIVEN a single digit number
 	// 9
-	p := token.Block{
+	b := token.Block{
 		token.Statement{
 			lex(token.TK_NUMBER, "9"),
 		},
@@ -75,14 +73,14 @@ func TestParseAll_1(t *testing.T) {
 
 	// WHEN parsing the statement
 	// THEN the number is parsed and returned without error
-	happyTest(t, p, exp)
+	happyTest(t, b, exp)
 }
 
 func TestParseAll_2(t *testing.T) {
 
 	// GIVEN a multi-digit number
 	// 99
-	p := token.Block{
+	b := token.Block{
 		token.Statement{
 			lex(token.TK_NUMBER, "99"),
 		},
@@ -94,14 +92,14 @@ func TestParseAll_2(t *testing.T) {
 
 	// WHEN parsing the statement
 	// THEN the number is parsed and returned without error
-	happyTest(t, p, exp)
+	happyTest(t, b, exp)
 }
 
 func TestParseAll_3(t *testing.T) {
 
 	// GIVEN a basic expression
 	// 1 + 2
-	p := token.Block{
+	b := token.Block{
 		token.Statement{
 			lex(token.TK_NUMBER, "1"),
 			lex(token.TK_ADD, "+"),
@@ -116,14 +114,14 @@ func TestParseAll_3(t *testing.T) {
 	// WHEN parsing the statement
 	// THEN the number is parsed
 	// AND returned without error
-	happyTest(t, p, exp)
+	happyTest(t, b, exp)
 }
 
 func TestParseAll_4(t *testing.T) {
 
 	// GIVEN a compound expression with equal operator precedence
 	// 1 + 2 - 3
-	p := token.Block{
+	b := token.Block{
 		token.Statement{
 			lex(token.TK_NUMBER, "1"),
 			lex(token.TK_ADD, "+"),
@@ -143,7 +141,7 @@ func TestParseAll_4(t *testing.T) {
 	// WHEN parsing the statement
 	// THEN the number is parsed
 	// AND returned without error
-	happyTest(t, p, exp)
+	happyTest(t, b, exp)
 }
 
 func TestParseAll_5(t *testing.T) {
@@ -153,7 +151,7 @@ func TestParseAll_5(t *testing.T) {
 
 	// 1 + 2 * 3
 	// 1 + (2 * 3)
-	p := token.Block{
+	b := token.Block{
 		token.Statement{
 			lex(token.TK_NUMBER, "1"),
 			lex(token.TK_ADD, "+"),
@@ -173,7 +171,7 @@ func TestParseAll_5(t *testing.T) {
 	// WHEN parsing the statement
 	// THEN the number is parsed
 	// AND returned without error
-	happyTest(t, p, exp)
+	happyTest(t, b, exp)
 }
 
 func TestParseAll_6(t *testing.T) {
@@ -181,7 +179,7 @@ func TestParseAll_6(t *testing.T) {
 	// GIVEN a long compound expression
 	// 9 / 3 + 2 * 3
 	// (9 / 3) + (2 * 3)
-	p := token.Block{
+	b := token.Block{
 		token.Statement{
 			lex(token.TK_NUMBER, "9"),
 			lex(token.TK_DIV, "/"),
@@ -203,7 +201,7 @@ func TestParseAll_6(t *testing.T) {
 	// WHEN parsing the statement
 	// THEN the number is parsed
 	// AND returned without error
-	happyTest(t, p, exp)
+	happyTest(t, b, exp)
 }
 
 func TestParseAll_7(t *testing.T) {
@@ -211,7 +209,7 @@ func TestParseAll_7(t *testing.T) {
 	// GIVEN a long compound expression
 	// 8 + 4 / 3 * 3 - 2 * 5
 	// (8 + ((4 / 3) * 3)) - (2 * 5)
-	p := token.Block{
+	b := token.Block{
 		token.Statement{
 			lex(token.TK_NUMBER, "8"),
 			lex(token.TK_ADD, "+"),
@@ -247,14 +245,14 @@ func TestParseAll_7(t *testing.T) {
 	// WHEN parsing the statement
 	// THEN the expression is parsed
 	// AND returned without error
-	happyTest(t, p, exp)
+	happyTest(t, b, exp)
 }
 
 func TestParseAll_8(t *testing.T) {
 
 	// GIVEN an expression with parentheses
 	// (9)
-	p := token.Block{
+	b := token.Block{
 		token.Statement{
 			lex(token.TK_PAREN_OPEN, "("),
 			lex(token.TK_NUMBER, "9"),
@@ -269,7 +267,7 @@ func TestParseAll_8(t *testing.T) {
 	// WHEN parsing the statement
 	// THEN the number is parsed
 	// AND returned without error
-	happyTest(t, p, exp)
+	happyTest(t, b, exp)
 }
 
 func TestParseAll_9(t *testing.T) {
@@ -277,7 +275,7 @@ func TestParseAll_9(t *testing.T) {
 	// GIVEN a long compound expression with parentheses
 	// 8 + (4 / 3 * (3 - 2)) * 5
 	// 8 + (((4 / 3) * (3 - 2)) * 5)
-	p := token.Block{
+	b := token.Block{
 		token.Statement{
 			lex(token.TK_NUMBER, "8"),
 			lex(token.TK_ADD, "+"),
@@ -317,14 +315,14 @@ func TestParseAll_9(t *testing.T) {
 	// WHEN parsing the statement
 	// THEN the expression is parsed
 	// AND returned without error
-	happyTest(t, p, exp)
+	happyTest(t, b, exp)
 }
 
 func TestParseAll_10(t *testing.T) {
 
 	// GIVEN an expression with two consecutive operators
 	// 1 + + 2
-	p := token.Block{
+	b := token.Block{
 		token.Statement{
 			lex(token.TK_NUMBER, "1"),
 			lex(token.TK_ADD, "+"),
@@ -335,14 +333,14 @@ func TestParseAll_10(t *testing.T) {
 
 	// WHEN parsing the statement
 	// THEN an error is returned
-	unhappyTest(t, p)
+	unhappyTest(t, b)
 }
 
 func TestParseAll_11(t *testing.T) {
 
 	// GIVEN an expression with two consecutive operands
 	// 1 2
-	p := token.Block{
+	b := token.Block{
 		token.Statement{
 			lex(token.TK_NUMBER, "1"),
 			lex(token.TK_NUMBER, "2"),
@@ -351,14 +349,14 @@ func TestParseAll_11(t *testing.T) {
 
 	// WHEN parsing the statement
 	// THEN an error is returned
-	unhappyTest(t, p)
+	unhappyTest(t, b)
 }
 
 func TestParseAll_12(t *testing.T) {
 
 	// GIVEN an expression that begins with an invalid operator
 	// +
-	p := token.Block{
+	b := token.Block{
 		token.Statement{
 			lex(token.TK_ADD, "+"),
 		},
@@ -366,14 +364,14 @@ func TestParseAll_12(t *testing.T) {
 
 	// WHEN parsing the statement
 	// THEN an error is returned
-	unhappyTest(t, p)
+	unhappyTest(t, b)
 }
 
 func TestParseAll_13(t *testing.T) {
 
 	// GIVEN an expression that ends with an invalid operator
 	// 1 +
-	p := token.Block{
+	b := token.Block{
 		token.Statement{
 			lex(token.TK_NUMBER, "1"),
 			lex(token.TK_ADD, "+"),
@@ -382,14 +380,14 @@ func TestParseAll_13(t *testing.T) {
 
 	// WHEN parsing the statement
 	// THEN an error is returned
-	unhappyTest(t, p)
+	unhappyTest(t, b)
 }
 
 func TestParseAll_14(t *testing.T) {
 
 	// GIVEN an expression without closing parenthesis
 	// (1
-	p := token.Block{
+	b := token.Block{
 		token.Statement{
 			lex(token.TK_PAREN_OPEN, "("),
 			lex(token.TK_NUMBER, "1"),
@@ -398,14 +396,14 @@ func TestParseAll_14(t *testing.T) {
 
 	// WHEN parsing the statement
 	// THEN an error is returned
-	unhappyTest(t, p)
+	unhappyTest(t, b)
 }
 
 func TestParseAll_15(t *testing.T) {
 
 	// GIVEN an expression with a closing parenthesis but no open one
 	// 1)
-	p := token.Block{
+	b := token.Block{
 		token.Statement{
 			lex(token.TK_NUMBER, "1"),
 			lex(token.TK_PAREN_CLOSE, ")"),
@@ -414,14 +412,14 @@ func TestParseAll_15(t *testing.T) {
 
 	// WHEN parsing the statement
 	// THEN an error is returned
-	unhappyTest(t, p)
+	unhappyTest(t, b)
 }
 
 func TestParseAll_16(t *testing.T) {
 
 	// GIVEN an expression with empty parentheses
 	// ()
-	p := token.Block{
+	b := token.Block{
 		token.Statement{
 			lex(token.TK_PAREN_OPEN, "("),
 			lex(token.TK_PAREN_CLOSE, ")"),
@@ -430,14 +428,14 @@ func TestParseAll_16(t *testing.T) {
 
 	// WHEN parsing the statement
 	// THEN an error is returned
-	unhappyTest(t, p)
+	unhappyTest(t, b)
 }
 
 func TestParseAll_17(t *testing.T) {
 
 	// GIVEN a number followed by an opening parenthesis
 	// 9 (1)
-	p := token.Block{
+	b := token.Block{
 		token.Statement{
 			lex(token.TK_NUMBER, "9"),
 			lex(token.TK_PAREN_OPEN, "("),
@@ -448,7 +446,7 @@ func TestParseAll_17(t *testing.T) {
 
 	// WHEN parsing the statement
 	// THEN an error is returned
-	unhappyTest(t, p)
+	unhappyTest(t, b)
 }
 
 func TestParseAll_18(t *testing.T) {
@@ -457,7 +455,7 @@ func TestParseAll_18(t *testing.T) {
 	// 1
 	// 2
 	// 3
-	p := token.Block{
+	b := token.Block{
 		token.Statement{
 			lex(token.TK_NUMBER, "1"),
 		},
@@ -477,14 +475,14 @@ func TestParseAll_18(t *testing.T) {
 
 	// WHEN parsing all statements
 	// THEN the number is parsed and returned without error
-	happyTest(t, p, exp)
+	happyTest(t, b, exp)
 }
 
 func TestParseAll_19(t *testing.T) {
 
 	// GIVEN a number that will fail number parsing
 	// abc9
-	p := token.Block{
+	b := token.Block{
 		token.Statement{
 			lex(token.TK_NUMBER, "abc9"),
 		},
@@ -492,5 +490,5 @@ func TestParseAll_19(t *testing.T) {
 
 	// WHEN parsing the statement
 	// THEN an error is returned
-	unhappyTest(t, p)
+	unhappyTest(t, b)
 }

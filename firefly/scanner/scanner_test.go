@@ -22,6 +22,19 @@ func lex(tk token.Token, v string) token.Lexeme {
 	}
 }
 
+func TestScanAll_0(t *testing.T) {
+
+	// GIVEN nothing
+	in := []rune("")
+
+	var exp []token.Lexeme
+
+	// WHEN scanning all tokens
+	// THEN the code should be parsed without error
+	// AND the output should be a nil slice
+	happyTest(t, in, exp)
+}
+
 func TestScanAll_1(t *testing.T) {
 
 	// GIVEN a single digit number
