@@ -45,19 +45,6 @@ type (
 	}
 )
 
-// enforceTypes should be ignored and never used. It only serves to generate
-// compiler errors if an tree struct does not fully implement the required
-// interfaces within this package.
-func enforceTypes() {
-	var tr Tree
-
-	tr = EmptyTree{}
-	tr = NumberTree{}
-	tr = InfixTree{}
-
-	_ = tr
-}
-
 func (tr EmptyTree) Type() Node  { return NODE_EMPTY }
 func (tr NumberTree) Type() Node { return NODE_NUM }
 func (tr InfixTree) Type() Node  { return tr.Node }

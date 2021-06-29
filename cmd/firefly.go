@@ -1,3 +1,12 @@
+// Program firefly is a toy programming language built on the following ideas:
+//
+//		Fantasy themed
+//		Specification first
+//		No install
+//		Easily modifiable and extendable (to the extent that is reasonable possible)
+//
+// This is an implementation of version 1, `Interesting times`. The
+// language specification is available some where in source.
 package main
 
 import (
