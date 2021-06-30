@@ -6,7 +6,7 @@ Firefly is a toy programming language built on the following ideas:
 - Fantasy themed
 - Specification first
 - No install
-- Easily modifiable and extendable (to the extent that is reasonable possible)
+- Modification over extension
 
 This specification defines `v1: Interesting times`.
 
