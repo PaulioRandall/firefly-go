@@ -1,7 +1,7 @@
 
 # Firefly
 
-Firefly is a toy programming language built on the following ideas:
+Firefly is a toy programming language influenced by Go and built on the following concepts and principles:
 
 - Fantasy themed
 - Specification first
@@ -24,10 +24,10 @@ This scroll adds together two numbers and prints the result to standard output, 
 7 + 1
 ```
 
-This scroll is a little more advanced. It performs two mathematical operations and prints them on their own line with an empty line in between.
+This scroll is a little more advanced. It performs two mathematical operations and prints them on their own line with an empty line in between. The first expression involves float types while the second involves integers.
 
 ```
-2 * (10.3 - 6.3)
+2.0 * (10.3 - 6.3)
 
 9 / 4
 ```
@@ -42,11 +42,11 @@ x + y
 (5 - 1) + (2 * 2)
 ```
 
-This scroll demonstrates type conversion. The output of the first statement will be `2.5` since any expression containing a float will force the other operand in the operation to always upgrade from an int to a float, if not already. The second statement generates the same output but more concise and probably more intuitive in this example. 
+This scroll demonstrates type conversion. The output of the second statement will be `2.5`. If `x` was not converted to a float then a compile error would occur as there is no implicit type conversion, not even between integers and floats. This was a long and hard decision, but I decided that forcing explicit type conversions avoided subtly wrong output errors. This decision was greatly influenced by reading the discussions on type conversions in Go. Adding a `.0` to the end of any literal integer is the same as using the `float` type conversion and is the recommended way of specifying floats. Type conversions are more for named values such as `x`.
 
 ```
-float(5) / 2
-5.0 / 2
+x := 5
+float(x) / 2.0
 ```
 
 This statment converts the number within to an int. In this case it will round down to `2`. Note that attempting to type convert a number to it's current type will produce the same result as not having the type conversion at all.
@@ -55,16 +55,10 @@ This statment converts the number within to an int. In this case it will round d
 int(2.8)
 ```
 
-This statement will output `2.0` because the operation within the type conversion has two interger operands. The type conversion happens after the inner expresssion has been completed.
+This statement will output `2.0` because the operation within the type conversion has two interger operands. The type conversion happens after the inner expresssion has been executed.
 
 ```
 float(5 / 2)
-```
-
-This final scroll will output `7.5` because the right hand sub expression will produce `3` and not `3.3333...`. Both operand types are integers, hence the result will be an integer. As a sub expression, it gets processed in isolation from the other left hand sub expression before being used in the multiplication.
-
-```
-(5.0 / 2) * (10 / 3)
 ```
 
 ## EBNF
