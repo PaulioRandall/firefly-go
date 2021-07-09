@@ -42,7 +42,7 @@ x + y
 (5 - 1) + (2 * 2)
 ```
 
-This scroll demonstrates type conversion. The output of the second statement will be `2.5`. If `x` was not converted to a float then a compile error would occur as there is no implicit type conversion, not even between integers and floats. This was a long and hard decision, but I decided that forcing explicit type conversions avoided subtly wrong output errors. This decision was greatly influenced by reading the discussions on type conversions in Go. Adding a `.0` to the end of any literal integer is the same as using the `float` type conversion and is the recommended way of specifying floats. Type conversions are more for named values such as `x`.
+This scroll demonstrates type conversion. The output of the second statement will be `2.5`. If `x` was not converted to a float then a compile error would occur as there is no implicit type conversion, not even between integers and floats.
 
 ```
 x := 5
