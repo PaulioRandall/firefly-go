@@ -4,9 +4,6 @@
 //		Specification first
 //		No install
 //		Easily modifiable and extendable (to the extent that is reasonable possible)
-//
-// This is an implementation of version 1, `Interesting times`. The
-// language specification is available some where in source.
 package main
 
 import (
@@ -39,10 +36,5 @@ func run(file string) {
 func printTaskList() {
 	fmt.Print(`
 Hello, firefly!
-
-
-	NEXT: Check spec is Left, Leftmost, and lookahead only by 1, aka LL(1)
-			+ Impose a rule that the grammer stay LL(1) for future changes
-	https://stackoverflow.com/questions/8496642/how-to-identify-whether-a-grammar-is-ll1-lr0-or-slr1
 `)
 }
