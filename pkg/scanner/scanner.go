@@ -81,9 +81,6 @@ func scan(r RuneReader) ParseToken {
 
 func parseToken(r RuneReader) (token.Lexeme, error) {
 
-	var lx token.Lexeme
-	var e error
-
 	ru, e := r.Read()
 	if e != nil {
 		return token.Lexeme{}, e
@@ -91,35 +88,65 @@ func parseToken(r RuneReader) (token.Lexeme, error) {
 
 	switch {
 	case isNewline(ru):
-		lx = fromRune(token.TK_NEWLINE, ru)
+		return fromRune(token.TK_NEWLINE, ru)
 
 	case isSpace(ru):
-		lx = fromRune(token.TK_SPACE, ru)
+		return fromRune(token.TK_SPACE, ru)
 
-	default:
-		e = newError("unknown token '%v'", string(ru))
+	case isLetter(ru):
+		return scanWord(r, ru)
 	}
 
-	if e != nil {
-		return token.Lexeme{}, e
-	}
-
-	return lx, nil
+	return token.Lexeme{}, newError("unknown token '%v'", string(ru))
 }
 
-func fromRune(tk token.Token, ru rune) token.Lexeme {
-	return fromStr(tk, string(ru))
+func scanWord(r RuneReader, first rune) (token.Lexeme, error) {
+	word := []rune{first}
+
+	for r.More() {
+		next, e := r.Peek()
+
+		if e != nil {
+			return token.Lexeme{}, e
+		}
+
+		if isSpace(next) {
+			goto eval
+		}
+
+		r.Read()
+		word = append(word, next)
+	}
+
+eval:
+	w := string(word)
+	return evalWord(w)
 }
 
-func fromStr(tk token.Token, v string) token.Lexeme {
-	return token.Lexeme{
-		Token: tk,
-		Value: v,
+func evalWord(word string) (token.Lexeme, error) {
+	switch word {
+	case "true", "false":
+		return fromStr(token.TK_BOOL, word)
 	}
+
+	return token.Lexeme{}, newError("Unknown word '%s'", word)
 }
 
 func isNewline(ru rune) bool { return ru == '\n' }
 func isSpace(ru rune) bool   { return unicode.IsSpace(ru) && ru != '\n' }
+func isLetter(ru rune) bool  { return unicode.IsLetter(ru) }
+
+func fromRune(tk token.Token, ru rune) (token.Lexeme, error) {
+	return fromStr(tk, string(ru))
+}
+
+func fromStr(tk token.Token, v string) (token.Lexeme, error) {
+	lx := token.Lexeme{
+		Token: tk,
+		Value: v,
+	}
+	return lx, nil
+}
 
 func newError(msg string, args ...interface{}) error {
 	msg = fmt.Sprintf(msg, args...)

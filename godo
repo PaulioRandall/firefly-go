@@ -32,10 +32,10 @@ println() {
 
 goDoc() {
   println "Documentation..."
-  println "- http://localhost:8088/"
-  println "- http://localhost:8088/pkg/#thirdparty"
+  println "* http://localhost:6060/"
+  println "* http://localhost:6060/pkg/#thirdparty"
   
-  godoc -http=:8088
+  godoc -http=:6060
 }
 
 clean() {
