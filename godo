@@ -1,40 +1,25 @@
 #!/bin/bash
 
-# Build script to save me five seconds on building, formatting, & testing.
-# I do these actions a lot, sometimes as frequently as every 30 seconds!
-
-# If you want to do less of something, make it hard & slow
-# If you want to do more of it, make it easy & quick
-
+clear
 set -e
 tabs -2
 
-if [[ "$1" == "-noclear" ]]; then
-  shift 1
-else
-  clear
-fi
+EXE_NAME="firefly"
+MAIN_FILE="cmd/firefly.go"
 
 BUILD_DIR="build"
-EXE_NAME="firefly"
-GO_MAIN="cmd/firefly.go"
+TEST_TIMEOUT="2s"
 BUILD_FLAGS=""
 #BUILD_FLAGS=-gcflags -m -ldflags "-s -w"
-TEST_TIMEOUT="2s"
-DEV_SCROLL="./cmd/dev.scroll"
 
 printUsage() {
   println "Usage:"
-  println "\t" "./godo [-noclear] [help]" "\t" "Show usage"
-  println "\t" "./godo [-noclear] doc   " "\t" "Show documentation"
-  println "\t" "./godo [-noclear] clean " "\t" "Clean Go caches and build folder"
-  println "\t" "./godo [-noclear] build " "\t" "Build -> format"
-  println "\t" "./godo [-noclear] test  " "\t" "Build -> format -> test"
-  println "\t" "./godo [-noclear] test  " "\t" "Build -> format -> test -> vet"
-  println "\t" "./godo [-noclear] dev   " "\t" "Build -> format -> test -> vet -> exe (dev scroll)"
-  println "\t" "./godo [-noclear] prod  " "\t" "Build -> format -> test -> vet -> exe"
-  println "Option:"
-  println "\t" "'-noclear'" "\t" "skips screen clearing"
+  println "\t" "./godo [help]" "\t" "Print usage"
+  println "\t" "./godo doc[s]" "\t" "Fire up documentation server"
+  println "\t" "./godo clean " "\t" "Clean Go caches and build folder"
+  println "\t" "./godo fmt   " "\t" "fmt"
+  println "\t" "./godo test  " "\t" "fmt -> build -> test -> vet"
+  println "\t" "./godo run   " "\t" "fmt -> build -> test -> vet -> run"
 }
 
 println() {
@@ -42,41 +27,15 @@ println() {
   do
     printf "$s"
   done
-
-  printf "\n"
-}
-
-# Requires two parameters:
-# 1. Command to check
-# 2. Message if command is not found
-checkInstall() {
-  # Original author: Remy van Elst
-  # https://raymii.org/s/snippets/Bash_Bits_Check_if_command_is_available.html
-  command -v "$1" >/dev/null 2>&1
-  if [[ $? -ne 0 ]]; then
-      echo "$2"
-      exit 1
-  fi
-}
-
-# Requires two parameters:
-# 1. Time to sleep before opening
-# 2. URL to open
-tryOpenBrowser() {
-  command -v "xdg-open" >/dev/null 2>&1
-  if [[ $? -eq 0 ]]; then
-    sleep "$1"
-    # Original author: TheWanderer
-    # https://askubuntu.com/questions/682542/is-there-a-way-to-open-browser-using-terminal
-    xdg-open $2 </dev/null >/dev/null 2>&1 & disown
-  fi
+  printf "\\n"
 }
 
 goDoc() {
   println "Documentation..."
-  checkInstall "godoc" "Can't find godoc command on your system!"
-  tryOpenBrowser "1s" "http://localhost:3000/pkg/#thirdparty" &
-  godoc -http=:3000 
+  println "- http://localhost:8088/"
+  println "- http://localhost:8088/pkg/#thirdparty"
+  
+  godoc -http=:8088
 }
 
 clean() {
@@ -84,20 +43,19 @@ clean() {
   rm -r -f "$BUILD_DIR"
 }
 
-goClean() {
-  clean
-  go clean -cache -testcache
-}
-
 setup() {
   println "Setup..."
-  clean
   mkdir -p "$BUILD_DIR"
+}
+
+goClean() {
+  println "Deep cleaning..."
+  go clean -cache -testcache
 }
 
 goBuild() {
   println "Building..."
-  go build -o "$BUILD_DIR/$EXE_NAME" $BUILD_FLAGS "$GO_MAIN"
+  go build -o "$BUILD_DIR/$EXE_NAME" $BUILD_FLAGS $MAIN_FILE
 }
 
 goFmt() {
@@ -107,7 +65,7 @@ goFmt() {
 
 goTest() {
   println "Testing..."
-  go test ./... -timeout "$TEST_TIMEOUT"
+  go test ./... -timeout $TEST_TIMEOUT
 }
 
 goVet() {
@@ -115,16 +73,9 @@ goVet() {
   go vet ./...
 }
 
-goDev() {
-  println "Development..."
-  println "./$BUILD_DIR/$EXE_NAME $DEV_SCROLL"
-  go run "$GO_MAIN" "$DEV_SCROLL" $@
-}
-
-exeProd() {
-  println "Production..."
-  println "./$BUILD_DIR/$EXE_NAME " $@
-  ./"$BUILD_DIR"/"$EXE_NAME" $@
+goExe() {
+  println "Running..."
+  "$BUILD_DIR/$EXE_NAME" $@
 }
 
 if [[ "$1" == "" || "$1" == "help" ]]; then
@@ -132,32 +83,25 @@ if [[ "$1" == "" || "$1" == "help" ]]; then
   exit 0
 fi
 
-if [[ "$1" == "doc" ]]; then
+if [[ "$1" == "doc" || "$1" == "docs" ]]; then
   goDoc
   exit 0
 fi
 
 if [[ "$1" == "clean" ]]; then
+  clean
   goClean
   exit 0
 fi
 
-if [[ "$1" == "build" ]]; then
-  setup
-  goBuild
+if [[ "$1" == "fmt" ]]; then
+  clean
   goFmt
   exit 0
 fi
 
 if [[ "$1" == "test" ]]; then
-  setup
-  goBuild
-  goFmt
-  goTest
-  exit 0
-fi
-
-if [[ "$1" == "vet" ]]; then
+  clean
   setup
   goBuild
   goFmt
@@ -166,7 +110,8 @@ if [[ "$1" == "vet" ]]; then
   exit 0
 fi
 
-if [[ "$1" == "dev" ]]; then
+if [[ "$1" == "run" ]]; then
+  clean
   setup
   goBuild
   goFmt
@@ -174,21 +119,7 @@ if [[ "$1" == "dev" ]]; then
   goVet
 
   shift 1
-  goDev $@
-
-  println
-  exit 0
-fi
-
-if [[ "$1" == "prod" ]]; then
-  setup
-  goBuild
-  goFmt
-  goTest
-  goVet
-
-  shift 1
-  exeProd $@
+  goExe $@
 
   println
   exit 0
