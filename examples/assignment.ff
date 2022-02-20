@@ -1,0 +1,9 @@
+
+n, s, b = 1,   "string", true
+n, s, b = 2.2, "chars",  false
+
+s << " string" // Append to a string
+"define " >> s // Prepend to a string
+
+a, b = 1, 2
+a, b = b, a    // Swap a and b

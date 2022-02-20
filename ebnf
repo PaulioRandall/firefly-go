@@ -1,0 +1,57 @@
+
+PROGRAM    = {STATEMENT | FUNC_DEF}
+
+FUNC_DEF   = IDENT "F" "(" IDENTS ")" IDENTS BLOCK
+
+STATEMENT  = ASSIGNMENT | EXPR | IF | WHEN | FOR | EXIT | INCREMENT
+
+WATCH      = "watch" IDENT BLOCK
+
+FOR        = "for" (EXPR | RANGE) BLOCK
+RANGE      = IDENT "," IDENT "in" EXPR
+
+ASSIGNMENT = TARGET {"," TARGET} "=" EXPR {"," EXPR}
+TARGET     = IDENT | CELL_REF
+
+WHEN       = "when" [EXPR] WHEN_BLOCK
+WHEN_BLOCK = "{" {EXPR ":" BODY} "}"
+
+IF         = "if" EXPR BLOCK
+
+BODY       = STATEMENT | BLOCK
+BLOCK      = "{" {STATEMENT} "}"
+
+INCREMENT  = IDENT OPERATOR OPERATOR
+EXIT       = "exit" (IDENT | NUMBER)
+
+EXPR       = EXPR "?"
+EXPR       = EXPR OPERATOR EXPR
+EXPR       = IDENT | BOOL | NUMBER | STRING | CELL_REF
+EXPR       = FUNC_CALL | SPELL_CALL | "nothing"
+
+SPELL_CALL = "@" FUNC_CALL
+FUNC_CALL  = IDENT "(" {EXPR} ")"
+
+MAP        = map "{" {ENTRY} "}"
+ENTRY      = EXPR ":" EXPR
+
+CELL_REF   = IDENT "[" (IDENT | NUMBER) "]"
+LIST       = "[" PARAMS "]"
+
+PARAMS     = [EXPR {"," EXPR} [","]]
+IDENTS     = [IDENT {"," IDENT} [","]]
+
+OPERATOR   = "+"  | "-"  | "*"  | "/"  | "%"
+OPERATOR   = "==" | "!=" | "<" | ">" | "<=" | ">="
+OPERATOR   = "<<" | ">>"
+
+IDENT      = CHAR {CHAR | "_"}
+
+STRING     = '"' CHAR '"'
+CHAR       = * Any category L unicode character (the visible ones) *
+
+NUMBER     = INT ["." INT]
+INT        = DIGIT {DIGIT | "_"}
+DIGIT      = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+
+BOOL       = "true" | "false"

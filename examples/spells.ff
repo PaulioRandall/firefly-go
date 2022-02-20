@@ -1,0 +1,10 @@
+
+v = ""
+
+@args()           // Returns a list of the program arguments
+
+@print(v, v, v)   // Prints each arg (no spaces)
+@println(v, v, v) // Prints each arg (no spaces) then appends a linefeed
+
+@len(v)           // Returns the length of the arg (string, list, or map)
+@exists(v)        // Returns true if arg is a variable that exists

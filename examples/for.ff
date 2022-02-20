@@ -1,0 +1,14 @@
+
+// Loops 10 times
+// On each loop assign i the current index and n as i+1
+for i, n in 10 {
+
+	// Print "i:n" where i and n are replaced by their current assigned values
+	@print(i, ":", n)
+}
+
+// Loop until the condition is met
+continue = true
+for continue {
+	continue = false
+}
