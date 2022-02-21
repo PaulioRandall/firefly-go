@@ -308,3 +308,15 @@ func TestScanAll_operator_3(t *testing.T) {
 
 	thenNot(t, not, act)
 }
+
+func TestScanAll_comma_1(t *testing.T) {
+	r := given(",")
+
+	act, e := ScanAll(r)
+	exp := expect(
+		lex(token.TK_COMMA, ","),
+	)
+
+	thenNoError(t, e)
+	then(t, exp, act)
+}

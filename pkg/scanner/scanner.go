@@ -95,6 +95,9 @@ func parseToken(r RuneReader) (token.Lexeme, error) {
 	case isSpace(ru):
 		return fromRune(token.TK_SPACE, ru)
 
+	case ru == ',':
+		return fromRune(token.TK_COMMA, ru)
+
 	case isDigit(ru):
 		return scanNum(r, ru)
 

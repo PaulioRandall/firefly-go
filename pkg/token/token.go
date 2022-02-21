@@ -15,6 +15,7 @@ const (
 	TK_STRING          // ""
 	TK_IDENT           // Identifier (variable name)
 	TK_OPERATOR        // +, >=, <<, etc
+	TK_COMMA           // ,
 )
 
 var tokenNames = map[Token]string{
@@ -25,6 +26,7 @@ var tokenNames = map[Token]string{
 	TK_STRING:   "STRING",
 	TK_IDENT:    "IDENT",
 	TK_OPERATOR: "OPERATOR",
+	TK_COMMA:    "COMMA",
 }
 
 // String returns the string representation of the token.
