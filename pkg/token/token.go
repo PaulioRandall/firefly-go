@@ -11,16 +11,18 @@ const (
 	TK_NEWLINE         // \n
 	TK_SPACE           // Any whitespace excluding linefeed
 	TK_BOOL            // 'true' or 'false'
-	TK_NUM             // Arbitary length number
-	TK_STR
+	TK_NUMBER          // 123.456
+	TK_STRING          // ""
+	TK_IDENT           // Identifier (variable name)
 )
 
 var tokenNames = map[Token]string{
 	TK_NEWLINE: "NEWLINE",
 	TK_SPACE:   "SPACE",
 	TK_BOOL:    "BOOL",
-	TK_NUM:     "NUMBER",
-	TK_STR:     "STRING",
+	TK_NUMBER:  "NUMBER",
+	TK_STRING:  "STRING",
+	TK_IDENT:   "IDENT",
 }
 
 // String returns the string representation of the token.

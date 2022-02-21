@@ -77,7 +77,7 @@ func TestScanAll_number_1(t *testing.T) {
 
 	act, e := ScanAll(r)
 	exp := expect(
-		lex(token.TK_NUM, "123"),
+		lex(token.TK_NUMBER, "123"),
 	)
 
 	thenNoError(t, e)
@@ -89,7 +89,7 @@ func TestScanAll_number_2(t *testing.T) {
 
 	act, e := ScanAll(r)
 	exp := expect(
-		lex(token.TK_NUM, "123.456"),
+		lex(token.TK_NUMBER, "123.456"),
 	)
 
 	thenNoError(t, e)
@@ -101,7 +101,7 @@ func TestScanAll_number_3(t *testing.T) {
 
 	act, e := ScanAll(r)
 	exp := expect(
-		lex(token.TK_NUM, "1_234_567"),
+		lex(token.TK_NUMBER, "1_234_567"),
 	)
 
 	thenNoError(t, e)
@@ -129,7 +129,7 @@ func TestScanAll_string_1(t *testing.T) {
 
 	act, e := ScanAll(r)
 	exp := expect(
-		lex(token.TK_STR, `""`),
+		lex(token.TK_STRING, `""`),
 	)
 
 	thenNoError(t, e)
@@ -141,7 +141,7 @@ func TestScanAll_string_2(t *testing.T) {
 
 	act, e := ScanAll(r)
 	exp := expect(
-		lex(token.TK_STR, `"abc"`),
+		lex(token.TK_STRING, `"abc"`),
 	)
 
 	thenNoError(t, e)
@@ -153,7 +153,7 @@ func TestScanAll_string_3(t *testing.T) {
 
 	act, e := ScanAll(r)
 	exp := expect(
-		lex(token.TK_STR, `"ab\"cd"`),
+		lex(token.TK_STRING, `"ab\"cd"`),
 	)
 
 	thenNoError(t, e)
@@ -165,7 +165,7 @@ func TestScanAll_string_4(t *testing.T) {
 
 	act, e := ScanAll(r)
 	exp := expect(
-		lex(token.TK_STR, `"abc\\\\\\xyz"`),
+		lex(token.TK_STRING, `"abc\\\\\\xyz"`),
 	)
 
 	thenNoError(t, e)
@@ -177,7 +177,7 @@ func TestScanAll_string_5(t *testing.T) {
 
 	act, e := ScanAll(r)
 	exp := expect(
-		lex(token.TK_STR, `"abc xyz"`),
+		lex(token.TK_STRING, `"abc xyz"`),
 	)
 
 	thenNoError(t, e)
@@ -214,4 +214,40 @@ func TestScanAll_string_9(t *testing.T) {
 	_, e := ScanAll(r)
 
 	thenError(t, e, "Expected unterminated string error")
+}
+
+func TestScanAll_ident_1(t *testing.T) {
+	r := given("abc")
+
+	act, e := ScanAll(r)
+	exp := expect(
+		lex(token.TK_IDENT, "abc"),
+	)
+
+	thenNoError(t, e)
+	then(t, exp, act)
+}
+
+func TestScanAll_ident_2(t *testing.T) {
+	r := given("abc_xyz")
+
+	act, e := ScanAll(r)
+	exp := expect(
+		lex(token.TK_IDENT, "abc_xyz"),
+	)
+
+	thenNoError(t, e)
+	then(t, exp, act)
+}
+
+func TestScanAll_ident_3(t *testing.T) {
+	r := given("_")
+
+	act, e := ScanAll(r)
+	exp := expect(
+		lex(token.TK_IDENT, "_"),
+	)
+
+	thenNoError(t, e)
+	then(t, exp, act)
 }

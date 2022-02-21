@@ -101,7 +101,7 @@ func parseToken(r RuneReader) (token.Lexeme, error) {
 	case ru == '"':
 		return scanString(r, ru)
 
-	case isLetter(ru):
+	case isChar(ru):
 		return scanWord(r, ru)
 	}
 
@@ -137,7 +137,7 @@ func scanString(r RuneReader, first rune) (token.Lexeme, error) {
 		}
 
 		if ru == '"' {
-			return fromStr(token.TK_STR, string(str))
+			return fromStr(token.TK_STRING, string(str))
 		}
 	}
 
@@ -154,7 +154,7 @@ func scanNum(r RuneReader, first rune) (token.Lexeme, error) {
 	}
 
 	if !r.More() {
-		return fromStr(token.TK_NUM, string(num))
+		return fromStr(token.TK_NUMBER, string(num))
 	}
 
 	// Check for decimal point
@@ -164,7 +164,7 @@ func scanNum(r RuneReader, first rune) (token.Lexeme, error) {
 	}
 
 	if ru != '.' {
-		return fromStr(token.TK_NUM, string(num))
+		return fromStr(token.TK_NUMBER, string(num))
 	}
 
 	r.Read()
@@ -182,7 +182,7 @@ func scanNum(r RuneReader, first rune) (token.Lexeme, error) {
 	}
 
 	num = append(num, frac...)
-	return fromStr(token.TK_NUM, string(num))
+	return fromStr(token.TK_NUMBER, string(num))
 }
 
 func scanInt(r RuneReader, first rune) ([]rune, error) {
@@ -211,25 +211,26 @@ func scanInt(r RuneReader, first rune) ([]rune, error) {
 }
 
 func scanWord(r RuneReader, first rune) (token.Lexeme, error) {
-	if !isLetter(first) {
+
+	if !isChar(first) {
 		return empty, newError("Expected letter")
 	}
 
 	word := []rune{first}
 
 	for r.More() {
-		next, e := r.Peek()
+		ru, e := r.Peek()
 
 		if e != nil {
 			return empty, e
 		}
 
-		if isSpace(next) {
+		if !isChar(ru) {
 			break
 		}
 
 		r.Read()
-		word = append(word, next)
+		word = append(word, ru)
 	}
 
 	w := string(word)
@@ -242,13 +243,13 @@ func evalWord(word string) (token.Lexeme, error) {
 		return fromStr(token.TK_BOOL, word)
 	}
 
-	return empty, newError("Unknown word '%s'", word)
+	return fromStr(token.TK_IDENT, word)
 }
 
 func isNewline(ru rune) bool { return ru == '\n' }
-func isSpace(ru rune) bool   { return unicode.IsSpace(ru) && ru != '\n' }
-func isLetter(ru rune) bool  { return unicode.IsLetter(ru) }
+func isSpace(ru rune) bool   { return unicode.IsSpace(ru) && !isNewline(ru) }
 func isDigit(ru rune) bool   { return unicode.IsDigit(ru) }
+func isChar(ru rune) bool    { return unicode.IsLetter(ru) || ru == '_' }
 
 func fromRune(tk token.Token, ru rune) (token.Lexeme, error) {
 	return fromStr(tk, string(ru))
