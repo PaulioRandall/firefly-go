@@ -23,6 +23,10 @@ func then(t *testing.T, exp, act []token.Lexeme) {
 	require.Equal(t, exp, act)
 }
 
+func thenNot(t *testing.T, not, act []token.Lexeme) {
+	require.NotEqual(t, not, act)
+}
+
 func thenNoError(t *testing.T, e error) {
 	require.Nil(t, e, "%+v", e)
 }
@@ -113,7 +117,7 @@ func TestScanAll_number_4(t *testing.T) {
 
 	_, e := ScanAll(r)
 
-	thenError(t, e, "Expected missing digit error after decimal point")
+	thenError(t, e, "Expected missing digit after decimal point error")
 }
 
 func TestScanAll_number_5(t *testing.T) {
@@ -121,7 +125,7 @@ func TestScanAll_number_5(t *testing.T) {
 
 	_, e := ScanAll(r)
 
-	thenError(t, e, "Expected missing digit error after decimal point")
+	thenError(t, e, "Expected missing digit after decimal point error")
 }
 
 func TestScanAll_string_1(t *testing.T) {
@@ -252,7 +256,7 @@ func TestScanAll_ident_3(t *testing.T) {
 	then(t, exp, act)
 }
 
-func TestScanAll_operators_3(t *testing.T) {
+func TestScanAll_operators_1(t *testing.T) {
 
 	testScan := func(in string) {
 		r := given(in)
@@ -267,4 +271,40 @@ func TestScanAll_operators_3(t *testing.T) {
 	}
 
 	testScan("+")
+	testScan("-")
+	testScan("*")
+	testScan("/")
+	testScan("%")
+
+	testScan("<")
+	testScan(">")
+	testScan("<=")
+	testScan(">=")
+	testScan("==")
+	testScan("!=")
+
+	testScan("<<")
+	testScan(">>")
+}
+
+func TestScanAll_operator_2(t *testing.T) {
+	r := given(">!")
+
+	act, _ := ScanAll(r)
+	not := expect(
+		lex(token.TK_OPERATOR, ">!"),
+	)
+
+	thenNot(t, not, act)
+}
+
+func TestScanAll_operator_3(t *testing.T) {
+	r := given("!>")
+
+	act, _ := ScanAll(r)
+	not := expect(
+		lex(token.TK_OPERATOR, "!>"),
+	)
+
+	thenNot(t, not, act)
 }
