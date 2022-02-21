@@ -12,6 +12,7 @@ const (
 	TK_SPACE           // Any whitespace excluding linefeed
 	TK_BOOL            // 'true' or 'false'
 	TK_NUM             // Arbitary length number
+	TK_STR
 )
 
 var tokenNames = map[Token]string{
@@ -19,6 +20,7 @@ var tokenNames = map[Token]string{
 	TK_SPACE:   "SPACE",
 	TK_BOOL:    "BOOL",
 	TK_NUM:     "NUMBER",
+	TK_STR:     "STRING",
 }
 
 // String returns the string representation of the token.

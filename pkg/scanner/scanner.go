@@ -98,11 +98,51 @@ func parseToken(r RuneReader) (token.Lexeme, error) {
 	case isDigit(ru):
 		return scanNum(r, ru)
 
+	case ru == '"':
+		return scanString(r, ru)
+
 	case isLetter(ru):
 		return scanWord(r, ru)
 	}
 
 	return empty, newError("unknown token '%v'", string(ru))
+}
+
+func scanString(r RuneReader, first rune) (token.Lexeme, error) {
+	str := []rune{first}
+	escape := false
+
+	for r.More() {
+		ru, e := r.Peek()
+
+		if e != nil {
+			return empty, e
+		}
+
+		if isNewline(ru) {
+			goto unterminted
+		}
+
+		r.Read()
+		str = append(str, ru)
+
+		if escape {
+			escape = false
+			continue
+		}
+
+		if ru == '\\' {
+			escape = true
+			continue
+		}
+
+		if ru == '"' {
+			return fromStr(token.TK_STR, string(str))
+		}
+	}
+
+unterminted:
+	return empty, newError("Unterminated string")
 }
 
 func scanNum(r RuneReader, first rune) (token.Lexeme, error) {

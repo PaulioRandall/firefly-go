@@ -110,3 +110,92 @@ func TestScanAll_number_5(t *testing.T) {
 
 	require.NotNil(t, e, "Expected error")
 }
+
+func TestScanAll_string_1(t *testing.T) {
+	r := given(`""`)
+
+	act, e := ScanAll(r)
+
+	require.Nil(t, e, "%+v", e)
+
+	exp := []token.Lexeme{
+		lex(token.TK_STR, `""`),
+	}
+	require.Equal(t, exp, act)
+}
+
+func TestScanAll_string_2(t *testing.T) {
+	r := given(`"abc"`)
+
+	act, e := ScanAll(r)
+
+	require.Nil(t, e, "%+v", e)
+
+	exp := []token.Lexeme{
+		lex(token.TK_STR, `"abc"`),
+	}
+	require.Equal(t, exp, act)
+}
+
+func TestScanAll_string_3(t *testing.T) {
+	r := given(`"ab\"cd"`)
+
+	act, e := ScanAll(r)
+
+	require.Nil(t, e, "%+v", e)
+
+	exp := []token.Lexeme{
+		lex(token.TK_STR, `"ab\"cd"`),
+	}
+	require.Equal(t, exp, act)
+}
+
+func TestScanAll_string_4(t *testing.T) {
+	r := given(`"abc\\\\\\xyz"`)
+
+	act, e := ScanAll(r)
+
+	require.Nil(t, e, "%+v", e)
+
+	exp := []token.Lexeme{
+		lex(token.TK_STR, `"abc\\\\\\xyz"`),
+	}
+	require.Equal(t, exp, act)
+}
+
+func TestScanAll_string_5(t *testing.T) {
+	r := given(`"abc xyz"`)
+
+	act, e := ScanAll(r)
+
+	require.Nil(t, e, "%+v", e)
+
+	exp := []token.Lexeme{
+		lex(token.TK_STR, `"abc xyz"`),
+	}
+	require.Equal(t, exp, act)
+}
+
+func TestScanAll_string_6(t *testing.T) {
+	r := given(`"abc`)
+
+	_, e := ScanAll(r)
+
+	require.NotNil(t, e, "Expected error")
+}
+
+func TestScanAll_string_7(t *testing.T) {
+	r := given(`"\"`)
+
+	_, e := ScanAll(r)
+
+	require.NotNil(t, e, "Expected error")
+}
+
+func TestScanAll_string_8(t *testing.T) {
+	r := given(`"\\""`)
+
+	_, e := ScanAll(r)
+
+	require.NotNil(t, e, "Expected error")
+}
