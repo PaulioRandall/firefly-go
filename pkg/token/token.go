@@ -10,13 +10,15 @@ const (
 	TK_UNDEFINED Token = iota
 	TK_NEWLINE         // \n
 	TK_SPACE           // Any whitespace excluding linefeed
-	TK_BOOL
+	TK_BOOL            // 'true' or 'false'
+	TK_NUM             // Arbitary length number
 )
 
 var tokenNames = map[Token]string{
 	TK_NEWLINE: "NEWLINE",
 	TK_SPACE:   "SPACE",
 	TK_BOOL:    "BOOL",
+	TK_NUM:     "NUMBER",
 }
 
 // String returns the string representation of the token.

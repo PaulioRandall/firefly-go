@@ -13,6 +13,8 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
+var empty = token.Lexeme{}
+
 // ParseToken is a recursion based tokeniser. It returns the next token and
 // a ParseToken function for parsing the next token. On error or while
 // obtaining the last token, the returned ParseToken function will be nil.
@@ -83,7 +85,7 @@ func parseToken(r RuneReader) (token.Lexeme, error) {
 
 	ru, e := r.Read()
 	if e != nil {
-		return token.Lexeme{}, e
+		return empty, e
 	}
 
 	switch {
@@ -93,32 +95,103 @@ func parseToken(r RuneReader) (token.Lexeme, error) {
 	case isSpace(ru):
 		return fromRune(token.TK_SPACE, ru)
 
+	case isDigit(ru):
+		return scanNum(r, ru)
+
 	case isLetter(ru):
 		return scanWord(r, ru)
 	}
 
-	return token.Lexeme{}, newError("unknown token '%v'", string(ru))
+	return empty, newError("unknown token '%v'", string(ru))
+}
+
+func scanNum(r RuneReader, first rune) (token.Lexeme, error) {
+
+	// Scan significant part
+	num, e := scanInt(r, first)
+	if e != nil {
+		return empty, e
+	}
+
+	if !r.More() {
+		return fromStr(token.TK_NUM, string(num))
+	}
+
+	// Check for decimal point
+	ru, e := r.Peek()
+	if e != nil {
+		return empty, e
+	}
+
+	if ru != '.' {
+		return fromStr(token.TK_NUM, string(num))
+	}
+
+	r.Read()
+	num = append(num, ru)
+
+	// Scan fractional part
+	ru, e = r.Read()
+	if e != nil {
+		return empty, e
+	}
+
+	frac, e := scanInt(r, ru)
+	if e != nil {
+		return empty, e
+	}
+
+	num = append(num, frac...)
+	return fromStr(token.TK_NUM, string(num))
+}
+
+func scanInt(r RuneReader, first rune) ([]rune, error) {
+	if !isDigit(first) {
+		return nil, newError("Expected digit")
+	}
+
+	integer := []rune{first}
+
+	for r.More() {
+		ru, e := r.Peek()
+
+		if e != nil {
+			return nil, e
+		}
+
+		if !isDigit(ru) && ru != '_' {
+			break
+		}
+
+		r.Read()
+		integer = append(integer, ru)
+	}
+
+	return integer, nil
 }
 
 func scanWord(r RuneReader, first rune) (token.Lexeme, error) {
+	if !isLetter(first) {
+		return empty, newError("Expected letter")
+	}
+
 	word := []rune{first}
 
 	for r.More() {
 		next, e := r.Peek()
 
 		if e != nil {
-			return token.Lexeme{}, e
+			return empty, e
 		}
 
 		if isSpace(next) {
-			goto eval
+			break
 		}
 
 		r.Read()
 		word = append(word, next)
 	}
 
-eval:
 	w := string(word)
 	return evalWord(w)
 }
@@ -129,12 +202,13 @@ func evalWord(word string) (token.Lexeme, error) {
 		return fromStr(token.TK_BOOL, word)
 	}
 
-	return token.Lexeme{}, newError("Unknown word '%s'", word)
+	return empty, newError("Unknown word '%s'", word)
 }
 
 func isNewline(ru rune) bool { return ru == '\n' }
 func isSpace(ru rune) bool   { return unicode.IsSpace(ru) && ru != '\n' }
 func isLetter(ru rune) bool  { return unicode.IsLetter(ru) }
+func isDigit(ru rune) bool   { return unicode.IsDigit(ru) }
 
 func fromRune(tk token.Token, ru rune) (token.Lexeme, error) {
 	return fromStr(tk, string(ru))
@@ -151,4 +225,8 @@ func fromStr(tk token.Token, v string) (token.Lexeme, error) {
 func newError(msg string, args ...interface{}) error {
 	msg = fmt.Sprintf(msg, args...)
 	return errors.New(msg)
+}
+
+func notImplementedYet() error {
+	return newError("Not implemented yet")
 }

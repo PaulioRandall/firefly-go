@@ -55,3 +55,58 @@ func TestScanAll_bool_2(t *testing.T) {
 	}
 	require.Equal(t, exp, act)
 }
+
+func TestScanAll_number_1(t *testing.T) {
+	r := given("123")
+
+	act, e := ScanAll(r)
+
+	require.Nil(t, e, "%+v", e)
+
+	exp := []token.Lexeme{
+		lex(token.TK_NUM, "123"),
+	}
+	require.Equal(t, exp, act)
+}
+
+func TestScanAll_number_2(t *testing.T) {
+	r := given("123.456")
+
+	act, e := ScanAll(r)
+
+	require.Nil(t, e, "%+v", e)
+
+	exp := []token.Lexeme{
+		lex(token.TK_NUM, "123.456"),
+	}
+	require.Equal(t, exp, act)
+}
+
+func TestScanAll_number_3(t *testing.T) {
+	r := given("1_234_567")
+
+	act, e := ScanAll(r)
+
+	require.Nil(t, e, "%+v", e)
+
+	exp := []token.Lexeme{
+		lex(token.TK_NUM, "1_234_567"),
+	}
+	require.Equal(t, exp, act)
+}
+
+func TestScanAll_number_4(t *testing.T) {
+	r := given("123.")
+
+	_, e := ScanAll(r)
+
+	require.NotNil(t, e, "Expected error")
+}
+
+func TestScanAll_number_5(t *testing.T) {
+	r := given("123.a")
+
+	_, e := ScanAll(r)
+
+	require.NotNil(t, e, "Expected error")
+}
