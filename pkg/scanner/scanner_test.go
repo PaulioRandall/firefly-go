@@ -251,3 +251,20 @@ func TestScanAll_ident_3(t *testing.T) {
 	thenNoError(t, e)
 	then(t, exp, act)
 }
+
+func TestScanAll_operators_3(t *testing.T) {
+
+	testScan := func(in string) {
+		r := given(in)
+
+		act, e := ScanAll(r)
+		exp := expect(
+			lex(token.TK_OPERATOR, in),
+		)
+
+		thenNoError(t, e)
+		then(t, exp, act)
+	}
+
+	testScan("+")
+}

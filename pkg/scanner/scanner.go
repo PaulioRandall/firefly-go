@@ -103,9 +103,19 @@ func parseToken(r RuneReader) (token.Lexeme, error) {
 
 	case isChar(ru):
 		return scanWord(r, ru)
-	}
 
-	return empty, newError("unknown token '%v'", string(ru))
+	default:
+		lx, e := scanOperator(r, ru)
+		if e != nil {
+			return empty, e
+		}
+
+		if lx != empty {
+			return lx, nil
+		}
+
+		return empty, newError("Unknown token '%v'", string(ru))
+	}
 }
 
 func scanString(r RuneReader, first rune) (token.Lexeme, error) {
@@ -244,6 +254,50 @@ func evalWord(word string) (token.Lexeme, error) {
 	}
 
 	return fromStr(token.TK_IDENT, word)
+}
+
+func scanOperator(r RuneReader, first rune) (token.Lexeme, error) {
+
+	if r.More() {
+		lx, e := checkForLongOperator(r, first)
+		if e != nil {
+			return empty, e
+		}
+
+		if lx != empty {
+			return lx, nil
+		}
+	}
+
+	switch first {
+	case '+', '-', '*', '/', '%', '=', '<', '>':
+		return fromRune(token.TK_OPERATOR, first)
+	}
+
+	return empty, nil
+}
+
+func checkForLongOperator(r RuneReader, first rune) (token.Lexeme, error) {
+	second, e := r.Peek()
+	if e != nil {
+		return empty, e
+	}
+
+	op := string([]rune{first, second})
+
+	switch {
+	case op == "==":
+	case op == "!=":
+	case op == "<=":
+	case op == ">=":
+	case op == "<<":
+	case op == ">>":
+	default:
+		return empty, nil
+	}
+
+	r.Read()
+	return fromStr(token.TK_OPERATOR, op)
 }
 
 func isNewline(ru rune) bool { return ru == '\n' }

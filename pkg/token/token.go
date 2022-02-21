@@ -14,15 +14,17 @@ const (
 	TK_NUMBER          // 123.456
 	TK_STRING          // ""
 	TK_IDENT           // Identifier (variable name)
+	TK_OPERATOR        // +, >=, <<, etc
 )
 
 var tokenNames = map[Token]string{
-	TK_NEWLINE: "NEWLINE",
-	TK_SPACE:   "SPACE",
-	TK_BOOL:    "BOOL",
-	TK_NUMBER:  "NUMBER",
-	TK_STRING:  "STRING",
-	TK_IDENT:   "IDENT",
+	TK_NEWLINE:  "NEWLINE",
+	TK_SPACE:    "SPACE",
+	TK_BOOL:     "BOOL",
+	TK_NUMBER:   "NUMBER",
+	TK_STRING:   "STRING",
+	TK_IDENT:    "IDENT",
+	TK_OPERATOR: "OPERATOR",
 }
 
 // String returns the string representation of the token.
