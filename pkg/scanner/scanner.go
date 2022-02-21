@@ -120,7 +120,7 @@ func scanString(r RuneReader, first rune) (token.Lexeme, error) {
 		}
 
 		if isNewline(ru) {
-			goto unterminted
+			goto unterminated
 		}
 
 		r.Read()
@@ -141,7 +141,7 @@ func scanString(r RuneReader, first rune) (token.Lexeme, error) {
 		}
 	}
 
-unterminted:
+unterminated:
 	return empty, newError("Unterminated string")
 }
 
