@@ -1,92 +1,47 @@
+
 # Firefly
 
-Firefly will be my third attempt at a programming language. Alongside the experience I gained in the last two attempts I aim to put heavier focus on specification and interfaces.
+Firefly is a simple toy scripting language aimed at replacing Bash and Python scripting in many use cases.
 
-Firefly is a toy programming language built on the following ideas:
+**Overview:**
 
 - Fantasy themed
+- Iconic syntax
+- Scripting and domain specific
+- Inbuilt formatter, analysis tools, and documentation server
+- Easy add, remove, and modify custom functions
+
+**These are the sorts of activities I had in mind:**
+
+- Gluing together small programs to create a workflow
+- Web API testing
+- Processing files
+- File watching
+- Pipelining
+
+**Some principles, rules, contraints to design and implement by:**
+
 - Specification first
 - No install
-- Modification over extension
+- No packaging or libraries, just scripting
+- No explicit types, just scripting
+- Explicit type conversions, no duck typing
+- No side effects where possible
+- Multiple return on functions
+- Arbitrary length numbers
 
-## Versions & Ramblings
+## Why?
 
-**v0.1.0 (Current)**
+What I want from a scripting tool:
 
-This version allows you to perform arithmetic operations on a single line which print to standard output.
+- **Simplicity & minimalist:** I want scripts that are concise and to the point.
+- **Readability & changability:** I want scripts that are easy to read and modify.
+- **Usability:** I want to be able to execute scripts without installing a load of tools and packages first.
+- **Writability**: I want scripts that are easy and quick to write but I will not sacrifice readability or changability for it.
+- **Functionality**: I want to be able to perform intrinsically complex and performance sensitive functionality but I will not sacrifice simplicity for it.
 
-**v0.2.0**
+[Bash](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) is core to Unix computing but the resultant code is difficult to read, understand, and maintain. Not to mention the restrictiveness in functionality.
 
-For this version I aim to add an arbitrary precise decimal number type or something close to it. At the moment divinding an odd number by an even will round down, e.g. `5 / 2 = 2`. I will also be updating integers to be arbitrarly precise.
+[Python](https://en.wikipedia.org/wiki/Python_(programming_language)) gets heavy usage in scientific, mathematical, and data domains but common implementations require installation followed by a some package management tools. The design tries to capture both writability and readability but usually results in excessive idiomatic functionality being crammed into hard to read and debug one liners. Python started out with similar goals and use cases as Firefly but over time has become a bit too bloated and too systems like for my needs.
 
-Type conversions will be explicit. This was a long and hard decision, but I decided that forcing explicit type conversions avoided subtly wrong output errors. This decision was greatly influenced by reading the discussions on type conversions in Go.
-
-Adding a `.0` to the end of any literal integer is the same as using the `float` type conversion and is the recommended way of specifying floats. Type conversions are more for named values (on the fly defined constants) such as `x`.
-
-## Definitions
-
-| Term | Description |
-| :--- | :--- |
-| _Scroll_ | The text or file containing the instructions for a program or script |
-
-## Examples
-
-This scroll adds together two numbers and prints the result to standard output, usually the console.
-
-```
-7 + 1
-```
-
-This scroll is a little more advanced. It performs two mathematical operations and prints them on their own line with an empty line in between. The first expression involves float types while the second involves integers.
-
-```
-2.0 * (10.3 - 6.3)
-
-9 / 4
-```
-
-This scroll shows off named values and assignment statements. Assignment statements have the name on the left, an assignment operator `:=` in the middle, and the expression which defines the value referred to the name on the right. The first two statements create named values which are then used in the third expression. Assignment statements only print a linefeed when executed unlike expressions. The fifth line does the same thing as the first three but without named values.
-
-```
-x := 5 - 1
-y := 2 * 2
-x + y
-
-(5 - 1) + (2 * 2)
-```
-
-This scroll demonstrates type conversion. The output of the second statement will be `2.5`. If `x` was not converted to a float then a compile error would occur as there is no implicit type conversion, not even between integers and floats.
-
-```
-x := 5
-float(x) / 2.0
-```
-
-This statment converts the number within to an int. In this case it will round down to `2`. Note that attempting to type convert a number to it's current type will produce the same result as not having the type conversion at all.
-
-```
-int(2.8)
-```
-
-This statement will output `2.0` because the operation within the type conversion has two interger operands. The type conversion happens after the inner expresssion has been executed.
-
-```
-float(5 / 2)
-```
-
-## Types
-
-| Name | Description | Examples |
-| :--- | :--- | :--- |
-| _Integer_ | An arbitary precise integer | `0`, `21`, `123456` |
-| _Float_ | An arbitary precise floating point number | `123456.0`, `123.456`, `0.123456` |
-
-## Operators
-
-| Symbol | Precedence | Description | 
-| :---: | :---: | :--- |
-| `(` `)` | 3 | Parentheses for encapsulating sub expressions |
-| `*` | 2 | Numeric [multiplication](https://en.wikipedia.org/wiki/Multiplication) |
-| `/` | 2 | Numeric [division](https://en.wikipedia.org/wiki/Division_(mathematics)) |
-| `+` | 1 | Numeric [addition](https://en.wikipedia.org/wiki/Addition) |
-| `-` | 1 | Numeric [subtraction](https://en.wikipedia.org/wiki/Subtraction) |
+What I really want is something in between these two. I want to glue stuff together to create simple reusable scripts with more functionality than what Bash offers without the baggage required by Python. 
