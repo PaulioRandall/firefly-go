@@ -1,0 +1,9 @@
+
+list = [ "one", "two" ]
+
+list = [
+	"one",
+	"two",
+]
+
+n = list[0]

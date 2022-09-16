@@ -1,0 +1,4 @@
+
+watch e
+	// If the value of e changes then exit the watch block immediately
+end

@@ -1,0 +1,8 @@
+
+@args()            // Returns a list of the program arguments
+
+@print(v, v, v)    // Prints each arg (with space between)
+@println(v, v, v)  // @print then appends a linefeed
+
+@len(v)            // Returns the length of the arg (string, list, or map)
+@range(start, end) // Returns a list of numbers from 'start' to 'end' (exclusive)

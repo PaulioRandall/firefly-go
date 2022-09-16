@@ -1,6 +1,0 @@
-
-// If e exists and is truthy then print it and exit with code 1
-if e? {
-	@print(e)
-	exit 1
-}

@@ -1,7 +1,0 @@
-
-// Declare e as its zero value
-// Exits at the end of the first statement because e becomes truthy
-watch e {
-	result, e = divide(8, 0)
-	result = result % 2
-}

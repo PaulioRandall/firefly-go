@@ -1,0 +1,7 @@
+// Function
+
+divide := F(a, b) result, error
+	// ...
+end
+
+result, error = divide(4, 2)
