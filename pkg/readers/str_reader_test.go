@@ -1,4 +1,4 @@
-package token
+package readers
 
 import (
 	"testing"
@@ -7,15 +7,15 @@ import (
 )
 
 func Test_More_1(t *testing.T) {
-	r := FromString("")
+	r := NewStringRuneReader("")
 	require.False(t, r.More())
 
-	r = FromString("abc")
+	r = NewStringRuneReader("abc")
 	require.True(t, r.More())
 }
 
 func Test_Peek_1(t *testing.T) {
-	r := FromString("")
+	r := NewStringRuneReader("")
 
 	ru, e := r.Peek()
 
@@ -24,7 +24,7 @@ func Test_Peek_1(t *testing.T) {
 }
 
 func Test_Peek_2(t *testing.T) {
-	r := FromString("abc")
+	r := NewStringRuneReader("abc")
 
 	ru1, e := r.Peek()
 	require.Nil(t, e)
@@ -37,13 +37,13 @@ func Test_Peek_2(t *testing.T) {
 }
 
 func Test_Read_1(t *testing.T) {
-	r := FromString("")
+	r := NewStringRuneReader("")
 	_, e := r.Read()
 	require.NotNil(t, e)
 }
 
 func Test_Read_2(t *testing.T) {
-	r := FromString("abc")
+	r := NewStringRuneReader("abc")
 
 	ru1, e := r.Read()
 	require.Nil(t, e)

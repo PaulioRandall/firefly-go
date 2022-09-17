@@ -1,4 +1,4 @@
-package token
+package readers
 
 import (
 	"errors"
@@ -9,8 +9,8 @@ type strReader struct {
 	str []rune
 }
 
-func FromString(s string) strReader {
-	return strReader{
+func NewStringRuneReader(s string) *strReader {
+	return &strReader{
 		str: []rune(s),
 	}
 }
