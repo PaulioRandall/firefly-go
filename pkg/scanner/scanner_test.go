@@ -1,6 +1,5 @@
 package scanner
 
-/*
 import (
 	"testing"
 
@@ -11,7 +10,7 @@ import (
 )
 
 func Test_ScanAll_1(t *testing.T) {
-	r := readers.NewStringRuneReader("")
+	r := readers.NewRuneStringReader("")
 
 	act, e := ScanAll(r)
 	var exp []token.Token
@@ -20,20 +19,24 @@ func Test_ScanAll_1(t *testing.T) {
 	require.Equal(t, exp, act)
 }
 
-/*
 func Test_ScanAll_2(t *testing.T) {
-	r := readers.NewStringRuneReader("if")
+	r := readers.NewRuneStringReader("~")
+	_, e := ScanAll(r)
+	require.NotNil(t, e)
+}
+
+func Test_ScanAll_3(t *testing.T) {
+	r := readers.NewRuneStringReader("if")
 
 	act, e := ScanAll(r)
-	exp := []token.Lex{
-		token.Lex{
-			Token: token.If,
-			Value: "if",
-			Span:  token.MakeSpan(0, 2, 0, 0),
+	exp := []token.Token{
+		token.Token{
+			Type:    token.If,
+			Value:   "if",
+			FilePos: token.MakeInlineRange(0, 0, 0, 2),
 		},
 	}
 
-	require.Nil(t, e)
+	require.Nil(t, e, "%+v", e)
 	require.Equal(t, exp, act)
 }
-*/

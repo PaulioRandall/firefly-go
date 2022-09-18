@@ -11,6 +11,7 @@ const (
 	E
 	F
 	End
+	Var
 )
 
 var strMap = map[TokenType]string{
@@ -21,6 +22,17 @@ var strMap = map[TokenType]string{
 	E:     "expression",
 	F:     "function",
 	End:   "end",
+	Var:   "variable",
+}
+
+var keywordMap = map[string]TokenType{
+	"if":    If,
+	"for":   For,
+	"watch": Watch,
+	"when":  When,
+	"E":     E,
+	"F":     F,
+	"end":   End,
 }
 
 func (tt TokenType) String() string {
@@ -34,4 +46,12 @@ func (tt TokenType) IsKeyword() bool {
 	default:
 		return false
 	}
+}
+
+func IdentifyWordType(s string) TokenType {
+	k, ok := keywordMap[s]
+	if ok {
+		return k
+	}
+	return Var
 }

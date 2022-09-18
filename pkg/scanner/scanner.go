@@ -1,13 +1,14 @@
 package scanner
 
-/*
 import (
+	"fmt"
 	"unicode"
 
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
 type Reader interface {
+	Pos() token.Pos
 	More() bool
 	Peek() (rune, error)
 	Read() (rune, error)
@@ -15,15 +16,11 @@ type Reader interface {
 
 type ScanFunc func() (tk token.Token, f ScanFunc, e error)
 
-func NewScanFunc(r Reader) ScanFunc {
-	return newScanFunc(r)
-}
-
 func ScanAll(r Reader) ([]token.Token, error) {
 	var (
 		tk  token.Token
 		tks []token.Token
-		sc  = newScanFunc(r)
+		sc  = NewScanFunc(r)
 		e   error
 	)
 
@@ -31,8 +28,7 @@ func ScanAll(r Reader) ([]token.Token, error) {
 		tk, sc, e = sc()
 
 		if e != nil {
-			// TODO: wrap error
-			return nil, e
+			return nil, fmt.Errorf("Failed to scan all tokens: %w", e)
 		}
 
 		tks = append(tks, tk)
@@ -41,7 +37,7 @@ func ScanAll(r Reader) ([]token.Token, error) {
 	return tks, nil
 }
 
-func newScanFunc(r Reader) ScanFunc {
+func NewScanFunc(r Reader) ScanFunc {
 	if !r.More() {
 		return nil
 	}
@@ -50,57 +46,72 @@ func newScanFunc(r Reader) ScanFunc {
 		tk, e := scan(r)
 
 		if e != nil {
-			// TODO: wrap error
 			return token.Token{}, nil, e
 		}
 
-		return tk, newScanFunc(r), nil
+		return tk, NewScanFunc(r), nil
 	}
 }
 
 func scan(r Reader) (token.Token, error) {
 
-	zero := token.Token{}
-	ru, e := r.Peek()
+	var (
+		zero  token.Token
+		tt    token.TokenType
+		value string
+		start = r.Pos()
+	)
 
+	ru, e := r.Peek()
 	if e != nil {
-		// TODO: wrap error
-		return zero, e
+		return zero, fmt.Errorf("Failed to scan token: %w", e)
 	}
 
 	switch {
 	case isWordLetter(ru):
-		return scanWord(r)
+		value, tt, e = scanWord(r)
 	default:
-		// TODO: error if no match
-		return zero, nil
+		return zero, fmt.Errorf("Unknown symbol %q", ru)
 	}
+
+	if e != nil {
+		return zero, fmt.Errorf("Failed to scan token: %w", e)
+	}
+
+	rng := token.MakeRange(start, r.Pos())
+	tk := token.MakeToken(tt, value, rng)
+	return tk, nil
 }
 
-func scanWord(r Reader) (token.Token, error) {
+func scanWord(r Reader) (string, token.TokenType, error) {
 
-	zero := token.Token{}
-	var word []rune
+	var runes []rune
+	err := func(e error) (string, token.TokenType, error) {
+		return "", token.Unknown, fmt.Errorf("Failed to scan word: %w", e)
+	}
 
 	for r.More() {
 		ru, e := r.Peek()
-
 		if e != nil {
-			// TODO: wrap error
-			return zero, e
+			return err(e)
 		}
 
 		if !isWordLetter(ru) {
 			break
 		}
 
-		word = append(word, ru)
+		_, e = r.Read()
+		if e != nil {
+			return err(e)
+		}
+
+		runes = append(runes, ru)
 	}
 
-	return zero, nil
+	word := string(runes)
+	return word, token.IdentifyWordType(word), nil
 }
 
 func isWordLetter(ru rune) bool {
 	return unicode.IsLetter(ru) || ru == '_'
 }
-*/

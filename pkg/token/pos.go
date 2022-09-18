@@ -26,6 +26,21 @@ func MakeRange(start, end Pos) Range {
 	}
 }
 
+func MakeInlineRange(offset, line, col, length int) Range {
+	return Range{
+		Start: Pos{
+			Offset: offset,
+			Line:   line,
+			Col:    col,
+		},
+		End: Pos{
+			Offset: offset + length,
+			Line:   line,
+			Col:    col + length,
+		},
+	}
+}
+
 func (p *Pos) Inc(ru rune) {
 	p.Offset++
 
