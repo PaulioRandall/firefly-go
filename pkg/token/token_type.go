@@ -5,8 +5,10 @@ type TokenType int
 const (
 	Unknown TokenType = iota
 
-	// Keywords
-	If // 1
+	Var
+
+	_keywords_begin
+	If
 	For
 	Watch
 	When
@@ -14,10 +16,22 @@ const (
 	F
 	End
 	True
-	False // 9
+	False
+	_keywords_end
 
-	// Variables
-	Var
+	_operators_begin
+	Add // +
+	Sub // -
+	Mul // *
+	Div // /
+	Mod // %
+	LT  // <
+	GT  // >
+	LTE // <=
+	GTE // >=
+	EQU // ==
+	NEQ // !=
+	_operators_end
 )
 
 var syntaxMap = map[TokenType]string{
@@ -30,21 +44,26 @@ var syntaxMap = map[TokenType]string{
 	End:   "end",
 	True:  "true",
 	False: "false",
-	Var:   "variable",
-}
-
-var keywords = map[string]TokenType{}
-
-func init() {
-	for k, v := range syntaxMap {
-		if k.IsKeyword() {
-			keywords[v] = k
-		}
-	}
+	Var:   "",
+	Add:   "+",
+	Sub:   "-",
+	Mul:   "*",
+	Div:   "/",
+	Mod:   "%",
+	LT:    "<",
+	GT:    ">",
+	LTE:   "<=",
+	GTE:   ">=",
+	EQU:   "==",
+	NEQ:   "!=",
 }
 
 func (tt TokenType) IsKeyword() bool {
-	return tt >= 1 && tt <= 9
+	return tt > _keywords_begin && tt < _keywords_end
+}
+
+func (tt TokenType) IsOperator() bool {
+	return tt > _operators_begin && tt < _operators_end
 }
 
 func (tt TokenType) String() string {
@@ -52,9 +71,11 @@ func (tt TokenType) String() string {
 }
 
 func IdentifyWordType(s string) TokenType {
-	k, ok := keywords[s]
-	if ok {
-		return k
+	for tt, symbol := range syntaxMap {
+		if tt.IsKeyword() && s == symbol {
+			return tt
+		}
 	}
+
 	return Var
 }
