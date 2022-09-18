@@ -1,6 +1,5 @@
 package readers
 
-/*
 import (
 	"errors"
 )
@@ -38,4 +37,3 @@ func (r *strReader) Read() (rune, error) {
 	r.idx++
 	return ru, nil
 }
-*/

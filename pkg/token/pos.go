@@ -3,7 +3,7 @@ package token
 type Pos struct {
 	Idx  int
 	Line int
-	Col  int // Line index
+	Col  int // Index on line
 }
 
 type Range struct {

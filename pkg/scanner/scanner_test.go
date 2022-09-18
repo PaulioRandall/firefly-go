@@ -14,7 +14,7 @@ func Test_ScanAll_1(t *testing.T) {
 	r := readers.NewStringRuneReader("")
 
 	act, e := ScanAll(r)
-	var exp []token.Lex
+	var exp []token.Token
 
 	require.Nil(t, e)
 	require.Equal(t, exp, act)

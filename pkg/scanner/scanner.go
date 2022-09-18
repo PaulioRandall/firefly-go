@@ -13,32 +13,32 @@ type Reader interface {
 	Read() (rune, error)
 }
 
-type ScanFunc func() (tk token.Lex, f ScanFunc, e error)
+type ScanFunc func() (tk token.Token, f ScanFunc, e error)
 
 func NewScanFunc(r Reader) ScanFunc {
 	return newScanFunc(r)
 }
 
-func ScanAll(r Reader) ([]token.Lex, error) {
+func ScanAll(r Reader) ([]token.Token, error) {
 	var (
-		lx  token.Lex
-		lxs []token.Lex
+		tk  token.Token
+		tks []token.Token
 		sc  = newScanFunc(r)
 		e   error
 	)
 
 	for sc != nil {
-		lx, sc, e = sc()
+		tk, sc, e = sc()
 
 		if e != nil {
 			// TODO: wrap error
 			return nil, e
 		}
 
-		lxs = append(lxs, lx)
+		tks = append(tks, tk)
 	}
 
-	return lxs, nil
+	return tks, nil
 }
 
 func newScanFunc(r Reader) ScanFunc {
@@ -46,21 +46,21 @@ func newScanFunc(r Reader) ScanFunc {
 		return nil
 	}
 
-	return func() (token.Lex, ScanFunc, error) {
-		lx, e := scan(r)
+	return func() (token.Token, ScanFunc, error) {
+		tk, e := scan(r)
 
 		if e != nil {
 			// TODO: wrap error
-			return token.Lex{}, nil, e
+			return token.Token{}, nil, e
 		}
 
-		return lx, newScanFunc(r), nil
+		return tk, newScanFunc(r), nil
 	}
 }
 
-func scan(r Reader) (token.Lex, error) {
+func scan(r Reader) (token.Token, error) {
 
-	zero := token.Lex{}
+	zero := token.Token{}
 	ru, e := r.Peek()
 
 	if e != nil {
@@ -77,9 +77,9 @@ func scan(r Reader) (token.Lex, error) {
 	}
 }
 
-func scanWord(r Reader) (token.Lex, error) {
+func scanWord(r Reader) (token.Token, error) {
 
-	zero := token.Lex{}
+	zero := token.Token{}
 	var word []rune
 
 	for r.More() {
