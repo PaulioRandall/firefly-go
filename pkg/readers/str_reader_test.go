@@ -1,5 +1,6 @@
 package readers
 
+/*
 import (
 	"testing"
 
@@ -54,3 +55,4 @@ func Test_Read_2(t *testing.T) {
 	require.Equal(t, 'a', ru1)
 	require.Equal(t, 'b', ru2)
 }
+*/

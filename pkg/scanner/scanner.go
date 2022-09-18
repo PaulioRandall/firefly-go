@@ -1,5 +1,6 @@
 package scanner
 
+/*
 import (
 	"unicode"
 
@@ -79,7 +80,6 @@ func scan(r Reader) (token.Lex, error) {
 func scanWord(r Reader) (token.Lex, error) {
 
 	zero := token.Lex{}
-	//lx := token.Lex{}
 	var word []rune
 
 	for r.More() {
@@ -103,3 +103,4 @@ func scanWord(r Reader) (token.Lex, error) {
 func isWordLetter(ru rune) bool {
 	return unicode.IsLetter(ru) || ru == '_'
 }
+*/

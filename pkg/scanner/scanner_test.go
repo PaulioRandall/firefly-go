@@ -1,5 +1,6 @@
 package scanner
 
+/*
 import (
 	"testing"
 

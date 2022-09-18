@@ -1,9 +1,9 @@
 package token
 
-type Token int
+type TokenType int
 
 const (
-	Unknown Token = iota
+	Unknown TokenType = iota
 	If
 	For
 	Watch
@@ -13,7 +13,7 @@ const (
 	End
 )
 
-var strMap = map[Token]string{
+var strMap = map[TokenType]string{
 	If:    "if",
 	For:   "for",
 	Watch: "watch",
@@ -23,12 +23,12 @@ var strMap = map[Token]string{
 	End:   "end",
 }
 
-func (tk Token) String() string {
-	return strMap[tk]
+func (tt TokenType) String() string {
+	return strMap[tt]
 }
 
-func (tk Token) IsKeyword() bool {
-	switch tk {
+func (tt TokenType) IsKeyword() bool {
+	switch tt {
 	case If, For, Watch, When, E, F, End:
 		return true
 	default:

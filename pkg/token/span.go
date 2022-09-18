@@ -1,16 +1,16 @@
 package token
 
-type Pos int
+type Place int
 type Span struct {
-	Start     Pos
-	End       Pos // Exclusive
-	Line      Pos
-	Len       Pos
-	LineStart Pos
-	LineEnd   Pos // Exclusive
+	Start     Place
+	End       Place // Exclusive
+	Line      Place
+	Len       Place
+	LineStart Place
+	LineEnd   Place // Exclusive
 }
 
-func MakeSpan(start, end, line, lineStart Pos) Span {
+func MakeSpan(start, end, line, lineStart Place) Span {
 	length := end - start
 
 	return Span{

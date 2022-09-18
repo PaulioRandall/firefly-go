@@ -1,5 +1,6 @@
 package token
 
+/*
 import (
 	"testing"
 
@@ -10,3 +11,4 @@ func Test_abc(t *testing.T) {
 	require.Equal(t, 0, len(Unknown.String()))
 	require.False(t, Unknown.IsKeyword())
 }
+*/

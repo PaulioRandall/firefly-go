@@ -1,14 +1,14 @@
 package token
 
-type Lex struct {
-	Token Token
+type Token struct {
+	Type  TokenType
 	Value string
 	Span  Span
 }
 
-func MakeLex(tk Token, val string, span Span) Lex {
-	return Lex{
-		Token: tk,
+func MakeToken(tt TokenType, val string, span Span) Token {
+	return Token{
+		Type:  tt,
 		Value: val,
 		Span:  span,
 	}
