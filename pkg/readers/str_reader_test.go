@@ -17,17 +17,6 @@ func Test_Peek_1(t *testing.T) {
 func Test_Peek_2(t *testing.T) {
 	r := NewStringRuneReader("abc")
 
-	ru, e := r.Peek()
-	require.Nil(t, e)
-	require.Equal(t, 'a', ru)
-	require.True(t, r.More())
-	expPos := token.MakePos(0, 0, 0)
-	require.Equal(t, expPos, r.Pos())
-}
-
-func Test_Peek_3(t *testing.T) {
-	r := NewStringRuneReader("abc")
-
 	ru1, e1 := r.Peek()
 	ru2, e2 := r.Peek()
 
