@@ -7,7 +7,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
-var noToken token.Token
+var zeroToken token.Token
 
 type Reader interface {
 	Pos() token.Pos
@@ -48,7 +48,7 @@ func NewScanFunc(r Reader) ScanFunc {
 		tk, e := scanToken(r)
 
 		if e != nil {
-			return noToken, nil, e
+			return zeroToken, nil, e
 		}
 
 		return tk, NewScanFunc(r), nil
@@ -120,9 +120,9 @@ func scanWordFail(r Reader, e error) (string, token.TokenType, error) {
 }
 
 func scanTokenFail(r Reader, e error) (token.Token, error) {
-	return noToken, err.Pos(r.Pos(), e, "Failed to scan token")
+	return zeroToken, err.Pos(r.Pos(), e, "Failed to scan token")
 }
 
 func unknownSymbol(r Reader, sym rune) (token.Token, error) {
-	return noToken, err.Pos(r.Pos(), nil, "Unknown symbol %q", sym)
+	return zeroToken, err.Pos(r.Pos(), nil, "Unknown symbol %q", sym)
 }
