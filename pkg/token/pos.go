@@ -1,14 +1,13 @@
 package token
 
+import (
+	"fmt"
+)
+
 type Pos struct {
 	Offset int
-	Line   int
-	Col    int // Index on line
-}
-
-type Range struct {
-	Start Pos
-	End   Pos // Exclusive
+	Line   int // index
+	Col    int // index
 }
 
 func MakePos(offset, line, col int) Pos {
@@ -17,6 +16,26 @@ func MakePos(offset, line, col int) Pos {
 		Line:   line,
 		Col:    col,
 	}
+}
+
+func (p *Pos) Inc(ru rune) {
+	p.Offset++
+
+	if ru == '\n' {
+		p.Line++
+		p.Col = 0
+	} else {
+		p.Col++
+	}
+}
+
+func (p Pos) String() string {
+	return fmt.Sprintf("Offset: %d, Line: %d, Col: %d", p.Offset, p.Line, p.Col)
+}
+
+type Range struct {
+	Start Pos
+	End   Pos // exclusive
 }
 
 func MakeRange(start, end Pos) Range {
@@ -41,13 +60,6 @@ func MakeInlineRange(offset, line, col, length int) Range {
 	}
 }
 
-func (p *Pos) Inc(ru rune) {
-	p.Offset++
-
-	if ru == '\n' {
-		p.Line++
-		p.Col = 0
-	} else {
-		p.Col++
-	}
+func (r Range) String() string {
+	return fmt.Sprintf("Start(%v), End(%v)", r.Start, r.End)
 }
