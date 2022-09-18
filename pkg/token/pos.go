@@ -25,3 +25,14 @@ func MakeRange(start, end Pos) Range {
 		End:   end,
 	}
 }
+
+func (p *Pos) Inc(ru rune) {
+	p.Idx++
+
+	if ru == '\n' {
+		p.Line++
+		p.Col = 0
+	} else {
+		p.Col++
+	}
+}

@@ -2,10 +2,12 @@ package readers
 
 import (
 	"errors"
+
+	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
 type strReader struct {
-	idx int
+	pos token.Pos
 	str []rune
 }
 
@@ -15,15 +17,21 @@ func NewStringRuneReader(s string) *strReader {
 	}
 }
 
+func (r *strReader) Pos() token.Pos {
+	return r.pos
+}
+
 func (r *strReader) More() bool {
-	return r.idx < len(r.str)
+	return r.pos.Idx < len(r.str)
 }
 
 func (r *strReader) Peek() (rune, error) {
 	if r.More() {
-		return r.str[r.idx], nil
+		return r.str[r.pos.Idx], nil
 	}
-	return rune(0), nil
+
+	// TODO: Create err package
+	return rune(0), errors.New("EOF: No more runes")
 }
 
 func (r *strReader) Read() (rune, error) {
@@ -34,6 +42,6 @@ func (r *strReader) Read() (rune, error) {
 		return rune(0), errors.New("EOF: No more runes")
 	}
 
-	r.idx++
+	r.pos.Inc(ru)
 	return ru, nil
 }
