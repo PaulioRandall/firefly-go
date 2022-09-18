@@ -1,9 +1,9 @@
 package token
 
 type Pos struct {
-	Idx  int
-	Line int
-	Col  int // Index on line
+	Offset int
+	Line   int
+	Col    int // Index on line
 }
 
 type Range struct {
@@ -11,11 +11,11 @@ type Range struct {
 	End   Pos // Exclusive
 }
 
-func MakePos(idx, line, col int) Pos {
+func MakePos(offset, line, col int) Pos {
 	return Pos{
-		Idx:  idx,
-		Line: line,
-		Col:  col,
+		Offset: offset,
+		Line:   line,
+		Col:    col,
 	}
 }
 
@@ -27,7 +27,7 @@ func MakeRange(start, end Pos) Range {
 }
 
 func (p *Pos) Inc(ru rune) {
-	p.Idx++
+	p.Offset++
 
 	if ru == '\n' {
 		p.Line++

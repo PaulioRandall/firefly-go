@@ -9,13 +9,13 @@ import (
 )
 
 func Test_Peek_1(t *testing.T) {
-	r := NewStringRuneReader("")
+	r := NewRuneStringReader("")
 	_, e := r.Peek()
-	require.NotNil(t, e)
+	require.Equal(t, EOF, e)
 }
 
 func Test_Peek_2(t *testing.T) {
-	r := NewStringRuneReader("abc")
+	r := NewRuneStringReader("abc")
 
 	ru1, e1 := r.Peek()
 	ru2, e2 := r.Peek()
@@ -32,13 +32,13 @@ func Test_Peek_2(t *testing.T) {
 }
 
 func Test_Read_1(t *testing.T) {
-	r := NewStringRuneReader("")
+	r := NewRuneStringReader("")
 	_, e := r.Read()
-	require.NotNil(t, e)
+	require.Equal(t, EOF, e)
 }
 
 func Test_Read_2(t *testing.T) {
-	r := NewStringRuneReader("abc")
+	r := NewRuneStringReader("abc")
 
 	expPos := token.MakePos(0, 0, 0)
 	require.Equal(t, expPos, r.Pos())
@@ -63,10 +63,13 @@ func Test_Read_2(t *testing.T) {
 	require.False(t, r.More())
 	expPos = token.MakePos(3, 0, 3)
 	require.Equal(t, expPos, r.Pos())
+
+	_, e = r.Read()
+	require.Equal(t, EOF, e)
 }
 
 func Test_Read_3(t *testing.T) {
-	r := NewStringRuneReader("a\nx")
+	r := NewRuneStringReader("a\nx")
 
 	r.Read() // a
 
@@ -83,4 +86,7 @@ func Test_Read_3(t *testing.T) {
 	require.False(t, r.More())
 	expPos = token.MakePos(3, 1, 1)
 	require.Equal(t, expPos, r.Pos())
+
+	_, e = r.Read()
+	require.Equal(t, EOF, e)
 }
