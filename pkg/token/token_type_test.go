@@ -10,6 +10,7 @@ func Test_1_IdentifyWordType(t *testing.T) {
 	words := map[string]TokenType{
 		"if":    If,
 		"for":   For,
+		"in":    In,
 		"watch": Watch,
 		"when":  When,
 		"E":     E,

@@ -10,6 +10,7 @@ const (
 	_keywords_begin
 	If
 	For
+	In
 	Watch
 	When
 	E
@@ -56,9 +57,11 @@ const (
 	_operators_end
 )
 
-var syntaxMap = map[TokenType]string{
+var symbolMap = map[TokenType]string{
+	Var:          "",
 	If:           "if",
 	For:          "for",
+	In:           "in",
 	Watch:        "watch",
 	When:         "when",
 	E:            "E",
@@ -66,7 +69,6 @@ var syntaxMap = map[TokenType]string{
 	End:          "end",
 	True:         "true",
 	False:        "false",
-	Var:          "",
 	Ass:          "=",
 	Def:          ":=",
 	Add:          "+",
@@ -98,11 +100,11 @@ func (tt TokenType) IsOperator() bool {
 }
 
 func (tt TokenType) String() string {
-	return syntaxMap[tt]
+	return symbolMap[tt]
 }
 
 func IdentifyWordType(s string) TokenType {
-	for tt, symbol := range syntaxMap {
+	for tt, symbol := range symbolMap {
 		if tt.IsKeyword() && s == symbol {
 			return tt
 		}
@@ -112,7 +114,7 @@ func IdentifyWordType(s string) TokenType {
 }
 
 func IdentifyOperatorType(s string) TokenType {
-	for tt, symbol := range syntaxMap {
+	for tt, symbol := range symbolMap {
 		if tt.IsOperator() && s == symbol {
 			return tt
 		}

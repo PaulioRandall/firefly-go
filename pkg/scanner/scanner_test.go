@@ -47,6 +47,7 @@ func Test_ScanAll_3(t *testing.T) {
 	words := map[string]token.TokenType{
 		"if":      token.If,
 		"for":     token.For,
+		"in":      token.In,
 		"watch":   token.Watch,
 		"when":    token.When,
 		"E":       token.E,
