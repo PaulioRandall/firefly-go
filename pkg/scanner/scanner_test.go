@@ -73,6 +73,8 @@ func Test_ScanAll_4(t *testing.T) {
 	operators := map[string]token.TokenType{
 		"=":  token.Ass,
 		":=": token.Def,
+		";":  token.Terminator,
+		",":  token.Comma,
 		"+":  token.Add,
 		"-":  token.Sub,
 		"*":  token.Mul,
@@ -90,7 +92,6 @@ func Test_ScanAll_4(t *testing.T) {
 		"}":  token.BraceClose,
 		"[":  token.BracketOpen,
 		"]":  token.BracketClose,
-		";":  token.Terminator,
 	}
 
 	for given, tt := range operators {

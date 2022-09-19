@@ -32,6 +32,8 @@ func Test_2_IdentifyOperatorType(t *testing.T) {
 	operators := map[string]TokenType{
 		"=":   Ass,
 		":=":  Def,
+		";":   Terminator,
+		",":   Comma,
 		"+":   Add,
 		"-":   Sub,
 		"*":   Mul,
@@ -49,7 +51,6 @@ func Test_2_IdentifyOperatorType(t *testing.T) {
 		"}":   BraceClose,
 		"[":   BracketOpen,
 		"]":   BracketClose,
-		";":   Terminator,
 		"~":   Unknown,
 		"=>":  Unknown,
 		"abc": Unknown,

@@ -22,10 +22,10 @@ const (
 
 	_operators_begin
 
-	_ass_begin
-	Ass // =
-	Def // :=
-	_ass_end
+	Ass        // =
+	Def        // :=
+	Terminator // ;
+	Comma      // ,
 
 	_arith_begin
 	Add // +
@@ -52,8 +52,6 @@ const (
 	BracketOpen  // [
 	BracketClose // ]
 	_paren_end
-
-	Terminator // ;
 	_operators_end
 )
 
@@ -71,6 +69,8 @@ var symbolMap = map[TokenType]string{
 	False:        "false",
 	Ass:          "=",
 	Def:          ":=",
+	Terminator:   ";",
+	Comma:        ",",
 	Add:          "+",
 	Sub:          "-",
 	Mul:          "*",
@@ -88,7 +88,6 @@ var symbolMap = map[TokenType]string{
 	BraceClose:   "}",
 	BracketOpen:  "[",
 	BracketClose: "]",
-	Terminator:   ";",
 }
 
 func (tt TokenType) IsKeyword() bool {
