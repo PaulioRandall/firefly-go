@@ -20,46 +20,70 @@ const (
 	_keywords_end
 
 	_operators_begin
+
+	_ass_begin
+	Ass // =
+	Def // :=
+	_ass_end
+
+	_arith_begin
 	Add // +
 	Sub // -
 	Mul // *
 	Div // /
 	Mod // %
+	_arith_end
+
+	_cmp_begin
 	LT  // <
 	GT  // >
 	LTE // <=
 	GTE // >=
 	EQU // ==
 	NEQ // !=
-	ASS // =
-	DEF // :=
+	_cmp_end
+
+	_paren_begin
+	ParenOpen    // (
+	ParenClose   // )
+	BraceOpen    // {
+	BraceClose   // }
+	BracketOpen  // [
+	BracketClose // ]
+	_paren_end
 	_operators_end
 )
 
 var syntaxMap = map[TokenType]string{
-	If:    "if",
-	For:   "for",
-	Watch: "watch",
-	When:  "when",
-	E:     "E",
-	F:     "F",
-	End:   "end",
-	True:  "true",
-	False: "false",
-	Var:   "",
-	Add:   "+",
-	Sub:   "-",
-	Mul:   "*",
-	Div:   "/",
-	Mod:   "%",
-	LT:    "<",
-	GT:    ">",
-	LTE:   "<=",
-	GTE:   ">=",
-	EQU:   "==",
-	NEQ:   "!=",
-	ASS:   "=",
-	DEF:   ":=",
+	If:           "if",
+	For:          "for",
+	Watch:        "watch",
+	When:         "when",
+	E:            "E",
+	F:            "F",
+	End:          "end",
+	True:         "true",
+	False:        "false",
+	Var:          "",
+	Ass:          "=",
+	Def:          ":=",
+	Add:          "+",
+	Sub:          "-",
+	Mul:          "*",
+	Div:          "/",
+	Mod:          "%",
+	LT:           "<",
+	GT:           ">",
+	LTE:          "<=",
+	GTE:          ">=",
+	EQU:          "==",
+	NEQ:          "!=",
+	ParenOpen:    "(",
+	ParenClose:   ")",
+	BraceOpen:    "{",
+	BraceClose:   "}",
+	BracketOpen:  "[",
+	BracketClose: "]",
 }
 
 func (tt TokenType) IsKeyword() bool {

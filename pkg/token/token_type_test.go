@@ -28,7 +28,9 @@ func Test_1_IdentifyWordType(t *testing.T) {
 }
 
 func Test_2_IdentifyOperatorType(t *testing.T) {
-	words := map[string]TokenType{
+	operators := map[string]TokenType{
+		"=":   Ass,
+		":=":  Def,
 		"+":   Add,
 		"-":   Sub,
 		"*":   Mul,
@@ -40,14 +42,18 @@ func Test_2_IdentifyOperatorType(t *testing.T) {
 		">=":  GTE,
 		"==":  EQU,
 		"!=":  NEQ,
-		"=":   ASS,
-		":=":  DEF,
+		"(":   ParenOpen,
+		")":   ParenClose,
+		"{":   BraceOpen,
+		"}":   BraceClose,
+		"[":   BracketOpen,
+		"]":   BracketClose,
 		"~":   Unknown,
 		"=>":  Unknown,
 		"abc": Unknown,
 	}
 
-	for val, tt := range words {
+	for val, tt := range operators {
 		require.Equal(t, tt, IdentifyOperatorType(val))
 	}
 }

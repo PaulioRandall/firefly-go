@@ -44,89 +44,54 @@ func Test_ScanAll_2(t *testing.T) {
 }
 
 func Test_ScanAll_3(t *testing.T) {
-	given := "if"
-	exp := singletonTokenList(token.If, given, len(given))
-	doScanAllTest(t, given, exp)
+	words := map[string]token.TokenType{
+		"if":      token.If,
+		"for":     token.For,
+		"watch":   token.Watch,
+		"when":    token.When,
+		"E":       token.E,
+		"F":       token.F,
+		"end":     token.End,
+		"true":    token.True,
+		"false":   token.False,
+		"abc":     token.Var,
+		"abc_xyz": token.Var,
+		"forest":  token.Var,
+		"For":     token.Var,
+		"FOR":     token.Var,
+		"e":       token.Var,
+	}
+
+	for given, tt := range words {
+		exp := singletonTokenList(tt, given, len(given))
+		doScanAllTest(t, given, exp)
+	}
 }
 
 func Test_ScanAll_4(t *testing.T) {
-	given := "for"
-	exp := singletonTokenList(token.For, given, len(given))
-	doScanAllTest(t, given, exp)
-}
-
-func Test_ScanAll_5(t *testing.T) {
-	given := "watch"
-	exp := singletonTokenList(token.Watch, given, len(given))
-	doScanAllTest(t, given, exp)
-}
-
-func Test_ScanAll_6(t *testing.T) {
-	given := "when"
-	exp := singletonTokenList(token.When, given, len(given))
-	doScanAllTest(t, given, exp)
-}
-
-func Test_ScanAll_7(t *testing.T) {
-	given := "E"
-	exp := singletonTokenList(token.E, given, len(given))
-	doScanAllTest(t, given, exp)
-}
-
-func Test_ScanAll_8(t *testing.T) {
-	given := "F"
-	exp := singletonTokenList(token.F, given, len(given))
-	doScanAllTest(t, given, exp)
-}
-
-func Test_ScanAll_9(t *testing.T) {
-	given := "end"
-	exp := singletonTokenList(token.End, given, len(given))
-	doScanAllTest(t, given, exp)
-}
-
-func Test_ScanAll_10(t *testing.T) {
-	given := "abc"
-	exp := singletonTokenList(token.Var, given, len(given))
-	doScanAllTest(t, given, exp)
-}
-
-func Test_ScanAll_11(t *testing.T) {
-	given := "abc_xyz"
-	exp := singletonTokenList(token.Var, given, len(given))
-	doScanAllTest(t, given, exp)
-}
-
-func Test_ScanAll_12(t *testing.T) {
-	given := "_"
-	exp := singletonTokenList(token.Var, given, len(given))
-	doScanAllTest(t, given, exp)
-}
-
-func Test_ScanAll_13(t *testing.T) {
-	given := "forest"
-	exp := singletonTokenList(token.Var, given, len(given))
-	doScanAllTest(t, given, exp)
-}
-
-func Test_ScanAll_14(t *testing.T) {
-	set := map[token.TokenType]string{
-		token.Add: "+",
-		token.Sub: "-",
-		token.Mul: "*",
-		token.Div: "/",
-		token.Mod: "%",
-		token.LT:  "<",
-		token.GT:  ">",
-		token.LTE: "<=",
-		token.GTE: ">=",
-		token.EQU: "==",
-		token.NEQ: "!=",
-		token.ASS: "=",
-		token.DEF: ":=",
+	operators := map[string]token.TokenType{
+		"=":  token.Ass,
+		":=": token.Def,
+		"+":  token.Add,
+		"-":  token.Sub,
+		"*":  token.Mul,
+		"/":  token.Div,
+		"%":  token.Mod,
+		"<":  token.LT,
+		">":  token.GT,
+		"<=": token.LTE,
+		">=": token.GTE,
+		"==": token.EQU,
+		"!=": token.NEQ,
+		"(":  token.ParenOpen,
+		")":  token.ParenClose,
+		"{":  token.BraceOpen,
+		"}":  token.BraceClose,
+		"[":  token.BracketOpen,
+		"]":  token.BracketClose,
 	}
 
-	for tt, given := range set {
+	for given, tt := range operators {
 		exp := singletonTokenList(tt, given, len(given))
 		doScanAllTest(t, given, exp)
 	}
