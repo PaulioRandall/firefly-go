@@ -29,19 +29,22 @@ func Test_1_IdentifyWordType(t *testing.T) {
 
 func Test_2_IdentifyOperatorType(t *testing.T) {
 	words := map[string]TokenType{
-		"+":  Add,
-		"-":  Sub,
-		"*":  Mul,
-		"/":  Div,
-		"%":  Mod,
-		"<":  LT,
-		">":  GT,
-		"<=": LTE,
-		">=": GTE,
-		"==": EQU,
-		"!=": NEQ,
-		"~":  Unknown,
-		"=>": Unknown,
+		"+":   Add,
+		"-":   Sub,
+		"*":   Mul,
+		"/":   Div,
+		"%":   Mod,
+		"<":   LT,
+		">":   GT,
+		"<=":  LTE,
+		">=":  GTE,
+		"==":  EQU,
+		"!=":  NEQ,
+		"=":   ASS,
+		":=":  DEF,
+		"~":   Unknown,
+		"=>":  Unknown,
+		"abc": Unknown,
 	}
 
 	for val, tt := range words {

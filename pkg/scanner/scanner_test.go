@@ -122,6 +122,8 @@ func Test_ScanAll_14(t *testing.T) {
 		token.GTE: ">=",
 		token.EQU: "==",
 		token.NEQ: "!=",
+		token.ASS: "=",
+		token.DEF: ":=",
 	}
 
 	for tt, given := range set {

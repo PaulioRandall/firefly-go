@@ -31,6 +31,8 @@ const (
 	GTE // >=
 	EQU // ==
 	NEQ // !=
+	ASS // =
+	DEF // :=
 	_operators_end
 )
 
@@ -56,6 +58,8 @@ var syntaxMap = map[TokenType]string{
 	GTE:   ">=",
 	EQU:   "==",
 	NEQ:   "!=",
+	ASS:   "=",
+	DEF:   ":=",
 }
 
 func (tt TokenType) IsKeyword() bool {
