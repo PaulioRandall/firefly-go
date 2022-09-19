@@ -67,9 +67,18 @@ func scanToken(r Reader) (token.Token, error) {
 		return scanTokenFail(r, e)
 	}
 
+	// TODO: Strings
+	// TODO: Newlines
+	// TODO: Spaces
 	switch {
+	//case isNewline(ru):
+	// val, tt, e = scanNewline(r)
+	//case isSpace(ru):
+	// val, tt, e = scanSpace(r)
 	case isDigit(ru):
 		val, tt, e = scanNumber(r)
+	//case ru == '"' || ru == '\'':
+	// val, tt, e = scanString(r)
 	case isWordLetter(ru):
 		val, tt, e = scanWord(r)
 	default:
