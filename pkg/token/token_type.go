@@ -79,3 +79,13 @@ func IdentifyWordType(s string) TokenType {
 
 	return Var
 }
+
+func IdentifyOperatorType(s string) TokenType {
+	for tt, symbol := range syntaxMap {
+		if tt.IsOperator() && s == symbol {
+			return tt
+		}
+	}
+
+	return Unknown
+}

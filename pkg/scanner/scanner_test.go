@@ -97,3 +97,24 @@ func Test_ScanAll_111(t *testing.T) {
 	exp := singletonList(token.Var, "forest", 6)
 	doScanTest(t, "forest", exp)
 }
+
+func Test_ScanAll_112(t *testing.T) {
+	set := map[token.TokenType]string{
+		token.Add: "+",
+		token.Sub: "-",
+		token.Mul: "*",
+		token.Div: "/",
+		token.Mod: "%",
+		token.LT:  "<",
+		token.GT:  ">",
+		token.LTE: "<=",
+		token.GTE: ">=",
+		token.EQU: "==",
+		token.NEQ: "!=",
+	}
+
+	for tt, val := range set {
+		exp := singletonList(tt, val, len(val))
+		doScanTest(t, val, exp)
+	}
+}
