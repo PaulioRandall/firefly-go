@@ -6,20 +6,45 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func doTypeTest(t *testing.T, tt TokenType, isKeyword bool) {
-	require.True(t, len(tt.String()) > 0)
-	require.Equal(t, isKeyword, tt.IsKeyword())
+func Test_1_IdentifyWordType(t *testing.T) {
+	words := map[string]TokenType{
+		"if":    If,
+		"for":   For,
+		"watch": Watch,
+		"when":  When,
+		"E":     E,
+		"F":     F,
+		"end":   End,
+		"true":  True,
+		"false": False,
+		"abc":   Var,
+		"For":   Var,
+		"e":     Var,
+	}
+
+	for val, tt := range words {
+		require.Equal(t, tt, IdentifyWordType(val))
+	}
 }
 
-func Test_TokenType_Unknown(t *testing.T) {
-	require.Equal(t, 0, len(Unknown.String()))
-	require.False(t, Unknown.IsKeyword())
-}
+func Test_2_IdentifyOperatorType(t *testing.T) {
+	words := map[string]TokenType{
+		"+":  Add,
+		"-":  Sub,
+		"*":  Mul,
+		"/":  Div,
+		"%":  Mod,
+		"<":  LT,
+		">":  GT,
+		"<=": LTE,
+		">=": GTE,
+		"==": EQU,
+		"!=": NEQ,
+		"~":  Unknown,
+		"=>": Unknown,
+	}
 
-func Test_TokenType_If(t *testing.T)    { doTypeTest(t, If, true) }
-func Test_TokenType_For(t *testing.T)   { doTypeTest(t, For, true) }
-func Test_TokenType_Watch(t *testing.T) { doTypeTest(t, Watch, true) }
-func Test_TokenType_When(t *testing.T)  { doTypeTest(t, When, true) }
-func Test_TokenType_E(t *testing.T)     { doTypeTest(t, E, true) }
-func Test_TokenType_F(t *testing.T)     { doTypeTest(t, F, true) }
-func Test_TokenType_End(t *testing.T)   { doTypeTest(t, End, true) }
+	for val, tt := range words {
+		require.Equal(t, tt, IdentifyOperatorType(val))
+	}
+}
