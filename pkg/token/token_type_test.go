@@ -48,6 +48,7 @@ func Test_2_IdentifyOperatorType(t *testing.T) {
 		"}":   BraceClose,
 		"[":   BracketOpen,
 		"]":   BracketClose,
+		";":   Terminator,
 		"~":   Unknown,
 		"=>":  Unknown,
 		"abc": Unknown,

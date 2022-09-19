@@ -89,6 +89,7 @@ func Test_ScanAll_4(t *testing.T) {
 		"}":  token.BraceClose,
 		"[":  token.BracketOpen,
 		"]":  token.BracketClose,
+		";":  token.Terminator,
 	}
 
 	for given, tt := range operators {

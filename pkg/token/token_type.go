@@ -51,6 +51,8 @@ const (
 	BracketOpen  // [
 	BracketClose // ]
 	_paren_end
+
+	Terminator // ;
 	_operators_end
 )
 
@@ -84,6 +86,7 @@ var syntaxMap = map[TokenType]string{
 	BraceClose:   "}",
 	BracketOpen:  "[",
 	BracketClose: "]",
+	Terminator:   ";",
 }
 
 func (tt TokenType) IsKeyword() bool {
