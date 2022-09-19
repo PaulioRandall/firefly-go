@@ -9,7 +9,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
-func singletonList(tt token.TokenType, val string, valLen int) []token.Token {
+func singletonTokenList(tt token.TokenType, val string, valLen int) []token.Token {
 	return []token.Token{
 		token.MakeToken(
 			tt,
@@ -19,7 +19,7 @@ func singletonList(tt token.TokenType, val string, valLen int) []token.Token {
 	}
 }
 
-func doScanTest(t *testing.T, given string, exp []token.Token) {
+func doScanAllTest(t *testing.T, given string, exp []token.Token) {
 	r := readers.NewRuneStringReader(given)
 
 	act, e := ScanAll(r)
@@ -27,7 +27,7 @@ func doScanTest(t *testing.T, given string, exp []token.Token) {
 	require.Equal(t, exp, act)
 }
 
-func Test_ScanAll_001(t *testing.T) {
+func Test_ScanAll_1(t *testing.T) {
 	r := readers.NewRuneStringReader("")
 
 	act, e := ScanAll(r)
@@ -37,68 +37,79 @@ func Test_ScanAll_001(t *testing.T) {
 	require.Equal(t, exp, act)
 }
 
-func Test_ScanAll_002(t *testing.T) {
+func Test_ScanAll_2(t *testing.T) {
 	r := readers.NewRuneStringReader("~")
 	_, e := ScanAll(r)
 	require.NotNil(t, e)
 }
 
-func Test_ScanAll_101(t *testing.T) {
-	exp := singletonList(token.If, "if", 2)
-	doScanTest(t, "if", exp)
+func Test_ScanAll_3(t *testing.T) {
+	given := "if"
+	exp := singletonTokenList(token.If, given, len(given))
+	doScanAllTest(t, given, exp)
 }
 
-func Test_ScanAll_102(t *testing.T) {
-	exp := singletonList(token.For, "for", 3)
-	doScanTest(t, "for", exp)
+func Test_ScanAll_4(t *testing.T) {
+	given := "for"
+	exp := singletonTokenList(token.For, given, len(given))
+	doScanAllTest(t, given, exp)
 }
 
-func Test_ScanAll_103(t *testing.T) {
-	exp := singletonList(token.Watch, "watch", 5)
-	doScanTest(t, "watch", exp)
+func Test_ScanAll_5(t *testing.T) {
+	given := "watch"
+	exp := singletonTokenList(token.Watch, given, len(given))
+	doScanAllTest(t, given, exp)
 }
 
-func Test_ScanAll_104(t *testing.T) {
-	exp := singletonList(token.When, "when", 4)
-	doScanTest(t, "when", exp)
+func Test_ScanAll_6(t *testing.T) {
+	given := "when"
+	exp := singletonTokenList(token.When, given, len(given))
+	doScanAllTest(t, given, exp)
 }
 
-func Test_ScanAll_105(t *testing.T) {
-	exp := singletonList(token.E, "E", 1)
-	doScanTest(t, "E", exp)
+func Test_ScanAll_7(t *testing.T) {
+	given := "E"
+	exp := singletonTokenList(token.E, given, len(given))
+	doScanAllTest(t, given, exp)
 }
 
-func Test_ScanAll_106(t *testing.T) {
-	exp := singletonList(token.F, "F", 1)
-	doScanTest(t, "F", exp)
+func Test_ScanAll_8(t *testing.T) {
+	given := "F"
+	exp := singletonTokenList(token.F, given, len(given))
+	doScanAllTest(t, given, exp)
 }
 
-func Test_ScanAll_107(t *testing.T) {
-	exp := singletonList(token.End, "end", 3)
-	doScanTest(t, "end", exp)
+func Test_ScanAll_9(t *testing.T) {
+	given := "end"
+	exp := singletonTokenList(token.End, given, len(given))
+	doScanAllTest(t, given, exp)
 }
 
-func Test_ScanAll_108(t *testing.T) {
-	exp := singletonList(token.Var, "abc", 3)
-	doScanTest(t, "abc", exp)
+func Test_ScanAll_10(t *testing.T) {
+	given := "abc"
+	exp := singletonTokenList(token.Var, given, len(given))
+	doScanAllTest(t, given, exp)
 }
 
-func Test_ScanAll_109(t *testing.T) {
-	exp := singletonList(token.Var, "abc_xyz", 7)
-	doScanTest(t, "abc_xyz", exp)
+func Test_ScanAll_11(t *testing.T) {
+	given := "abc_xyz"
+	exp := singletonTokenList(token.Var, given, len(given))
+	doScanAllTest(t, given, exp)
 }
 
-func Test_ScanAll_110(t *testing.T) {
-	exp := singletonList(token.Var, "_", 1)
-	doScanTest(t, "_", exp)
+func Test_ScanAll_12(t *testing.T) {
+	given := "_"
+	exp := singletonTokenList(token.Var, given, len(given))
+	doScanAllTest(t, given, exp)
 }
 
-func Test_ScanAll_111(t *testing.T) {
-	exp := singletonList(token.Var, "forest", 6)
-	doScanTest(t, "forest", exp)
+func Test_ScanAll_13(t *testing.T) {
+	given := "forest"
+	exp := singletonTokenList(token.Var, given, len(given))
+	doScanAllTest(t, given, exp)
 }
 
-func Test_ScanAll_112(t *testing.T) {
+func Test_ScanAll_14(t *testing.T) {
 	set := map[token.TokenType]string{
 		token.Add: "+",
 		token.Sub: "-",
@@ -113,8 +124,8 @@ func Test_ScanAll_112(t *testing.T) {
 		token.NEQ: "!=",
 	}
 
-	for tt, val := range set {
-		exp := singletonList(tt, val, len(val))
-		doScanTest(t, val, exp)
+	for tt, given := range set {
+		exp := singletonTokenList(tt, given, len(given))
+		doScanAllTest(t, given, exp)
 	}
 }

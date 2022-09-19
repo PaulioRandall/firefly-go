@@ -109,7 +109,6 @@ func scanWord(r Reader) (string, token.TokenType, error) {
 }
 
 func scanOperator(r Reader) (string, token.TokenType, error) {
-
 	var (
 		ru1, ru2 rune
 		e        error
