@@ -13,6 +13,7 @@ const (
 	In
 	Watch
 	When
+	Is
 	E
 	F
 	End
@@ -27,6 +28,7 @@ const (
 	Terminator // ;
 	Comma      // ,
 	Colon      // :
+	Spell      // @
 
 	_arith_begin
 	Add // +
@@ -63,6 +65,7 @@ var symbolMap = map[TokenType]string{
 	In:           "in",
 	Watch:        "watch",
 	When:         "when",
+	Is:           "is",
 	E:            "E",
 	F:            "F",
 	End:          "end",
@@ -73,6 +76,7 @@ var symbolMap = map[TokenType]string{
 	Terminator:   ";",
 	Comma:        ",",
 	Colon:        ":",
+	Spell:        "@",
 	Add:          "+",
 	Sub:          "-",
 	Mul:          "*",

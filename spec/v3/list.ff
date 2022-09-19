@@ -2,8 +2,8 @@
 list = [ "one", "two" ]
 
 list = [
-	"one",
-	"two",
+	"one"
+	"two"
 ]
 
 n = list[0]
