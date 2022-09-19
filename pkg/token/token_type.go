@@ -26,6 +26,7 @@ const (
 	Def        // :=
 	Terminator // ;
 	Comma      // ,
+	Colon      // :
 
 	_arith_begin
 	Add // +
@@ -71,6 +72,7 @@ var symbolMap = map[TokenType]string{
 	Def:          ":=",
 	Terminator:   ";",
 	Comma:        ",",
+	Colon:        ":",
 	Add:          "+",
 	Sub:          "-",
 	Mul:          "*",

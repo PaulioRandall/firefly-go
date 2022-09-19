@@ -75,6 +75,7 @@ func Test_ScanAll_4(t *testing.T) {
 		":=": token.Def,
 		";":  token.Terminator,
 		",":  token.Comma,
+		":":  token.Colon,
 		"+":  token.Add,
 		"-":  token.Sub,
 		"*":  token.Mul,

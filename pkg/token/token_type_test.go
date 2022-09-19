@@ -34,6 +34,7 @@ func Test_2_IdentifyOperatorType(t *testing.T) {
 		":=":  Def,
 		";":   Terminator,
 		",":   Comma,
+		":":   Colon,
 		"+":   Add,
 		"-":   Sub,
 		"*":   Mul,
