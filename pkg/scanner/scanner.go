@@ -68,6 +68,8 @@ func scanToken(r Reader) (token.Token, error) {
 	}
 
 	switch {
+	case isDigit(ru):
+		val, tt, e = scanNumber(r)
 	case isWordLetter(ru):
 		val, tt, e = scanWord(r)
 	default:
@@ -81,6 +83,59 @@ func scanToken(r Reader) (token.Token, error) {
 	rng := token.MakeRange(start, r.Pos())
 	tk := token.MakeToken(tt, val, rng)
 	return tk, nil
+}
+
+func scanNumber(r Reader) (string, token.TokenType, error) {
+	sig, e := scanInt(r)
+	if e != nil {
+		return scanNumberFail(r, e)
+	}
+
+	if !r.More() {
+		return sig, token.Number, nil
+	}
+
+	dot, e := r.Peek()
+	if e != nil {
+		return scanNumberFail(r, e)
+	}
+
+	if dot != '.' {
+		return sig, token.Number, nil
+	}
+
+	if _, e := r.Read(); e != nil {
+		return scanNumberFail(r, e)
+	}
+
+	frac, e := scanInt(r)
+	if e != nil {
+		return scanNumberFail(r, e)
+	}
+
+	return sig + string(dot) + frac, token.Number, nil
+}
+
+func scanInt(r Reader) (string, error) {
+	val := []rune{}
+
+	for r.More() {
+		ru, e := r.Peek()
+		if e != nil {
+			return scanIntFail(r, e)
+		}
+
+		if !isDigit(ru) {
+			break
+		}
+
+		if _, e = r.Read(); e != nil {
+			return scanIntFail(r, e)
+		}
+		val = append(val, ru)
+	}
+
+	return string(val), nil
 }
 
 func scanWord(r Reader) (string, token.TokenType, error) {
@@ -148,12 +203,29 @@ func isWordLetter(ru rune) bool {
 	return unicode.IsLetter(ru) || ru == '_'
 }
 
+func isDigit(ru rune) bool {
+	switch ru {
+	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+		return true
+	default:
+		return false
+	}
+}
+
 func scanTokenFail(r Reader, e error) (token.Token, error) {
 	return zeroToken, err.Pos(r.Pos(), e, "Failed to scan token")
 }
 
 func scanWordFail(r Reader, e error) (string, token.TokenType, error) {
 	return "", token.Unknown, err.Pos(r.Pos(), e, "Failed to scan word")
+}
+
+func scanNumberFail(r Reader, e error) (string, token.TokenType, error) {
+	return "", token.Unknown, err.Pos(r.Pos(), e, "Failed to scan number")
+}
+
+func scanIntFail(r Reader, e error) (string, error) {
+	return "", err.Pos(r.Pos(), e, "Failed to scan integer")
 }
 
 func scanOperatorFail(r Reader, e error) (string, token.TokenType, error) {

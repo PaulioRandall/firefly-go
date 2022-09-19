@@ -6,6 +6,8 @@ const (
 	Unknown TokenType = iota
 
 	Var
+	Number
+	String
 
 	_keywords_begin
 	If
@@ -22,7 +24,6 @@ const (
 	_keywords_end
 
 	_operators_begin
-
 	Ass        // =
 	Def        // :=
 	Terminator // ;
@@ -60,6 +61,8 @@ const (
 
 var symbolMap = map[TokenType]string{
 	Var:          "",
+	Number:       "",
+	String:       "",
 	If:           "if",
 	For:          "for",
 	In:           "in",
