@@ -68,13 +68,11 @@ func scanToken(r Reader) (token.Token, error) {
 	}
 
 	// TODO: Strings
-	// TODO: Newlines
-	// TODO: Spaces
 	switch {
-	case ru == '\n':
+	case isNewline(ru):
 		val, tt, e = scanNewline(r)
-	//case isSpace(ru):
-	// val, tt, e = scanSpace(r)
+	case isSpace(ru):
+		val, tt, e = scanSpace(r)
 	case isDigit(ru):
 		val, tt, e = scanNumber(r)
 	//case ru == '"' || ru == '\'':
@@ -101,6 +99,30 @@ func scanNewline(r Reader) (string, token.TokenType, error) {
 	}
 
 	return string(ru), token.Newline, nil
+}
+
+func scanSpace(r Reader) (string, token.TokenType, error) {
+	var spaces []rune
+
+	for r.More() {
+		ru, e := r.Peek()
+		if e != nil {
+			return scanSpaceFail(r, e)
+		}
+
+		if isNewline(ru) || !isSpace(ru) {
+			break
+		}
+
+		_, e = r.Read()
+		if e != nil {
+			return scanSpaceFail(r, e)
+		}
+
+		spaces = append(spaces, ru)
+	}
+
+	return string(spaces), token.Space, nil
 }
 
 func scanNumber(r Reader) (string, token.TokenType, error) {
@@ -217,6 +239,14 @@ func scanOperator(r Reader) (string, token.TokenType, error) {
 	return unknownSymbol(r, ru1, ru2)
 }
 
+func isNewline(ru rune) bool {
+	return ru == '\n'
+}
+
+func isSpace(ru rune) bool {
+	return unicode.IsSpace(ru)
+}
+
 func isWordLetter(ru rune) bool {
 	return unicode.IsLetter(ru) || ru == '_'
 }
@@ -236,6 +266,10 @@ func scanTokenFail(r Reader, e error) (token.Token, error) {
 
 func scanNewlineFail(r Reader, e error) (string, token.TokenType, error) {
 	return "", token.Unknown, err.Pos(r.Pos(), e, "Failed to scan newline")
+}
+
+func scanSpaceFail(r Reader, e error) (string, token.TokenType, error) {
+	return "", token.Unknown, err.Pos(r.Pos(), e, "Failed to scan spaces")
 }
 
 func scanNumberFail(r Reader, e error) (string, token.TokenType, error) {

@@ -144,3 +144,19 @@ func Test_7_ScanAll(t *testing.T) {
 	}
 	doScanAllTest(t, given, exp)
 }
+
+func Test_8_ScanAll(t *testing.T) {
+	vars := []string{
+		" ",
+		"\t",
+		"\f",
+		"\v",
+		"\r",
+		"  \t\v \f\r   \v\v\t",
+	}
+
+	for _, given := range vars {
+		exp := singletonTokenList(token.Space, given, len(given))
+		doScanAllTest(t, given, exp)
+	}
+}
