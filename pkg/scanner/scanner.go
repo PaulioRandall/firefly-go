@@ -7,6 +7,10 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
+const StringEscape = '\\'
+const StringDelim = '"'
+const Newline = '\n'
+
 var zeroToken token.Token
 
 type Reader interface {
@@ -67,16 +71,15 @@ func scanToken(r Reader) (token.Token, error) {
 		return scanTokenFail(r, e)
 	}
 
-	// TODO: Strings
 	switch {
-	case isNewline(ru):
+	case ru == Newline:
 		val, tt, e = scanNewline(r)
 	case isSpace(ru):
 		val, tt, e = scanSpace(r)
 	case isDigit(ru):
 		val, tt, e = scanNumber(r)
-	//case ru == '"' || ru == '\'':
-	// val, tt, e = scanString(r)
+	case ru == StringDelim:
+		val, tt, e = scanString(r)
 	case isWordLetter(ru):
 		val, tt, e = scanWord(r)
 	default:
@@ -110,7 +113,7 @@ func scanSpace(r Reader) (string, token.TokenType, error) {
 			return scanSpaceFail(r, e)
 		}
 
-		if isNewline(ru) || !isSpace(ru) {
+		if ru == Newline || !isSpace(ru) {
 			break
 		}
 
@@ -178,6 +181,76 @@ func scanInt(r Reader) (string, error) {
 	return string(val), nil
 }
 
+func scanString(r Reader) (string, token.TokenType, error) {
+
+	var str []rune
+
+	ru, e := scanStringDelim(r)
+	if e != nil {
+		return scanStringFail(r, e)
+	}
+	str = append(str, ru)
+
+	strBody, e := scanStringBody(r)
+	if e != nil {
+		return scanStringFail(r, e)
+	}
+
+	str = append(str, strBody...)
+
+	ru, e = scanStringDelim(r)
+	if e != nil {
+		return scanStringFail(r, e)
+	}
+	str = append(str, ru)
+
+	return string(str), token.String, nil
+}
+
+func scanStringDelim(r Reader) (rune, error) {
+	ru, e := r.Read()
+	if e != nil {
+		return scanStringDelimFail(r, nil)
+	}
+
+	if ru != StringDelim {
+		return rune(0), unterminatedString(r)
+	}
+
+	return ru, nil
+}
+
+func scanStringBody(r Reader) ([]rune, error) {
+	strBody := []rune{}
+	escaped := false
+
+	for r.More() {
+		ru, e := r.Peek()
+		if e != nil {
+			return scanStringBodyFail(r, e)
+		}
+
+		isDelim := ru == StringDelim
+		if !escaped && isDelim {
+			break
+		}
+
+		_, e = r.Read()
+		if e != nil {
+			return scanStringBodyFail(r, e)
+		}
+
+		escaped = !escaped && ru == StringEscape
+		strBody = append(strBody, ru)
+	}
+
+	if escaped {
+		return nil, unterminatedString(r)
+	}
+
+	return strBody, nil
+}
+
 func scanWord(r Reader) (string, token.TokenType, error) {
 	var runes []rune
 
@@ -239,10 +312,6 @@ func scanOperator(r Reader) (string, token.TokenType, error) {
 	return unknownSymbol(r, ru1, ru2)
 }
 
-func isNewline(ru rune) bool {
-	return ru == '\n'
-}
-
 func isSpace(ru rune) bool {
 	return unicode.IsSpace(ru)
 }
@@ -276,6 +345,18 @@ func scanNumberFail(r Reader, e error) (string, token.TokenType, error) {
 	return "", token.Unknown, err.Pos(r.Pos(), e, "Failed to scan number")
 }
 
+func scanStringFail(r Reader, e error) (string, token.TokenType, error) {
+	return "", token.Unknown, err.Pos(r.Pos(), e, "Failed to scan string")
+}
+
+func scanStringDelimFail(r Reader, e error) (rune, error) {
+	return rune(0), err.Pos(r.Pos(), e, "Failed to scan string delimiter")
+}
+
+func scanStringBodyFail(r Reader, e error) ([]rune, error) {
+	return []rune{}, err.Pos(r.Pos(), e, "Failed to scan string body")
+}
+
 func scanWordFail(r Reader, e error) (string, token.TokenType, error) {
 	return "", token.Unknown, err.Pos(r.Pos(), e, "Failed to scan word")
 }
@@ -293,4 +374,8 @@ func unknownSymbol(r Reader, sym1, sym2 rune) (string, token.TokenType, error) {
 		return "", token.Unknown, err.Pos(r.Pos(), nil, "Unknown symbol %q", sym1)
 	}
 	return "", token.Unknown, err.Pos(r.Pos(), nil, "Unknown symbol %q", []rune{sym1, sym2})
+}
+
+func unterminatedString(r Reader) error {
+	return err.Pos(r.Pos(), nil, "Unterminated string")
 }
