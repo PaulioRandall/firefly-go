@@ -27,7 +27,7 @@ func doScanAllTest(t *testing.T, given string, exp []token.Token) {
 	require.Equal(t, exp, act)
 }
 
-func Test_ScanAll_1(t *testing.T) {
+func Test_1_ScanAll(t *testing.T) {
 	r := readers.NewRuneStringReader("")
 
 	act, e := ScanAll(r)
@@ -37,13 +37,13 @@ func Test_ScanAll_1(t *testing.T) {
 	require.Equal(t, exp, act)
 }
 
-func Test_ScanAll_2(t *testing.T) {
+func Test_2_ScanAll(t *testing.T) {
 	r := readers.NewRuneStringReader("~")
 	_, e := ScanAll(r)
 	require.NotNil(t, e)
 }
 
-func Test_ScanAll_3(t *testing.T) {
+func Test_3_ScanAll(t *testing.T) {
 	words := map[string]token.TokenType{
 		"if":    token.If,
 		"for":   token.For,
@@ -64,7 +64,7 @@ func Test_ScanAll_3(t *testing.T) {
 	}
 }
 
-func Test_ScanAll_4(t *testing.T) {
+func Test_4_ScanAll(t *testing.T) {
 	vars := []string{
 		"abc",
 		"abc_xyz",
@@ -80,7 +80,7 @@ func Test_ScanAll_4(t *testing.T) {
 	}
 }
 
-func Test_ScanAll_5(t *testing.T) {
+func Test_5_ScanAll(t *testing.T) {
 	operators := map[string]token.TokenType{
 		"=":  token.Ass,
 		":=": token.Def,
@@ -113,7 +113,7 @@ func Test_ScanAll_5(t *testing.T) {
 	}
 }
 
-func Test_ScanAll_6(t *testing.T) {
+func Test_6_ScanAll(t *testing.T) {
 	vars := []string{
 		"0",
 		"0.00000",
@@ -128,4 +128,19 @@ func Test_ScanAll_6(t *testing.T) {
 		exp := singletonTokenList(token.Number, given, len(given))
 		doScanAllTest(t, given, exp)
 	}
+}
+
+func Test_7_ScanAll(t *testing.T) {
+	given := "\n"
+	exp := []token.Token{
+		token.MakeToken(
+			token.Newline,
+			given,
+			token.MakeRange(
+				token.MakePos(0, 0, 0),
+				token.MakePos(1, 1, 0),
+			),
+		),
+	}
+	doScanAllTest(t, given, exp)
 }

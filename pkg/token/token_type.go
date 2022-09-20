@@ -5,6 +5,7 @@ type TokenType int
 const (
 	Unknown TokenType = iota
 
+	Newline
 	Var
 	Number
 	String
@@ -60,6 +61,7 @@ const (
 )
 
 var symbolMap = map[TokenType]string{
+	Newline:      "\n",
 	Var:          "",
 	Number:       "",
 	String:       "",

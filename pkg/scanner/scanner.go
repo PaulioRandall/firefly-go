@@ -71,8 +71,8 @@ func scanToken(r Reader) (token.Token, error) {
 	// TODO: Newlines
 	// TODO: Spaces
 	switch {
-	//case isNewline(ru):
-	// val, tt, e = scanNewline(r)
+	case ru == '\n':
+		val, tt, e = scanNewline(r)
 	//case isSpace(ru):
 	// val, tt, e = scanSpace(r)
 	case isDigit(ru):
@@ -92,6 +92,15 @@ func scanToken(r Reader) (token.Token, error) {
 	rng := token.MakeRange(start, r.Pos())
 	tk := token.MakeToken(tt, val, rng)
 	return tk, nil
+}
+
+func scanNewline(r Reader) (string, token.TokenType, error) {
+	ru, e := r.Read()
+	if e != nil {
+		return scanNewlineFail(r, e)
+	}
+
+	return string(ru), token.Newline, nil
 }
 
 func scanNumber(r Reader) (string, token.TokenType, error) {
@@ -225,12 +234,16 @@ func scanTokenFail(r Reader, e error) (token.Token, error) {
 	return zeroToken, err.Pos(r.Pos(), e, "Failed to scan token")
 }
 
-func scanWordFail(r Reader, e error) (string, token.TokenType, error) {
-	return "", token.Unknown, err.Pos(r.Pos(), e, "Failed to scan word")
+func scanNewlineFail(r Reader, e error) (string, token.TokenType, error) {
+	return "", token.Unknown, err.Pos(r.Pos(), e, "Failed to scan newline")
 }
 
 func scanNumberFail(r Reader, e error) (string, token.TokenType, error) {
 	return "", token.Unknown, err.Pos(r.Pos(), e, "Failed to scan number")
+}
+
+func scanWordFail(r Reader, e error) (string, token.TokenType, error) {
+	return "", token.Unknown, err.Pos(r.Pos(), e, "Failed to scan word")
 }
 
 func scanIntFail(r Reader, e error) (string, error) {
