@@ -22,27 +22,6 @@ type Reader interface {
 
 type ScanFunc func() (tk token.Token, f ScanFunc, e error)
 
-func ScanAll(r Reader) ([]token.Token, error) {
-	var (
-		tk  token.Token
-		tks []token.Token
-		sc  = NewScanFunc(r)
-		e   error
-	)
-
-	for sc != nil {
-		tk, sc, e = sc()
-
-		if e != nil {
-			return nil, err.Pos(r.Pos(), e, "Failed to scan all tokens")
-		}
-
-		tks = append(tks, tk)
-	}
-
-	return tks, nil
-}
-
 func NewScanFunc(r Reader) ScanFunc {
 	if !r.More() {
 		return nil
@@ -64,6 +43,8 @@ func scanToken(r Reader) (token.Token, error) {
 		tt    token.TokenType
 		val   string
 		start = r.Pos()
+		sk    = &sidekick{start: r.Pos()}
+		useSK = false
 	)
 
 	ru, e := r.Peek()
@@ -73,7 +54,8 @@ func scanToken(r Reader) (token.Token, error) {
 
 	switch {
 	case ru == Newline:
-		val, tt, e = scanNewline(r)
+		useSK = true
+		e = scanSymbol(r, sk, token.Newline)
 	case isSpace(ru):
 		val, tt, e = scanSpace(r)
 	case isDigit(ru):
@@ -90,18 +72,30 @@ func scanToken(r Reader) (token.Token, error) {
 		return scanTokenFail(r, e)
 	}
 
-	rng := token.MakeRange(start, r.Pos())
-	tk := token.MakeToken(tt, val, rng)
+	var rng token.Range
+	var tk token.Token
+
+	if useSK {
+		rng = token.MakeRange(sk.start, r.Pos())
+		tk = token.MakeToken(sk.tt, sk.str(), rng)
+		return tk, nil
+	}
+
+	rng = token.MakeRange(start, r.Pos())
+	tk = token.MakeToken(tt, val, rng)
 	return tk, nil
 }
 
-func scanNewline(r Reader) (string, token.TokenType, error) {
+func scanSymbol(r Reader, sk *sidekick, tt token.TokenType) error {
 	ru, e := r.Read()
 	if e != nil {
-		return scanNewlineFail(r, e)
+		return err.Pos(r.Pos(), e, "Failed to scan newline")
 	}
 
-	return string(ru), token.Newline, nil
+	sk.add(ru)
+	sk.tt = tt
+
+	return nil
 }
 
 func scanSpace(r Reader) (string, token.TokenType, error) {
@@ -331,10 +325,6 @@ func isDigit(ru rune) bool {
 
 func scanTokenFail(r Reader, e error) (token.Token, error) {
 	return zeroToken, err.Pos(r.Pos(), e, "Failed to scan token")
-}
-
-func scanNewlineFail(r Reader, e error) (string, token.TokenType, error) {
-	return "", token.Unknown, err.Pos(r.Pos(), e, "Failed to scan newline")
 }
 
 func scanSpaceFail(r Reader, e error) (string, token.TokenType, error) {
