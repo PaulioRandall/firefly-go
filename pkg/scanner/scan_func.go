@@ -58,7 +58,7 @@ func scanToken(r Reader) (token.Token, error) {
 		e = scanSymbol(r, sk, token.Newline)
 	case isSpace(ru):
 		useSK = true
-		e = scanSpace(r, sk)
+		e = scanSpaces(r, sk)
 	case isDigit(ru):
 		useSK = true
 		e = scanNumber(r, sk)
@@ -91,7 +91,7 @@ func scanToken(r Reader) (token.Token, error) {
 func scanSymbol(r Reader, sk *sidekick, tt token.TokenType) error {
 	ru, e := r.Read()
 	if e != nil {
-		return err.Pos(r.Pos(), e, "Failed to scan newline")
+		return err.Pos(r.Pos(), e, "Failed to scan %q", tt.String())
 	}
 
 	sk.add(ru)
@@ -100,23 +100,24 @@ func scanSymbol(r Reader, sk *sidekick, tt token.TokenType) error {
 	return nil
 }
 
-func scanSpace(r Reader, sk *sidekick) error {
-	for r.More() {
-		ru, e := r.Peek()
+func scanWhile(r Reader, sk *sidekick, f func(ru rune) bool) error {
+	added := true
+	var e error
+
+	for added {
+		added, e = sk.addIfFunc(r, f)
+
 		if e != nil {
-			return err.Pos(r.Pos(), e, "Failed to scan spaces")
+			return err.Pos(r.Pos(), e, "Error scanning runes")
 		}
+	}
 
-		if ru == Newline || !isSpace(ru) {
-			break
-		}
+	return nil
+}
 
-		_, e = r.Read()
-		if e != nil {
-			return err.Pos(r.Pos(), e, "Failed to scan spaces")
-		}
-
-		sk.add(ru)
+func scanSpaces(r Reader, sk *sidekick) error {
+	if e := scanWhile(r, sk, isSpace); e != nil {
+		return err.Pos(r.Pos(), e, "Failed to scan spaces")
 	}
 
 	sk.tt = token.Space
@@ -126,9 +127,8 @@ func scanSpace(r Reader, sk *sidekick) error {
 func scanNumber(r Reader, sk *sidekick) error {
 	sk.tt = token.Number
 
-	e := scanInt(r, sk)
-	if e != nil {
-		return err.Pos(r.Pos(), e, "Failed to scan number")
+	if e := scanWhile(r, sk, isDigit); e != nil {
+		return err.Pos(r.Pos(), e, "Failed to scan significant part of number")
 	}
 
 	if hasFractional, e := sk.addIf(r, '.'); e != nil {
@@ -137,30 +137,8 @@ func scanNumber(r Reader, sk *sidekick) error {
 		return nil
 	}
 
-	e = scanInt(r, sk)
-	if e != nil {
-		return err.Pos(r.Pos(), e, "Failed to scan fractional of number")
-	}
-
-	return nil
-}
-
-func scanInt(r Reader, sk *sidekick) error {
-	for r.More() {
-		ru, e := r.Peek()
-		if e != nil {
-			return err.Pos(r.Pos(), e, "Failed to scan integer")
-		}
-
-		if !isDigit(ru) {
-			break
-		}
-
-		if _, e = r.Read(); e != nil {
-			return err.Pos(r.Pos(), e, "Failed to scan integer")
-		}
-
-		sk.add(ru)
+	if e := scanWhile(r, sk, isDigit); e != nil {
+		return err.Pos(r.Pos(), e, "Failed to scan fractional part of number")
 	}
 
 	return nil
