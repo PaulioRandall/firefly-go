@@ -63,12 +63,18 @@ func scanToken(r Reader) (token.Token, error) {
 		useSK = true
 		e = scanNumber(r, sk)
 	case ru == StringDelim:
-		val, tt, e = scanString(r)
+		useSK = true
+		e = scanString(r, sk)
 	case isWordLetter(ru):
+		// TODO: use sk
 		val, tt, e = scanWord(r)
 	default:
+		// TODO: use sk
 		val, tt, e = scanOperator(r)
 	}
+
+	// TODO: Rename 'sidekick' -> 'tokenBuilder'
+	// TODO: tokenBuilder shoud have Reader embedded
 
 	if e != nil {
 		return scanTokenFail(r, e)
@@ -77,6 +83,7 @@ func scanToken(r Reader) (token.Token, error) {
 	var rng token.Range
 	var tk token.Token
 
+	// TODO: remove obsolete
 	if useSK {
 		rng = token.MakeRange(sk.start, r.Pos())
 		tk = token.MakeToken(sk.tt, sk.str(), rng)
@@ -100,12 +107,12 @@ func scanSymbol(r Reader, sk *sidekick, tt token.TokenType) error {
 	return nil
 }
 
-func scanWhile(r Reader, sk *sidekick, f func(ru rune) bool) error {
+func acceptWhile(r Reader, sk *sidekick, f func(ru rune) bool) error {
 	added := true
 	var e error
 
 	for added {
-		added, e = sk.addIfFunc(r, f)
+		added, e = sk.acceptFunc(r, f)
 
 		if e != nil {
 			return err.Pos(r.Pos(), e, "Error scanning runes")
@@ -116,7 +123,7 @@ func scanWhile(r Reader, sk *sidekick, f func(ru rune) bool) error {
 }
 
 func scanSpaces(r Reader, sk *sidekick) error {
-	if e := scanWhile(r, sk, isSpace); e != nil {
+	if e := acceptWhile(r, sk, isSpace); e != nil {
 		return err.Pos(r.Pos(), e, "Failed to scan spaces")
 	}
 
@@ -127,91 +134,63 @@ func scanSpaces(r Reader, sk *sidekick) error {
 func scanNumber(r Reader, sk *sidekick) error {
 	sk.tt = token.Number
 
-	if e := scanWhile(r, sk, isDigit); e != nil {
+	if e := acceptWhile(r, sk, isDigit); e != nil {
 		return err.Pos(r.Pos(), e, "Failed to scan significant part of number")
 	}
 
-	if hasFractional, e := sk.addIf(r, '.'); e != nil {
+	if hasFractional, e := sk.accept(r, '.'); e != nil {
 		return err.Pos(r.Pos(), e, "Failed to scan fractional delimeter of number")
 	} else if !hasFractional {
 		return nil
 	}
 
-	if e := scanWhile(r, sk, isDigit); e != nil {
+	if e := acceptWhile(r, sk, isDigit); e != nil {
 		return err.Pos(r.Pos(), e, "Failed to scan fractional part of number")
 	}
 
 	return nil
 }
 
-func scanString(r Reader) (string, token.TokenType, error) {
-
-	var str []rune
-
-	ru, e := scanStringDelim(r)
-	if e != nil {
-		return scanStringFail(r, e)
-	}
-	str = append(str, ru)
-
-	strBody, e := scanStringBody(r)
-	if e != nil {
-		return scanStringFail(r, e)
+func scanString(r Reader, sk *sidekick) error {
+	if e := sk.expect(r, StringDelim, "Sanity check!"); e != nil {
+		return err.Pos(r.Pos(), e, "Failed to scan initiating string delimiter")
 	}
 
-	str = append(str, strBody...)
-
-	ru, e = scanStringDelim(r)
-	if e != nil {
-		return scanStringFail(r, e)
+	if e := scanStringBody(r, sk); e != nil {
+		return err.Pos(r.Pos(), e, "Failed to scan string body")
 	}
-	str = append(str, ru)
 
-	return string(str), token.String, nil
+	if e := sk.expect(r, StringDelim, "Unterminated string"); e != nil {
+		return err.Pos(r.Pos(), e, "Failed to scan terminating string delimiter")
+	}
+
+	sk.tt = token.String
+	return nil
 }
 
-func scanStringDelim(r Reader) (rune, error) {
-	ru, e := r.Read()
-	if e != nil {
-		return scanStringDelimFail(r, nil)
-	}
-
-	if ru != StringDelim {
-		return rune(0), unterminatedString(r)
-	}
-
-	return ru, nil
-}
-
-func scanStringBody(r Reader) ([]rune, error) {
-	strBody := []rune{}
+func scanStringBody(r Reader, sk *sidekick) error {
 	escaped := false
 
-	for r.More() {
-		ru, e := r.Peek()
-		if e != nil {
-			return scanStringBodyFail(r, e)
-		}
-
+	e := acceptWhile(r, sk, func(ru rune) bool {
 		isDelim := ru == StringDelim
-		if !escaped && isDelim {
-			break
-		}
 
-		_, e = r.Read()
-		if e != nil {
-			return scanStringBodyFail(r, e)
+		if !escaped && isDelim {
+			return false
 		}
 
 		escaped = !escaped && ru == StringEscape
-		strBody = append(strBody, ru)
+		return true
+	})
+
+	if e != nil {
+		return err.Pos(r.Pos(), e, "Failed to scan string body")
 	}
 
 	if escaped {
-		return nil, unterminatedString(r)
+		return err.Pos(r.Pos(), nil, "Unterminated string")
 	}
 
-	return strBody, nil
+	return nil
 }
 
 func scanWord(r Reader) (string, token.TokenType, error) {
@@ -296,18 +275,6 @@ func scanTokenFail(r Reader, e error) (token.Token, error) {
 	return zeroToken, err.Pos(r.Pos(), e, "Failed to scan token")
 }
 
-func scanStringFail(r Reader, e error) (string, token.TokenType, error) {
-	return "", token.Unknown, err.Pos(r.Pos(), e, "Failed to scan string")
-}
-
-func scanStringDelimFail(r Reader, e error) (rune, error) {
-	return rune(0), err.Pos(r.Pos(), e, "Failed to scan string delimiter")
-}
-
-func scanStringBodyFail(r Reader, e error) ([]rune, error) {
-	return []rune{}, err.Pos(r.Pos(), e, "Failed to scan string body")
-}
-
 func scanWordFail(r Reader, e error) (string, token.TokenType, error) {
 	return "", token.Unknown, err.Pos(r.Pos(), e, "Failed to scan word")
 }
@@ -321,8 +288,4 @@ func unknownSymbol(r Reader, sym1, sym2 rune) (string, token.TokenType, error) {
 		return "", token.Unknown, err.Pos(r.Pos(), nil, "Unknown symbol %q", sym1)
 	}
 	return "", token.Unknown, err.Pos(r.Pos(), nil, "Unknown symbol %q", []rune{sym1, sym2})
-}
-
-func unterminatedString(r Reader) error {
-	return err.Pos(r.Pos(), nil, "Unterminated string")
 }

@@ -1,6 +1,7 @@
 package scanner
 
 import (
+	"github.com/PaulioRandall/firefly-go/pkg/err"
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
@@ -10,7 +11,7 @@ type sidekick struct {
 	val   []rune
 }
 
-func (sk *sidekick) addIfFunc(r Reader, f func(rune) bool) (bool, error) {
+func (sk *sidekick) acceptFunc(r Reader, f func(rune) bool) (bool, error) {
 	if !r.More() {
 		return false, nil
 	}
@@ -32,10 +33,38 @@ func (sk *sidekick) addIfFunc(r Reader, f func(rune) bool) (bool, error) {
 	return true, nil
 }
 
-func (sk *sidekick) addIf(r Reader, want rune) (bool, error) {
-	return sk.addIfFunc(r, func(have rune) bool {
+func (sk *sidekick) accept(r Reader, want rune) (bool, error) {
+	return sk.acceptFunc(r, func(have rune) bool {
 		return have == want
 	})
+}
+
+func (sk *sidekick) expectFunc(
+	r Reader,
+	f func(rune) bool,
+	errMsg string,
+	args ...interface{}) error {
+
+	found, e := sk.acceptFunc(r, f)
+	if e != nil {
+		return err.Pos(r.Pos(), e, "Failed to read from stream")
+	}
+
+	if !found {
+		return err.Pos(r.Pos(), e, errMsg, args...)
+	}
+
+	return nil
+}
+
+func (sk *sidekick) expect(
+	r Reader,
+	want rune,
+	errMsg string,
+	args ...interface{}) error {
+
+	matcher := func(have rune) bool { return have == want }
+	return sk.expectFunc(r, matcher, errMsg, args...)
 }
 
 func (sk *sidekick) add(ru ...rune) {
