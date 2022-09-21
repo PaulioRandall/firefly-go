@@ -57,9 +57,11 @@ func scanToken(r Reader) (token.Token, error) {
 		useSK = true
 		e = scanSymbol(r, sk, token.Newline)
 	case isSpace(ru):
-		val, tt, e = scanSpace(r)
+		useSK = true
+		e = scanSpace(r, sk)
 	case isDigit(ru):
-		val, tt, e = scanNumber(r)
+		useSK = true
+		e = scanNumber(r, sk)
 	case ru == StringDelim:
 		val, tt, e = scanString(r)
 	case isWordLetter(ru):
@@ -98,13 +100,11 @@ func scanSymbol(r Reader, sk *sidekick, tt token.TokenType) error {
 	return nil
 }
 
-func scanSpace(r Reader) (string, token.TokenType, error) {
-	var spaces []rune
-
+func scanSpace(r Reader, sk *sidekick) error {
 	for r.More() {
 		ru, e := r.Peek()
 		if e != nil {
-			return scanSpaceFail(r, e)
+			return err.Pos(r.Pos(), e, "Failed to scan spaces")
 		}
 
 		if ru == Newline || !isSpace(ru) {
@@ -113,53 +113,43 @@ func scanSpace(r Reader) (string, token.TokenType, error) {
 
 		_, e = r.Read()
 		if e != nil {
-			return scanSpaceFail(r, e)
+			return err.Pos(r.Pos(), e, "Failed to scan spaces")
 		}
 
-		spaces = append(spaces, ru)
+		sk.add(ru)
 	}
 
-	return string(spaces), token.Space, nil
+	sk.tt = token.Space
+	return nil
 }
 
-func scanNumber(r Reader) (string, token.TokenType, error) {
-	sig, e := scanInt(r)
+func scanNumber(r Reader, sk *sidekick) error {
+	sk.tt = token.Number
+
+	e := scanInt(r, sk)
 	if e != nil {
-		return scanNumberFail(r, e)
+		return err.Pos(r.Pos(), e, "Failed to scan number")
 	}
 
-	if !r.More() {
-		return sig, token.Number, nil
+	if hasFractional, e := sk.addIf(r, '.'); e != nil {
+		return err.Pos(r.Pos(), e, "Failed to scan fractional delimeter of number")
+	} else if !hasFractional {
+		return nil
 	}
 
-	dot, e := r.Peek()
+	e = scanInt(r, sk)
 	if e != nil {
-		return scanNumberFail(r, e)
+		return err.Pos(r.Pos(), e, "Failed to scan fractional of number")
 	}
 
-	if dot != '.' {
-		return sig, token.Number, nil
-	}
-
-	if _, e := r.Read(); e != nil {
-		return scanNumberFail(r, e)
-	}
-
-	frac, e := scanInt(r)
-	if e != nil {
-		return scanNumberFail(r, e)
-	}
-
-	return sig + string(dot) + frac, token.Number, nil
+	return nil
 }
 
-func scanInt(r Reader) (string, error) {
-	val := []rune{}
-
+func scanInt(r Reader, sk *sidekick) error {
 	for r.More() {
 		ru, e := r.Peek()
 		if e != nil {
-			return scanIntFail(r, e)
+			return err.Pos(r.Pos(), e, "Failed to scan integer")
 		}
 
 		if !isDigit(ru) {
@@ -167,12 +157,13 @@ func scanInt(r Reader) (string, error) {
 		}
 
 		if _, e = r.Read(); e != nil {
-			return scanIntFail(r, e)
+			return err.Pos(r.Pos(), e, "Failed to scan integer")
 		}
-		val = append(val, ru)
+
+		sk.add(ru)
 	}
 
-	return string(val), nil
+	return nil
 }
 
 func scanString(r Reader) (string, token.TokenType, error) {
@@ -327,14 +318,6 @@ func scanTokenFail(r Reader, e error) (token.Token, error) {
 	return zeroToken, err.Pos(r.Pos(), e, "Failed to scan token")
 }
 
-func scanSpaceFail(r Reader, e error) (string, token.TokenType, error) {
-	return "", token.Unknown, err.Pos(r.Pos(), e, "Failed to scan spaces")
-}
-
-func scanNumberFail(r Reader, e error) (string, token.TokenType, error) {
-	return "", token.Unknown, err.Pos(r.Pos(), e, "Failed to scan number")
-}
-
 func scanStringFail(r Reader, e error) (string, token.TokenType, error) {
 	return "", token.Unknown, err.Pos(r.Pos(), e, "Failed to scan string")
 }
@@ -349,10 +332,6 @@ func scanStringBodyFail(r Reader, e error) ([]rune, error) {
 
 func scanWordFail(r Reader, e error) (string, token.TokenType, error) {
 	return "", token.Unknown, err.Pos(r.Pos(), e, "Failed to scan word")
-}
-
-func scanIntFail(r Reader, e error) (string, error) {
-	return "", err.Pos(r.Pos(), e, "Failed to scan integer")
 }
 
 func scanOperatorFail(r Reader, e error) (string, token.TokenType, error) {

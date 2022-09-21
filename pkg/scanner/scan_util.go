@@ -10,6 +10,28 @@ type sidekick struct {
 	val   []rune
 }
 
+func (sk *sidekick) addIf(r Reader, want rune) (bool, error) {
+	if !r.More() {
+		return false, nil
+	}
+
+	have, e := r.Peek()
+	if e != nil {
+		return false, e
+	}
+
+	if have != want {
+		return false, nil
+	}
+
+	if _, e = r.Read(); e != nil {
+		return false, e
+	}
+
+	sk.add(have)
+	return true, nil
+}
+
 func (sk *sidekick) add(ru ...rune) {
 	sk.val = append(sk.val, ru...)
 }
