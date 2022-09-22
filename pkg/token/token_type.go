@@ -115,22 +115,46 @@ func (tt TokenType) String() string {
 	return symbolMap[tt]
 }
 
-func IdentifyWordType(s string) TokenType {
-	for tt, symbol := range symbolMap {
-		if tt.IsKeyword() && s == symbol {
-			return tt
-		}
-	}
+func Operators() map[TokenType]string {
+	return filter(func(tt TokenType, _ string) bool {
+		return tt.IsOperator()
+	})
+}
 
-	return Var
+func IdentifyWordType(s string) TokenType {
+	tt := find(func(tt TokenType, symbol string) bool {
+		return tt.IsKeyword() && s == symbol
+	})
+
+	if tt == Unknown {
+		return Var
+	}
+	return tt
 }
 
 func IdentifyOperatorType(s string) TokenType {
+	return find(func(tt TokenType, symbol string) bool {
+		return tt.IsOperator() && s == symbol
+	})
+}
+
+func find(f func(TokenType, string) bool) TokenType {
 	for tt, symbol := range symbolMap {
-		if tt.IsOperator() && s == symbol {
+		if f(tt, symbol) {
 			return tt
 		}
 	}
-
 	return Unknown
+}
+
+func filter(f func(TokenType, string) bool) map[TokenType]string {
+	res := map[TokenType]string{}
+
+	for tt, symbol := range symbolMap {
+		if f(tt, symbol) {
+			res[tt] = symbol
+		}
+	}
+
+	return res
 }

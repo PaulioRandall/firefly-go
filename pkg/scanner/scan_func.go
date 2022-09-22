@@ -69,8 +69,8 @@ func scanToken(r Reader) (token.Token, error) {
 		useSK = true
 		e = scanWord(r, sk)
 	default:
-		// TODO: use sk
-		val, tt, e = scanOperator(r)
+		useSK = true
+		e = scanOperator(r, sk)
 	}
 
 	// TODO: Rename 'sidekick' -> 'tokenBuilder'
@@ -197,45 +197,47 @@ func scanWord(r Reader, sk *sidekick) error {
 	if e := acceptWhile(r, sk, isWordLetter); e != nil {
 		return err.Pos(r.Pos(), e, "Failed to scan variable or keyword")
 	}
-	
+
 	sk.tt = token.IdentifyWordType(string(sk.val))
 	return nil
 }
 
-func scanOperator(r Reader) (string, token.TokenType, error) {
+func scanOperator(r Reader, sk *sidekick) error {
+
 	var (
 		ru1, ru2 rune
 		e        error
-		tt       token.TokenType
-		val      string
 	)
 
 	ru1, e = r.Read()
 	if e != nil {
-		return scanOperatorFail(r, e)
+		return err.Pos(r.Pos(), e, "Failed to scan operator")
 	}
 
 	if r.More() {
 		ru2, e = r.Peek()
 		if e != nil {
-			return scanOperatorFail(r, e)
+			return err.Pos(r.Pos(), e, "Failed to scan operator")
 		}
 	}
 
-	val = string([]rune{ru1, ru2})
-	tt = token.IdentifyOperatorType(val)
-	if tt != token.Unknown {
+	sk.val = []rune{ru1, ru2}
+	sk.tt = token.IdentifyOperatorType(string(sk.val))
+	if sk.tt != token.Unknown {
 		_, e = r.Read()
-		return val, tt, e
+		return e
 	}
 
-	val = string([]rune{ru1})
-	tt = token.IdentifyOperatorType(val)
-	if tt != token.Unknown {
-		return val, tt, nil
+	sk.val = []rune{ru1}
+	sk.tt = token.IdentifyOperatorType(string(sk.val))
+	if sk.tt != token.Unknown {
+		return nil
 	}
 
-	return unknownSymbol(r, ru1, ru2)
+	if ru2 == rune(0) {
+		return err.Pos(r.Pos(), nil, "Unknown symbol %q", ru1)
+	}
+	return err.Pos(r.Pos(), nil, "Unknown symbol %q", []rune{ru1, ru2})
 }
 
 func isSpace(ru rune) bool {
@@ -257,19 +259,4 @@ func isDigit(ru rune) bool {
 
 func scanTokenFail(r Reader, e error) (token.Token, error) {
 	return zeroToken, err.Pos(r.Pos(), e, "Failed to scan token")
-}
-
-func scanWordFail(r Reader, e error) (string, token.TokenType, error) {
-	return "", token.Unknown, err.Pos(r.Pos(), e, "Failed to scan word")
-}
-
-func scanOperatorFail(r Reader, e error) (string, token.TokenType, error) {
-	return "", token.Unknown, err.Pos(r.Pos(), e, "Failed to scan operator")
-}
-
-func unknownSymbol(r Reader, sym1, sym2 rune) (string, token.TokenType, error) {
-	if sym2 == rune(0) {
-		return "", token.Unknown, err.Pos(r.Pos(), nil, "Unknown symbol %q", sym1)
-	}
-	return "", token.Unknown, err.Pos(r.Pos(), nil, "Unknown symbol %q", []rune{sym1, sym2})
 }
