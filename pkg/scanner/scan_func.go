@@ -66,8 +66,8 @@ func scanToken(r Reader) (token.Token, error) {
 		useSK = true
 		e = scanString(r, sk)
 	case isWordLetter(ru):
-		// TODO: use sk
-		val, tt, e = scanWord(r)
+		useSK = true
+		e = scanWord(r, sk)
 	default:
 		// TODO: use sk
 		val, tt, e = scanOperator(r)
@@ -193,29 +193,13 @@ func scanStringBody(r Reader, sk *sidekick) error {
 	return nil
 }
 
-func scanWord(r Reader) (string, token.TokenType, error) {
-	var runes []rune
-
-	for r.More() {
-		ru, e := r.Peek()
-		if e != nil {
-			return scanWordFail(r, e)
-		}
-
-		if !isWordLetter(ru) {
-			break
-		}
-
-		_, e = r.Read()
-		if e != nil {
-			return scanWordFail(r, e)
-		}
-
-		runes = append(runes, ru)
+func scanWord(r Reader, sk *sidekick) error {
+	if e := acceptWhile(r, sk, isWordLetter); e != nil {
+		return err.Pos(r.Pos(), e, "Failed to scan variable or keyword")
 	}
-
-	word := string(runes)
-	return word, token.IdentifyWordType(word), nil
+	
+	sk.tt = token.IdentifyWordType(string(sk.val))
+	return nil
 }
 
 func scanOperator(r Reader) (string, token.TokenType, error) {
