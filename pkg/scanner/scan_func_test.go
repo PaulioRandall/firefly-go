@@ -57,60 +57,6 @@ func Test_2_ScanAll(t *testing.T) {
 	require.NotNil(t, e)
 }
 
-func Test_3_ScanAll(t *testing.T) {
-	words := map[string]token.TokenType{
-		"if":    token.If,
-		"for":   token.For,
-		"in":    token.In,
-		"watch": token.Watch,
-		"when":  token.When,
-		"is":    token.Is,
-		"E":     token.E,
-		"F":     token.F,
-		"end":   token.End,
-		"true":  token.True,
-		"false": token.False,
-	}
-
-	for given, tt := range words {
-		exp := singletonTokenList(tt, given, len(given))
-		doScanAllTest(t, given, exp)
-	}
-}
-
-func Test_4_ScanAll(t *testing.T) {
-	vars := []string{
-		"abc",
-		"abc_xyz",
-		"forest",
-		"For",
-		"FOR",
-		"e",
-	}
-
-	for _, given := range vars {
-		exp := singletonTokenList(token.Var, given, len(given))
-		doScanAllTest(t, given, exp)
-	}
-}
-
-func Test_6_ScanAll(t *testing.T) {
-	vars := []string{
-		"0",
-		"0.00000",
-		"0.1",
-		"1",
-		"1.1234567890",
-		"123456789.987654321",
-		"9",
-	}
-
-	for _, given := range vars {
-		exp := singletonTokenList(token.Number, given, len(given))
-		doScanAllTest(t, given, exp)
-	}
-}
-
 func Test_7_ScanAll(t *testing.T) {
 	given := "\n"
 	exp := []token.Token{
@@ -124,39 +70,6 @@ func Test_7_ScanAll(t *testing.T) {
 		),
 	}
 	doScanAllTest(t, given, exp)
-}
-
-func Test_8_ScanAll(t *testing.T) {
-	vars := []string{
-		" ",
-		"\t",
-		"\f",
-		"\v",
-		"\r",
-		"  \t\v \f\r   \v\v\t",
-	}
-
-	for _, given := range vars {
-		exp := singletonTokenList(token.Space, given, len(given))
-		doScanAllTest(t, given, exp)
-	}
-}
-
-func Test_9_ScanAll(t *testing.T) {
-	vars := []string{
-		`""`,
-		`"a"`,
-		`"abc"`,
-		`"   "`,
-		`"\\"`,
-		`"\\\\\\"`,
-		`"\"\"\""`,
-	}
-
-	for _, given := range vars {
-		exp := singletonTokenList(token.String, given, len(given))
-		doScanAllTest(t, given, exp)
-	}
 }
 
 func Test_10_ScanAll(t *testing.T) {
@@ -249,4 +162,152 @@ func Test_31_ScanAll(t *testing.T) {
 
 func Test_32_ScanAll(t *testing.T) {
 	doScanTokenTest(t, "]", token.BracketClose)
+}
+
+func Test_33_ScanAll(t *testing.T) {
+	doScanTokenTest(t, `""`, token.String)
+}
+
+func Test_34_ScanAll(t *testing.T) {
+	doScanTokenTest(t, `"a"`, token.String)
+}
+
+func Test_35_ScanAll(t *testing.T) {
+	doScanTokenTest(t, `"abc"`, token.String)
+}
+
+func Test_36_ScanAll(t *testing.T) {
+	doScanTokenTest(t, `"   "`, token.String)
+}
+
+func Test_37_ScanAll(t *testing.T) {
+	doScanTokenTest(t, `"\\"`, token.String)
+}
+
+func Test_38_ScanAll(t *testing.T) {
+	doScanTokenTest(t, `"\\\\\\"`, token.String)
+}
+
+func Test_39_ScanAll(t *testing.T) {
+	doScanTokenTest(t, `"\"\"\""`, token.String)
+}
+
+func Test_40_ScanAll(t *testing.T) {
+	doScanTokenTest(t, " ", token.Space)
+}
+
+func Test_41_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "\t", token.Space)
+}
+
+func Test_42_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "\v", token.Space)
+}
+
+func Test_43_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "\r", token.Space)
+}
+
+func Test_44_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "\f", token.Space)
+}
+
+func Test_45_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "  \t\v \f\r   \v\v\t", token.Space)
+}
+
+func Test_50_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "0", token.Number)
+}
+
+func Test_51_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "0.00000", token.Number)
+}
+
+func Test_52_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "0.1", token.Number)
+}
+
+func Test_53_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "1", token.Number)
+}
+
+func Test_54_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "1.1234567890", token.Number)
+}
+
+func Test_55_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "123456789.987654321", token.Number)
+}
+
+func Test_56_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "9", token.Number)
+}
+
+func Test_60_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "abc", token.Var)
+}
+
+func Test_61_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "abc_xyz", token.Var)
+}
+
+func Test_62_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "forest", token.Var)
+}
+
+func Test_63_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "For", token.Var)
+}
+
+func Test_64_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "FOR", token.Var)
+}
+
+func Test_65_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "e", token.Var)
+}
+
+func Test_70_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "if", token.If)
+}
+
+func Test_71_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "for", token.For)
+}
+
+func Test_72_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "in", token.In)
+}
+
+func Test_73_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "if", token.If)
+}
+
+func Test_74_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "watch", token.Watch)
+}
+
+func Test_75_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "when", token.When)
+}
+
+func Test_76_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "is", token.Is)
+}
+
+func Test_77_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "E", token.E)
+}
+
+func Test_78_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "F", token.F)
+}
+
+func Test_79_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "true", token.True)
+}
+
+func Test_80_ScanAll(t *testing.T) {
+	doScanTokenTest(t, "false", token.False)
 }

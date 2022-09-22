@@ -59,7 +59,7 @@ func scanToken(r Reader) (token.Token, error) {
 	}
 
 	rng := token.MakeRange(tb.start, r.Pos())
-	tk := token.MakeToken(tb.tt, tb.str(), rng)
+	tk := token.MakeToken(tb.tt, tb.build(), rng)
 	return tk, nil
 }
 

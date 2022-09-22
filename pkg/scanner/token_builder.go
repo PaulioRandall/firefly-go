@@ -77,6 +77,6 @@ func (tb *tokenBuilder) add(ru ...rune) {
 	tb.val = append(tb.val, ru...)
 }
 
-func (tb tokenBuilder) str() string {
+func (tb tokenBuilder) build() string {
 	return string(tb.val)
 }
