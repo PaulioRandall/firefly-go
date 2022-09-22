@@ -39,39 +39,13 @@ func NewScanFunc(r Reader) ScanFunc {
 }
 
 func scanToken(r Reader) (token.Token, error) {
-	var (
-		tt    token.TokenType
-		val   string
-		start = r.Pos()
-		sk    = &sidekick{start: r.Pos()}
-		useSK = false
-	)
-
 	ru, e := r.Peek()
 	if e != nil {
 		return scanTokenFail(r, e)
 	}
 
-	switch {
-	case ru == Newline:
-		useSK = true
-		e = scanSymbol(r, sk, token.Newline)
-	case isSpace(ru):
-		useSK = true
-		e = scanSpaces(r, sk)
-	case isDigit(ru):
-		useSK = true
-		e = scanNumber(r, sk)
-	case ru == StringDelim:
-		useSK = true
-		e = scanString(r, sk)
-	case isWordLetter(ru):
-		useSK = true
-		e = scanWord(r, sk)
-	default:
-		useSK = true
-		e = scanOperator(r, sk)
-	}
+	sk := sidekick{start: r.Pos()}
+	e = scanTokenStartingWith(r, &sk, ru)
 
 	// TODO: Rename 'sidekick' -> 'tokenBuilder'
 	// TODO: tokenBuilder shoud have Reader embedded
@@ -80,19 +54,26 @@ func scanToken(r Reader) (token.Token, error) {
 		return scanTokenFail(r, e)
 	}
 
-	var rng token.Range
-	var tk token.Token
-
-	// TODO: remove obsolete
-	if useSK {
-		rng = token.MakeRange(sk.start, r.Pos())
-		tk = token.MakeToken(sk.tt, sk.str(), rng)
-		return tk, nil
-	}
-
-	rng = token.MakeRange(start, r.Pos())
-	tk = token.MakeToken(tt, val, rng)
+	rng := token.MakeRange(sk.start, r.Pos())
+	tk := token.MakeToken(sk.tt, sk.str(), rng)
 	return tk, nil
+}
+
+func scanTokenStartingWith(r Reader, sk *sidekick, ru rune) error {
+	switch {
+	case ru == Newline:
+		return scanSymbol(r, sk, token.Newline)
+	case isSpace(ru):
+		return scanSpaces(r, sk)
+	case isDigit(ru):
+		return scanNumber(r, sk)
+	case ru == StringDelim:
+		return scanString(r, sk)
+	case isWordLetter(ru):
+		return scanWord(r, sk)
+	default:
+		return scanOperator(r, sk)
+	}
 }
 
 func scanSymbol(r Reader, sk *sidekick, tt token.TokenType) error {
