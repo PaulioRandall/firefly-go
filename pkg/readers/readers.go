@@ -38,6 +38,6 @@ func (r *strReader) Read() (rune, error) {
 		return rune(0), err.EOF
 	}
 
-	r.pos.Inc(ru)
+	r.pos.IncRune(ru)
 	return ru, nil
 }

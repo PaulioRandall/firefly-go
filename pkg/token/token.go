@@ -17,12 +17,10 @@ func MakeToken(tt TokenType, val string, filePos Range) Token {
 type TokenGenerator func(TokenType, string) Token
 
 func NewTokenGenerator() TokenGenerator {
-	cursor := Pos{}
+	prev := Range{}
 
 	return func(tt TokenType, v string) Token {
-		start := cursor
-		cursor.IncString(v)
-		rng := MakeRange(start, cursor)
-		return MakeToken(tt, v, rng)
+		prev = prev.IncString(v)
+		return MakeToken(tt, v, prev)
 	}
 }

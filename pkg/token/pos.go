@@ -18,7 +18,7 @@ func MakePos(offset, line, col int) Pos {
 	}
 }
 
-func (p *Pos) Inc(ru rune) {
+func (p *Pos) IncRune(ru rune) {
 	p.Offset++
 
 	if ru == '\n' {
@@ -46,25 +46,25 @@ func (p Pos) String() string {
 }
 
 type Range struct {
-	Start Pos
-	End   Pos // exclusive
+	From Pos
+	To   Pos // exclusive
 }
 
-func MakeRange(start, end Pos) Range {
+func MakeRange(from, to Pos) Range {
 	return Range{
-		Start: start,
-		End:   end,
+		From: from,
+		To:   to,
 	}
 }
 
 func MakeInlineRange(offset, line, col, length int) Range {
 	return Range{
-		Start: Pos{
+		From: Pos{
 			Offset: offset,
 			Line:   line,
 			Col:    col,
 		},
-		End: Pos{
+		To: Pos{
 			Offset: offset + length,
 			Line:   line,
 			Col:    col + length,
@@ -72,6 +72,12 @@ func MakeInlineRange(offset, line, col, length int) Range {
 	}
 }
 
+func (r Range) IncString(s string) Range {
+	r.From = r.To
+	r.To.IncString(s)
+	return r
+}
+
 func (r Range) String() string {
-	return fmt.Sprintf("Start(%v), End(%v)", r.Start, r.End)
+	return fmt.Sprintf("From(%v), To(%v)", r.From, r.To)
 }
