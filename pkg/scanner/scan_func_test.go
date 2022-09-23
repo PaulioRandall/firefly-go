@@ -2,6 +2,7 @@ package scanner
 
 import (
 	"errors"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -362,6 +363,120 @@ func Test_200_ScanAll(t *testing.T) {
 		gen(token.Ass, "="),
 		gen(token.Space, " "),
 		gen(token.Number, "1"),
+	}
+
+	assertAllTokensScan(t, given, exp)
+}
+
+func Test_201_ScanAll(t *testing.T) {
+	given := strings.Join([]string{
+		`x = true`,
+		`y, z = 123.456, "string"`,
+		``,
+		`f := F(a, b) c, d`,
+		`	when a`,
+		`		is 1: @println("one")`,
+		`		a == b: @println("a == b")`,
+		`		true: @println("meh")`,
+		`	end`,
+		`end`,
+		``,
+	}, "\n")
+
+	gen := token.NewTokenGenerator()
+	exp := []token.Token{
+		// `x = true`
+		gen(token.Var, "x"),
+		gen(token.Space, " "),
+		gen(token.Ass, "="),
+		gen(token.Space, " "),
+		gen(token.True, "true"),
+		gen(token.Newline, "\n"),
+		// `y, z = 1, "string"`
+		gen(token.Var, "y"),
+		gen(token.Comma, ","),
+		gen(token.Space, " "),
+		gen(token.Var, "z"),
+		gen(token.Space, " "),
+		gen(token.Ass, "="),
+		gen(token.Space, " "),
+		gen(token.Number, "123.456"),
+		gen(token.Comma, ","),
+		gen(token.Space, " "),
+		gen(token.String, `"string"`),
+		gen(token.Newline, "\n"),
+		// ``
+		gen(token.Newline, "\n"),
+		// `f := F(a, b) c, d {`
+		gen(token.Var, "f"),
+		gen(token.Space, " "),
+		gen(token.Def, ":="),
+		gen(token.Space, " "),
+		gen(token.F, "F"),
+		gen(token.ParenOpen, "("),
+		gen(token.Var, "a"),
+		gen(token.Comma, ","),
+		gen(token.Space, " "),
+		gen(token.Var, "b"),
+		gen(token.ParenClose, ")"),
+		gen(token.Space, " "),
+		gen(token.Var, "c"),
+		gen(token.Comma, ","),
+		gen(token.Space, " "),
+		gen(token.Var, "d"),
+		gen(token.Newline, "\n"),
+		// `	when a`
+		gen(token.Space, "\t"),
+		gen(token.When, "when"),
+		gen(token.Space, " "),
+		gen(token.Var, "a"),
+		gen(token.Newline, "\n"),
+		// ` 	is 1: @println("one")`
+		gen(token.Space, "\t\t"),
+		gen(token.Is, "is"),
+		gen(token.Space, " "),
+		gen(token.Number, "1"),
+		gen(token.Colon, ":"),
+		gen(token.Space, " "),
+		gen(token.Spell, "@"),
+		gen(token.Var, "println"),
+		gen(token.ParenOpen, "("),
+		gen(token.String, `"one"`),
+		gen(token.ParenClose, ")"),
+		gen(token.Newline, "\n"),
+		// `		a == b: @println("b")`,
+		gen(token.Space, "\t\t"),
+		gen(token.Var, "a"),
+		gen(token.Space, " "),
+		gen(token.EQU, "=="),
+		gen(token.Space, " "),
+		gen(token.Var, "b"),
+		gen(token.Colon, ":"),
+		gen(token.Space, " "),
+		gen(token.Spell, "@"),
+		gen(token.Var, "println"),
+		gen(token.ParenOpen, "("),
+		gen(token.String, `"a == b"`),
+		gen(token.ParenClose, ")"),
+		gen(token.Newline, "\n"),
+		// `		true: @println("meh")`
+		gen(token.Space, "\t\t"),
+		gen(token.True, "true"),
+		gen(token.Colon, ":"),
+		gen(token.Space, " "),
+		gen(token.Spell, "@"),
+		gen(token.Var, "println"),
+		gen(token.ParenOpen, "("),
+		gen(token.String, `"meh"`),
+		gen(token.ParenClose, ")"),
+		gen(token.Newline, "\n"),
+		// `	}`
+		gen(token.Space, "\t"),
+		gen(token.End, "end"),
+		gen(token.Newline, "\n"),
+		// `}`
+		gen(token.End, "end"),
+		gen(token.Newline, "\n"),
 	}
 
 	assertAllTokensScan(t, given, exp)
