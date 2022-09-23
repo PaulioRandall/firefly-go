@@ -1,6 +1,7 @@
 package scanner
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -39,6 +40,12 @@ func doScanTokenTest(t *testing.T, given string, exp token.TokenType) {
 	require.Equal(t, expTk, actTk,
 		"Expected %q but got %q", exp.String(), actTk[0].Type.String(),
 	)
+}
+
+func checkForEOF(t *testing.T, given string) {
+	r := readers.NewRuneStringReader(given)
+	_, e := ScanAll(r)
+	require.True(t, errors.Is(e, err.EOF), "Expected EOF error")
 }
 
 func Test_1_ScanAll(t *testing.T) {
@@ -310,4 +317,8 @@ func Test_79_ScanAll(t *testing.T) {
 
 func Test_80_ScanAll(t *testing.T) {
 	doScanTokenTest(t, "false", token.False)
+}
+
+func Test_100_ScanAll(t *testing.T) {
+	checkForEOF(t, `"`)
 }

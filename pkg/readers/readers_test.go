@@ -5,13 +5,14 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/PaulioRandall/firefly-go/pkg/err"
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
 func Test_Peek_1(t *testing.T) {
 	r := NewRuneStringReader("")
 	_, e := r.Peek()
-	require.Equal(t, EOF, e)
+	require.Equal(t, err.EOF, e)
 }
 
 func Test_Peek_2(t *testing.T) {
@@ -34,7 +35,7 @@ func Test_Peek_2(t *testing.T) {
 func Test_Read_1(t *testing.T) {
 	r := NewRuneStringReader("")
 	_, e := r.Read()
-	require.Equal(t, EOF, e)
+	require.Equal(t, err.EOF, e)
 }
 
 func Test_Read_2(t *testing.T) {
@@ -65,7 +66,7 @@ func Test_Read_2(t *testing.T) {
 	require.Equal(t, expPos, r.Pos())
 
 	_, e = r.Read()
-	require.Equal(t, EOF, e)
+	require.Equal(t, err.EOF, e)
 }
 
 func Test_Read_3(t *testing.T) {
@@ -88,5 +89,5 @@ func Test_Read_3(t *testing.T) {
 	require.Equal(t, expPos, r.Pos())
 
 	_, e = r.Read()
-	require.Equal(t, EOF, e)
+	require.Equal(t, err.EOF, e)
 }

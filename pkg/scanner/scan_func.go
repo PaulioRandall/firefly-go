@@ -22,6 +22,8 @@ type Reader interface {
 
 type ScanFunc func() (tk token.Token, f ScanFunc, e error)
 
+// TODO Test errors
+
 func NewScanFunc(r Reader) ScanFunc {
 	if !r.More() {
 		return nil

@@ -8,6 +8,8 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
+var EOF = errors.New("End of file (EOF)")
+
 type PosErr struct {
 	pos   token.Pos
 	cause error

@@ -61,13 +61,17 @@ func (tb *tokenBuilder) expectFunc(
 	errMsg string,
 	args ...interface{}) error {
 
+	if !tb.r.More() {
+		return err.EOF
+	}
+
 	found, e := tb.acceptFunc(f)
 	if e != nil {
-		return err.Pos(tb.r.Pos(), e, "Failed to read from stream")
+		return err.Pos(tb.r.Pos(), e, errMsg, args...)
 	}
 
 	if !found {
-		return err.Pos(tb.r.Pos(), e, errMsg, args...)
+		return err.Pos(tb.r.Pos(), nil, errMsg, args...)
 	}
 
 	return nil
