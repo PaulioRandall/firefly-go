@@ -29,6 +29,18 @@ func (p *Pos) Inc(ru rune) {
 	}
 }
 
+func (p *Pos) IncString(s string) {
+	size := len(s)
+	p.Offset += size
+
+	if s == "\n" {
+		p.Line++
+		p.Col = 0
+	} else {
+		p.Col += size
+	}
+}
+
 func (p Pos) String() string {
 	return fmt.Sprintf("Offset: %d, Line: %d, Col: %d", p.Offset, p.Line, p.Col)
 }

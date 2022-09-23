@@ -11,14 +11,8 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
-func singletonTokenList(tt token.TokenType, v string, vLen int) []token.Token {
-	return []token.Token{
-		token.MakeToken(
-			tt,
-			v,
-			token.MakeInlineRange(0, 0, 0, vLen),
-		),
-	}
+func tok(tt token.TokenType, v string) token.Token {
+	return token.MakeToken(tt, v, token.MakeInlineRange(0, 0, 0, len(v)))
 }
 
 func assertAllTokensScan(t *testing.T, given string, exp []token.Token) {
@@ -33,7 +27,9 @@ func assertTokenScans(t *testing.T, given string, exp token.TokenType) {
 	r := readers.NewRuneStringReader(given)
 
 	actTk, e := ScanAll(r)
-	expTk := singletonTokenList(exp, given, len(given))
+	expTk := []token.Token{
+		tok(exp, given),
+	}
 
 	require.Nil(t, e, "Expected %q but got %+v", exp.String(), err.DebugString(e))
 	require.NotEmpty(t, actTk)
@@ -354,4 +350,19 @@ func Test_108_ScanAll(t *testing.T) {
 
 func Test_109_ScanAll(t *testing.T) {
 	assertScanError(t, "0.a", ErrMissingFractional)
+}
+
+func Test_200_ScanAll(t *testing.T) {
+	given := "x = 1"
+
+	gen := token.NewTokenGenerator()
+	exp := []token.Token{
+		gen(token.Var, "x"),
+		gen(token.Space, " "),
+		gen(token.Ass, "="),
+		gen(token.Space, " "),
+		gen(token.Number, "1"),
+	}
+
+	assertAllTokensScan(t, given, exp)
 }
