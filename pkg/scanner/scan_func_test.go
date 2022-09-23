@@ -42,10 +42,10 @@ func checkTokenScans(t *testing.T, given string, exp token.TokenType) {
 	)
 }
 
-func checkForEOF(t *testing.T, given string) {
+func checkForScanError(t *testing.T, given string, exp error) {
 	r := readers.NewRuneStringReader(given)
 	_, e := ScanAll(r)
-	require.True(t, errors.Is(e, err.EOF), "Expected EOF error")
+	require.True(t, errors.Is(e, exp), "Expected %+v", exp.Error())
 }
 
 func Test_1_ScanAll(t *testing.T) {
@@ -55,12 +55,6 @@ func Test_1_ScanAll(t *testing.T) {
 
 	require.Nil(t, e)
 	require.Empty(t, act)
-}
-
-func Test_2_ScanAll(t *testing.T) {
-	r := readers.NewRuneStringReader("~")
-	_, e := ScanAll(r)
-	require.NotNil(t, e)
 }
 
 func Test_7_ScanAll(t *testing.T) {
@@ -319,5 +313,9 @@ func Test_80_ScanAll(t *testing.T) {
 }
 
 func Test_100_ScanAll(t *testing.T) {
-	checkForEOF(t, `"`)
+	checkForScanError(t, `"`, err.EOF)
+}
+
+func Test_101_ScanAll(t *testing.T) {
+	checkForScanError(t, "~", ErrUnknownSymbol)
 }

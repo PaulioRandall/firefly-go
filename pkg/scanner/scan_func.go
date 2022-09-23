@@ -17,9 +17,8 @@ const (
 var (
 	ErrUnknownSymbol      = errors.New("Unknown symbol")
 	ErrEscapedEndOfString = errors.New("Escaped end of string")
+	zeroToken             token.Token
 )
-
-var zeroToken token.Token
 
 type Reader interface {
 	Pos() token.Pos
@@ -130,7 +129,7 @@ func scanNumber(tb *tokenBuilder) error {
 	}
 
 	if hasFractional, e := tb.accept('.'); e != nil {
-		return tb.err(e, "Failed to scan fractional delimeter of number")
+		return tb.err(e, "Failed to scan fractional delimiter in number")
 	} else if !hasFractional {
 		return nil
 	}
@@ -144,7 +143,7 @@ func scanNumber(tb *tokenBuilder) error {
 
 func scanString(tb *tokenBuilder) error {
 	if e := tb.expect(StringDelim, "Sanity check!"); e != nil {
-		return tb.err(e, "Failed to scan initiating string delimiter")
+		return tb.err(e, "Failed to scan initial string delimiter")
 	}
 
 	if e := scanStringBody(tb); e != nil {
@@ -198,17 +197,20 @@ func scanOperator(tb *tokenBuilder) error {
 	var (
 		ru1, ru2 rune
 		e        error
+		scanFail = func(e error) error {
+			return tb.err(e, "Failed to scan operator")
+		}
 	)
 
 	ru1, e = tb.r.Read()
 	if e != nil {
-		return tb.err(e, "Failed to scan operator")
+		return scanFail(e)
 	}
 
 	if tb.r.More() {
 		ru2, e = tb.r.Peek()
 		if e != nil {
-			return tb.err(e, "Failed to scan operator")
+			return scanFail(e)
 		}
 	}
 
@@ -217,7 +219,7 @@ func scanOperator(tb *tokenBuilder) error {
 	if tb.tt != token.Unknown {
 		_, e = tb.r.Read()
 		if e != nil {
-			return tb.err(e, "Failed to scan operator")
+			return scanFail(e)
 		}
 		return nil
 	}
@@ -229,7 +231,7 @@ func scanOperator(tb *tokenBuilder) error {
 	}
 
 	e = unknownSymbol(tb, ru1, ru2)
-	return tb.err(e, "Failed to scan operator")
+	return scanFail(e)
 }
 
 func unknownSymbol(tb *tokenBuilder, ru1, ru2 rune) error {
