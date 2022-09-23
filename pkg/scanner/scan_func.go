@@ -16,7 +16,8 @@ const (
 
 var (
 	ErrUnknownSymbol      = errors.New("Unknown symbol")
-	ErrEscapedEndOfString = errors.New("Escaped end of string")
+	ErrUnterminatedString = errors.New("Unterminated string")
+	ErrMissingFractional  = errors.New("Missing fractional part of number")
 	zeroToken             token.Token
 )
 
@@ -93,27 +94,27 @@ func scanSymbol(tb *tokenBuilder, tt token.TokenType) error {
 	if e := tb.any(); e != nil {
 		return tb.err(e, "Failed to scan symbol")
 	}
+
 	tb.tt = tt
 	return nil
 }
 
-func acceptWhile(tb *tokenBuilder, f func(ru rune) bool) error {
-	added := true
-	var e error
+func acceptWhile(tb *tokenBuilder, f func(ru rune) bool) (bool, error) {
+	accepted := false
 
-	for added {
-		added, e = tb.acceptFunc(f)
+	for hasNext, e := tb.acceptFunc(f); hasNext; hasNext, e = tb.acceptFunc(f) {
+		accepted = true
 
 		if e != nil {
-			return tb.err(e, "Scanning error")
+			return false, tb.err(e, "Failed to accept symbol")
 		}
 	}
 
-	return nil
+	return accepted, nil
 }
 
 func scanSpaces(tb *tokenBuilder) error {
-	if e := acceptWhile(tb, isSpace); e != nil {
+	if _, e := acceptWhile(tb, isSpace); e != nil {
 		return tb.err(e, "Failed to scan spaces")
 	}
 
@@ -124,18 +125,31 @@ func scanSpaces(tb *tokenBuilder) error {
 func scanNumber(tb *tokenBuilder) error {
 	tb.tt = token.Number
 
-	if e := acceptWhile(tb, isDigit); e != nil {
+	if _, e := acceptWhile(tb, isDigit); e != nil {
 		return tb.err(e, "Failed to scan significant part of number")
 	}
 
-	if hasFractional, e := tb.accept('.'); e != nil {
+	hasFractional, e := tb.accept('.')
+	if e != nil {
 		return tb.err(e, "Failed to scan fractional delimiter in number")
-	} else if !hasFractional {
-		return nil
 	}
 
-	if e := acceptWhile(tb, isDigit); e != nil {
+	if hasFractional {
+		return scanNumberFraction(tb)
+	}
+
+	return nil
+}
+
+func scanNumberFraction(tb *tokenBuilder) error {
+	hasFractional, e := acceptWhile(tb, isDigit)
+
+	if e != nil {
 		return tb.err(e, "Failed to scan fractional part of number")
+	}
+
+	if !hasFractional {
+		return tb.err(ErrMissingFractional, "Failed to scan fractional part of number")
 	}
 
 	return nil
@@ -151,7 +165,7 @@ func scanString(tb *tokenBuilder) error {
 	}
 
 	if e := tb.expect(StringDelim, "Unterminated string"); e != nil {
-		return tb.err(e, "Failed to scan terminating string delimiter")
+		return tb.err(ErrUnterminatedString, "Failed to scan terminating string delimiter")
 	}
 
 	tb.tt = token.String
@@ -161,7 +175,7 @@ func scanString(tb *tokenBuilder) error {
 func scanStringBody(tb *tokenBuilder) error {
 	escaped := false
 
-	e := acceptWhile(tb, func(ru rune) bool {
+	_, e := acceptWhile(tb, func(ru rune) bool {
 		isDelim := ru == StringDelim
 
 		if !escaped && isDelim {
@@ -177,14 +191,14 @@ func scanStringBody(tb *tokenBuilder) error {
 	}
 
 	if escaped {
-		return tb.err(ErrEscapedEndOfString, "Unterminated string")
+		return ErrUnterminatedString
 	}
 
 	return nil
 }
 
 func scanWord(tb *tokenBuilder) error {
-	if e := acceptWhile(tb, isWordLetter); e != nil {
+	if _, e := acceptWhile(tb, isWordLetter); e != nil {
 		return tb.err(e, "Failed to scan variable or keyword")
 	}
 

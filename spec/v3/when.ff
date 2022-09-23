@@ -19,3 +19,8 @@ when v
 	v > 2:  @println("Greater than 2")
 	true:   @println("Negative")
 end
+
+when
+	// This case should cause a compiler error
+	is 1: @println("Unreachable statement")
+end
