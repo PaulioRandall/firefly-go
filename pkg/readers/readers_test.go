@@ -9,13 +9,13 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
-func Test_Peek_1(t *testing.T) {
+func Test_1_strReader_Peek(t *testing.T) {
 	r := NewRuneStringReader("")
 	_, e := r.Peek()
 	require.Equal(t, err.EOF, e)
 }
 
-func Test_Peek_2(t *testing.T) {
+func Test_2_strReader_Peek(t *testing.T) {
 	r := NewRuneStringReader("abc")
 
 	ru1, e1 := r.Peek()
@@ -32,13 +32,13 @@ func Test_Peek_2(t *testing.T) {
 	require.Equal(t, expPos, r.Pos())
 }
 
-func Test_Read_1(t *testing.T) {
+func Test_1_strReader_Read(t *testing.T) {
 	r := NewRuneStringReader("")
 	_, e := r.Read()
 	require.Equal(t, err.EOF, e)
 }
 
-func Test_Read_2(t *testing.T) {
+func Test_2_strReader_Read(t *testing.T) {
 	r := NewRuneStringReader("abc")
 
 	expPos := token.MakePos(0, 0, 0)
@@ -69,7 +69,7 @@ func Test_Read_2(t *testing.T) {
 	require.Equal(t, err.EOF, e)
 }
 
-func Test_Read_3(t *testing.T) {
+func Test_3_strReader_Read(t *testing.T) {
 	r := NewRuneStringReader("a\nx")
 
 	r.Read() // a

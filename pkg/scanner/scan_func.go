@@ -1,15 +1,22 @@
 package scanner
 
 import (
+	"errors"
 	"unicode"
 
 	"github.com/PaulioRandall/firefly-go/pkg/err"
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
 
-const StringEscape = '\\'
-const StringDelim = '"'
-const Newline = '\n'
+const (
+	StringEscape = '\\'
+	StringDelim  = '"'
+	Newline      = '\n'
+)
+
+var (
+	ErrUnknownSymbol = errors.New("Unknown symbol")
+)
 
 var zeroToken token.Token
 
@@ -208,7 +215,10 @@ func scanOperator(tb *tokenBuilder) error {
 	tb.tt = token.IdentifyOperatorType(string(tb.val))
 	if tb.tt != token.Unknown {
 		_, e = tb.r.Read()
-		return e
+		if e != nil {
+			return err.Pos(tb.r.Pos(), e, "Failed to scan operator")
+		}
+		return nil
 	}
 
 	tb.val = []rune{ru1}
@@ -217,10 +227,15 @@ func scanOperator(tb *tokenBuilder) error {
 		return nil
 	}
 
+	e = unknownSymbol(tb, ru1, ru2)
+	return err.Pos(tb.r.Pos(), e, "Failed to scan operator")
+}
+
+func unknownSymbol(tb *tokenBuilder, ru1, ru2 rune) error {
 	if ru2 == rune(0) {
-		return err.Pos(tb.r.Pos(), nil, "Unknown symbol %q", ru1)
+		return err.Pos(tb.r.Pos(), ErrUnknownSymbol, "Unknown symbol %q", ru1)
 	}
-	return err.Pos(tb.r.Pos(), nil, "Unknown symbol %q", []rune{ru1, ru2})
+	return err.Pos(tb.r.Pos(), ErrUnknownSymbol, "Unknown symbol %q", []rune{ru1, ru2})
 }
 
 func isSpace(ru rune) bool {
