@@ -15,7 +15,8 @@ const (
 )
 
 var (
-	ErrUnknownSymbol = errors.New("Unknown symbol")
+	ErrUnknownSymbol      = errors.New("Unknown symbol")
+	ErrEscapedEndOfString = errors.New("Escaped end of string")
 )
 
 var zeroToken token.Token
@@ -91,7 +92,7 @@ func scanTokenStartingWith(tb *tokenBuilder, ru rune) error {
 
 func scanSymbol(tb *tokenBuilder, tt token.TokenType) error {
 	if e := tb.any(); e != nil {
-		return err.Pos(tb.r.Pos(), e, "Failed to scan symbol")
+		return tb.err(e, "Failed to scan symbol")
 	}
 	tb.tt = tt
 	return nil
@@ -105,7 +106,7 @@ func acceptWhile(tb *tokenBuilder, f func(ru rune) bool) error {
 		added, e = tb.acceptFunc(f)
 
 		if e != nil {
-			return err.Pos(tb.r.Pos(), e, "Error scanning runes")
+			return tb.err(e, "Scanning error")
 		}
 	}
 
@@ -114,7 +115,7 @@ func acceptWhile(tb *tokenBuilder, f func(ru rune) bool) error {
 
 func scanSpaces(tb *tokenBuilder) error {
 	if e := acceptWhile(tb, isSpace); e != nil {
-		return err.Pos(tb.r.Pos(), e, "Failed to scan spaces")
+		return tb.err(e, "Failed to scan spaces")
 	}
 
 	tb.tt = token.Space
@@ -125,17 +126,17 @@ func scanNumber(tb *tokenBuilder) error {
 	tb.tt = token.Number
 
 	if e := acceptWhile(tb, isDigit); e != nil {
-		return err.Pos(tb.r.Pos(), e, "Failed to scan significant part of number")
+		return tb.err(e, "Failed to scan significant part of number")
 	}
 
 	if hasFractional, e := tb.accept('.'); e != nil {
-		return err.Pos(tb.r.Pos(), e, "Failed to scan fractional delimeter of number")
+		return tb.err(e, "Failed to scan fractional delimeter of number")
 	} else if !hasFractional {
 		return nil
 	}
 
 	if e := acceptWhile(tb, isDigit); e != nil {
-		return err.Pos(tb.r.Pos(), e, "Failed to scan fractional part of number")
+		return tb.err(e, "Failed to scan fractional part of number")
 	}
 
 	return nil
@@ -143,15 +144,15 @@ func scanNumber(tb *tokenBuilder) error {
 
 func scanString(tb *tokenBuilder) error {
 	if e := tb.expect(StringDelim, "Sanity check!"); e != nil {
-		return err.Pos(tb.r.Pos(), e, "Failed to scan initiating string delimiter")
+		return tb.err(e, "Failed to scan initiating string delimiter")
 	}
 
 	if e := scanStringBody(tb); e != nil {
-		return err.Pos(tb.r.Pos(), e, "Failed to scan string body")
+		return tb.err(e, "Failed to scan string body")
 	}
 
 	if e := tb.expect(StringDelim, "Unterminated string"); e != nil {
-		return err.Pos(tb.r.Pos(), e, "Failed to scan terminating string delimiter")
+		return tb.err(e, "Failed to scan terminating string delimiter")
 	}
 
 	tb.tt = token.String
@@ -173,11 +174,11 @@ func scanStringBody(tb *tokenBuilder) error {
 	})
 
 	if e != nil {
-		return err.Pos(tb.r.Pos(), e, "Failed to scan string body")
+		return tb.err(e, "Failed to scan string body")
 	}
 
 	if escaped {
-		return err.Pos(tb.r.Pos(), nil, "Unterminated string")
+		return tb.err(ErrEscapedEndOfString, "Unterminated string")
 	}
 
 	return nil
@@ -185,7 +186,7 @@ func scanStringBody(tb *tokenBuilder) error {
 
 func scanWord(tb *tokenBuilder) error {
 	if e := acceptWhile(tb, isWordLetter); e != nil {
-		return err.Pos(tb.r.Pos(), e, "Failed to scan variable or keyword")
+		return tb.err(e, "Failed to scan variable or keyword")
 	}
 
 	tb.tt = token.IdentifyWordType(string(tb.val))
@@ -201,13 +202,13 @@ func scanOperator(tb *tokenBuilder) error {
 
 	ru1, e = tb.r.Read()
 	if e != nil {
-		return err.Pos(tb.r.Pos(), e, "Failed to scan operator")
+		return tb.err(e, "Failed to scan operator")
 	}
 
 	if tb.r.More() {
 		ru2, e = tb.r.Peek()
 		if e != nil {
-			return err.Pos(tb.r.Pos(), e, "Failed to scan operator")
+			return tb.err(e, "Failed to scan operator")
 		}
 	}
 
@@ -216,7 +217,7 @@ func scanOperator(tb *tokenBuilder) error {
 	if tb.tt != token.Unknown {
 		_, e = tb.r.Read()
 		if e != nil {
-			return err.Pos(tb.r.Pos(), e, "Failed to scan operator")
+			return tb.err(e, "Failed to scan operator")
 		}
 		return nil
 	}
@@ -228,14 +229,14 @@ func scanOperator(tb *tokenBuilder) error {
 	}
 
 	e = unknownSymbol(tb, ru1, ru2)
-	return err.Pos(tb.r.Pos(), e, "Failed to scan operator")
+	return tb.err(e, "Failed to scan operator")
 }
 
 func unknownSymbol(tb *tokenBuilder, ru1, ru2 rune) error {
 	if ru2 == rune(0) {
-		return err.Pos(tb.r.Pos(), ErrUnknownSymbol, "Unknown symbol %q", ru1)
+		return tb.err(ErrUnknownSymbol, "Unknown symbol %q", ru1)
 	}
-	return err.Pos(tb.r.Pos(), ErrUnknownSymbol, "Unknown symbol %q", []rune{ru1, ru2})
+	return tb.err(ErrUnknownSymbol, "Unknown symbol %q", []rune{ru1, ru2})
 }
 
 func isSpace(ru rune) bool {

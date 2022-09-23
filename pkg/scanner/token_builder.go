@@ -1,15 +1,27 @@
 package scanner
 
 import (
+	"errors"
+
 	"github.com/PaulioRandall/firefly-go/pkg/err"
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
+
+var ErrNotFound = errors.New("Symbol not found")
 
 type tokenBuilder struct {
 	r     Reader
 	start token.Pos
 	tt    token.TokenType
 	val   []rune
+}
+
+func (tb *tokenBuilder) err(
+	cause error,
+	errMsg string,
+	args ...interface{}) error {
+
+	return err.Pos(tb.r.Pos(), cause, errMsg, args...)
 }
 
 func (tb *tokenBuilder) any() error {
@@ -67,11 +79,11 @@ func (tb *tokenBuilder) expectFunc(
 
 	found, e := tb.acceptFunc(f)
 	if e != nil {
-		return err.Pos(tb.r.Pos(), e, errMsg, args...)
+		return tb.err(e, errMsg, args...)
 	}
 
 	if !found {
-		return err.Pos(tb.r.Pos(), nil, errMsg, args...)
+		return tb.err(ErrNotFound, errMsg, args...)
 	}
 
 	return nil

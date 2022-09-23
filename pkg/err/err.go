@@ -3,7 +3,6 @@ package err
 import (
 	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/PaulioRandall/firefly-go/pkg/token"
 )
@@ -34,32 +33,4 @@ func (e PosErr) Unwrap() error {
 
 func (e PosErr) Pos() token.Pos {
 	return e.pos
-}
-
-func Debug(e error) {
-	fmt.Println(DebugString(e))
-}
-
-func DebugString(e error) string {
-	sb := &strings.Builder{}
-	sb.WriteString("[ERROR] ")
-
-	if e == nil {
-		sb.WriteString("No error")
-		return sb.String()
-	}
-
-	addErr(sb, e)
-	return sb.String()
-}
-
-func addErr(sb *strings.Builder, e error) {
-	next := errors.Unwrap(e)
-
-	if next != nil {
-		addErr(sb, next)
-		sb.WriteRune('\n')
-	}
-
-	sb.WriteString(e.Error())
 }
