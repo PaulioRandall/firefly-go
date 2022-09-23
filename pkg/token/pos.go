@@ -72,10 +72,9 @@ func MakeInlineRange(offset, line, col, length int) Range {
 	}
 }
 
-func (r Range) IncString(s string) Range {
+func (r *Range) IncString(s string) {
 	r.From = r.To
 	r.To.IncString(s)
-	return r
 }
 
 func (r Range) String() string {
