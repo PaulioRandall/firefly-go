@@ -1,3 +1,4 @@
+// Package scanner converts a string of runes into meaningful tokens
 package scanner
 
 import (
