@@ -313,6 +313,14 @@ func Test_81_ScanAll(t *testing.T) {
 	assertTokenScans(t, `"\\"`, token.String)
 }
 
+func Test_82_ScanAll(t *testing.T) {
+	assertTokenScans(t, "//", token.Comment)
+}
+
+func Test_83_ScanAll(t *testing.T) {
+	assertTokenScans(t, "// abc", token.Comment)
+}
+
 func Test_100_ScanAll(t *testing.T) {
 	assertScanError(t, "~", ErrUnknownSymbol)
 }
@@ -373,6 +381,7 @@ func Test_201_ScanAll(t *testing.T) {
 		`x = true`,
 		`y, z = 123.456, "string"`,
 		``,
+		`// A function`,
 		`f := F(a, b) c, d`,
 		`	when a`,
 		`		is 1: @println("one")`,
@@ -406,6 +415,9 @@ func Test_201_ScanAll(t *testing.T) {
 		gen(token.String, `"string"`),
 		gen(token.Newline, "\n"),
 		// ``
+		gen(token.Newline, "\n"),
+		// `// A function`
+		gen(token.Comment, "// A function"),
 		gen(token.Newline, "\n"),
 		// `f := F(a, b) c, d {`
 		gen(token.Var, "f"),

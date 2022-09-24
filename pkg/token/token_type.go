@@ -7,6 +7,7 @@ const (
 
 	Newline
 	Space
+	Comment
 	Var
 	Number
 	String
@@ -64,6 +65,7 @@ const (
 var symbolMap = map[TokenType]string{
 	Newline:      "\n",
 	Space:        "",
+	Comment:      "",
 	Var:          "",
 	Number:       "",
 	String:       "",
