@@ -1,8 +1,8 @@
 package readers
 
 import (
-	"github.com/PaulioRandall/firefly-go/pkg/err"
-	"github.com/PaulioRandall/firefly-go/pkg/token"
+	"github.com/PaulioRandall/firefly-go/workflow/err"
+	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
 type strReader struct {

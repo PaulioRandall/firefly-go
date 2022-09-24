@@ -3,8 +3,8 @@ package scanner
 import (
 	"errors"
 
-	"github.com/PaulioRandall/firefly-go/pkg/err"
-	"github.com/PaulioRandall/firefly-go/pkg/token"
+	"github.com/PaulioRandall/firefly-go/workflow/err"
+	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
 var ErrNotFound = errors.New("Symbol not found")
