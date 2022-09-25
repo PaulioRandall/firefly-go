@@ -10,7 +10,7 @@ import (
 var ErrNotFound = errors.New("Symbol not found")
 
 type tokenBuilder struct {
-	r     Reader
+	rr    RuneReader
 	start token.Pos
 	tt    token.TokenType
 	val   []rune
@@ -21,7 +21,7 @@ func (tb *tokenBuilder) err(
 	errMsg string,
 	args ...interface{}) error {
 
-	return err.Pos(tb.r.Pos(), cause, errMsg, args...)
+	return err.Pos(tb.rr.Pos(), cause, errMsg, args...)
 }
 
 func (tb *tokenBuilder) any() error {
@@ -38,11 +38,11 @@ func (tb *tokenBuilder) accept(want rune) (bool, error) {
 }
 
 func (tb *tokenBuilder) acceptFunc(f func(rune) bool) (bool, error) {
-	if !tb.r.More() {
+	if !tb.rr.More() {
 		return false, nil
 	}
 
-	have, e := tb.r.Peek()
+	have, e := tb.rr.Peek()
 	if e != nil {
 		return false, e
 	}
@@ -51,7 +51,7 @@ func (tb *tokenBuilder) acceptFunc(f func(rune) bool) (bool, error) {
 		return false, nil
 	}
 
-	if _, e = tb.r.Read(); e != nil {
+	if _, e = tb.rr.Read(); e != nil {
 		return false, e
 	}
 
@@ -73,7 +73,7 @@ func (tb *tokenBuilder) expectFunc(
 	errMsg string,
 	args ...interface{}) error {
 
-	if !tb.r.More() {
+	if !tb.rr.More() {
 		return err.EOF
 	}
 

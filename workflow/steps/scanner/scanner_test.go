@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/PaulioRandall/firefly-go/workflow/err"
-	"github.com/PaulioRandall/firefly-go/workflow/readers"
+	"github.com/PaulioRandall/firefly-go/workflow/readers/runereader"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
@@ -17,17 +17,17 @@ func tok(tt token.TokenType, v string) token.Token {
 }
 
 func assertAllTokensScan(t *testing.T, given string, exp []token.Token) {
-	r := readers.NewRuneStringReader(given)
+	rr := runereader.FromString(given)
 
-	act, e := ScanAll(r)
+	act, e := ScanAll(rr)
 	require.Nil(t, e, "%+v", e)
 	require.Equal(t, exp, act)
 }
 
 func assertTokenScans(t *testing.T, given string, exp token.TokenType) {
-	r := readers.NewRuneStringReader(given)
+	rr := runereader.FromString(given)
 
-	actTk, e := ScanAll(r)
+	actTk, e := ScanAll(rr)
 	expTk := []token.Token{
 		tok(exp, given),
 	}
@@ -40,15 +40,15 @@ func assertTokenScans(t *testing.T, given string, exp token.TokenType) {
 }
 
 func assertScanError(t *testing.T, given string, exp error) {
-	r := readers.NewRuneStringReader(given)
-	_, e := ScanAll(r)
+	rr := runereader.FromString(given)
+	_, e := ScanAll(rr)
 	require.True(t, errors.Is(e, exp), "Expected %+v", exp.Error())
 }
 
 func Test_1_ScanAll(t *testing.T) {
-	r := readers.NewRuneStringReader("")
+	rr := runereader.FromString("")
 
-	act, e := ScanAll(r)
+	act, e := ScanAll(rr)
 
 	require.Nil(t, e)
 	require.Empty(t, act)

@@ -22,7 +22,7 @@ var (
 	zeroToken             token.Token
 )
 
-type Reader interface {
+type RuneReader interface {
 	Pos() token.Pos
 	More() bool
 	Peek() (rune, error)
@@ -31,42 +31,42 @@ type Reader interface {
 
 type ScanFunc func() (tk token.Token, f ScanFunc, e error)
 
-func New(r Reader) ScanFunc {
-	if !r.More() {
+func New(rr RuneReader) ScanFunc {
+	if !rr.More() {
 		return nil
 	}
 
 	return func() (token.Token, ScanFunc, error) {
-		tk, e := scanToken(r)
+		tk, e := scanToken(rr)
 
 		if e != nil {
 			return zeroToken, nil, e
 		}
 
-		return tk, New(r), nil
+		return tk, New(rr), nil
 	}
 }
 
-func scanToken(r Reader) (token.Token, error) {
+func scanToken(rr RuneReader) (token.Token, error) {
 
 	var (
 		first, second rune
 		e             error
 		failed        = func(e error) (token.Token, error) {
-			return zeroToken, err.Pos(r.Pos(), e, "Failed to scan token")
+			return zeroToken, err.Pos(rr.Pos(), e, "Failed to scan token")
 		}
 		tb = tokenBuilder{
-			r:     r,
-			start: r.Pos(),
+			rr:    rr,
+			start: rr.Pos(),
 		}
 	)
 
-	if first, e = r.Read(); e != nil {
+	if first, e = rr.Read(); e != nil {
 		return failed(e)
 	}
 
-	if tb.r.More() {
-		if second, e = tb.r.Peek(); e != nil {
+	if tb.rr.More() {
+		if second, e = tb.rr.Peek(); e != nil {
 			return failed(e)
 		}
 	}
@@ -76,7 +76,7 @@ func scanToken(r Reader) (token.Token, error) {
 		return failed(e)
 	}
 
-	rng := token.MakeRange(tb.start, r.Pos())
+	rng := token.MakeRange(tb.start, rr.Pos())
 	tk := token.MakeToken(tb.tt, tb.build(), rng)
 	return tk, nil
 }
@@ -241,7 +241,7 @@ func scanOperator(tb *tokenBuilder, first, second rune) error {
 	tb.val = []rune{first, second}
 	tb.tt = token.IdentifyOperatorType(string(tb.val))
 	if tb.tt != token.Unknown {
-		_, e := tb.r.Read()
+		_, e := tb.rr.Read()
 		if e != nil {
 			return scanFail(e)
 		}

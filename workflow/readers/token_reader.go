@@ -19,12 +19,12 @@ func (tr tokenReader) More() bool {
 	return tr.idx < len(tr.tks)
 }
 
+func (tr tokenReader) Peek() token.Token {
+	return tr.tks[tr.idx]
+}
+
 func (tr *tokenReader) Read() token.Token {
 	tk := tr.tks[tr.idx]
 	tr.idx++
 	return tk
-}
-
-func (tr *tokenReader) Peek() token.Token {
-	return tr.tks[tr.idx]
 }

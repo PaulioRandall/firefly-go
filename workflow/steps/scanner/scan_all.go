@@ -5,11 +5,11 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
-func ScanAll(r Reader) ([]token.Token, error) {
+func ScanAll(rr RuneReader) ([]token.Token, error) {
 	var (
 		tk  token.Token
 		tks []token.Token
-		sc  = New(r)
+		sc  = New(rr)
 		e   error
 	)
 
@@ -17,7 +17,7 @@ func ScanAll(r Reader) ([]token.Token, error) {
 		tk, sc, e = sc()
 
 		if e != nil {
-			return nil, err.Pos(r.Pos(), e, "Failed to scan all tokens")
+			return nil, err.Pos(rr.Pos(), e, "Failed to scan all tokens")
 		}
 
 		tks = append(tks, tk)
