@@ -1,4 +1,4 @@
-package readers
+package tokenreader
 
 import (
 	"github.com/PaulioRandall/firefly-go/workflow/token"
@@ -9,7 +9,7 @@ type tokenReader struct {
 	tks []token.Token
 }
 
-func NewTokenReader(tks []token.Token) tokenReader {
+func FromList(tks []token.Token) tokenReader {
 	return tokenReader{
 		tks: tks,
 	}
