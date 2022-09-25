@@ -31,7 +31,7 @@ type Reader interface {
 
 type ScanFunc func() (tk token.Token, f ScanFunc, e error)
 
-func NewScanFunc(r Reader) ScanFunc {
+func New(r Reader) ScanFunc {
 	if !r.More() {
 		return nil
 	}
@@ -43,7 +43,7 @@ func NewScanFunc(r Reader) ScanFunc {
 			return zeroToken, nil, e
 		}
 
-		return tk, NewScanFunc(r), nil
+		return tk, New(r), nil
 	}
 }
 

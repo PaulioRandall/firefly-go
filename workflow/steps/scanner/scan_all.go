@@ -9,7 +9,7 @@ func ScanAll(r Reader) ([]token.Token, error) {
 	var (
 		tk  token.Token
 		tks []token.Token
-		sc  = NewScanFunc(r)
+		sc  = New(r)
 		e   error
 	)
 
