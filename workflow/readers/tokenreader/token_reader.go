@@ -9,8 +9,8 @@ type tokenReader struct {
 	tks []token.Token
 }
 
-func FromList(tks []token.Token) tokenReader {
-	return tokenReader{
+func FromList(tks ...token.Token) *tokenReader {
+	return &tokenReader{
 		tks: tks,
 	}
 }

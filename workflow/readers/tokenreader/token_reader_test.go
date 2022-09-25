@@ -12,14 +12,14 @@ func tok(tt token.TokenType) token.Token {
 }
 
 func Test_1_tokenReader_More(t *testing.T) {
-	given := FromList([]token.Token{})
+	given := FromList()
 	require.False(t, given.More())
 }
 
 func Test_2_tokenReader_Peek(t *testing.T) {
-	given := FromList([]token.Token{
+	given := FromList(
 		tok(token.Var),
-	})
+	)
 
 	exp := tok(token.Var)
 	act := given.Peek()
@@ -29,9 +29,9 @@ func Test_2_tokenReader_Peek(t *testing.T) {
 }
 
 func Test_3_tokenReader_Read(t *testing.T) {
-	given := FromList([]token.Token{
+	given := FromList(
 		tok(token.Var),
-	})
+	)
 
 	exp := tok(token.Var)
 	act := given.Read()
