@@ -6,8 +6,14 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
-type tokenReader interface {
+type TokenReader interface {
 	More() bool
 	Read() token.Token
 	Peek() token.Token
+}
+
+type RinseFunc func() (tk token.Token, f RinseFunc, e error)
+
+func New(r TokenReader) RinseFunc {
+	return nil
 }

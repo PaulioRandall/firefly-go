@@ -10,3 +10,14 @@ type tokenStream interface {
 	accept(token.TokenType) bool
 	expect(token.TokenType) error
 }
+
+type tkStream struct {
+	idx int
+	tks []token.Token
+}
+
+func newTkStream(tks []token.Token) tkStream {
+	return tkStream{
+		tks: tks,
+	}
+}
