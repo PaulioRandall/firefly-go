@@ -27,8 +27,8 @@ const (
 	_keywords_end
 
 	_operators_begin
-	Ass        // =
-	Def        // :=
+	Assign     // =
+	Define     // :=
 	Terminator // ;
 	Comma      // ,
 	Colon      // :
@@ -80,8 +80,8 @@ var symbolMap = map[TokenType]string{
 	End:          "end",
 	True:         "true",
 	False:        "false",
-	Ass:          "=",
-	Def:          ":=",
+	Assign:       "=",
+	Define:       ":=",
 	Terminator:   ";",
 	Comma:        ",",
 	Colon:        ":",

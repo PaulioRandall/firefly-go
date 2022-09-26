@@ -70,11 +70,11 @@ func Test_7_ScanAll(t *testing.T) {
 }
 
 func Test_10_ScanAll(t *testing.T) {
-	assertTokenScans(t, "=", token.Ass)
+	assertTokenScans(t, "=", token.Assign)
 }
 
 func Test_11_ScanAll(t *testing.T) {
-	assertTokenScans(t, ":=", token.Def)
+	assertTokenScans(t, ":=", token.Define)
 }
 
 func Test_12_ScanAll(t *testing.T) {
@@ -368,7 +368,7 @@ func Test_200_ScanAll(t *testing.T) {
 	exp := []token.Token{
 		gen(token.Var, "x"),
 		gen(token.Space, " "),
-		gen(token.Ass, "="),
+		gen(token.Assign, "="),
 		gen(token.Space, " "),
 		gen(token.Number, "1"),
 	}
@@ -397,7 +397,7 @@ func Test_201_ScanAll(t *testing.T) {
 		// `x = true`
 		gen(token.Var, "x"),
 		gen(token.Space, " "),
-		gen(token.Ass, "="),
+		gen(token.Assign, "="),
 		gen(token.Space, " "),
 		gen(token.True, "true"),
 		gen(token.Newline, "\n"),
@@ -407,7 +407,7 @@ func Test_201_ScanAll(t *testing.T) {
 		gen(token.Space, " "),
 		gen(token.Var, "z"),
 		gen(token.Space, " "),
-		gen(token.Ass, "="),
+		gen(token.Assign, "="),
 		gen(token.Space, " "),
 		gen(token.Number, "123.456"),
 		gen(token.Comma, ","),
@@ -422,7 +422,7 @@ func Test_201_ScanAll(t *testing.T) {
 		// `f := F(a, b) c, d {`
 		gen(token.Var, "f"),
 		gen(token.Space, " "),
-		gen(token.Def, ":="),
+		gen(token.Define, ":="),
 		gen(token.Space, " "),
 		gen(token.F, "F"),
 		gen(token.ParenOpen, "("),

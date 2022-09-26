@@ -48,3 +48,47 @@ func Test_2_RinseAll(t *testing.T) {
 
 	assertRinseAll(t, given, exp)
 }
+
+func Test_3_RinseAll(t *testing.T) {
+	given := []token.Token{
+		tok(token.Comment),
+	}
+
+	var exp []token.Token
+
+	assertRinseAll(t, given, exp)
+}
+
+func Test_4_RinseAll(t *testing.T) {
+	given := []token.Token{
+		tok(token.Var),
+	}
+
+	exp := []token.Token{
+		tok(token.Var),
+	}
+
+	assertRinseAll(t, given, exp)
+}
+
+func Test_5_RinseAll(t *testing.T) {
+	given := []token.Token{
+		tok(token.Var),
+		tok(token.Space),
+		tok(token.Assign),
+		tok(token.Space),
+		tok(token.Number),
+		tok(token.Space),
+		tok(token.Comment),
+		tok(token.Newline),
+	}
+
+	exp := []token.Token{
+		tok(token.Var),
+		tok(token.Assign),
+		tok(token.Number),
+		tok(token.Newline),
+	}
+
+	assertRinseAll(t, given, exp)
+}

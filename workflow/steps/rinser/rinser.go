@@ -34,6 +34,8 @@ func nextToken(tr TokenReader) token.Token {
 	switch tk := tr.Read(); {
 	case tk.Type == token.Space:
 		return zero
+	case tk.Type == token.Comment:
+		return zero
 	default:
 		return tk
 	}

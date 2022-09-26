@@ -31,8 +31,8 @@ func Test_1_IdentifyWordType(t *testing.T) {
 
 func Test_2_IdentifyOperatorType(t *testing.T) {
 	operators := map[string]TokenType{
-		"=":   Ass,
-		":=":  Def,
+		"=":   Assign,
+		":=":  Define,
 		";":   Terminator,
 		",":   Comma,
 		":":   Colon,
