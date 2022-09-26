@@ -11,8 +11,8 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
-func tok(tt token.TokenType, v string) token.Token {
-	return token.MakeToken(tt, v, token.MakeInlineRange(0, 0, 0, len(v)))
+func tok(tt token.TokenType) token.Token {
+	return token.MakeToken(tt, "", token.Range{})
 }
 
 func assertRinseAll(t *testing.T, given, exp []token.Token) {
@@ -21,18 +21,6 @@ func assertRinseAll(t *testing.T, given, exp []token.Token) {
 	act, e := RinseAll(tr)
 	require.Nil(t, e, "%+v", e)
 	require.Equal(t, exp, act)
-}
-
-func assertRinse(t *testing.T, given, expTk token.Token) {
-	tr := tokenreader.FromList(given)
-
-	act, e := RinseAll(tr)
-	exp := []token.Token{expTk}
-
-	require.Nil(t, e, "Expected %q but got error: %+v", exp, err.DebugString(e))
-	require.Equal(t, exp, act,
-		"Expected %q but got %q", exp, act,
-	)
 }
 
 func assertRinseError(t *testing.T, given []token.Token, exp error) {
@@ -49,3 +37,15 @@ func Test_1_RinseAll(t *testing.T) {
 	require.True(t, errors.Is(e, err.EOF))
 	require.Empty(t, act)
 }
+
+/*
+func Test_2_RinseAll(t *testing.T) {
+	given := []token.Token{
+		tok(token.Space),
+	}
+
+	var exp []token.Token
+
+	assertRinseAll(t, given, exp)
+}
+*/

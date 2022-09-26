@@ -7,15 +7,15 @@ import (
 
 func RinseAll(tr TokenReader) ([]token.Token, error) {
 	var (
-		prev, tk token.Token
-		tks      []token.Token
-		rinser   = New(tr)
-		e        error
+		prev, tk  token.Token
+		tks       []token.Token
+		e         error
+		rinseNext = New(tr)
 	)
 
-	for rinser != nil {
+	for {
 		prev = tk
-		tk, rinser, e = rinser()
+		tk, e = rinseNext()
 
 		if e == err.EOF {
 			break

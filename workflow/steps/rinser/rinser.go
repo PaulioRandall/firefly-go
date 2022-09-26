@@ -2,8 +2,12 @@
 package rinser
 
 import (
-	//"github.com/PaulioRandall/firefly-go/workflow/err"
+	"github.com/PaulioRandall/firefly-go/workflow/err"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
+)
+
+var (
+	zeroToken token.Token
 )
 
 type TokenReader interface {
@@ -12,15 +16,28 @@ type TokenReader interface {
 	Peek() token.Token
 }
 
-type RinseFunc func() (tk token.Token, f RinseFunc, e error)
+type RinseFunc func() (tk token.Token, e error)
 
-func New(r TokenReader) RinseFunc {
+func New(tr TokenReader) RinseFunc {
+	var prev token.Token
 
-	// TODO: Steps:
-	// 1. Read token
-	// 2. If token is space
-	// 3.   goto 1
-	// 4. else return token
+	return func() (token.Token, error) {
+		for tr.More() {
+			tk, removed, e := nextToken(tr)
+			if e != nil {
+				return zeroToken, err.AfterToken(prev, e, "Failed to rinse token")
+			}
 
-	return nil
+			if !removed {
+				prev = tk
+				return tk, nil
+			}
+		}
+
+		return zeroToken, err.EOF
+	}
+}
+
+func nextToken(tr TokenReader) (token.Token, bool, error) {
+	return zeroToken, false, nil
 }
