@@ -17,7 +17,7 @@ func ScanAll(rr RuneReader) ([]token.Token, error) {
 		tk, sc, e = sc()
 
 		if e != nil {
-			return nil, err.Pos(rr.Pos(), e, "Failed to scan all tokens")
+			return nil, err.AtPos(rr.Pos(), e, "Failed to scan all tokens")
 		}
 
 		tks = append(tks, tk)

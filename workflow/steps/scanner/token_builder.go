@@ -21,7 +21,7 @@ func (tb *tokenBuilder) err(
 	errMsg string,
 	args ...interface{}) error {
 
-	return err.Pos(tb.rr.Pos(), cause, errMsg, args...)
+	return err.AtPos(tb.rr.Pos(), cause, errMsg, args...)
 }
 
 func (tb *tokenBuilder) any() error {

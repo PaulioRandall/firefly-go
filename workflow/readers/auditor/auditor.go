@@ -1,6 +1,7 @@
-package rinser
+package auditor
 
 import (
+	"github.com/PaulioRandall/firefly-go/workflow/err"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
@@ -29,14 +30,17 @@ func (a *auditor) accept(tt token.TokenType) bool {
 
 func (a *auditor) expect(tt token.TokenType) error {
 	if !a.More() {
-		return errAfter(a.curr, EOF, "Expected %q but got EOF", tt)
+		return err.AfterToken(
+			a.curr,
+			err.UnexpectedEOF,
+			"Expected %q but got EOF", tt)
 	}
 
 	a.curr = a.Read()
 	if tt != a.curr.Type {
-		return errAfter(
+		return err.AfterToken(
 			a.curr,
-			UnexpectedToken,
+			err.UnexpectedToken,
 			"Expected %q but got %q", tt, a.curr.Type)
 	}
 

@@ -1,29 +1,32 @@
 package rinser
 
-/*
 import (
 	"github.com/PaulioRandall/firefly-go/workflow/err"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
-func RinseAll(r TokenReader) ([]token.Token, error) {
+func RinseAll(tr TokenReader) ([]token.Token, error) {
 	var (
-		tk  token.Token
-		tks []token.Token
-		sc  = New(r)
-		e   error
+		prev, tk token.Token
+		tks      []token.Token
+		rinser   = New(tr)
+		e        error
 	)
 
-	for sc != nil {
-		tk, sc, e = sc()
+	for rinser != nil {
+		prev = tk
+		tk, rinser, e = rinser()
+
+		if e == err.EOF {
+			break
+		}
 
 		if e != nil {
-			return nil, err.Pos(r.Pos(), e, "Failed to scan all tokens")
+			return nil, err.AfterToken(prev, e, "Failed to rinse all tokens")
 		}
 
 		tks = append(tks, tk)
 	}
 
-	return tks, nil
+	return tks, err.EOF
 }
-*/

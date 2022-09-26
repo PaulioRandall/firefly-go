@@ -1,4 +1,4 @@
-package rinser
+package auditor
 
 import (
 	"errors"
@@ -6,6 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/PaulioRandall/firefly-go/workflow/err"
 	"github.com/PaulioRandall/firefly-go/workflow/readers/tokenreader"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
@@ -70,7 +71,7 @@ func Test_5_auditor_expect(t *testing.T) {
 
 	e := a.expect(token.Var)
 
-	require.True(t, errors.Is(e, EOF))
+	require.True(t, errors.Is(e, err.UnexpectedEOF))
 }
 
 func Test_6_auditor_expect(t *testing.T) {
@@ -80,7 +81,7 @@ func Test_6_auditor_expect(t *testing.T) {
 
 	e := a.expect(token.Number)
 
-	require.True(t, errors.Is(e, UnexpectedToken))
+	require.True(t, errors.Is(e, err.UnexpectedToken))
 }
 
 func Test_7_auditor_expect(t *testing.T) {

@@ -53,7 +53,7 @@ func scanToken(rr RuneReader) (token.Token, error) {
 		first, second rune
 		e             error
 		failed        = func(e error) (token.Token, error) {
-			return zeroToken, err.Pos(rr.Pos(), e, "Failed to scan token")
+			return zeroToken, err.AtPos(rr.Pos(), e, "Failed to scan token")
 		}
 		tb = tokenBuilder{
 			rr:    rr,

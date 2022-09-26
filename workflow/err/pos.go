@@ -1,13 +1,10 @@
 package err
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
-
-var EOF = errors.New("End of file (EOF)")
 
 type PosErr struct {
 	pos   token.Pos
@@ -15,7 +12,7 @@ type PosErr struct {
 	msg   string
 }
 
-func Pos(pos token.Pos, cause error, msg string, args ...interface{}) *PosErr {
+func AtPos(pos token.Pos, cause error, msg string, args ...interface{}) *PosErr {
 	return &PosErr{
 		pos:   pos,
 		cause: cause,
