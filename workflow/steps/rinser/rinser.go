@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	zeroToken token.Token
+	zero token.Token
 )
 
 type TokenReader interface {
@@ -16,28 +16,25 @@ type TokenReader interface {
 	Peek() token.Token
 }
 
-type RinseFunc func() (tk token.Token, e error)
+type RinseNext func() (tk token.Token, e error)
 
-func New(tr TokenReader) RinseFunc {
-	var prev token.Token
-
+func New(tr TokenReader) RinseNext {
 	return func() (token.Token, error) {
 		for tr.More() {
-			tk, removed, e := nextToken(tr)
-			if e != nil {
-				return zeroToken, err.AfterToken(prev, e, "Failed to rinse token")
-			}
-
-			if !removed {
-				prev = tk
+			if tk := nextToken(tr); tk != zero {
 				return tk, nil
 			}
 		}
 
-		return zeroToken, err.EOF
+		return zero, err.EOF
 	}
 }
 
-func nextToken(tr TokenReader) (token.Token, bool, error) {
-	return zeroToken, false, nil
+func nextToken(tr TokenReader) token.Token {
+	switch tk := tr.Read(); {
+	case tk.Type == token.Space:
+		return zero
+	default:
+		return tk
+	}
 }

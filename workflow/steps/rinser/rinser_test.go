@@ -19,7 +19,8 @@ func assertRinseAll(t *testing.T, given, exp []token.Token) {
 	tr := tokenreader.FromList(given...)
 
 	act, e := RinseAll(tr)
-	require.Nil(t, e, "%+v", e)
+
+	require.True(t, errors.Is(e, err.EOF))
 	require.Equal(t, exp, act)
 }
 
@@ -38,7 +39,6 @@ func Test_1_RinseAll(t *testing.T) {
 	require.Empty(t, act)
 }
 
-/*
 func Test_2_RinseAll(t *testing.T) {
 	given := []token.Token{
 		tok(token.Space),
@@ -48,4 +48,3 @@ func Test_2_RinseAll(t *testing.T) {
 
 	assertRinseAll(t, given, exp)
 }
-*/
