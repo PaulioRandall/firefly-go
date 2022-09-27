@@ -92,3 +92,21 @@ func Test_5_RinseAll(t *testing.T) {
 
 	assertRinseAll(t, given, exp)
 }
+
+func Test_6_RinseAll(t *testing.T) {
+	given := []token.Token{
+		tok(token.String),
+		tok(token.Newline),
+		tok(token.Newline),
+		tok(token.Newline),
+		tok(token.Number),
+	}
+
+	exp := []token.Token{
+		tok(token.String),
+		tok(token.Newline),
+		tok(token.Number),
+	}
+
+	assertRinseAll(t, given, exp)
+}

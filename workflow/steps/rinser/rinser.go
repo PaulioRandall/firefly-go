@@ -1,4 +1,4 @@
-// Package rinser removes whitespace and other obsolete tokens
+// Package rinser removes obsolete tokens such as whitespace
 package rinser
 
 import (
@@ -19,9 +19,12 @@ type TokenReader interface {
 type RinseNext func() (tk token.Token, e error)
 
 func New(tr TokenReader) RinseNext {
+	var prev token.Token
+
 	return func() (token.Token, error) {
 		for tr.More() {
-			if tk := nextToken(tr); tk != zero {
+			if tk := nextToken(tr, prev); tk != zero {
+				prev = tk
 				return tk, nil
 			}
 		}
@@ -30,13 +33,22 @@ func New(tr TokenReader) RinseNext {
 	}
 }
 
-func nextToken(tr TokenReader) token.Token {
+func nextToken(tr TokenReader, prev token.Token) token.Token {
 	switch tk := tr.Read(); {
 	case tk.Type == token.Space:
 		return zero
+
 	case tk.Type == token.Comment:
 		return zero
+
+	case isEmptyLine(tk, prev):
+		return zero
+
 	default:
 		return tk
 	}
+}
+
+func isEmptyLine(tk, prev token.Token) bool {
+	return tk.Type == token.Newline && prev.Type == token.Newline
 }
