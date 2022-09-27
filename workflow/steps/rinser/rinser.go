@@ -1,4 +1,4 @@
-// Package rinser removes whitespace and syntactic sugar from a list of tokens
+// Package rinser removes whitespace and other obsolete tokens
 package rinser
 
 import (

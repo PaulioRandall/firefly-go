@@ -29,14 +29,14 @@ type RuneReader interface {
 	Read() (rune, error)
 }
 
-type ScanFunc func() (tk token.Token, f ScanFunc, e error)
+type ScanNext func() (tk token.Token, f ScanNext, e error)
 
-func New(rr RuneReader) ScanFunc {
+func New(rr RuneReader) ScanNext {
 	if !rr.More() {
 		return nil
 	}
 
-	return func() (token.Token, ScanFunc, error) {
+	return func() (token.Token, ScanNext, error) {
 		tk, e := scanToken(rr)
 
 		if e != nil {
