@@ -4,6 +4,12 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
+type TokenReader interface {
+	More() bool
+	Read() token.Token
+	Peek() token.Token
+}
+
 type tokenReader struct {
 	idx int
 	tks []token.Token

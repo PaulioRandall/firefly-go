@@ -1,4 +1,4 @@
-package auditor
+package compiler
 
 import (
 	"github.com/PaulioRandall/firefly-go/workflow/err"
