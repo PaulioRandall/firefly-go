@@ -6,27 +6,24 @@ package ast
 // at runtime the dependees are executed first and their results used in the
 // parents execution
 type Tree interface {
-	ASTType
+	Type() ASTType
 	Is(ASTType) bool
 }
 
 // Stmt represents an executable statement
 type Stmt interface {
 	Tree
-	stmt()
 }
 
 // Bloc represents an executable block of statements
 type Bloc interface {
-	Stmt
-	bloc()
+	Tree
 }
 
 // Proc (Procedure) represents a resolvable expression that can return any
 // number of values including zero
 type Proc interface {
-	Stmt
-	proc()
+	Tree
 }
 
 // Expr represents a resolvable expression that always returns a single value
@@ -34,28 +31,24 @@ type Proc interface {
 // All sub trees (recursive) of an Expr will also be an Expr or some further
 // derived type
 type Expr interface {
-	Proc
-	expr()
+	Tree
 }
 
 // MultiExpr represents an Expr that accepts any number of parameters
 type MultiExpr interface {
 	Expr
-	multiExpr()
-	Params() Expr
+	Params() Tree
 }
 
 // BinaryExpr represents an Expr with exactly two parameters
 type BinaryExpr interface {
 	Expr
-	binaryExpr()
-	Left() Expr
-	Right() Expr
+	Left() Tree
+	Right() Tree
 }
 
 // UnaryExpr represents an Expr with exactly one parameter
 type UnaryExpr interface {
 	Expr
-	unaryExpr()
-	Param() Expr
+	Param() Tree
 }
