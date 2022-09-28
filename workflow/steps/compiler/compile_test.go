@@ -3,10 +3,10 @@ package compiler
 import (
 	"testing"
 
-	//"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/require"
 
 	"github.com/PaulioRandall/firefly-go/workflow/ast"
-	//"github.com/PaulioRandall/firefly-go/workflow/readers/tokenreader"
+	"github.com/PaulioRandall/firefly-go/workflow/readers/tokenreader"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
@@ -14,8 +14,12 @@ func tok(tt token.TokenType, v string) token.Token {
 	return token.MakeToken(tt, v, token.Range{})
 }
 
-func assertCompilation(t *testing.T, given []token.Token, exp []ast.Node) {
+func assertCompilesWith(t *testing.T, given []token.Token, exp []ast.Node) {
+	tr := tokenreader.FromList(given...)
+	act, e := Compile(tr)
 
+	require.Nil(t, e, "%+v", e)
+	require.Equal(t, exp, act)
 }
 
 func Test_1_Compile(t *testing.T) {
@@ -29,5 +33,5 @@ func Test_1_Compile(t *testing.T) {
 		),
 	}
 
-	assertCompilation(t, given, exp)
+	assertCompilesWith(t, given, exp)
 }

@@ -6,11 +6,17 @@ const (
 	Unknown TokenType = iota
 
 	Newline
+	Var
+
+	_redundant_begin
 	Space
 	Comment
-	Var
+	_redundant_end
+
+	_literal_begin
 	Number
 	String
+	_literal_end
 
 	_keywords_begin
 	If
@@ -103,6 +109,14 @@ var symbolMap = map[TokenType]string{
 	BraceClose:   "}",
 	BracketOpen:  "[",
 	BracketClose: "]",
+}
+
+func (tt TokenType) IsRedundant() bool {
+	return tt > _redundant_begin && tt < _redundant_end
+}
+
+func (tt TokenType) IsLiteral() bool {
+	return tt > _literal_begin && tt < _literal_end
 }
 
 func (tt TokenType) IsKeyword() bool {
