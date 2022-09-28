@@ -10,7 +10,7 @@ import (
 // at runtime the dependees are executed first and their results used in the
 // node's execution
 type Node interface {
-	Type() NodeType
+	node()
 	Debug() string
 	Print()
 	Println()
@@ -18,38 +18,40 @@ type Node interface {
 
 // Stmt is a constraint for an executable statement
 type Stmt interface {
-	Proc | Expr
+	Node
+	stmt()
 }
 
 // Proc (Procedure) is a constraint for a resolvable expression that can return
 // any number of output values including none at all
 type Proc interface {
-	Expr
+	Stmt
+	proc()
 }
 
 // Expr is specific Proc constraint that only and always returns a single value
 //
 // All sub nodes (recursive) of an Expr will also be an Expr
 type Expr interface {
-	literal
+	Proc
+	expr()
 }
 
-type baseNode struct {
-	NodeType
-}
+type baseNode struct{}
 
-func (n baseNode) Type() NodeType {
-	return n.NodeType
-}
+func (n baseNode) node()         {}
+func (n baseNode) Debug() string { return "¯\\_(ツ)_/¯" }
+func (n baseNode) Print()        { fmt.Print(n.Debug()) }
+func (n baseNode) Println()      { fmt.Println(n.Debug()) }
 
-func (n baseNode) Debug() string {
-	return "¯\\_(ツ)_/¯"
-}
+type baseStmt struct{ baseNode }
 
-func (n baseNode) Print() {
-	fmt.Print(n.Debug())
-}
+func (n baseStmt) stmt() {}
 
-func (n baseNode) Println() {
-	fmt.Println(n.Debug())
-}
+type baseProc struct{ baseStmt }
+
+func (n baseProc) proc() {}
+
+type baseExpr struct{ baseProc }
+
+func (n baseExpr) expr() {}

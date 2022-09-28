@@ -7,7 +7,7 @@ import (
 )
 
 type literal struct {
-	baseNode
+	baseExpr
 	tk token.Token
 }
 
@@ -18,5 +18,5 @@ func MakeLiteral(tk token.Token) literal {
 }
 
 func (n literal) Debug() string {
-	return fmt.Sprintf("Literal %q %#v", n.NodeType.String(), n.tk.Value)
+	return fmt.Sprintf("Literal %q", n.tk.Value)
 }
