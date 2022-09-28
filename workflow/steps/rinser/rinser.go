@@ -35,10 +35,10 @@ func New(tr TokenReader) RinseNext {
 
 func nextToken(tr TokenReader, prev token.Token) token.Token {
 	switch tk := tr.Read(); {
-	case tk.Type == token.Space:
+	case tk.TokenType == token.Space:
 		return zero
 
-	case tk.Type == token.Comment:
+	case tk.TokenType == token.Comment:
 		return zero
 
 	case isEmptyLine(tk, prev):
@@ -50,5 +50,5 @@ func nextToken(tr TokenReader, prev token.Token) token.Token {
 }
 
 func isEmptyLine(tk, prev token.Token) bool {
-	return tk.Type == token.Newline && prev.Type == token.Newline
+	return tk.TokenType == token.Newline && prev.TokenType == token.Newline
 }

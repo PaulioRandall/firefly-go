@@ -24,7 +24,7 @@ func AlignAll(tr TokenReader) []token.Token {
 		tk := tr.Read()
 		tl.append(tk)
 
-		if closer := getCloserFor(tk.Type); closer != token.Unknown {
+		if closer := getCloserFor(tk.TokenType); closer != token.Unknown {
 			alignBlock(tr, &tl, closer)
 		}
 	}
@@ -49,24 +49,24 @@ func alignBlock(tr TokenReader, tl *tokenList, closer token.TokenType) {
 	for first := true; tr.More(); first = false {
 		tk := tr.Read()
 
-		if closer := getCloserFor(tk.Type); closer != token.Unknown {
+		if closer := getCloserFor(tk.TokenType); closer != token.Unknown {
 			tl.append(tk)
 			alignBlock(tr, tl, closer)
 			continue
 		}
 
-		if tk.Type == closer {
+		if tk.TokenType == closer {
 			tl.append(tk)
 			return
 		}
 
-		if tk.Type != token.Newline {
+		if tk.TokenType != token.Newline {
 			tl.append(tk)
 			continue
 		}
 
-		if !first && tr.Peek().Type != closer {
-			tk.Type = token.Comma
+		if !first && tr.Peek().TokenType != closer {
+			tk.TokenType = token.Comma
 			tl.append(tk)
 		}
 	}

@@ -11,9 +11,9 @@ func Test_1_TokenGenerator(t *testing.T) {
 
 	act := gen(EQU, "==")
 	exp := Token{
-		Type:  EQU,
-		Value: "==",
-		Range: MakeInlineRange(0, 0, 0, len("==")),
+		TokenType: EQU,
+		Value:     "==",
+		Range:     MakeInlineRange(0, 0, 0, len("==")),
 	}
 
 	require.Equal(t, exp, act)
@@ -26,8 +26,8 @@ func Test_2_TokenGenerator(t *testing.T) {
 	act := gen(Newline, "\n")
 
 	exp := Token{
-		Type:  Newline,
-		Value: "\n",
+		TokenType: Newline,
+		Value:     "\n",
 		Range: MakeRange(
 			MakePos(2, 0, 2),
 			MakePos(3, 1, 0),
@@ -45,9 +45,9 @@ func Test_3_TokenGenerator(t *testing.T) {
 	act := gen(LTE, "<=")
 
 	exp := Token{
-		Type:  LTE,
-		Value: "<=",
-		Range: MakeInlineRange(4, 0, 4, len("<=")),
+		TokenType: LTE,
+		Value:     "<=",
+		Range:     MakeInlineRange(4, 0, 4, len("<=")),
 	}
 
 	require.Equal(t, exp, act)

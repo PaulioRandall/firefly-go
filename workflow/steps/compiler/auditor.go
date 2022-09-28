@@ -21,7 +21,7 @@ func (a auditor) access() token.Token {
 }
 
 func (a *auditor) accept(tt token.TokenType) bool {
-	if a.More() && a.Peek().Type == tt {
+	if a.More() && a.Peek().TokenType == tt {
 		a.curr = a.Read()
 		return true
 	}
@@ -37,11 +37,11 @@ func (a *auditor) expect(tt token.TokenType) error {
 	}
 
 	a.curr = a.Read()
-	if tt != a.curr.Type {
+	if tt != a.curr.TokenType {
 		return err.AfterToken(
 			a.curr,
 			err.UnexpectedToken,
-			"Expected %q but got %q", tt, a.curr.Type)
+			"Expected %q but got %q", tt, a.curr.TokenType)
 	}
 
 	return nil

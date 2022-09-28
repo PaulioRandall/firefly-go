@@ -5,21 +5,21 @@ import (
 )
 
 type Token struct {
-	Range
-	Type  TokenType
+	TokenType
 	Value string
+	Range
 }
 
 func MakeToken(tt TokenType, val string, filePos Range) Token {
 	return Token{
-		Type:  tt,
-		Value: val,
-		Range: filePos,
+		TokenType: tt,
+		Value:     val,
+		Range:     filePos,
 	}
 }
 
 func (tk Token) String() string {
-	return fmt.Sprintf("%s %q %s", tk.Type, tk.Value, tk.Range)
+	return fmt.Sprintf("%s %q %s", tk.TokenType.String(), tk.Value, tk.Range)
 }
 
 type TokenGenerator func(TokenType, string) Token
