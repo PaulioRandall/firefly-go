@@ -32,7 +32,7 @@ func assertTokenScans(t *testing.T, given string, exp token.TokenType) {
 		tok(exp, given),
 	}
 
-	require.Nil(t, e, "Expected %q but got %+v", exp.String(), err.DebugString(e))
+	require.Nil(t, e, "Expected %q but got %+v", exp.String(), err.Debug(e))
 	require.NotEmpty(t, actTk)
 	require.Equal(t, expTk, actTk,
 		"Expected %q but got %q", exp.String(), actTk[0].TokenType.String(),

@@ -6,11 +6,11 @@ import (
 	"strings"
 )
 
-func Debug(e error) {
-	fmt.Println(DebugString(e))
+func Println(e error) {
+	fmt.Println(Debug(e))
 }
 
-func DebugString(e error) string {
+func Debug(e error) string {
 	sb := &strings.Builder{}
 	sb.WriteString("[DEBUG ERROR]\n")
 
