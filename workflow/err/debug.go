@@ -2,17 +2,11 @@ package err
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 )
 
-func Println(e error) {
-	fmt.Println(Debug(e))
-}
-
 func Debug(e error) string {
 	sb := &strings.Builder{}
-	sb.WriteString("[DEBUG ERROR]\n")
 
 	if e == nil {
 		sb.WriteString("No error")

@@ -18,8 +18,12 @@ func MakeToken(tt TokenType, val string, filePos Range) Token {
 	}
 }
 
-func (tk Token) String() string {
+func (tk Token) Debug() string {
 	return fmt.Sprintf("%s %q %s", tk.TokenType.String(), tk.Value, tk.Range)
+}
+
+func (tk Token) String() string {
+	return fmt.Sprintf("%s: %q", tk.TokenType.String(), tk.Value)
 }
 
 type TokenGenerator func(TokenType, string) Token
