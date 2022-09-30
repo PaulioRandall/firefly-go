@@ -1,3 +1,4 @@
+// Package formaliser cleans a token list for easier parsing
 package formaliser
 
 import (

@@ -1,3 +1,4 @@
+// Package compiler parses a list of tokens into abstract syntax trees
 package compiler
 
 import (
