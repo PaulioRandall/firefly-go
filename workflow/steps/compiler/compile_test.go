@@ -14,6 +14,10 @@ func tok(tt token.TokenType, v string) token.Token {
 	return token.MakeToken(tt, v, token.Range{})
 }
 
+func literal(tt token.TokenType, v string) ast.Node {
+	return ast.MakeLiteral(tok(tt, v))
+}
+
 func assertCompilesWith(t *testing.T, given []token.Token, exp []ast.Node) {
 	tr := tokenreader.FromList(given...)
 	act, e := Compile(tr)
@@ -25,12 +29,11 @@ func assertCompilesWith(t *testing.T, given []token.Token, exp []ast.Node) {
 func Test_1_Compile(t *testing.T) {
 	given := []token.Token{
 		tok(token.Number, "0"),
+		tok(token.Terminator, "\n"),
 	}
 
 	exp := []ast.Node{
-		ast.MakeLiteral(
-			tok(token.Number, "0"),
-		),
+		literal(token.Number, "0"),
 	}
 
 	assertCompilesWith(t, given, exp)

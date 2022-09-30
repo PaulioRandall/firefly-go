@@ -33,7 +33,6 @@ func Test_2_IdentifyOperatorType(t *testing.T) {
 	operators := map[string]TokenType{
 		"=":   Assign,
 		":=":  Define,
-		";":   Terminator,
 		",":   Comma,
 		":":   Colon,
 		"@":   Spell,

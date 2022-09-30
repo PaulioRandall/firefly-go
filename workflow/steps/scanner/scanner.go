@@ -13,6 +13,7 @@ const (
 	StringEscape = '\\'
 	StringDelim  = '"'
 	Newline      = '\n'
+	Terminator   = ';'
 )
 
 var (
@@ -85,6 +86,11 @@ func scanTokenStartingWith(tb *tokenBuilder, first, second rune) error {
 	switch {
 	case isNewline(first):
 		tb.tt = token.Newline
+		tb.add(first)
+		return nil
+
+	case isTerminator(first):
+		tb.tt = token.Terminator
 		tb.add(first)
 		return nil
 
@@ -271,6 +277,10 @@ func isNewline(ru rune) bool {
 
 func isNotNewline(ru rune) bool {
 	return ru != '\n'
+}
+
+func isTerminator(ru rune) bool {
+	return ru == ';'
 }
 
 func isSpace(ru rune) bool {

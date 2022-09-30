@@ -30,6 +30,10 @@ func Compile(tr tokenreader.TokenReader) ([]ast.Node, error) {
 		}
 
 		nodes = append(nodes, n)
+
+		if e = expectTerminator(tr); e != nil {
+			return nil, errors.New("Expected terminator") // TODO: Make proper error
+		}
 	}
 
 	return nodes, nil
@@ -58,4 +62,25 @@ func expectLiteral(tr tokenreader.TokenReader) (ast.Node, error) {
 	}
 
 	return ast.MakeLiteral(tk), nil
+}
+
+func acceptTerminator(tr tokenreader.TokenReader) bool {
+	if tr.More() && tr.Peek().TokenType.IsTerminator() {
+		tr.Read()
+		return true
+	}
+	return false
+}
+
+func expectTerminator(tr tokenreader.TokenReader) error {
+	if !tr.More() {
+		return errors.New("Expected terminator") // TODO: Make proper error
+	}
+
+	tk := tr.Read()
+	if !tk.TokenType.IsTerminator() {
+		return errors.New("Expected terminator") // TODO: Make proper error
+	}
+
+	return nil
 }
