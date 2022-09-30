@@ -1,0 +1,63 @@
+package formaliser
+
+import (
+	"testing"
+
+	"github.com/stretchr/testify/require"
+
+	"github.com/PaulioRandall/firefly-go/workflow/readers/tokenreader"
+	"github.com/PaulioRandall/firefly-go/workflow/token"
+)
+
+func tok(tt token.TokenType, v string) token.Token {
+	return token.MakeToken(tt, v, token.Range{})
+}
+
+func assertFormalises(t *testing.T, given, exp []token.Token) {
+	tr := tokenreader.FromList(given...)
+	act := Formalise(tr)
+	require.Equal(t, exp, act)
+}
+
+func Test_1(t *testing.T) {
+	given := []token.Token{
+		tok(token.Number, "0"),
+	}
+
+	exp := []token.Token{
+		tok(token.Number, "0"),
+	}
+
+	assertFormalises(t, given, exp)
+}
+
+func Test_2(t *testing.T) {
+	given := []token.Token{
+		tok(token.Number, "0"),
+		tok(token.Newline, "\n"),
+	}
+
+	exp := []token.Token{
+		tok(token.Number, "0"),
+		tok(token.Terminator, "\n"),
+	}
+
+	assertFormalises(t, given, exp)
+}
+
+func Test_3(t *testing.T) {
+	given := []token.Token{
+		tok(token.Number, "1"),
+		tok(token.Add, "+"),
+		tok(token.Newline, "\n"),
+		tok(token.Number, "2"),
+	}
+
+	exp := []token.Token{
+		tok(token.Number, "1"),
+		tok(token.Add, "+"),
+		tok(token.Number, "2"),
+	}
+
+	assertFormalises(t, given, exp)
+}

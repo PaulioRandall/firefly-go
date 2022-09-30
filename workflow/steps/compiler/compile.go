@@ -5,7 +5,7 @@ import (
 
 	"github.com/PaulioRandall/firefly-go/workflow/ast"
 	"github.com/PaulioRandall/firefly-go/workflow/readers/tokenreader"
-	//"github.com/PaulioRandall/firefly-go/workflow/token"
+	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
 func Compile(tr tokenreader.TokenReader) ([]ast.Node, error) {
@@ -65,7 +65,7 @@ func expectLiteral(tr tokenreader.TokenReader) (ast.Node, error) {
 }
 
 func acceptTerminator(tr tokenreader.TokenReader) bool {
-	if tr.More() && tr.Peek().TokenType.IsTerminator() {
+	if tr.More() && tr.Peek().TokenType == token.Terminator {
 		tr.Read()
 		return true
 	}
@@ -77,8 +77,7 @@ func expectTerminator(tr tokenreader.TokenReader) error {
 		return errors.New("Expected terminator") // TODO: Make proper error
 	}
 
-	tk := tr.Read()
-	if !tk.TokenType.IsTerminator() {
+	if tk := tr.Read(); tk.TokenType != token.Terminator {
 		return errors.New("Expected terminator") // TODO: Make proper error
 	}
 

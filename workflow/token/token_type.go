@@ -5,17 +5,14 @@ type TokenType int
 const (
 	Unknown TokenType = iota
 
+	Newline    // '\n'
+	Terminator // ;
 	Var
 
 	_redundant_begin
 	Space
 	Comment
 	_redundant_end
-
-	_terminator_begin
-	Newline    // '\n'
-	Terminator // ;
-	_terminator_end
 
 	_literal_begin
 	Number
@@ -72,11 +69,11 @@ const (
 )
 
 var symbolMap = map[TokenType]string{
+	Newline:      "\n",
+	Terminator:   ";",
 	Var:          "",
 	Space:        " ",
 	Comment:      "//",
-	Newline:      "\n",
-	Terminator:   ";",
 	Number:       "0",
 	String:       `""`,
 	If:           "if",
@@ -116,10 +113,6 @@ var symbolMap = map[TokenType]string{
 
 func (tt TokenType) IsRedundant() bool {
 	return tt > _redundant_begin && tt < _redundant_end
-}
-
-func (tt TokenType) IsTerminator() bool {
-	return tt > _terminator_begin && tt < _terminator_end
 }
 
 func (tt TokenType) IsLiteral() bool {
