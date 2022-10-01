@@ -6,21 +6,13 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
-type assign struct {
+type Assign struct {
 	baseProc
-	tk    token.Token
-	left  variable
-	right Expr
+	Token token.Token
+	Left  Variable
+	Right Expr
 }
 
-func MakeAssign(tk token.Token, left variable, right Expr) assign {
-	return assign{
-		tk:    tk,
-		left:  left,
-		right: right,
-	}
-}
-
-func (n assign) Debug() string {
-	return fmt.Sprintf("Literal %q", n.tk.Value)
+func (n Assign) Debug() string {
+	return fmt.Sprintf("Assign %q\n\tLeft: %s\n\tRight: %s", n.Token.Value, n.Left.Debug(), n.Right.Debug())
 }

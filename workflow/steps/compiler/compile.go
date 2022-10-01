@@ -40,29 +40,35 @@ func Compile(tr tokenreader.TokenReader) ([]ast.Node, error) {
 	return nodes, nil
 }
 
-func acceptLiteral(tr tokenreader.TokenReader) (ast.Node, bool) {
+func acceptLiteral(tr tokenreader.TokenReader) (ast.Literal, bool) {
+	zero := ast.Literal{}
+
 	if !tr.More() {
-		return nil, false
+		return zero, false
 	}
 
 	if tr.Peek().TokenType.IsLiteral() {
-		return ast.MakeLiteral(tr.Read()), true
+		n := ast.Literal{Token: tr.Read()}
+		return n, true
 	}
 
-	return nil, false
+	return zero, false
 }
 
-func expectLiteral(tr tokenreader.TokenReader) (ast.Node, error) {
+func expectLiteral(tr tokenreader.TokenReader) (ast.Literal, error) {
+	zero := ast.Literal{}
+
 	if !tr.More() {
-		return nil, errors.New("Unexpected end of file") // TODO: Make proper error
+		return zero, errors.New("Unexpected end of file") // TODO: Make proper error
 	}
 
 	tk := tr.Read()
 	if !tk.TokenType.IsLiteral() {
-		return nil, errors.New("Expected literal") // TODO: Make proper error
+		return zero, errors.New("Expected literal") // TODO: Make proper error
 	}
 
-	return ast.MakeLiteral(tk), nil
+	n := ast.Literal{Token: tk}
+	return n, nil
 }
 
 func acceptTerminator(tr tokenreader.TokenReader) bool {

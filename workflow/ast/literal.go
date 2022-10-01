@@ -6,17 +6,11 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
-type literal struct {
+type Literal struct {
 	baseExpr
-	tk token.Token
+	Token token.Token
 }
 
-func MakeLiteral(tk token.Token) literal {
-	return literal{
-		tk: tk,
-	}
-}
-
-func (n literal) Debug() string {
-	return fmt.Sprintf("Literal %q", n.tk.Value)
+func (n Literal) Debug() string {
+	return fmt.Sprintf("Literal %q", n.Token.Value)
 }

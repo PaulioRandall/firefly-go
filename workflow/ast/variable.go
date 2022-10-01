@@ -6,17 +6,11 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
-type variable struct {
+type Variable struct {
 	baseExpr
-	tk token.Token
+	Token token.Token
 }
 
-func MakeVariable(tk token.Token) variable {
-	return variable{
-		tk: tk,
-	}
-}
-
-func (n variable) Debug() string {
-	return fmt.Sprintf("Variable %q", n.tk.Value)
+func (n Variable) Debug() string {
+	return fmt.Sprintf("Variable %q", n.Token.Value)
 }
