@@ -2,10 +2,11 @@ package scanner
 
 import (
 	"github.com/PaulioRandall/firefly-go/workflow/err"
+	"github.com/PaulioRandall/firefly-go/workflow/readers/runereader"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
-func ScanAll(rr RuneReader) ([]token.Token, error) {
+func ScanAll(rr runereader.RuneReader) ([]token.Token, error) {
 	var (
 		tk  token.Token
 		tks []token.Token

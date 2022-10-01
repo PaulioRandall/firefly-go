@@ -4,13 +4,14 @@ import (
 	"errors"
 
 	"github.com/PaulioRandall/firefly-go/workflow/err"
+	"github.com/PaulioRandall/firefly-go/workflow/readers/runereader"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
 var ErrNotFound = errors.New("Symbol not found")
 
 type tokenBuilder struct {
-	rr    RuneReader
+	rr    runereader.RuneReader
 	start token.Pos
 	tt    token.TokenType
 	val   []rune

@@ -7,6 +7,8 @@ import (
 
 	"github.com/PaulioRandall/firefly-go/workflow/err"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
+
+	"github.com/PaulioRandall/firefly-go/workflow/readers/runereader"
 )
 
 const (
@@ -23,16 +25,9 @@ var (
 	zeroToken             token.Token
 )
 
-type RuneReader interface {
-	Pos() token.Pos
-	More() bool
-	Peek() (rune, error)
-	Read() (rune, error)
-}
-
 type ScanNext func() (tk token.Token, f ScanNext, e error)
 
-func New(rr RuneReader) ScanNext {
+func New(rr runereader.RuneReader) ScanNext {
 	if !rr.More() {
 		return nil
 	}
@@ -48,7 +43,7 @@ func New(rr RuneReader) ScanNext {
 	}
 }
 
-func scanToken(rr RuneReader) (token.Token, error) {
+func scanToken(rr runereader.RuneReader) (token.Token, error) {
 
 	var (
 		first, second rune
