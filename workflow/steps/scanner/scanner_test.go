@@ -10,10 +10,12 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/err"
 	"github.com/PaulioRandall/firefly-go/workflow/readers/runereader"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
+
+	"github.com/PaulioRandall/firefly-go/workflow/token/tokentest"
 )
 
 func tok(tt token.TokenType, v string) token.Token {
-	return token.MakeToken(tt, v, token.MakeInlineRange(0, 0, 0, len(v)))
+	return token.MakeToken(tt, v, tokentest.InlineRange(0, 0, 0, len(v)))
 }
 
 func assertAllTokensScan(t *testing.T, given string, exp []token.Token) {
@@ -364,7 +366,7 @@ func Test_109_ScanAll(t *testing.T) {
 func Test_200_ScanAll(t *testing.T) {
 	given := "x = 1"
 
-	gen := token.NewTokenGenerator()
+	gen := tokentest.NewTokenGenerator()
 	exp := []token.Token{
 		gen(token.Var, "x"),
 		gen(token.Space, " "),
@@ -392,7 +394,7 @@ func Test_201_ScanAll(t *testing.T) {
 		``,
 	}, "\n")
 
-	gen := token.NewTokenGenerator()
+	gen := tokentest.NewTokenGenerator()
 	exp := []token.Token{
 		// `x = true`
 		gen(token.Var, "x"),

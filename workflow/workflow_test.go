@@ -8,6 +8,8 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/ast"
 	"github.com/PaulioRandall/firefly-go/workflow/readers/runereader"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
+
+	"github.com/PaulioRandall/firefly-go/workflow/token/tokentest"
 )
 
 func Test_1_Workflow(t *testing.T) {
@@ -24,7 +26,7 @@ func Test_2_Workflow(t *testing.T) {
 
 	act, e := Parse(rr)
 
-	gen := token.NewTokenGenerator()
+	gen := tokentest.NewTokenGenerator()
 	exp := []ast.Node{
 		ast.MakeLiteral(gen(token.Number, "0")),
 	}

@@ -25,14 +25,3 @@ func (tk Token) Debug() string {
 func (tk Token) String() string {
 	return fmt.Sprintf("%s: %q", tk.TokenType.String(), tk.Value)
 }
-
-type TokenGenerator func(TokenType, string) Token
-
-func NewTokenGenerator() TokenGenerator {
-	prev := Range{}
-
-	return func(tt TokenType, v string) Token {
-		prev.IncString(v)
-		return MakeToken(tt, v, prev)
-	}
-}

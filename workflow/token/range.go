@@ -16,21 +16,6 @@ func MakeRange(from, to Pos) Range {
 	}
 }
 
-func MakeInlineRange(offset, line, col, length int) Range {
-	return Range{
-		From: Pos{
-			Offset: offset,
-			Line:   line,
-			Col:    col,
-		},
-		To: Pos{
-			Offset: offset + length,
-			Line:   line,
-			Col:    col + length,
-		},
-	}
-}
-
 func (r *Range) IncString(s string) {
 	r.From = r.To
 	r.To.IncString(s)
