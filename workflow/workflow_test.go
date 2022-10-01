@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/PaulioRandall/firefly-go/workflow/ast"
-	"github.com/PaulioRandall/firefly-go/workflow/readers/runereader"
+	"github.com/PaulioRandall/firefly-go/workflow/runereader"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 
 	"github.com/PaulioRandall/firefly-go/workflow/ast/asttest"

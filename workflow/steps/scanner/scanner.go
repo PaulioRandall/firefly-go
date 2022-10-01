@@ -8,7 +8,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/err"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 
-	"github.com/PaulioRandall/firefly-go/workflow/readers/runereader"
+	"github.com/PaulioRandall/firefly-go/workflow/runereader"
 )
 
 const (
