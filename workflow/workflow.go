@@ -16,17 +16,16 @@ import (
 func Parse(rr runereader.RuneReader) ([]ast.Node, error) {
 
 	tks, e := scanner.ScanAll(rr)
-	if e == err.EOF {
-		return nil, nil
-	} else if e != nil {
+	if e != nil {
 		return nil, err.AtPos(token.Pos{}, e, "Failed to scan scroll")
 	}
 
-	tr := tokenreader.FromList(tks...)
-	tks, e = rinser.RinseAll(tr)
-	if e != nil {
-		return nil, e // TODO: wrap error
+	if len(tks) == 0 {
+		return nil, nil
 	}
+
+	tr := tokenreader.FromList(tks...)
+	tks = rinser.RinseAll(tr)
 
 	tr = tokenreader.FromList(tks...)
 	tks = aligner.AlignAll(tr)
@@ -37,7 +36,7 @@ func Parse(rr runereader.RuneReader) ([]ast.Node, error) {
 	tr = tokenreader.FromList(tks...)
 	nodes, e := compiler.Compile(tr)
 	if e != nil {
-		return nil, e // TODO: wrap error
+		return nil, err.AtPos(token.Pos{}, e, "Failed to compile tokens")
 	}
 
 	return nodes, nil

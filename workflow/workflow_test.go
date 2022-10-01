@@ -1,14 +1,13 @@
 package workflow
 
 import (
-	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/PaulioRandall/firefly-go/workflow/err"
+	"github.com/PaulioRandall/firefly-go/workflow/ast"
 	"github.com/PaulioRandall/firefly-go/workflow/readers/runereader"
-	//"github.com/PaulioRandall/firefly-go/workflow/token"
+	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
 func Test_1_Workflow(t *testing.T) {
@@ -16,17 +15,20 @@ func Test_1_Workflow(t *testing.T) {
 
 	act, e := Parse(rr)
 
-	require.True(t, errors.Is(e, err.EOF))
-	require.Empty(t, act)
-}
-
-/*
-func Test_2_Workflow(t *testing.T) {
-	rr := runereader.FromString("")
-
-	act, e := Parse(rr)
-
 	require.Nil(t, e, "%+v", e)
 	require.Empty(t, act)
 }
-*/
+
+func Test_2_Workflow(t *testing.T) {
+	rr := runereader.FromString("0\n")
+
+	act, e := Parse(rr)
+
+	gen := token.NewTokenGenerator()
+	exp := []ast.Node{
+		ast.MakeLiteral(gen(token.Number, "0")),
+	}
+
+	require.Nil(t, e, "%+v", e)
+	require.Equal(t, exp, act)
+}
