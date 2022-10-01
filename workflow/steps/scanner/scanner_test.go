@@ -14,15 +14,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/token/tokentest"
 )
 
-func scanThenExpectAll(t *testing.T, given string, exp []token.Token) {
-	rr := runereader.FromString(given)
-
-	act, e := ScanAll(rr)
-	require.Nil(t, e, "%+v", e)
-	require.Equal(t, exp, act)
-}
-
-func scanThenExpect(t *testing.T, given string, exp token.TokenType) {
+func assertToken(t *testing.T, given string, exp token.TokenType) {
 	rr := runereader.FromString(given)
 
 	actTk, e := ScanAll(rr)
@@ -37,7 +29,15 @@ func scanThenExpect(t *testing.T, given string, exp token.TokenType) {
 	)
 }
 
-func scanExpectError(t *testing.T, given string, exp error) {
+func assertScroll(t *testing.T, given string, exp []token.Token) {
+	rr := runereader.FromString(given)
+
+	act, e := ScanAll(rr)
+	require.Nil(t, e, "%+v", e)
+	require.Equal(t, exp, act)
+}
+
+func assertError(t *testing.T, given string, exp error) {
 	rr := runereader.FromString(given)
 	_, e := ScanAll(rr)
 	require.True(t, errors.Is(e, exp), "Expected %+v", exp.Error())
@@ -65,299 +65,299 @@ func Test_7_ScanAll(t *testing.T) {
 		),
 	}
 
-	scanThenExpectAll(t, given, exp)
+	assertScroll(t, given, exp)
 }
 
 func Test_10_ScanAll(t *testing.T) {
-	scanThenExpect(t, "=", token.Assign)
+	assertToken(t, "=", token.Assign)
 }
 
 func Test_11_ScanAll(t *testing.T) {
-	scanThenExpect(t, ":=", token.Define)
+	assertToken(t, ":=", token.Define)
 }
 
 func Test_12_ScanAll(t *testing.T) {
-	scanThenExpect(t, ";", token.Terminator)
+	assertToken(t, ";", token.Terminator)
 }
 
 func Test_13_ScanAll(t *testing.T) {
-	scanThenExpect(t, ",", token.Comma)
+	assertToken(t, ",", token.Comma)
 }
 
 func Test_14_ScanAll(t *testing.T) {
-	scanThenExpect(t, ":", token.Colon)
+	assertToken(t, ":", token.Colon)
 }
 
 func Test_15_ScanAll(t *testing.T) {
-	scanThenExpect(t, "@", token.Spell)
+	assertToken(t, "@", token.Spell)
 }
 
 func Test_16_ScanAll(t *testing.T) {
-	scanThenExpect(t, "+", token.Add)
+	assertToken(t, "+", token.Add)
 }
 
 func Test_17_ScanAll(t *testing.T) {
-	scanThenExpect(t, "-", token.Sub)
+	assertToken(t, "-", token.Sub)
 }
 
 func Test_18_ScanAll(t *testing.T) {
-	scanThenExpect(t, "*", token.Mul)
+	assertToken(t, "*", token.Mul)
 }
 
 func Test_19_ScanAll(t *testing.T) {
-	scanThenExpect(t, "/", token.Div)
+	assertToken(t, "/", token.Div)
 }
 
 func Test_20_ScanAll(t *testing.T) {
-	scanThenExpect(t, "%", token.Mod)
+	assertToken(t, "%", token.Mod)
 }
 
 func Test_21_ScanAll(t *testing.T) {
-	scanThenExpect(t, "<", token.LT)
+	assertToken(t, "<", token.LT)
 }
 
 func Test_22_ScanAll(t *testing.T) {
-	scanThenExpect(t, ">", token.GT)
+	assertToken(t, ">", token.GT)
 }
 
 func Test_23_ScanAll(t *testing.T) {
-	scanThenExpect(t, "<=", token.LTE)
+	assertToken(t, "<=", token.LTE)
 }
 
 func Test_24_ScanAll(t *testing.T) {
-	scanThenExpect(t, ">=", token.GTE)
+	assertToken(t, ">=", token.GTE)
 }
 
 func Test_25_ScanAll(t *testing.T) {
-	scanThenExpect(t, "==", token.EQU)
+	assertToken(t, "==", token.EQU)
 }
 
 func Test_26_ScanAll(t *testing.T) {
-	scanThenExpect(t, "!=", token.NEQ)
+	assertToken(t, "!=", token.NEQ)
 }
 
 func Test_27_ScanAll(t *testing.T) {
-	scanThenExpect(t, "(", token.ParenOpen)
+	assertToken(t, "(", token.ParenOpen)
 }
 
 func Test_28_ScanAll(t *testing.T) {
-	scanThenExpect(t, ")", token.ParenClose)
+	assertToken(t, ")", token.ParenClose)
 }
 
 func Test_29_ScanAll(t *testing.T) {
-	scanThenExpect(t, "{", token.BraceOpen)
+	assertToken(t, "{", token.BraceOpen)
 }
 
 func Test_30_ScanAll(t *testing.T) {
-	scanThenExpect(t, "}", token.BraceClose)
+	assertToken(t, "}", token.BraceClose)
 }
 
 func Test_31_ScanAll(t *testing.T) {
-	scanThenExpect(t, "[", token.BracketOpen)
+	assertToken(t, "[", token.BracketOpen)
 }
 
 func Test_32_ScanAll(t *testing.T) {
-	scanThenExpect(t, "]", token.BracketClose)
+	assertToken(t, "]", token.BracketClose)
 }
 
 func Test_33_ScanAll(t *testing.T) {
-	scanThenExpect(t, `""`, token.String)
+	assertToken(t, `""`, token.String)
 }
 
 func Test_34_ScanAll(t *testing.T) {
-	scanThenExpect(t, `"a"`, token.String)
+	assertToken(t, `"a"`, token.String)
 }
 
 func Test_35_ScanAll(t *testing.T) {
-	scanThenExpect(t, `"abc"`, token.String)
+	assertToken(t, `"abc"`, token.String)
 }
 
 func Test_36_ScanAll(t *testing.T) {
-	scanThenExpect(t, `"   "`, token.String)
+	assertToken(t, `"   "`, token.String)
 }
 
 func Test_37_ScanAll(t *testing.T) {
-	scanThenExpect(t, `"\\"`, token.String)
+	assertToken(t, `"\\"`, token.String)
 }
 
 func Test_38_ScanAll(t *testing.T) {
-	scanThenExpect(t, `"\\\\\\"`, token.String)
+	assertToken(t, `"\\\\\\"`, token.String)
 }
 
 func Test_39_ScanAll(t *testing.T) {
-	scanThenExpect(t, `"\"\"\""`, token.String)
+	assertToken(t, `"\"\"\""`, token.String)
 }
 
 func Test_40_ScanAll(t *testing.T) {
-	scanThenExpect(t, " ", token.Space)
+	assertToken(t, " ", token.Space)
 }
 
 func Test_41_ScanAll(t *testing.T) {
-	scanThenExpect(t, "\t", token.Space)
+	assertToken(t, "\t", token.Space)
 }
 
 func Test_42_ScanAll(t *testing.T) {
-	scanThenExpect(t, "\v", token.Space)
+	assertToken(t, "\v", token.Space)
 }
 
 func Test_43_ScanAll(t *testing.T) {
-	scanThenExpect(t, "\r", token.Space)
+	assertToken(t, "\r", token.Space)
 }
 
 func Test_44_ScanAll(t *testing.T) {
-	scanThenExpect(t, "\f", token.Space)
+	assertToken(t, "\f", token.Space)
 }
 
 func Test_45_ScanAll(t *testing.T) {
-	scanThenExpect(t, "  \t\v \f\r   \v\v\t", token.Space)
+	assertToken(t, "  \t\v \f\r   \v\v\t", token.Space)
 }
 
 func Test_50_ScanAll(t *testing.T) {
-	scanThenExpect(t, "0", token.Number)
+	assertToken(t, "0", token.Number)
 }
 
 func Test_51_ScanAll(t *testing.T) {
-	scanThenExpect(t, "0.00000", token.Number)
+	assertToken(t, "0.00000", token.Number)
 }
 
 func Test_52_ScanAll(t *testing.T) {
-	scanThenExpect(t, "0.1", token.Number)
+	assertToken(t, "0.1", token.Number)
 }
 
 func Test_53_ScanAll(t *testing.T) {
-	scanThenExpect(t, "1", token.Number)
+	assertToken(t, "1", token.Number)
 }
 
 func Test_54_ScanAll(t *testing.T) {
-	scanThenExpect(t, "1.1234567890", token.Number)
+	assertToken(t, "1.1234567890", token.Number)
 }
 
 func Test_55_ScanAll(t *testing.T) {
-	scanThenExpect(t, "123456789.987654321", token.Number)
+	assertToken(t, "123456789.987654321", token.Number)
 }
 
 func Test_56_ScanAll(t *testing.T) {
-	scanThenExpect(t, "9", token.Number)
+	assertToken(t, "9", token.Number)
 }
 
 func Test_60_ScanAll(t *testing.T) {
-	scanThenExpect(t, "abc", token.Var)
+	assertToken(t, "abc", token.Var)
 }
 
 func Test_61_ScanAll(t *testing.T) {
-	scanThenExpect(t, "abc_xyz", token.Var)
+	assertToken(t, "abc_xyz", token.Var)
 }
 
 func Test_62_ScanAll(t *testing.T) {
-	scanThenExpect(t, "forest", token.Var)
+	assertToken(t, "forest", token.Var)
 }
 
 func Test_63_ScanAll(t *testing.T) {
-	scanThenExpect(t, "For", token.Var)
+	assertToken(t, "For", token.Var)
 }
 
 func Test_64_ScanAll(t *testing.T) {
-	scanThenExpect(t, "FOR", token.Var)
+	assertToken(t, "FOR", token.Var)
 }
 
 func Test_65_ScanAll(t *testing.T) {
-	scanThenExpect(t, "e", token.Var)
+	assertToken(t, "e", token.Var)
 }
 
 func Test_70_ScanAll(t *testing.T) {
-	scanThenExpect(t, "if", token.If)
+	assertToken(t, "if", token.If)
 }
 
 func Test_71_ScanAll(t *testing.T) {
-	scanThenExpect(t, "for", token.For)
+	assertToken(t, "for", token.For)
 }
 
 func Test_72_ScanAll(t *testing.T) {
-	scanThenExpect(t, "in", token.In)
+	assertToken(t, "in", token.In)
 }
 
 func Test_73_ScanAll(t *testing.T) {
-	scanThenExpect(t, "if", token.If)
+	assertToken(t, "if", token.If)
 }
 
 func Test_74_ScanAll(t *testing.T) {
-	scanThenExpect(t, "watch", token.Watch)
+	assertToken(t, "watch", token.Watch)
 }
 
 func Test_75_ScanAll(t *testing.T) {
-	scanThenExpect(t, "when", token.When)
+	assertToken(t, "when", token.When)
 }
 
 func Test_76_ScanAll(t *testing.T) {
-	scanThenExpect(t, "is", token.Is)
+	assertToken(t, "is", token.Is)
 }
 
 func Test_77_ScanAll(t *testing.T) {
-	scanThenExpect(t, "E", token.E)
+	assertToken(t, "E", token.E)
 }
 
 func Test_78_ScanAll(t *testing.T) {
-	scanThenExpect(t, "F", token.F)
+	assertToken(t, "F", token.F)
 }
 
 func Test_79_ScanAll(t *testing.T) {
-	scanThenExpect(t, "true", token.True)
+	assertToken(t, "true", token.True)
 }
 
 func Test_80_ScanAll(t *testing.T) {
-	scanThenExpect(t, "false", token.False)
+	assertToken(t, "false", token.False)
 }
 
 func Test_81_ScanAll(t *testing.T) {
-	scanThenExpect(t, `"\\"`, token.String)
+	assertToken(t, `"\\"`, token.String)
 }
 
 func Test_82_ScanAll(t *testing.T) {
-	scanThenExpect(t, "//", token.Comment)
+	assertToken(t, "//", token.Comment)
 }
 
 func Test_83_ScanAll(t *testing.T) {
-	scanThenExpect(t, "// abc", token.Comment)
+	assertToken(t, "// abc", token.Comment)
 }
 
 func Test_100_ScanAll(t *testing.T) {
-	scanExpectError(t, "~", ErrUnknownSymbol)
+	assertError(t, "~", ErrUnknownSymbol)
 }
 
 func Test_101_ScanAll(t *testing.T) {
-	scanExpectError(t, `"`, ErrUnterminatedString)
+	assertError(t, `"`, ErrUnterminatedString)
 }
 
 func Test_102_ScanAll(t *testing.T) {
-	scanExpectError(t, `"""`, ErrUnterminatedString)
+	assertError(t, `"""`, ErrUnterminatedString)
 }
 
 func Test_103_ScanAll(t *testing.T) {
-	scanExpectError(t, `"\`, ErrUnterminatedString)
+	assertError(t, `"\`, ErrUnterminatedString)
 }
 
 func Test_104_ScanAll(t *testing.T) {
-	scanExpectError(t, `"\"`, ErrUnterminatedString)
+	assertError(t, `"\"`, ErrUnterminatedString)
 }
 
 func Test_105_ScanAll(t *testing.T) {
-	scanExpectError(t, `"\\\"`, ErrUnterminatedString)
+	assertError(t, `"\\\"`, ErrUnterminatedString)
 }
 
 func Test_106_ScanAll(t *testing.T) {
-	scanExpectError(t, "=!", ErrUnknownSymbol)
+	assertError(t, "=!", ErrUnknownSymbol)
 }
 
 func Test_107_ScanAll(t *testing.T) {
-	scanExpectError(t, ".", ErrUnknownSymbol)
+	assertError(t, ".", ErrUnknownSymbol)
 }
 
 func Test_108_ScanAll(t *testing.T) {
-	scanExpectError(t, "0.", ErrMissingFractional)
+	assertError(t, "0.", ErrMissingFractional)
 }
 
 func Test_109_ScanAll(t *testing.T) {
-	scanExpectError(t, "0.a", ErrMissingFractional)
+	assertError(t, "0.a", ErrMissingFractional)
 }
 
 func Test_200_ScanAll(t *testing.T) {
@@ -372,7 +372,7 @@ func Test_200_ScanAll(t *testing.T) {
 		gen(token.Number, "1"),
 	}
 
-	scanThenExpectAll(t, given, exp)
+	assertScroll(t, given, exp)
 }
 
 func Test_201_ScanAll(t *testing.T) {
@@ -490,5 +490,5 @@ func Test_201_ScanAll(t *testing.T) {
 		gen(token.Newline, "\n"),
 	}
 
-	scanThenExpectAll(t, given, exp)
+	assertScroll(t, given, exp)
 }

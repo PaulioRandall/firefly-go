@@ -18,7 +18,7 @@ func literal(tt token.TokenType, v string) ast.Node {
 	return ast.MakeLiteral(tok(tt, v))
 }
 
-func assertCompilesWith(t *testing.T, given []token.Token, exp []ast.Node) {
+func assert(t *testing.T, given []token.Token, exp []ast.Node) {
 	tr := tokenreader.FromList(given...)
 	act, e := Compile(tr)
 
@@ -36,5 +36,5 @@ func Test_1_Compile(t *testing.T) {
 		literal(token.Number, "0"),
 	}
 
-	assertCompilesWith(t, given, exp)
+	assert(t, given, exp)
 }

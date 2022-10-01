@@ -13,7 +13,7 @@ func tok(tt token.TokenType, v string) token.Token {
 	return token.MakeToken(tt, v, token.Range{})
 }
 
-func assertFormalises(t *testing.T, given, exp []token.Token) {
+func assert(t *testing.T, given, exp []token.Token) {
 	tr := tokenreader.FromList(given...)
 	act := Formalise(tr)
 	require.Equal(t, exp, act)
@@ -28,7 +28,7 @@ func Test_1(t *testing.T) {
 		tok(token.Number, "0"),
 	}
 
-	assertFormalises(t, given, exp)
+	assert(t, given, exp)
 }
 
 func Test_2(t *testing.T) {
@@ -42,7 +42,7 @@ func Test_2(t *testing.T) {
 		tok(token.Terminator, "\n"),
 	}
 
-	assertFormalises(t, given, exp)
+	assert(t, given, exp)
 }
 
 func Test_3(t *testing.T) {
@@ -59,5 +59,5 @@ func Test_3(t *testing.T) {
 		tok(token.Number, "2"),
 	}
 
-	assertFormalises(t, given, exp)
+	assert(t, given, exp)
 }
