@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/PaulioRandall/firefly-go/workflow/readers/tokenreader"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
+	"github.com/PaulioRandall/firefly-go/workflow/tokenreader"
 )
 
 func tok(tt token.TokenType, v string) token.Token {

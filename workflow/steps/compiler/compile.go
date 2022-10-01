@@ -5,8 +5,8 @@ import (
 	"errors"
 
 	"github.com/PaulioRandall/firefly-go/workflow/ast"
-	"github.com/PaulioRandall/firefly-go/workflow/readers/tokenreader"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
+	"github.com/PaulioRandall/firefly-go/workflow/tokenreader"
 )
 
 func Compile(tr tokenreader.TokenReader) ([]ast.Node, error) {

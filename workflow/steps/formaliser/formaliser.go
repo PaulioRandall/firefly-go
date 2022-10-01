@@ -2,8 +2,8 @@
 package formaliser
 
 import (
-	"github.com/PaulioRandall/firefly-go/workflow/readers/tokenreader"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
+	"github.com/PaulioRandall/firefly-go/workflow/tokenreader"
 )
 
 type tokenList []token.Token

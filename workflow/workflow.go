@@ -3,7 +3,6 @@ package workflow
 import (
 	"github.com/PaulioRandall/firefly-go/workflow/ast"
 	"github.com/PaulioRandall/firefly-go/workflow/err"
-	"github.com/PaulioRandall/firefly-go/workflow/readers/tokenreader"
 	"github.com/PaulioRandall/firefly-go/workflow/runereader"
 	"github.com/PaulioRandall/firefly-go/workflow/steps/aligner"
 	"github.com/PaulioRandall/firefly-go/workflow/steps/compiler"
@@ -11,6 +10,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/steps/rinser"
 	"github.com/PaulioRandall/firefly-go/workflow/steps/scanner"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
+	"github.com/PaulioRandall/firefly-go/workflow/tokenreader"
 )
 
 func Parse(rr runereader.RuneReader) ([]ast.Node, error) {
