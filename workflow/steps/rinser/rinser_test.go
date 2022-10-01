@@ -15,7 +15,7 @@ func tok(tt token.TokenType, v string) token.Token {
 	return tokentest.Tok(tt, v)
 }
 
-func assertRinseAllOk(t *testing.T, given, exp []token.Token) {
+func rinseThenExpect(t *testing.T, given, exp []token.Token) {
 	tr := tokenreader.FromList(given...)
 	act := RinseAll(tr)
 	require.Equal(t, exp, act)
@@ -26,7 +26,7 @@ func Test_1_RinseAll(t *testing.T) {
 
 	var exp []token.Token
 
-	assertRinseAllOk(t, given, exp)
+	rinseThenExpect(t, given, exp)
 }
 
 func Test_2_RinseAll(t *testing.T) {
@@ -36,7 +36,7 @@ func Test_2_RinseAll(t *testing.T) {
 
 	var exp []token.Token
 
-	assertRinseAllOk(t, given, exp)
+	rinseThenExpect(t, given, exp)
 }
 
 func Test_3_RinseAll(t *testing.T) {
@@ -46,7 +46,7 @@ func Test_3_RinseAll(t *testing.T) {
 
 	var exp []token.Token
 
-	assertRinseAllOk(t, given, exp)
+	rinseThenExpect(t, given, exp)
 }
 
 func Test_4_RinseAll(t *testing.T) {
@@ -58,7 +58,7 @@ func Test_4_RinseAll(t *testing.T) {
 		tok(token.Var, "abc"),
 	}
 
-	assertRinseAllOk(t, given, exp)
+	rinseThenExpect(t, given, exp)
 }
 
 func Test_5_RinseAll(t *testing.T) {
@@ -80,7 +80,7 @@ func Test_5_RinseAll(t *testing.T) {
 		tok(token.Newline, "\n"),
 	}
 
-	assertRinseAllOk(t, given, exp)
+	rinseThenExpect(t, given, exp)
 }
 
 func Test_6_RinseAll(t *testing.T) {
@@ -98,5 +98,5 @@ func Test_6_RinseAll(t *testing.T) {
 		tok(token.Number, "0"),
 	}
 
-	assertRinseAllOk(t, given, exp)
+	rinseThenExpect(t, given, exp)
 }

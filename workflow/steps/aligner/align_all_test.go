@@ -7,13 +7,15 @@ import (
 
 	"github.com/PaulioRandall/firefly-go/workflow/readers/tokenreader"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
+
+	"github.com/PaulioRandall/firefly-go/workflow/token/tokentest"
 )
 
 func tok(tt token.TokenType, v string) token.Token {
-	return token.MakeToken(tt, v, token.Range{})
+	return tokentest.Tok(tt, v)
 }
 
-func assertAlignAll(t *testing.T, given, exp []token.Token) {
+func alignThenExpect(t *testing.T, given, exp []token.Token) {
 	tr := tokenreader.FromList(given...)
 	act := AlignAll(tr)
 	require.Equal(t, exp, act)
@@ -22,7 +24,7 @@ func assertAlignAll(t *testing.T, given, exp []token.Token) {
 func Test_1_AlignAll(t *testing.T) {
 	var given []token.Token
 	var exp []token.Token
-	assertAlignAll(t, given, exp)
+	alignThenExpect(t, given, exp)
 }
 
 func Test_2_AlignAll(t *testing.T) {
@@ -36,7 +38,7 @@ func Test_2_AlignAll(t *testing.T) {
 		tok(token.Number, "0"),
 	}
 
-	assertAlignAll(t, given, exp)
+	alignThenExpect(t, given, exp)
 }
 
 func Test_3_AlignAll(t *testing.T) {
@@ -48,7 +50,7 @@ func Test_3_AlignAll(t *testing.T) {
 		tok(token.BracketOpen, "["),
 	}
 
-	assertAlignAll(t, given, exp)
+	alignThenExpect(t, given, exp)
 }
 
 func Test_4_AlignAll(t *testing.T) {
@@ -62,7 +64,7 @@ func Test_4_AlignAll(t *testing.T) {
 		tok(token.BracketClose, "]"),
 	}
 
-	assertAlignAll(t, given, exp)
+	alignThenExpect(t, given, exp)
 }
 
 func Test_5_AlignAll(t *testing.T) {
@@ -77,7 +79,7 @@ func Test_5_AlignAll(t *testing.T) {
 		tok(token.BracketClose, "]"),
 	}
 
-	assertAlignAll(t, given, exp)
+	alignThenExpect(t, given, exp)
 }
 
 func Test_6_AlignAll(t *testing.T) {
@@ -92,7 +94,7 @@ func Test_6_AlignAll(t *testing.T) {
 		tok(token.BraceClose, "}"),
 	}
 
-	assertAlignAll(t, given, exp)
+	alignThenExpect(t, given, exp)
 }
 
 func Test_7_AlignAll(t *testing.T) {
@@ -107,7 +109,7 @@ func Test_7_AlignAll(t *testing.T) {
 		tok(token.ParenClose, ")"),
 	}
 
-	assertAlignAll(t, given, exp)
+	alignThenExpect(t, given, exp)
 }
 
 func Test_8_AlignAll(t *testing.T) {
@@ -133,7 +135,7 @@ func Test_8_AlignAll(t *testing.T) {
 		tok(token.BracketClose, "]"),
 	}
 
-	assertAlignAll(t, given, exp)
+	alignThenExpect(t, given, exp)
 }
 
 func Test_9_AlignAll(t *testing.T) {
@@ -163,7 +165,7 @@ func Test_9_AlignAll(t *testing.T) {
 		tok(token.BracketClose, "]"),
 	}
 
-	assertAlignAll(t, given, exp)
+	alignThenExpect(t, given, exp)
 }
 
 func Test_10_AlignAll(t *testing.T) {
@@ -191,7 +193,7 @@ func Test_10_AlignAll(t *testing.T) {
 		tok(token.ParenClose, ")"),
 	}
 
-	assertAlignAll(t, given, exp)
+	alignThenExpect(t, given, exp)
 }
 
 func Test_11_AlignAll(t *testing.T) {
@@ -208,7 +210,7 @@ func Test_11_AlignAll(t *testing.T) {
 		tok(token.BracketClose, "]"),
 	}
 
-	assertAlignAll(t, given, exp)
+	alignThenExpect(t, given, exp)
 }
 
 func Test_12_AlignAll(t *testing.T) {
@@ -225,5 +227,5 @@ func Test_12_AlignAll(t *testing.T) {
 		tok(token.ParenClose, ")"),
 	}
 
-	assertAlignAll(t, given, exp)
+	alignThenExpect(t, given, exp)
 }
