@@ -7,13 +7,15 @@ import (
 
 	"github.com/PaulioRandall/firefly-go/workflow/readers/tokenreader"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
+
+	"github.com/PaulioRandall/firefly-go/workflow/token/tokentest"
 )
 
-func tok(tt token.TokenType) token.Token {
-	return token.MakeToken(tt, "", token.Range{})
+func tok(tt token.TokenType, v string) token.Token {
+	return tokentest.Tok(tt, v)
 }
 
-func assertRinseAll(t *testing.T, given, exp []token.Token) {
+func assertRinseAllOk(t *testing.T, given, exp []token.Token) {
 	tr := tokenreader.FromList(given...)
 	act := RinseAll(tr)
 	require.Equal(t, exp, act)
@@ -24,77 +26,77 @@ func Test_1_RinseAll(t *testing.T) {
 
 	var exp []token.Token
 
-	assertRinseAll(t, given, exp)
+	assertRinseAllOk(t, given, exp)
 }
 
 func Test_2_RinseAll(t *testing.T) {
 	given := []token.Token{
-		tok(token.Space),
+		tok(token.Space, " "),
 	}
 
 	var exp []token.Token
 
-	assertRinseAll(t, given, exp)
+	assertRinseAllOk(t, given, exp)
 }
 
 func Test_3_RinseAll(t *testing.T) {
 	given := []token.Token{
-		tok(token.Comment),
+		tok(token.Comment, "//"),
 	}
 
 	var exp []token.Token
 
-	assertRinseAll(t, given, exp)
+	assertRinseAllOk(t, given, exp)
 }
 
 func Test_4_RinseAll(t *testing.T) {
 	given := []token.Token{
-		tok(token.Var),
+		tok(token.Var, "abc"),
 	}
 
 	exp := []token.Token{
-		tok(token.Var),
+		tok(token.Var, "abc"),
 	}
 
-	assertRinseAll(t, given, exp)
+	assertRinseAllOk(t, given, exp)
 }
 
 func Test_5_RinseAll(t *testing.T) {
 	given := []token.Token{
-		tok(token.Var),
-		tok(token.Space),
-		tok(token.Assign),
-		tok(token.Space),
-		tok(token.Number),
-		tok(token.Space),
-		tok(token.Comment),
-		tok(token.Newline),
+		tok(token.Var, "abc"),
+		tok(token.Space, " "),
+		tok(token.Assign, "="),
+		tok(token.Space, " "),
+		tok(token.Number, "0"),
+		tok(token.Space, " "),
+		tok(token.Comment, "//"),
+		tok(token.Newline, "\n"),
 	}
 
 	exp := []token.Token{
-		tok(token.Var),
-		tok(token.Assign),
-		tok(token.Number),
-		tok(token.Newline),
+		tok(token.Var, "abc"),
+		tok(token.Assign, "="),
+		tok(token.Number, "0"),
+		tok(token.Newline, "\n"),
 	}
 
-	assertRinseAll(t, given, exp)
+	assertRinseAllOk(t, given, exp)
 }
 
 func Test_6_RinseAll(t *testing.T) {
 	given := []token.Token{
-		tok(token.String),
-		tok(token.Newline),
-		tok(token.Newline),
-		tok(token.Newline),
-		tok(token.Number),
+		tok(token.String, `""`),
+		tok(token.Newline, "\n"),
+		tok(token.Newline, "\n"),
+		tok(token.Newline, "\n"),
+		tok(token.Number, "0"),
 	}
 
 	exp := []token.Token{
-		tok(token.String),
-		tok(token.Newline),
-		tok(token.Number),
+		tok(token.String, `""`),
+		tok(token.Newline, "\n"),
+		tok(token.Number, "0"),
 	}
 
-	assertRinseAll(t, given, exp)
+	assertRinseAllOk(t, given, exp)
 }
