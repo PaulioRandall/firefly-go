@@ -6,12 +6,6 @@ import (
 
 var EOF = errors.New("End of file")
 
-type Input interface {
-	More() bool
-	Peek() (rune, error)
-	Read() (rune, error)
-}
-
 type inputList[T any] struct {
 	idx  int
 	data []T
