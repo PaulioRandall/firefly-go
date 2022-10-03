@@ -1,9 +1,10 @@
 package workflow
 
 import (
+	"fmt"
+
 	"github.com/PaulioRandall/firefly-go/workflow/ast"
-	"github.com/PaulioRandall/firefly-go/workflow/err"
-	"github.com/PaulioRandall/firefly-go/workflow/runereader"
+	"github.com/PaulioRandall/firefly-go/workflow/inout"
 	"github.com/PaulioRandall/firefly-go/workflow/steps/aligner"
 	"github.com/PaulioRandall/firefly-go/workflow/steps/compiler"
 	"github.com/PaulioRandall/firefly-go/workflow/steps/formaliser"
@@ -13,13 +14,27 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/tokenreader"
 )
 
-func Parse(rr runereader.RuneReader) ([]ast.Node, error) {
+type RuneInput interface {
+	More() bool
+	Peek() (rune, error)
+	Read() (rune, error)
+}
 
-	tks, e := scanner.ScanAll(rr)
-	if e != nil {
-		return nil, err.AtPos(token.Pos{}, e, "Failed to scan scroll")
+/*
+type NodeOutput interface {
+	Write(ast.Node) error
+}
+*/
+
+func Parse(in RuneInput) ([]ast.Node, error) {
+
+	tokenOut := inout.ToList[token.Token]()
+
+	if e := scanner.Scan(in, &tokenOut); e != nil {
+		return nil, fmt.Errorf("Failed to scan scroll: %w", e)
 	}
 
+	tks := tokenOut.List()
 	if len(tks) == 0 {
 		return nil, nil
 	}
@@ -36,7 +51,7 @@ func Parse(rr runereader.RuneReader) ([]ast.Node, error) {
 	tr = tokenreader.FromList(tks...)
 	nodes, e := compiler.Compile(tr)
 	if e != nil {
-		return nil, err.AtPos(token.Pos{}, e, "Failed to compile tokens")
+		return nil, fmt.Errorf("Failed to scan scroll: %w", e)
 	}
 
 	return nodes, nil

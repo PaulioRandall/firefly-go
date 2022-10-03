@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/PaulioRandall/firefly-go/workflow/ast"
-	"github.com/PaulioRandall/firefly-go/workflow/runereader"
+	"github.com/PaulioRandall/firefly-go/workflow/inout"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 
 	"github.com/PaulioRandall/firefly-go/workflow/ast/asttest"
@@ -14,18 +14,18 @@ import (
 )
 
 func Test_1_Workflow(t *testing.T) {
-	rr := runereader.FromString("")
+	in := inout.FromList([]rune(""))
 
-	act, e := Parse(rr)
+	act, e := Parse(&in)
 
 	require.Nil(t, e, "%+v", e)
 	require.Empty(t, act)
 }
 
 func Test_2_Workflow(t *testing.T) {
-	rr := runereader.FromString("0\n")
+	in := inout.FromList([]rune("0\n"))
 
-	act, e := Parse(rr)
+	act, e := Parse(&in)
 
 	gen := tokentest.NewTokenGenerator()
 	exp := []ast.Node{

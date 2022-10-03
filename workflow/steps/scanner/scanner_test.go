@@ -8,48 +8,46 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/PaulioRandall/firefly-go/workflow/err"
-	"github.com/PaulioRandall/firefly-go/workflow/runereader"
+	"github.com/PaulioRandall/firefly-go/workflow/inout"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 
 	"github.com/PaulioRandall/firefly-go/workflow/token/tokentest"
 )
 
-func assertToken(t *testing.T, given string, exp token.TokenType) {
-	rr := runereader.FromString(given)
+func assertToken(t *testing.T, given string, expType token.TokenType) {
+	in := inout.FromList([]rune(given))
+	out := inout.ToList[token.Token]()
 
-	actTk, e := ScanAll(rr)
-	expTk := []token.Token{
-		tokentest.Tok(exp, given),
-	}
+	e := Scan(&in, &out)
 
-	require.Nil(t, e, "Expected %q but got %+v", exp.String(), err.Debug(e))
-	require.NotEmpty(t, actTk)
-	require.Equal(t, expTk, actTk,
-		"Expected %q but got %q", exp.String(), actTk[0].TokenType.String(),
+	require.Nil(t, e, "Expected %q but got %+v", expType.String(), err.Debug(e))
+	require.Equal(t, 1, len(out.List()))
+
+	actType := out.List()[0].TokenType
+	require.Equal(t, expType, actType,
+		"Expected %q but got %q", expType.String(), actType.String(),
 	)
 }
 
 func assertScroll(t *testing.T, given string, exp []token.Token) {
-	rr := runereader.FromString(given)
+	in := inout.FromList([]rune(given))
+	out := inout.ToList[token.Token]()
 
-	act, e := ScanAll(rr)
+	e := Scan(&in, &out)
 	require.Nil(t, e, "%+v", e)
-	require.Equal(t, exp, act)
+	require.Equal(t, exp, out.List())
 }
 
 func assertError(t *testing.T, given string, exp error) {
-	rr := runereader.FromString(given)
-	_, e := ScanAll(rr)
+	in := inout.FromList([]rune(given))
+	out := inout.ToList[token.Token]()
+
+	e := Scan(&in, &out)
 	require.True(t, errors.Is(e, exp), "Expected %+v", exp.Error())
 }
 
 func Test_1_ScanAll(t *testing.T) {
-	rr := runereader.FromString("")
-
-	act, e := ScanAll(rr)
-
-	require.Nil(t, e)
-	require.Empty(t, act)
+	assertScroll(t, "", nil)
 }
 
 func Test_7_ScanAll(t *testing.T) {

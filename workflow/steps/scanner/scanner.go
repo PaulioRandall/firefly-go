@@ -3,12 +3,12 @@ package scanner
 
 import (
 	"errors"
+	"fmt"
 	"unicode"
 
 	"github.com/PaulioRandall/firefly-go/workflow/err"
+	//"github.com/PaulioRandall/firefly-go/workflow/inout"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
-
-	"github.com/PaulioRandall/firefly-go/workflow/runereader"
 )
 
 const (
@@ -25,59 +25,61 @@ var (
 	zeroToken             token.Token
 )
 
-type ScanNext func() (tk token.Token, f ScanNext, e error)
-
-func New(rr runereader.RuneReader) ScanNext {
-	if !rr.More() {
-		return nil
-	}
-
-	return func() (token.Token, ScanNext, error) {
-		tk, e := scanToken(rr)
-
-		if e != nil {
-			return zeroToken, nil, e
-		}
-
-		return tk, New(rr), nil
-	}
+type Input interface {
+	More() bool
+	Peek() (rune, error)
+	Read() (rune, error)
 }
 
-func scanToken(rr runereader.RuneReader) (token.Token, error) {
+type Output interface {
+	Write(...token.Token) error
+}
 
-	var (
-		first, second rune
-		e             error
-		failed        = func(e error) (token.Token, error) {
-			return zeroToken, err.AtPos(rr.Pos(), e, "Failed to scan token")
-		}
-		tb = tokenBuilder{
-			rr:    rr,
-			start: rr.Pos(),
-		}
-	)
-
-	if first, e = rr.Read(); e != nil {
-		return failed(e)
+func Scan(in Input, out Output) error {
+	tb := tokenBuilder{
+		in: in,
 	}
 
-	if tb.rr.More() {
-		if second, e = tb.rr.Peek(); e != nil {
-			return failed(e)
+	for tb.more() {
+		if e := scanNext(&tb); e != nil {
+			return fmt.Errorf("Failed to scan tokens: %w", e)
+		}
+
+		tk := tb.build()
+		if e := out.Write(tk); e != nil {
+			return fmt.Errorf("Failed to scan tokens: %w", e)
 		}
 	}
 
-	e = scanTokenStartingWith(&tb, first, second)
+	return nil
+}
+
+func scanNext(tb *tokenBuilder) error {
+
+	failed := func(e error) error {
+		return err.AtPos(tb.pos, e, "Failed to scan token")
+	}
+
+	first, e := tb.read()
 	if e != nil {
 		return failed(e)
 	}
 
-	rng := token.MakeRange(tb.start, rr.Pos())
-	tk := token.MakeToken(tb.tt, tb.build(), rng)
-	return tk, nil
+	var second rune
+	if tb.more() {
+		if second, e = tb.peek(); e != nil {
+			return failed(e)
+		}
+	}
+
+	if e = scanToken(tb, first, second); e != nil {
+		return failed(e)
+	}
+
+	return nil
 }
 
-func scanTokenStartingWith(tb *tokenBuilder, first, second rune) error {
+func scanToken(tb *tokenBuilder, first, second rune) error {
 	switch {
 	case isNewline(first):
 		tb.tt = token.Newline
@@ -242,16 +244,18 @@ func scanOperator(tb *tokenBuilder, first, second rune) error {
 	tb.val = []rune{first, second}
 	tb.tt = token.IdentifyOperatorType(string(tb.val))
 	if tb.tt != token.Unknown {
-		_, e := tb.rr.Read()
+		_, e := tb.read()
 		if e != nil {
 			return scanFail(e)
 		}
+		tb.pos.IncString(string(tb.val))
 		return nil
 	}
 
 	tb.val = []rune{first}
 	tb.tt = token.IdentifyOperatorType(string(tb.val))
 	if tb.tt != token.Unknown {
+		tb.pos.IncString(string(tb.val))
 		return nil
 	}
 
