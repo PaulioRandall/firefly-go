@@ -7,7 +7,6 @@ import (
 	"unicode"
 
 	"github.com/PaulioRandall/firefly-go/workflow/err"
-	//"github.com/PaulioRandall/firefly-go/workflow/inout"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
@@ -241,26 +240,52 @@ func scanOperator(tb *tokenBuilder, first, second rune) error {
 		return tb.err(e, "Failed to scan operator")
 	}
 
-	tb.val = []rune{first, second}
-	tb.tt = token.IdentifyOperatorType(string(tb.val))
-	if tb.tt != token.Unknown {
-		_, e := tb.read()
-		if e != nil {
-			return scanFail(e)
-		}
-		tb.pos.IncString(string(tb.val))
+	ok, e := tryScanTwoRuneOperator(tb, first, second)
+	if e != nil {
+		return scanFail(e)
+	}
+
+	if ok {
 		return nil
 	}
 
-	tb.val = []rune{first}
-	tb.tt = token.IdentifyOperatorType(string(tb.val))
-	if tb.tt != token.Unknown {
-		tb.pos.IncString(string(tb.val))
+	if tryScanSingleRuneOperator(tb, first) {
 		return nil
 	}
 
-	e := unknownSymbol(tb, first, second)
+	e = unknownSymbol(tb, first, second)
 	return scanFail(e)
+}
+
+func tryScanTwoRuneOperator(tb *tokenBuilder, first, second rune) (bool, error) {
+	val := []rune{first, second}
+	tt := token.IdentifyOperatorType(string(val))
+
+	if tt == token.Unknown {
+		return false, nil
+	}
+
+	tb.tt = tt
+	tb.add(first) // First
+	e := tb.any() // Second
+
+	if e != nil {
+		return false, tb.err(e, "Failed to scan second symbol in operator")
+	}
+	return true, nil
+}
+
+func tryScanSingleRuneOperator(tb *tokenBuilder, first rune) bool {
+	val := []rune{first}
+	tt := token.IdentifyOperatorType(string(val))
+
+	if tt == token.Unknown {
+		return false
+	}
+
+	tb.tt = tt
+	tb.add(first)
+	return true
 }
 
 func unknownSymbol(tb *tokenBuilder, first, second rune) error {
