@@ -28,21 +28,29 @@ type NodeOutput interface {
 
 func Parse(in RuneInput) ([]ast.Node, error) {
 
-	tokenOut := inout.ToList[token.Token]()
+	var (
+		tks    []token.Token
+		e      error
+		failed = func(e error) error {
+			return fmt.Errorf("Failed to parse scroll: %w", e)
+		}
+	)
 
-	if e := scanner.Scan(in, &tokenOut); e != nil {
-		return nil, fmt.Errorf("Failed to scan scroll: %w", e)
-	}
-
-	tks := tokenOut.List()
-	if len(tks) == 0 {
+	if tks, e = scan(in); e != nil {
+		return nil, failed(e)
+	} else if tks == nil {
 		return nil, nil
 	}
 
-	tr := tokenreader.FromList(tks...)
-	tks = rinser.RinseAll(tr)
+	if tks, e = rinse(tks); e != nil {
+		return nil, failed(e)
+	} else if tks == nil {
+		return nil, nil
+	}
 
-	tr = tokenreader.FromList(tks...)
+	// TODO: Refactor next
+	// TODO: Think about combining aligner & formaliser
+	tr := tokenreader.FromList(tks...)
 	tks = aligner.AlignAll(tr)
 
 	tr = tokenreader.FromList(tks...)
@@ -55,4 +63,31 @@ func Parse(in RuneInput) ([]ast.Node, error) {
 	}
 
 	return nodes, nil
+}
+
+func scan(in RuneInput) ([]token.Token, error) {
+	out := inout.ToList[token.Token]()
+
+	if e := scanner.Scan(in, &out); e != nil {
+		return nil, fmt.Errorf("Failed to scan scroll: %w", e)
+	}
+
+	if out.Empty() {
+		return nil, nil
+	}
+	return out.List(), nil
+}
+
+func rinse(tks []token.Token) ([]token.Token, error) {
+	in := inout.FromList(tks)
+	out := inout.ToList[token.Token]()
+
+	if e := rinser.Rinse(&in, &out); e != nil {
+		return nil, fmt.Errorf("Failed to rinse scroll: %w", e)
+	}
+
+	if out.Empty() {
+		return nil, nil
+	}
+	return out.List(), nil
 }

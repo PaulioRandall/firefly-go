@@ -2,50 +2,68 @@
 package rinser
 
 import (
-	"github.com/PaulioRandall/firefly-go/workflow/err"
+	"errors"
+	"fmt"
+
+	"github.com/PaulioRandall/firefly-go/workflow/inout"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
-var (
-	zero token.Token
-)
+var zero token.Token
 
-type TokenReader interface {
+type Input interface {
 	More() bool
-	Read() token.Token
-	Peek() token.Token
+	Read() (token.Token, error)
 }
 
-type RinseNext func() (tk token.Token, e error)
+type Output interface {
+	Write(...token.Token) error
+}
 
-func New(tr TokenReader) RinseNext {
+func Rinse(in Input, out Output) error {
 	var prev token.Token
 
-	return func() (token.Token, error) {
-		for tr.More() {
-			if tk := nextToken(tr, prev); tk != zero {
-				prev = tk
-				return tk, nil
-			}
+	for in.More() {
+		tk, e := nextToken(in, prev)
+
+		if errors.Is(e, inout.EOF) {
+			return nil
 		}
 
-		return zero, err.EOF
+		if e != nil {
+			return fmt.Errorf("Failed to rinse tokens: %w", e)
+		}
+
+		if tk == zero {
+			continue
+		}
+
+		if e := out.Write(tk); e != nil {
+			return fmt.Errorf("Failed to rinse tokens: %w", e)
+		}
+
+		prev = tk
 	}
+
+	return nil
 }
 
-func nextToken(tr TokenReader, prev token.Token) token.Token {
-	switch tk := tr.Read(); {
+func nextToken(in Input, prev token.Token) (token.Token, error) {
+	switch tk, e := in.Read(); {
+	case e != nil:
+		return zero, e
+
 	case tk.TokenType == token.Space:
-		return zero
+		return zero, nil
 
 	case tk.TokenType == token.Comment:
-		return zero
+		return zero, nil
 
 	case isEmptyLine(tk, prev):
-		return zero
+		return zero, nil
 
 	default:
-		return tk
+		return tk, nil
 	}
 }
 

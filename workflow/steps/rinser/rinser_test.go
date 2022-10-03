@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/PaulioRandall/firefly-go/workflow/inout"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
-	"github.com/PaulioRandall/firefly-go/workflow/tokenreader"
 
 	"github.com/PaulioRandall/firefly-go/workflow/token/tokentest"
 )
@@ -16,9 +16,12 @@ func tok(tt token.TokenType, v string) token.Token {
 }
 
 func assert(t *testing.T, given, exp []token.Token) {
-	tr := tokenreader.FromList(given...)
-	act := RinseAll(tr)
-	require.Equal(t, exp, act)
+	in := inout.FromList(given)
+	out := inout.ToList[token.Token]()
+
+	e := Rinse(&in, &out)
+	require.Nil(t, e, "%+v", e)
+	require.Equal(t, exp, out.List())
 }
 
 func Test_1_RinseAll(t *testing.T) {

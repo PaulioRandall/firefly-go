@@ -16,3 +16,7 @@ func (in *outputList[T]) Write(v ...T) error {
 func (in outputList[T]) List() []T {
 	return in.data
 }
+
+func (in outputList[T]) Empty() bool {
+	return len(in.data) == 0
+}
