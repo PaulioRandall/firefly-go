@@ -35,9 +35,7 @@ type Output interface {
 }
 
 func Scan(in Input, out Output) error {
-	tb := tokenBuilder{
-		in: in,
-	}
+	tb := newTokenBuilder(in)
 
 	for tb.more() {
 		if e := scanNext(&tb); e != nil {
@@ -230,7 +228,7 @@ func scanWord(tb *tokenBuilder, first rune) error {
 		return tb.err(e, "Failed to scan variable or keyword")
 	}
 
-	tb.tt = token.IdentifyWordType(string(tb.val))
+	tb.tt = token.IdentifyWordType(tb.String())
 	return nil
 }
 

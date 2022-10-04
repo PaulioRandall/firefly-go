@@ -4,17 +4,31 @@ import (
 	"errors"
 
 	"github.com/PaulioRandall/firefly-go/workflow/err"
+	"github.com/PaulioRandall/firefly-go/workflow/inout"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
 var ErrNotFound = errors.New("Symbol not found")
+
+type runeOutput interface {
+	WriteMany(...rune) error
+	List() []rune
+}
 
 type tokenBuilder struct {
 	in    Input
 	start token.Pos
 	pos   token.Pos
 	tt    token.TokenType
-	val   []rune
+	out   runeOutput
+}
+
+func newTokenBuilder(in Input) tokenBuilder {
+	out := inout.ToList[rune]()
+	return tokenBuilder{
+		in:  in,
+		out: &out,
+	}
 }
 
 func (tb *tokenBuilder) err(
@@ -23,6 +37,10 @@ func (tb *tokenBuilder) err(
 	args ...interface{}) error {
 
 	return err.AtPos(tb.pos, cause, errMsg, args...)
+}
+
+func (tb tokenBuilder) String() string {
+	return string(tb.out.List())
 }
 
 func (tb tokenBuilder) more() bool {
@@ -103,20 +121,22 @@ func (tb *tokenBuilder) expectFunc(
 }
 
 func (tb *tokenBuilder) add(ru ...rune) {
-	tb.val = append(tb.val, ru...)
+	tb.out.WriteMany(ru...)
 	tb.pos.IncString(string(ru))
 }
 
 func (tb *tokenBuilder) build() token.Token {
 
-	s := string(tb.val)
+	s := tb.String()
 
 	rng := token.MakeRange(tb.start, tb.pos)
 	tk := token.MakeToken(tb.tt, s, rng)
 
 	tb.start = tb.pos
 	tb.tt = token.Unknown
-	tb.val = nil
+
+	out := inout.ToList[rune]()
+	tb.out = &out
 
 	return tk
 }
