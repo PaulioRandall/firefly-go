@@ -5,6 +5,7 @@ import (
 
 	"github.com/PaulioRandall/firefly-go/workflow/err"
 	"github.com/PaulioRandall/firefly-go/workflow/inout"
+	"github.com/PaulioRandall/firefly-go/workflow/pos"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
@@ -17,8 +18,8 @@ type runeOutput interface {
 
 type tokenBuilder struct {
 	in    Input
-	start token.Pos
-	pos   token.Pos
+	start pos.Pos
+	pos   pos.Pos
 	tt    token.TokenType
 	out   runeOutput
 }
@@ -129,7 +130,7 @@ func (tb *tokenBuilder) build() token.Token {
 
 	s := tb.String()
 
-	rng := token.MakeRange(tb.start, tb.pos)
+	rng := pos.MakeRange(tb.start, tb.pos)
 	tk := token.MakeToken(tb.tt, s, rng)
 
 	tb.start = tb.pos

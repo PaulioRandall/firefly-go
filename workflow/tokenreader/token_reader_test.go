@@ -3,12 +3,14 @@ package tokenreader
 import (
 	"testing"
 
-	"github.com/PaulioRandall/firefly-go/workflow/token"
 	"github.com/stretchr/testify/require"
+
+	"github.com/PaulioRandall/firefly-go/workflow/pos"
+	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
 func tok(tt token.TokenType) token.Token {
-	return token.MakeToken(tt, "", token.Range{})
+	return token.MakeToken(tt, "", pos.Range{})
 }
 
 func Test_1_tokenReader_More(t *testing.T) {

@@ -3,16 +3,16 @@ package err
 import (
 	"fmt"
 
-	"github.com/PaulioRandall/firefly-go/workflow/token"
+	"github.com/PaulioRandall/firefly-go/workflow/pos"
 )
 
 type PosErr struct {
-	pos   token.Pos
+	pos   pos.Pos
 	cause error
 	msg   string
 }
 
-func AtPos(pos token.Pos, cause error, msg string, args ...interface{}) *PosErr {
+func AtPos(pos pos.Pos, cause error, msg string, args ...interface{}) *PosErr {
 	return &PosErr{
 		pos:   pos,
 		cause: cause,
@@ -28,6 +28,6 @@ func (e PosErr) Unwrap() error {
 	return e.cause
 }
 
-func (e PosErr) Pos() token.Pos {
+func (e PosErr) Pos() pos.Pos {
 	return e.pos
 }

@@ -2,15 +2,17 @@ package token
 
 import (
 	"fmt"
+
+	"github.com/PaulioRandall/firefly-go/workflow/pos"
 )
 
 type Token struct {
 	TokenType
 	Value string
-	Range
+	Range pos.Range
 }
 
-func MakeToken(tt TokenType, val string, filePos Range) Token {
+func MakeToken(tt TokenType, val string, filePos pos.Range) Token {
 	return Token{
 		TokenType: tt,
 		Value:     val,

@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/PaulioRandall/firefly-go/workflow/pos"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
@@ -30,9 +31,9 @@ func Test_2_TokenGenerator(t *testing.T) {
 	exp := token.Token{
 		TokenType: token.Newline,
 		Value:     "\n",
-		Range: token.MakeRange(
-			token.MakePos(2, 0, 2),
-			token.MakePos(3, 1, 0),
+		Range: pos.MakeRange(
+			pos.MakePos(2, 0, 2),
+			pos.MakePos(3, 1, 0),
 		),
 	}
 

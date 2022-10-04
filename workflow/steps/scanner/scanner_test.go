@@ -9,6 +9,7 @@ import (
 
 	"github.com/PaulioRandall/firefly-go/workflow/err"
 	"github.com/PaulioRandall/firefly-go/workflow/inout"
+	"github.com/PaulioRandall/firefly-go/workflow/pos"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 
 	"github.com/PaulioRandall/firefly-go/workflow/token/tokentest"
@@ -56,9 +57,9 @@ func Test_7_Scan(t *testing.T) {
 		token.MakeToken(
 			token.Newline,
 			given,
-			token.MakeRange(
-				token.MakePos(0, 0, 0),
-				token.MakePos(1, 1, 0),
+			pos.MakeRange(
+				pos.MakePos(0, 0, 0),
+				pos.MakePos(1, 1, 0),
 			),
 		),
 	}

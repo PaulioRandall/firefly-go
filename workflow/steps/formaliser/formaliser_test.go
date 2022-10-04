@@ -5,12 +5,13 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/PaulioRandall/firefly-go/workflow/pos"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 	"github.com/PaulioRandall/firefly-go/workflow/tokenreader"
 )
 
 func tok(tt token.TokenType, v string) token.Token {
-	return token.MakeToken(tt, v, token.Range{})
+	return token.MakeToken(tt, v, pos.Range{})
 }
 
 func assert(t *testing.T, given, exp []token.Token) {

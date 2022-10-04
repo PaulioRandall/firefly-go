@@ -1,4 +1,4 @@
-package token
+package pos
 
 import (
 	"fmt"
@@ -30,14 +30,8 @@ func (p *Pos) IncRune(ru rune) {
 }
 
 func (p *Pos) IncString(s string) {
-	size := len(s)
-	p.Offset += size
-
-	if s == "\n" {
-		p.Line++
-		p.Col = 0
-	} else {
-		p.Col += size
+	for _, ru := range s {
+		p.IncRune(ru)
 	}
 }
 
