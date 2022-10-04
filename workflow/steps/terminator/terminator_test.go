@@ -1,4 +1,4 @@
-package formaliser
+package terminator
 
 import (
 	"testing"
@@ -18,7 +18,7 @@ func assert(t *testing.T, given, exp []token.Token) {
 	r := inout.NewListReader(given)
 	w := inout.NewListWriter[token.Token]()
 
-	e := Formalise(r, w)
+	e := Terminate(r, w)
 
 	require.Nil(t, e, "%+v", e)
 	require.Equal(t, exp, w.List())

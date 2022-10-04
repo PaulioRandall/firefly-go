@@ -8,8 +8,8 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/steps/aligner"
 	"github.com/PaulioRandall/firefly-go/workflow/steps/cleaner"
 	"github.com/PaulioRandall/firefly-go/workflow/steps/compiler"
-	"github.com/PaulioRandall/firefly-go/workflow/steps/formaliser"
 	"github.com/PaulioRandall/firefly-go/workflow/steps/scanner"
+	"github.com/PaulioRandall/firefly-go/workflow/steps/terminator"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 	"github.com/PaulioRandall/firefly-go/workflow/tokenreader"
 )
@@ -52,7 +52,7 @@ func Parse(r RuneReader) ([]ast.Node, error) {
 	if tks, e = align(tks); e != nil {
 		return nil, failed(e)
 	}
-	if tks, e = formalise(tks); e != nil {
+	if tks, e = terminate(tks); e != nil {
 		return nil, failed(e)
 	}
 
@@ -103,12 +103,12 @@ func align(tks []token.Token) ([]token.Token, error) {
 	return w.List(), nil
 }
 
-func formalise(tks []token.Token) ([]token.Token, error) {
+func terminate(tks []token.Token) ([]token.Token, error) {
 	r := inout.NewListReader(tks)
 	w := inout.NewListWriter[token.Token]()
 
-	if e := formaliser.Formalise(r, w); e != nil {
-		return nil, fmt.Errorf("Failed to formalise scroll: %w", e)
+	if e := terminator.Terminate(r, w); e != nil {
+		return nil, fmt.Errorf("Failed to convert newlines to terminators: %w", e)
 	}
 	return w.List(), nil
 }

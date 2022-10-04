@@ -1,5 +1,5 @@
-// Package formaliser modifies a token list for easier parsing
-package formaliser
+// Package terminator removes newlines or converts them to terminators
+package terminator
 
 import (
 	"github.com/PaulioRandall/firefly-go/workflow/token"
@@ -17,7 +17,7 @@ type TokenWriter interface {
 	Write(token.Token) error
 }
 
-func Formalise(r TokenReader, w TokenWriter) error {
+func Terminate(r TokenReader, w TokenWriter) error {
 	var (
 		prev token.Token
 		curr token.Token
@@ -36,7 +36,7 @@ func Formalise(r TokenReader, w TokenWriter) error {
 			}
 		}
 
-		if curr = formalise(prev, curr, next); curr == zeroTk {
+		if curr = terminate(prev, curr, next); curr == zeroTk {
 			continue
 		}
 
@@ -50,7 +50,7 @@ func Formalise(r TokenReader, w TokenWriter) error {
 	return nil
 }
 
-func formalise(prev, curr, next token.Token) token.Token {
+func terminate(prev, curr, next token.Token) token.Token {
 	switch {
 	case curr.TokenType != token.Newline:
 		return curr
