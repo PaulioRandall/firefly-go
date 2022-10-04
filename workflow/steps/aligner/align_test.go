@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/PaulioRandall/firefly-go/workflow/inout"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
-	"github.com/PaulioRandall/firefly-go/workflow/tokenreader"
 
 	"github.com/PaulioRandall/firefly-go/workflow/token/tokentest"
 )
@@ -16,18 +16,22 @@ func tok(tt token.TokenType, v string) token.Token {
 }
 
 func assert(t *testing.T, given, exp []token.Token) {
-	tr := tokenreader.FromList(given...)
-	act := AlignAll(tr)
-	require.Equal(t, exp, act)
+	r := inout.NewListReader(given)
+	w := inout.NewListWriter[token.Token]()
+
+	e := Align(r, w)
+
+	require.Nil(t, e, "%+v", e)
+	require.Equal(t, exp, w.List())
 }
 
-func Test_1_AlignAll(t *testing.T) {
+func Test_1_Align(t *testing.T) {
 	var given []token.Token
 	var exp []token.Token
 	assert(t, given, exp)
 }
 
-func Test_2_AlignAll(t *testing.T) {
+func Test_2_Align(t *testing.T) {
 	given := []token.Token{
 		tok(token.String, `""`),
 		tok(token.Number, "0"),
@@ -41,7 +45,7 @@ func Test_2_AlignAll(t *testing.T) {
 	assert(t, given, exp)
 }
 
-func Test_3_AlignAll(t *testing.T) {
+func Test_3_Align(t *testing.T) {
 	given := []token.Token{
 		tok(token.BracketOpen, "["),
 	}
@@ -53,7 +57,7 @@ func Test_3_AlignAll(t *testing.T) {
 	assert(t, given, exp)
 }
 
-func Test_4_AlignAll(t *testing.T) {
+func Test_4_Align(t *testing.T) {
 	given := []token.Token{
 		tok(token.BracketOpen, "["),
 		tok(token.BracketClose, "]"),
@@ -67,7 +71,7 @@ func Test_4_AlignAll(t *testing.T) {
 	assert(t, given, exp)
 }
 
-func Test_5_AlignAll(t *testing.T) {
+func Test_5_Align(t *testing.T) {
 	given := []token.Token{
 		tok(token.BracketOpen, "["),
 		tok(token.Newline, "\n"),
@@ -82,7 +86,7 @@ func Test_5_AlignAll(t *testing.T) {
 	assert(t, given, exp)
 }
 
-func Test_6_AlignAll(t *testing.T) {
+func Test_6_Align(t *testing.T) {
 	given := []token.Token{
 		tok(token.BraceOpen, "{"),
 		tok(token.Newline, "\n"),
@@ -97,7 +101,7 @@ func Test_6_AlignAll(t *testing.T) {
 	assert(t, given, exp)
 }
 
-func Test_7_AlignAll(t *testing.T) {
+func Test_7_Align(t *testing.T) {
 	given := []token.Token{
 		tok(token.ParenOpen, "("),
 		tok(token.Newline, "\n"),
@@ -112,7 +116,7 @@ func Test_7_AlignAll(t *testing.T) {
 	assert(t, given, exp)
 }
 
-func Test_8_AlignAll(t *testing.T) {
+func Test_8_Align(t *testing.T) {
 	given := []token.Token{
 		tok(token.BracketOpen, "["),
 		tok(token.Newline, "\n1"),
@@ -138,7 +142,7 @@ func Test_8_AlignAll(t *testing.T) {
 	assert(t, given, exp)
 }
 
-func Test_9_AlignAll(t *testing.T) {
+func Test_9_Align(t *testing.T) {
 	given := []token.Token{
 		tok(token.BracketOpen, "["),
 		tok(token.Newline, "\n1"),
@@ -168,7 +172,7 @@ func Test_9_AlignAll(t *testing.T) {
 	assert(t, given, exp)
 }
 
-func Test_10_AlignAll(t *testing.T) {
+func Test_10_Align(t *testing.T) {
 	given := []token.Token{
 		tok(token.ParenOpen, "("),
 		tok(token.Newline, "\n1"),
@@ -196,7 +200,7 @@ func Test_10_AlignAll(t *testing.T) {
 	assert(t, given, exp)
 }
 
-func Test_11_AlignAll(t *testing.T) {
+func Test_11_Align(t *testing.T) {
 	given := []token.Token{
 		tok(token.ParenOpen, "("),
 		tok(token.Newline, "\n1"),
@@ -213,7 +217,7 @@ func Test_11_AlignAll(t *testing.T) {
 	assert(t, given, exp)
 }
 
-func Test_12_AlignAll(t *testing.T) {
+func Test_12_Align(t *testing.T) {
 	given := []token.Token{
 		tok(token.ParenOpen, "("),
 		tok(token.BracketOpen, "["),

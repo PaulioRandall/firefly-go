@@ -48,12 +48,15 @@ func Parse(r RuneReader) ([]ast.Node, error) {
 		return nil, nil
 	}
 
+	if tks, e = align(tks); e != nil {
+		return nil, failed(e)
+	} else if tks == nil {
+		return nil, nil
+	}
+
 	// TODO: Refactor next
 	// TODO: Think about combining aligner & formaliser
 	tr := tokenreader.FromList(tks...)
-	tks = aligner.AlignAll(tr)
-
-	tr = tokenreader.FromList(tks...)
 	tks = formaliser.Formalise(tr)
 
 	tr = tokenreader.FromList(tks...)
@@ -88,6 +91,16 @@ func rinse(tks []token.Token) ([]token.Token, error) {
 
 	if w.Empty() {
 		return nil, nil
+	}
+	return w.List(), nil
+}
+
+func align(tks []token.Token) ([]token.Token, error) {
+	r := inout.NewListReader(tks)
+	w := inout.NewListWriter[token.Token]()
+
+	if e := aligner.Align(r, w); e != nil {
+		return nil, fmt.Errorf("Failed to align scroll: %w", e)
 	}
 	return w.List(), nil
 }
