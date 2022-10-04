@@ -48,7 +48,8 @@ func Parse(r RuneReader) ([]ast.Node, error) {
 		return nil, nil
 	}
 
-	// TODO: Think about combining aligner & formaliser
+	// TODO: Change aligner so it comes after terminator
+	// TODO: Aligner only needs to act on terminators and commas
 	if tks, e = align(tks); e != nil {
 		return nil, failed(e)
 	}
@@ -60,7 +61,7 @@ func Parse(r RuneReader) ([]ast.Node, error) {
 	tr := tokenreader.FromList(tks...)
 	nodes, e := compiler.Compile(tr)
 	if e != nil {
-		return nil, fmt.Errorf("Failed to scan scroll: %w", e)
+		return nil, fmt.Errorf("Failed to compile AST: %w", e)
 	}
 
 	return nodes, nil
@@ -70,7 +71,7 @@ func scan(r RuneReader) ([]token.Token, error) {
 	w := inout.NewListWriter[token.Token]()
 
 	if e := scanner.Scan(r, w); e != nil {
-		return nil, fmt.Errorf("Failed to scan scroll: %w", e)
+		return nil, fmt.Errorf("Failed to scan tokens: %w", e)
 	}
 
 	if w.Empty() {
@@ -84,7 +85,7 @@ func clean(tks []token.Token) ([]token.Token, error) {
 	w := inout.NewListWriter[token.Token]()
 
 	if e := rinser.Clean(r, w); e != nil {
-		return nil, fmt.Errorf("Failed to clean scroll: %w", e)
+		return nil, fmt.Errorf("Failed to remove redundant tokens: %w", e)
 	}
 
 	if w.Empty() {
@@ -98,7 +99,7 @@ func align(tks []token.Token) ([]token.Token, error) {
 	w := inout.NewListWriter[token.Token]()
 
 	if e := aligner.Align(r, w); e != nil {
-		return nil, fmt.Errorf("Failed to align scroll: %w", e)
+		return nil, fmt.Errorf("Failed to inline comma separated values: %w", e)
 	}
 	return w.List(), nil
 }
