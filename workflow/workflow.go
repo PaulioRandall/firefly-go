@@ -66,9 +66,9 @@ func Parse(in RuneInput) ([]ast.Node, error) {
 }
 
 func scan(in RuneInput) ([]token.Token, error) {
-	out := inout.ToList[token.Token]()
+	out := inout.NewListOutput[token.Token]()
 
-	if e := scanner.Scan(in, &out); e != nil {
+	if e := scanner.Scan(in, out); e != nil {
 		return nil, fmt.Errorf("Failed to scan scroll: %w", e)
 	}
 
@@ -79,10 +79,10 @@ func scan(in RuneInput) ([]token.Token, error) {
 }
 
 func rinse(tks []token.Token) ([]token.Token, error) {
-	in := inout.FromList(tks)
-	out := inout.ToList[token.Token]()
+	in := inout.NewListInput(tks)
+	out := inout.NewListOutput[token.Token]()
 
-	if e := rinser.Rinse(&in, &out); e != nil {
+	if e := rinser.Rinse(in, out); e != nil {
 		return nil, fmt.Errorf("Failed to rinse scroll: %w", e)
 	}
 

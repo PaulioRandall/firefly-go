@@ -7,7 +7,7 @@ import (
 )
 
 func Test_1_outputList_Write(t *testing.T) {
-	out := ToList[string]()
+	out := NewListOutput[string]()
 	exp := []string{"abc"}
 
 	require.Nil(t, out.Write("abc"))
@@ -15,7 +15,7 @@ func Test_1_outputList_Write(t *testing.T) {
 }
 
 func Test_2_outputList_WriteMany(t *testing.T) {
-	out := ToList[string]()
+	out := NewListOutput[string]()
 	exp := []string{"x", "y", "z"}
 
 	require.Nil(t, out.WriteMany("x", "y", "z"))

@@ -16,10 +16,10 @@ import (
 )
 
 func assertToken(t *testing.T, given string, expType token.TokenType) {
-	in := inout.FromList([]rune(given))
-	out := inout.ToList[token.Token]()
+	in := inout.NewListInput([]rune(given))
+	out := inout.NewListOutput[token.Token]()
 
-	e := Scan(&in, &out)
+	e := Scan(in, out)
 
 	require.Nil(t, e, "Expected %q but got %+v", expType.String(), err.Debug(e))
 	require.Equal(t, 1, len(out.List()))
@@ -31,19 +31,19 @@ func assertToken(t *testing.T, given string, expType token.TokenType) {
 }
 
 func assertScan(t *testing.T, given string, exp []token.Token) {
-	in := inout.FromList([]rune(given))
-	out := inout.ToList[token.Token]()
+	in := inout.NewListInput([]rune(given))
+	out := inout.NewListOutput[token.Token]()
 
-	e := Scan(&in, &out)
+	e := Scan(in, out)
 	require.Nil(t, e, "%+v", e)
 	require.Equal(t, exp, out.List())
 }
 
 func assertError(t *testing.T, given string, exp error) {
-	in := inout.FromList([]rune(given))
-	out := inout.ToList[token.Token]()
+	in := inout.NewListInput([]rune(given))
+	out := inout.NewListOutput[token.Token]()
 
-	e := Scan(&in, &out)
+	e := Scan(in, out)
 	require.True(t, errors.Is(e, exp), "Expected %+v", exp.Error())
 }
 

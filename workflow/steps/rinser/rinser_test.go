@@ -16,10 +16,10 @@ func tok(tt token.TokenType, v string) token.Token {
 }
 
 func assert(t *testing.T, given, exp []token.Token) {
-	in := inout.FromList(given)
-	out := inout.ToList[token.Token]()
+	in := inout.NewListInput(given)
+	out := inout.NewListOutput[token.Token]()
 
-	e := Rinse(&in, &out)
+	e := Rinse(in, out)
 	require.Nil(t, e, "%+v", e)
 	require.Equal(t, exp, out.List())
 }

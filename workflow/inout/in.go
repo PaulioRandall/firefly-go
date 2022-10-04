@@ -11,8 +11,8 @@ type inputList[T any] struct {
 	data []T
 }
 
-func FromList[T any](list []T) inputList[T] {
-	return inputList[T]{
+func NewListInput[T any](list []T) *inputList[T] {
+	return &inputList[T]{
 		data: list,
 	}
 }

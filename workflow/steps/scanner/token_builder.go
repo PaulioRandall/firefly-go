@@ -25,10 +25,9 @@ type tokenBuilder struct {
 }
 
 func newTokenBuilder(in Input) tokenBuilder {
-	out := inout.ToList[rune]()
 	return tokenBuilder{
 		Input: in,
-		out:   &out,
+		out:   inout.NewListOutput[rune](),
 	}
 }
 
@@ -122,9 +121,7 @@ func (tb *tokenBuilder) build() token.Token {
 
 	tb.start = tb.pos
 	tb.tt = token.Unknown
-
-	out := inout.ToList[rune]()
-	tb.out = &out
+	tb.out = inout.NewListOutput[rune]()
 
 	return tk
 }

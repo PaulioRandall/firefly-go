@@ -4,8 +4,8 @@ type outputList[T any] struct {
 	data []T
 }
 
-func ToList[T any]() outputList[T] {
-	return outputList[T]{}
+func NewListOutput[T any]() *outputList[T] {
+	return &outputList[T]{}
 }
 
 func (in *outputList[T]) Write(v T) error {
