@@ -37,7 +37,7 @@ func (tb *tokenBuilder) err(
 	errMsg string,
 	args ...interface{}) error {
 
-	return err.AtPos(tb.pos, cause, errMsg, args...)
+	return pos.ErrorFor(tb.pos, cause, errMsg, args...)
 }
 
 func (tb tokenBuilder) String() string {

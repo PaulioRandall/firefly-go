@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"unicode"
 
-	"github.com/PaulioRandall/firefly-go/workflow/err"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
@@ -54,7 +53,7 @@ func Scan(in Input, out Output) error {
 func scanNext(tb *tokenBuilder) error {
 
 	failed := func(e error) error {
-		return err.AtPos(tb.pos, e, "Failed to scan token")
+		return tb.err(e, "Failed to scan token")
 	}
 
 	first, e := tb.Read()
