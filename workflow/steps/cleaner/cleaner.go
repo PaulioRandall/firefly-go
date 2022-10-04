@@ -1,4 +1,4 @@
-// Package rinser removes obsolete tokens such as whitespace
+// Package cleaner removes compiler redundant tokens such as whitespace
 package rinser
 
 import (
@@ -20,7 +20,7 @@ type TokenWriter interface {
 	Write(token.Token) error
 }
 
-func Rinse(r TokenReader, w TokenWriter) error {
+func Clean(r TokenReader, w TokenWriter) error {
 	var prev token.Token
 
 	for r.More() {
@@ -31,7 +31,7 @@ func Rinse(r TokenReader, w TokenWriter) error {
 		}
 
 		if e != nil {
-			return fmt.Errorf("Failed to rinse tokens: %w", e)
+			return fmt.Errorf("Failed to clean tokens: %w", e)
 		}
 
 		if tk == zero {
@@ -39,7 +39,7 @@ func Rinse(r TokenReader, w TokenWriter) error {
 		}
 
 		if e := w.Write(tk); e != nil {
-			return fmt.Errorf("Failed to rinse tokens: %w", e)
+			return fmt.Errorf("Failed to clean tokens: %w", e)
 		}
 
 		prev = tk
@@ -53,13 +53,10 @@ func nextToken(r TokenReader, prev token.Token) (token.Token, error) {
 	case e != nil:
 		return zero, e
 
-	case tk.TokenType == token.Space:
+	case isRedundant(tk.TokenType):
 		return zero, nil
 
-	case tk.TokenType == token.Comment:
-		return zero, nil
-
-	case isEmptyLine(tk, prev):
+	case isEmptyLine(tk.TokenType, prev.TokenType):
 		return zero, nil
 
 	default:
@@ -67,6 +64,19 @@ func nextToken(r TokenReader, prev token.Token) (token.Token, error) {
 	}
 }
 
-func isEmptyLine(tk, prev token.Token) bool {
-	return tk.TokenType == token.Newline && prev.TokenType == token.Newline
+func isRedundant(tt token.TokenType) bool {
+	switch tt {
+	case token.Space, token.Comment:
+		return true
+	default:
+		return false
+	}
+}
+
+func isEmptyLine(curr, prev token.TokenType) bool {
+	if curr != token.Newline {
+		return false
+	}
+
+	return prev == token.Unknown || prev == token.Newline
 }

@@ -19,12 +19,12 @@ func assert(t *testing.T, given, exp []token.Token) {
 	r := inout.NewListReader(given)
 	w := inout.NewListWriter[token.Token]()
 
-	e := Rinse(r, w)
+	e := Clean(r, w)
 	require.Nil(t, e, "%+v", e)
 	require.Equal(t, exp, w.List())
 }
 
-func Test_1_RinseAll(t *testing.T) {
+func Test_1_Clean(t *testing.T) {
 	given := []token.Token{}
 
 	var exp []token.Token
@@ -32,7 +32,7 @@ func Test_1_RinseAll(t *testing.T) {
 	assert(t, given, exp)
 }
 
-func Test_2_RinseAll(t *testing.T) {
+func Test_2_Clean(t *testing.T) {
 	given := []token.Token{
 		tok(token.Space, " "),
 	}
@@ -42,7 +42,7 @@ func Test_2_RinseAll(t *testing.T) {
 	assert(t, given, exp)
 }
 
-func Test_3_RinseAll(t *testing.T) {
+func Test_3_Clean(t *testing.T) {
 	given := []token.Token{
 		tok(token.Comment, "//"),
 	}
@@ -52,7 +52,7 @@ func Test_3_RinseAll(t *testing.T) {
 	assert(t, given, exp)
 }
 
-func Test_4_RinseAll(t *testing.T) {
+func Test_4_Clean(t *testing.T) {
 	given := []token.Token{
 		tok(token.Var, "abc"),
 	}
@@ -64,7 +64,7 @@ func Test_4_RinseAll(t *testing.T) {
 	assert(t, given, exp)
 }
 
-func Test_5_RinseAll(t *testing.T) {
+func Test_5_Clean(t *testing.T) {
 	given := []token.Token{
 		tok(token.Var, "abc"),
 		tok(token.Space, " "),
@@ -86,7 +86,7 @@ func Test_5_RinseAll(t *testing.T) {
 	assert(t, given, exp)
 }
 
-func Test_6_RinseAll(t *testing.T) {
+func Test_6_Clean(t *testing.T) {
 	given := []token.Token{
 		tok(token.String, `""`),
 		tok(token.Newline, "\n"),
@@ -100,6 +100,27 @@ func Test_6_RinseAll(t *testing.T) {
 		tok(token.Newline, "\n"),
 		tok(token.Number, "0"),
 	}
+
+	assert(t, given, exp)
+}
+
+func Test_7_Clean(t *testing.T) {
+	given := []token.Token{
+		tok(token.Space, "\n"),
+	}
+
+	var exp []token.Token
+
+	assert(t, given, exp)
+}
+
+func Test_8_Clean(t *testing.T) {
+	given := []token.Token{
+		tok(token.Space, "\n"),
+		tok(token.Space, "\n"),
+	}
+
+	var exp []token.Token
 
 	assert(t, given, exp)
 }

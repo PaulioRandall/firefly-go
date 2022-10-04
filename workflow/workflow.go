@@ -6,9 +6,9 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/ast"
 	"github.com/PaulioRandall/firefly-go/workflow/inout"
 	"github.com/PaulioRandall/firefly-go/workflow/steps/aligner"
+	"github.com/PaulioRandall/firefly-go/workflow/steps/cleaner"
 	"github.com/PaulioRandall/firefly-go/workflow/steps/compiler"
 	"github.com/PaulioRandall/firefly-go/workflow/steps/formaliser"
-	"github.com/PaulioRandall/firefly-go/workflow/steps/rinser"
 	"github.com/PaulioRandall/firefly-go/workflow/steps/scanner"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 	"github.com/PaulioRandall/firefly-go/workflow/tokenreader"
@@ -42,7 +42,7 @@ func Parse(r RuneReader) ([]ast.Node, error) {
 		return nil, nil
 	}
 
-	if tks, e = rinse(tks); e != nil {
+	if tks, e = clean(tks); e != nil {
 		return nil, failed(e)
 	} else if tks == nil {
 		return nil, nil
@@ -50,8 +50,6 @@ func Parse(r RuneReader) ([]ast.Node, error) {
 
 	if tks, e = align(tks); e != nil {
 		return nil, failed(e)
-	} else if tks == nil {
-		return nil, nil
 	}
 
 	// TODO: Refactor next
@@ -81,12 +79,12 @@ func scan(r RuneReader) ([]token.Token, error) {
 	return w.List(), nil
 }
 
-func rinse(tks []token.Token) ([]token.Token, error) {
+func clean(tks []token.Token) ([]token.Token, error) {
 	r := inout.NewListReader(tks)
 	w := inout.NewListWriter[token.Token]()
 
-	if e := rinser.Rinse(r, w); e != nil {
-		return nil, fmt.Errorf("Failed to rinse scroll: %w", e)
+	if e := rinser.Clean(r, w); e != nil {
+		return nil, fmt.Errorf("Failed to clean scroll: %w", e)
 	}
 
 	if w.Empty() {
