@@ -11,23 +11,23 @@ import (
 
 var ErrNotFound = errors.New("Unknown symbol")
 
-type runeOutput interface {
+type runeListWriter interface {
 	WriteMany(...rune) error
 	List() []rune
 }
 
 type tokenBuilder struct {
-	FFReader
+	RuneReader
 	start pos.Pos
 	pos   pos.Pos
 	tt    token.TokenType
-	out   runeOutput
+	w     runeListWriter
 }
 
-func newTokenBuilder(r FFReader) tokenBuilder {
+func newTokenBuilder(r RuneReader) tokenBuilder {
 	return tokenBuilder{
-		FFReader: r,
-		out:      inout.NewListOutput[rune](),
+		RuneReader: r,
+		w:          inout.NewListWriter[rune](),
 	}
 }
 
@@ -40,7 +40,7 @@ func (tb *tokenBuilder) err(
 }
 
 func (tb tokenBuilder) String() string {
-	return string(tb.out.List())
+	return string(tb.w.List())
 }
 
 func (tb *tokenBuilder) any() error {
@@ -109,7 +109,7 @@ func (tb *tokenBuilder) expectFunc(
 }
 
 func (tb *tokenBuilder) add(ru ...rune) {
-	tb.out.WriteMany(ru...)
+	tb.w.WriteMany(ru...)
 	tb.pos.IncString(string(ru))
 }
 
@@ -121,7 +121,7 @@ func (tb *tokenBuilder) build() token.Token {
 
 	tb.start = tb.pos
 	tb.tt = token.Unknown
-	tb.out = inout.NewListOutput[rune]()
+	tb.w = inout.NewListWriter[rune]()
 
 	return tk
 }

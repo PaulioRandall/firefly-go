@@ -11,20 +11,20 @@ import (
 
 var zero token.Token
 
-type Input interface {
+type TokenReader interface {
 	More() bool
 	Read() (token.Token, error)
 }
 
-type Output interface {
+type TokenWriter interface {
 	Write(token.Token) error
 }
 
-func Rinse(in Input, out Output) error {
+func Rinse(r TokenReader, w TokenWriter) error {
 	var prev token.Token
 
-	for in.More() {
-		tk, e := nextToken(in, prev)
+	for r.More() {
+		tk, e := nextToken(r, prev)
 
 		if errors.Is(e, inout.EOF) {
 			return nil
@@ -38,7 +38,7 @@ func Rinse(in Input, out Output) error {
 			continue
 		}
 
-		if e := out.Write(tk); e != nil {
+		if e := w.Write(tk); e != nil {
 			return fmt.Errorf("Failed to rinse tokens: %w", e)
 		}
 
@@ -48,8 +48,8 @@ func Rinse(in Input, out Output) error {
 	return nil
 }
 
-func nextToken(in Input, prev token.Token) (token.Token, error) {
-	switch tk, e := in.Read(); {
+func nextToken(r TokenReader, prev token.Token) (token.Token, error) {
+	switch tk, e := r.Read(); {
 	case e != nil:
 		return zero, e
 

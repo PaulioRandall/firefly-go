@@ -17,14 +17,14 @@ import (
 
 func assertToken(t *testing.T, given string, expType token.TokenType) {
 	r := inout.NewListReader([]rune(given))
-	out := inout.NewListOutput[token.Token]()
+	w := inout.NewListWriter[token.Token]()
 
-	e := Scan(r, out)
+	e := Scan(r, w)
 
 	require.Nil(t, e, "Expected %q but got %+v", expType.String(), err.Debug(e))
-	require.Equal(t, 1, len(out.List()))
+	require.Equal(t, 1, len(w.List()))
 
-	actType := out.List()[0].TokenType
+	actType := w.List()[0].TokenType
 	require.Equal(t, expType, actType,
 		"Expected %q but got %q", expType.String(), actType.String(),
 	)
@@ -32,18 +32,18 @@ func assertToken(t *testing.T, given string, expType token.TokenType) {
 
 func assertScan(t *testing.T, given string, exp []token.Token) {
 	r := inout.NewListReader([]rune(given))
-	out := inout.NewListOutput[token.Token]()
+	w := inout.NewListWriter[token.Token]()
 
-	e := Scan(r, out)
+	e := Scan(r, w)
 	require.Nil(t, e, "%+v", e)
-	require.Equal(t, exp, out.List())
+	require.Equal(t, exp, w.List())
 }
 
 func assertError(t *testing.T, given string, exp error) {
 	r := inout.NewListReader([]rune(given))
-	out := inout.NewListOutput[token.Token]()
+	w := inout.NewListWriter[token.Token]()
 
-	e := Scan(r, out)
+	e := Scan(r, w)
 	require.True(t, errors.Is(e, exp), "Expected %+v", exp.Error())
 }
 

@@ -17,7 +17,7 @@ func tok(tt token.TokenType, v string) token.Token {
 
 func assert(t *testing.T, given, exp []token.Token) {
 	r := inout.NewListReader(given)
-	w := inout.NewListOutput[token.Token]()
+	w := inout.NewListWriter[token.Token]()
 
 	e := Rinse(r, w)
 	require.Nil(t, e, "%+v", e)

@@ -23,17 +23,17 @@ var (
 	zeroToken             token.Token
 )
 
-type FFReader interface {
+type RuneReader interface {
 	More() bool
 	Peek() (rune, error)
 	Read() (rune, error)
 }
 
-type Output interface {
+type TokenWriter interface {
 	Write(token.Token) error
 }
 
-func Scan(r FFReader, out Output) error {
+func Scan(r RuneReader, w TokenWriter) error {
 	tb := newTokenBuilder(r)
 
 	for tb.More() {
@@ -42,7 +42,7 @@ func Scan(r FFReader, out Output) error {
 		}
 
 		tk := tb.build()
-		if e := out.Write(tk); e != nil {
+		if e := w.Write(tk); e != nil {
 			return fmt.Errorf("Failed to scan tokens: %w", e)
 		}
 	}
