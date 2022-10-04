@@ -1,9 +1,8 @@
-// Package formaliser cleans a token list for easier parsing
+// Package formaliser modifies a token list for easier parsing
 package formaliser
 
 import (
 	"github.com/PaulioRandall/firefly-go/workflow/token"
-	"github.com/PaulioRandall/firefly-go/workflow/tokenreader"
 )
 
 type tokenList []token.Token
@@ -25,32 +24,52 @@ func (tl *tokenList) indexOfLast() int {
 
 var zeroTk token.Token
 
-func Formalise(tr tokenreader.TokenReader) []token.Token {
-	var tl tokenList
-
-	for tr.More() {
-		tk := formalise(&tl, tr.Read())
-
-		if tk != zeroTk {
-			tl.append(tk)
-		}
-	}
-
-	return []token.Token(tl)
+type TokenReader interface {
+	More() bool
+	Read() (token.Token, error)
 }
 
-func formalise(tl *tokenList, tk token.Token) token.Token {
+type TokenWriter interface {
+	Write(token.Token) error
+}
 
-	switch {
-	case tk.TokenType == token.Newline:
-		if preventsNewlineTermination(tl.last()) {
-			tk = zeroTk
-		} else {
-			tk.TokenType = token.Terminator
+func Formalise(r TokenReader, w TokenWriter) error {
+	var (
+		prev token.Token
+		curr token.Token
+		e    error
+	)
+
+	for r.More() {
+		if curr, e = r.Read(); e != nil {
+			return e // TODO: Wrap error
 		}
+
+		if curr = formalise(r, prev, curr); curr == zeroTk {
+			continue
+		}
+
+		if e = w.Write(curr); e != nil {
+			return e // TODO: Wrap error
+		}
+
+		prev = curr
 	}
 
-	return tk
+	return nil
+}
+
+func formalise(r TokenReader, prev, curr token.Token) token.Token {
+	if curr.TokenType != token.Newline {
+		return curr
+	}
+
+	if preventsNewlineTermination(prev) {
+		return zeroTk
+	}
+
+	curr.TokenType = token.Terminator
+	return curr
 }
 
 func preventsNewlineTermination(tk token.Token) bool {

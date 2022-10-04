@@ -20,6 +20,7 @@ func assert(t *testing.T, given, exp []token.Token) {
 	w := inout.NewListWriter[token.Token]()
 
 	e := Clean(r, w)
+
 	require.Nil(t, e, "%+v", e)
 	require.Equal(t, exp, w.List())
 }
