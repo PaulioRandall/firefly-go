@@ -16,7 +16,7 @@ func Test_1_TokenGenerator(t *testing.T) {
 	exp := token.Token{
 		TokenType: token.EQU,
 		Value:     "==",
-		Range:     InlineRange(0, 0, 0, len("==")),
+		Range:     pos.RawRangeForString(0, 0, 0, "=="),
 	}
 
 	require.Equal(t, exp, act)
@@ -31,10 +31,7 @@ func Test_2_TokenGenerator(t *testing.T) {
 	exp := token.Token{
 		TokenType: token.Newline,
 		Value:     "\n",
-		Range: pos.MakeRange(
-			pos.MakePos(2, 0, 2),
-			pos.MakePos(3, 1, 0),
-		),
+		Range:     pos.RawRangeForString(2, 0, 2, "\n"),
 	}
 
 	require.Equal(t, exp, act)
@@ -50,7 +47,7 @@ func Test_3_TokenGenerator(t *testing.T) {
 	exp := token.Token{
 		TokenType: token.LTE,
 		Value:     "<=",
-		Range:     InlineRange(4, 0, 4, len("<=")),
+		Range:     pos.RawRangeForString(4, 0, 4, "<="),
 	}
 
 	require.Equal(t, exp, act)

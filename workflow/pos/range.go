@@ -9,14 +9,31 @@ type Range struct {
 	To   Pos // exclusive
 }
 
-func MakeRange(from, to Pos) Range {
+func RangeFor(from, to Pos) Range {
 	return Range{
 		From: from,
 		To:   to,
 	}
 }
 
-func (r *Range) IncString(s string) {
+func RangeForString(from Pos, s string) Range {
+	rng := Range{
+		From: from,
+		To:   from,
+	}
+
+	rng.ShiftString(s)
+	return rng
+}
+
+func RawRangeForString(offset, line, col int, s string) Range {
+	return RangeForString(
+		PosAt(offset, line, col),
+		s,
+	)
+}
+
+func (r *Range) ShiftString(s string) {
 	r.From = r.To
 	r.To.IncString(s)
 }

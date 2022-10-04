@@ -10,7 +10,7 @@ type Pos struct {
 	Col    int // index
 }
 
-func MakePos(offset, line, col int) Pos {
+func PosAt(offset, line, col int) Pos {
 	return Pos{
 		Offset: offset,
 		Line:   line,

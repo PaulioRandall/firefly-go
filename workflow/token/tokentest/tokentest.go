@@ -6,22 +6,7 @@ import (
 )
 
 func Tok(tt token.TokenType, v string) token.Token {
-	return token.MakeToken(tt, v, InlineRange(0, 0, 0, len(v)))
-}
-
-func InlineRange(offset, line, col, length int) pos.Range {
-	return pos.Range{
-		From: pos.Pos{
-			Offset: offset,
-			Line:   line,
-			Col:    col,
-		},
-		To: pos.Pos{
-			Offset: offset + length,
-			Line:   line,
-			Col:    col + length,
-		},
-	}
+	return token.MakeToken(tt, v, pos.RawRangeForString(0, 0, 0, v))
 }
 
 type TokenGenerator func(token.TokenType, string) token.Token
@@ -30,7 +15,7 @@ func NewTokenGenerator() TokenGenerator {
 	prev := pos.Range{}
 
 	return func(tt token.TokenType, v string) token.Token {
-		prev.IncString(v)
+		prev.ShiftString(v)
 		return token.MakeToken(tt, v, prev)
 	}
 }

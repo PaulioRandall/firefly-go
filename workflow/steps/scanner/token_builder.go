@@ -127,10 +127,9 @@ func (tb *tokenBuilder) add(ru ...rune) {
 }
 
 func (tb *tokenBuilder) build() token.Token {
-
 	s := tb.String()
 
-	rng := pos.MakeRange(tb.start, tb.pos)
+	rng := pos.RangeFor(tb.start, tb.pos)
 	tk := token.MakeToken(tb.tt, s, rng)
 
 	tb.start = tb.pos

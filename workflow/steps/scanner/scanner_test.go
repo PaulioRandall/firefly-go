@@ -57,10 +57,7 @@ func Test_7_Scan(t *testing.T) {
 		token.MakeToken(
 			token.Newline,
 			given,
-			pos.MakeRange(
-				pos.MakePos(0, 0, 0),
-				pos.MakePos(1, 1, 0),
-			),
+			pos.RawRangeForString(0, 0, 0, given),
 		),
 	}
 
