@@ -8,7 +8,12 @@ func ToList[T any]() outputList[T] {
 	return outputList[T]{}
 }
 
-func (in *outputList[T]) Write(v ...T) error {
+func (in *outputList[T]) Write(v T) error {
+	in.data = append(in.data, v)
+	return nil
+}
+
+func (in *outputList[T]) WriteMany(v ...T) error {
 	in.data = append(in.data, v...)
 	return nil
 }

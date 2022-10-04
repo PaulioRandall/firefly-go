@@ -1,10 +1,10 @@
 package inout
 
 import (
-	"errors"
+	"io"
 )
 
-var EOF = errors.New("End of file")
+var EOF = io.EOF
 
 type inputList[T any] struct {
 	idx  int

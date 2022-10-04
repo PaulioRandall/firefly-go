@@ -17,7 +17,7 @@ type Input interface {
 }
 
 type Output interface {
-	Write(...token.Token) error
+	Write(token.Token) error
 }
 
 func Rinse(in Input, out Output) error {
