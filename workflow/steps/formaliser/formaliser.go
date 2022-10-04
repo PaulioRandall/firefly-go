@@ -5,27 +5,11 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
-type tokenList []token.Token
-
-func (tl *tokenList) append(tk token.Token) {
-	*tl = append(*tl, tk)
-}
-
-func (tl *tokenList) last() token.Token {
-	if i := tl.indexOfLast(); i > -1 {
-		return (*tl)[i]
-	}
-	return token.Token{}
-}
-
-func (tl *tokenList) indexOfLast() int {
-	return len(*tl) - 1
-}
-
 var zeroTk token.Token
 
 type TokenReader interface {
 	More() bool
+	Peek() (token.Token, error)
 	Read() (token.Token, error)
 }
 
@@ -37,6 +21,7 @@ func Formalise(r TokenReader, w TokenWriter) error {
 	var (
 		prev token.Token
 		curr token.Token
+		next token.Token
 		e    error
 	)
 
@@ -45,7 +30,13 @@ func Formalise(r TokenReader, w TokenWriter) error {
 			return e // TODO: Wrap error
 		}
 
-		if curr = formalise(r, prev, curr); curr == zeroTk {
+		if r.More() {
+			if next, e = r.Peek(); e != nil {
+				return e // TODO: Wrap error
+			}
+		}
+
+		if curr = formalise(prev, curr, next); curr == zeroTk {
 			continue
 		}
 
@@ -59,22 +50,43 @@ func Formalise(r TokenReader, w TokenWriter) error {
 	return nil
 }
 
-func formalise(r TokenReader, prev, curr token.Token) token.Token {
-	if curr.TokenType != token.Newline {
+func formalise(prev, curr, next token.Token) token.Token {
+	switch {
+	case curr.TokenType != token.Newline:
+		return curr
+	case isArithmetic(prev.TokenType):
+		return zeroTk
+	case isOpener(prev.TokenType):
+		return zeroTk
+	case isCloser(next.TokenType):
+		return zeroTk
+	default:
+		curr.TokenType = token.Terminator
 		return curr
 	}
-
-	if preventsNewlineTermination(prev) {
-		return zeroTk
-	}
-
-	curr.TokenType = token.Terminator
-	return curr
 }
 
-func preventsNewlineTermination(tk token.Token) bool {
-	switch tk.TokenType {
+func isArithmetic(tt token.TokenType) bool {
+	switch tt {
 	case token.Add, token.Sub, token.Mul, token.Div, token.Mod:
+		return true
+	default:
+		return false
+	}
+}
+
+func isOpener(tt token.TokenType) bool {
+	switch tt {
+	case token.ParenOpen, token.BraceOpen, token.BracketOpen:
+		return true
+	default:
+		return false
+	}
+}
+
+func isCloser(tt token.TokenType) bool {
+	switch tt {
+	case token.ParenClose, token.BraceClose, token.BracketClose:
 		return true
 	default:
 		return false
