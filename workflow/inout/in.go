@@ -6,33 +6,33 @@ import (
 
 var EOF = io.EOF
 
-type inputList[T any] struct {
+type listReader[T any] struct {
 	idx  int
 	data []T
 }
 
-func NewListInput[T any](list []T) *inputList[T] {
-	return &inputList[T]{
+func NewListReader[T any](list []T) *listReader[T] {
+	return &listReader[T]{
 		data: list,
 	}
 }
 
-func (in inputList[T]) More() bool {
-	return in.idx < len(in.data)
+func (lr listReader[T]) More() bool {
+	return lr.idx < len(lr.data)
 }
 
-func (in *inputList[T]) Peek() (T, error) {
-	if in.More() {
-		return in.data[in.idx], nil
+func (lr *listReader[T]) Peek() (T, error) {
+	if lr.More() {
+		return lr.data[lr.idx], nil
 	}
 	var zero T
 	return zero, EOF
 }
 
-func (in *inputList[T]) Read() (T, error) {
-	if in.More() {
-		v := in.data[in.idx]
-		in.idx++
+func (lr *listReader[T]) Read() (T, error) {
+	if lr.More() {
+		v := lr.data[lr.idx]
+		lr.idx++
 		return v, nil
 	}
 

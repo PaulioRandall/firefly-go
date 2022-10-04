@@ -9,7 +9,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
-var ErrNotFound = errors.New("Symbol not found")
+var ErrNotFound = errors.New("Unknown symbol")
 
 type runeOutput interface {
 	WriteMany(...rune) error
@@ -17,17 +17,17 @@ type runeOutput interface {
 }
 
 type tokenBuilder struct {
-	Input
+	FFReader
 	start pos.Pos
 	pos   pos.Pos
 	tt    token.TokenType
 	out   runeOutput
 }
 
-func newTokenBuilder(in Input) tokenBuilder {
+func newTokenBuilder(r FFReader) tokenBuilder {
 	return tokenBuilder{
-		Input: in,
-		out:   inout.NewListOutput[rune](),
+		FFReader: r,
+		out:      inout.NewListOutput[rune](),
 	}
 }
 

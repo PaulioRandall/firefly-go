@@ -23,7 +23,7 @@ var (
 	zeroToken             token.Token
 )
 
-type Input interface {
+type FFReader interface {
 	More() bool
 	Peek() (rune, error)
 	Read() (rune, error)
@@ -33,8 +33,8 @@ type Output interface {
 	Write(token.Token) error
 }
 
-func Scan(in Input, out Output) error {
-	tb := newTokenBuilder(in)
+func Scan(r FFReader, out Output) error {
+	tb := newTokenBuilder(r)
 
 	for tb.More() {
 		if e := scanNext(&tb); e != nil {

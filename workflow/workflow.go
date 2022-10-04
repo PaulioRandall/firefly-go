@@ -14,7 +14,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/tokenreader"
 )
 
-type RuneInput interface {
+type RuneReader interface {
 	More() bool
 	Peek() (rune, error)
 	Read() (rune, error)
@@ -26,7 +26,7 @@ type NodeOutput interface {
 }
 */
 
-func Parse(in RuneInput) ([]ast.Node, error) {
+func Parse(r RuneReader) ([]ast.Node, error) {
 
 	var (
 		tks    []token.Token
@@ -36,7 +36,7 @@ func Parse(in RuneInput) ([]ast.Node, error) {
 		}
 	)
 
-	if tks, e = scan(in); e != nil {
+	if tks, e = scan(r); e != nil {
 		return nil, failed(e)
 	} else if tks == nil {
 		return nil, nil
@@ -65,29 +65,29 @@ func Parse(in RuneInput) ([]ast.Node, error) {
 	return nodes, nil
 }
 
-func scan(in RuneInput) ([]token.Token, error) {
-	out := inout.NewListOutput[token.Token]()
+func scan(r RuneReader) ([]token.Token, error) {
+	w := inout.NewListOutput[token.Token]()
 
-	if e := scanner.Scan(in, out); e != nil {
+	if e := scanner.Scan(r, w); e != nil {
 		return nil, fmt.Errorf("Failed to scan scroll: %w", e)
 	}
 
-	if out.Empty() {
+	if w.Empty() {
 		return nil, nil
 	}
-	return out.List(), nil
+	return w.List(), nil
 }
 
 func rinse(tks []token.Token) ([]token.Token, error) {
-	in := inout.NewListInput(tks)
-	out := inout.NewListOutput[token.Token]()
+	r := inout.NewListReader(tks)
+	w := inout.NewListOutput[token.Token]()
 
-	if e := rinser.Rinse(in, out); e != nil {
+	if e := rinser.Rinse(r, w); e != nil {
 		return nil, fmt.Errorf("Failed to rinse scroll: %w", e)
 	}
 
-	if out.Empty() {
+	if w.Empty() {
 		return nil, nil
 	}
-	return out.List(), nil
+	return w.List(), nil
 }

@@ -14,18 +14,18 @@ import (
 )
 
 func Test_1_Workflow(t *testing.T) {
-	in := inout.NewListInput([]rune(""))
+	r := inout.NewListReader([]rune(""))
 
-	act, e := Parse(in)
+	act, e := Parse(r)
 
 	require.Nil(t, e, "%+v", e)
 	require.Empty(t, act)
 }
 
 func Test_2_Workflow(t *testing.T) {
-	in := inout.NewListInput([]rune("0\n"))
+	r := inout.NewListReader([]rune("0\n"))
 
-	act, e := Parse(in)
+	act, e := Parse(r)
 
 	gen := tokentest.NewTokenGenerator()
 	exp := []ast.Node{

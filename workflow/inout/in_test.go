@@ -6,50 +6,50 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func Test_1_inputList_Peek(t *testing.T) {
-	in := NewListInput([]rune(""))
-	_, e := in.Peek()
+func Test_1_listReader_Peek(t *testing.T) {
+	lr := NewListReader([]rune(""))
+	_, e := lr.Peek()
 	require.Equal(t, EOF, e)
 }
 
-func Test_2_inputList_Peek(t *testing.T) {
-	in := NewListInput([]rune("abc"))
+func Test_2_listReader_Peek(t *testing.T) {
+	lr := NewListReader([]rune("abc"))
 
-	v, e := in.Peek()
+	v, e := lr.Peek()
 	require.Nil(t, e)
 	require.Equal(t, 'a', v)
-	require.True(t, in.More())
+	require.True(t, lr.More())
 
-	v, e = in.Peek()
+	v, e = lr.Peek()
 	require.Nil(t, e)
 	require.Equal(t, 'a', v)
-	require.True(t, in.More())
+	require.True(t, lr.More())
 }
 
-func Test_1_inputList_Read(t *testing.T) {
-	in := NewListInput([]rune(""))
-	_, e := in.Read()
+func Test_1_listReader_Read(t *testing.T) {
+	lr := NewListReader([]rune(""))
+	_, e := lr.Read()
 	require.Equal(t, EOF, e)
 }
 
-func Test_2_inputList_Read(t *testing.T) {
-	in := NewListInput([]rune("abc"))
+func Test_2_listReader_Read(t *testing.T) {
+	lr := NewListReader([]rune("abc"))
 
-	v, e := in.Read()
+	v, e := lr.Read()
 	require.Nil(t, e, "%+v", e)
 	require.Equal(t, 'a', v)
-	require.True(t, in.More())
+	require.True(t, lr.More())
 
-	v, e = in.Read()
+	v, e = lr.Read()
 	require.Nil(t, e, "%+v", e)
 	require.Equal(t, 'b', v)
-	require.True(t, in.More())
+	require.True(t, lr.More())
 
-	v, e = in.Read()
+	v, e = lr.Read()
 	require.Nil(t, e, "%+v", e)
 	require.Equal(t, 'c', v)
-	require.False(t, in.More())
+	require.False(t, lr.More())
 
-	_, e = in.Read()
+	_, e = lr.Read()
 	require.Equal(t, EOF, e)
 }
