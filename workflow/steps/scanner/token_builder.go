@@ -17,7 +17,7 @@ type runeOutput interface {
 }
 
 type tokenBuilder struct {
-	in    Input
+	Input
 	start pos.Pos
 	pos   pos.Pos
 	tt    token.TokenType
@@ -27,8 +27,8 @@ type tokenBuilder struct {
 func newTokenBuilder(in Input) tokenBuilder {
 	out := inout.ToList[rune]()
 	return tokenBuilder{
-		in:  in,
-		out: &out,
+		Input: in,
+		out:   &out,
 	}
 }
 
@@ -42,18 +42,6 @@ func (tb *tokenBuilder) err(
 
 func (tb tokenBuilder) String() string {
 	return string(tb.out.List())
-}
-
-func (tb tokenBuilder) more() bool {
-	return tb.in.More()
-}
-
-func (tb *tokenBuilder) peek() (rune, error) {
-	return tb.in.Peek()
-}
-
-func (tb *tokenBuilder) read() (rune, error) {
-	return tb.in.Read()
 }
 
 func (tb *tokenBuilder) any() error {
@@ -70,11 +58,11 @@ func (tb *tokenBuilder) accept(want rune) (bool, error) {
 }
 
 func (tb *tokenBuilder) acceptFunc(f func(rune) bool) (bool, error) {
-	if !tb.in.More() {
+	if !tb.More() {
 		return false, nil
 	}
 
-	have, e := tb.in.Peek()
+	have, e := tb.Peek()
 	if e != nil {
 		return false, e
 	}
@@ -83,7 +71,7 @@ func (tb *tokenBuilder) acceptFunc(f func(rune) bool) (bool, error) {
 		return false, nil
 	}
 
-	if _, e = tb.in.Read(); e != nil {
+	if _, e = tb.Read(); e != nil {
 		return false, e
 	}
 
@@ -105,7 +93,7 @@ func (tb *tokenBuilder) expectFunc(
 	errMsg string,
 	args ...interface{}) error {
 
-	if !tb.in.More() {
+	if !tb.More() {
 		return err.EOF
 	}
 

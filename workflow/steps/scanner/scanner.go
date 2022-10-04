@@ -37,7 +37,7 @@ type Output interface {
 func Scan(in Input, out Output) error {
 	tb := newTokenBuilder(in)
 
-	for tb.more() {
+	for tb.More() {
 		if e := scanNext(&tb); e != nil {
 			return fmt.Errorf("Failed to scan tokens: %w", e)
 		}
@@ -57,14 +57,14 @@ func scanNext(tb *tokenBuilder) error {
 		return err.AtPos(tb.pos, e, "Failed to scan token")
 	}
 
-	first, e := tb.read()
+	first, e := tb.Read()
 	if e != nil {
 		return failed(e)
 	}
 
 	var second rune
-	if tb.more() {
-		if second, e = tb.peek(); e != nil {
+	if tb.More() {
+		if second, e = tb.Peek(); e != nil {
 			return failed(e)
 		}
 	}
