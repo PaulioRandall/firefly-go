@@ -2,10 +2,11 @@ package err
 
 import (
 	"errors"
+	"io"
 )
 
 var (
-	EOF             = errors.New("End of file")
+	EOF             = io.EOF
 	UnexpectedEOF   = errors.New("Unexpected end of file")
 	UnexpectedToken = errors.New("Unexpected token")
 )

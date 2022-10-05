@@ -48,12 +48,11 @@ func Parse(r RuneReader) ([]ast.Node, error) {
 		return nil, nil
 	}
 
-	// TODO: Change aligner so it comes after terminator
-	// TODO: Aligner only needs to act on terminators and commas
-	if tks, e = align(tks); e != nil {
+	if tks, e = terminate(tks); e != nil {
 		return nil, failed(e)
 	}
-	if tks, e = terminate(tks); e != nil {
+
+	if tks, e = align(tks); e != nil {
 		return nil, failed(e)
 	}
 

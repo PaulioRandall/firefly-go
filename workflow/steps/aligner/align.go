@@ -1,4 +1,4 @@
-// Package aligner aligns list and map literals on to a single line
+// Package aligner creates easy to parse comma separated tokens
 package aligner
 
 import (
@@ -16,101 +16,60 @@ type TokenWriter interface {
 }
 
 func Align(r TokenReader, w TokenWriter) error {
+	var prev token.Token
 
 	for r.More() {
-		tk, e := r.Read()
+		curr, e := r.Read()
 		if e != nil {
 			return e // TODO: Wrap error using current/previous token position
 		}
 
-		if e = writeToken(w, tk, "Failed to write token"); e != nil {
+		if remove, e := removeToken(r, prev, curr); e != nil {
 			return e // TODO: Wrap error using current/previous token position
-		}
-
-		if closer := getCloserFor(tk.TokenType); closer != token.Unknown {
-			if e = alignBlock(r, w, closer); e != nil {
-				return e // TODO: Wrap error using current/previous token position
-			}
-		}
-	}
-
-	return nil
-}
-
-func getCloserFor(opener token.TokenType) token.TokenType {
-	switch opener {
-	case token.BracketOpen:
-		return token.BracketClose
-	case token.BraceOpen:
-		return token.BraceClose
-	case token.ParenOpen:
-		return token.ParenClose
-	}
-
-	return token.Unknown
-}
-
-func alignBlock(r TokenReader, w TokenWriter, closer token.TokenType) error {
-	for first := true; r.More(); first = false {
-		tk, e := r.Read()
-		if e != nil {
-			return e // TODO: Wrap error using current/previous token position
-		}
-
-		if innerCloser := getCloserFor(tk.TokenType); innerCloser != token.Unknown {
-			if e = nestedBlock(r, w, tk, innerCloser); e != nil {
-				return e // TODO: Wrap error using current/previous token position
-			}
+		} else if remove {
 			continue
 		}
 
-		if tk.TokenType == closer {
-			return writeToken(w, tk, "Failed to close block")
-		}
-
-		if tk.TokenType != token.Newline {
-			if e = writeToken(w, tk, "Failed to write token"); e != nil {
-				return e
-			}
-			continue
-		}
-
-		if first {
-			continue
-		}
-
-		next, e := r.Peek()
-		if e != nil {
+		if e := w.Write(curr); e != nil {
 			return e // TODO: Wrap error using current/previous token position
 		}
 
-		if next.TokenType != closer {
-			tk.TokenType = token.Comma
-			e = writeToken(w, tk, "Failed converting token from newline to comma")
-			if e != nil {
-				return e
-			}
-		}
+		prev = curr
 	}
 
 	return nil
 }
 
-func writeToken(w TokenWriter, tk token.Token, msg string, args ...any) error {
-	if e := w.Write(tk); e != nil {
-		return e // TODO: Wrap error using current/previous token position
+func removeToken(r TokenReader, prev, curr token.Token) (bool, error) {
+	if isCSVTerminator(prev, curr) {
+		return true, nil
 	}
-	return nil
+
+	if !r.More() {
+		return false, nil
+	}
+
+	next, e := r.Peek()
+	if e != nil {
+		return false, e // TODO: Wrap error using current/previous token position
+	}
+
+	return isTrailingCSVComma(curr, next), nil
 }
 
-func nestedBlock(r TokenReader, w TokenWriter, opener token.Token, closer token.TokenType) error {
-	if e := writeToken(w, opener, "Failed to block opener"); e != nil {
-		return e
-	}
+func isCSVTerminator(prev, curr token.Token) bool {
+	return prev.TokenType == token.Comma && curr.TokenType == token.Terminator
+}
 
-	if e := alignBlock(r, w, closer); e != nil {
-		return e // TODO: Wrap error using current/previous token position
-	}
+func isTrailingCSVComma(curr, next token.Token) bool {
+	return curr.TokenType == token.Comma && isCloser(next.TokenType)
+}
 
-	return nil
+func isCloser(tt token.TokenType) bool {
+	switch tt {
+	case token.ParenClose, token.BraceClose, token.BracketClose:
+		return true
+	default:
+		return false
+	}
 }
