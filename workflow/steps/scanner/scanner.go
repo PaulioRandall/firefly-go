@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"unicode"
 
+	"github.com/PaulioRandall/firefly-go/workflow/inout"
+	"github.com/PaulioRandall/firefly-go/workflow/pos"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
@@ -23,17 +25,7 @@ var (
 	zeroToken             token.Token
 )
 
-type RuneReader interface {
-	More() bool
-	Peek() (rune, error)
-	Read() (rune, error)
-}
-
-type TokenWriter interface {
-	Write(token.Token) error
-}
-
-func Scan(r RuneReader, w TokenWriter) error {
+func Scan(r inout.Reader[rune], w inout.Writer[token.Token]) error {
 	tb := newTokenBuilder(r)
 
 	for tb.More() {
@@ -61,11 +53,11 @@ func scanNext(tb *tokenBuilder) error {
 		return failed(e)
 	}
 
-	var second rune
-	if tb.More() {
-		if second, e = tb.Peek(); e != nil {
-			return failed(e)
-		}
+	second, e := tb.Peek()
+	if e == inout.EOF {
+		second, e = rune(0), nil
+	} else if e != nil {
+		return failed(e)
 	}
 
 	if e = scanToken(tb, first, second); e != nil {
@@ -79,12 +71,10 @@ func scanToken(tb *tokenBuilder, first, second rune) error {
 	switch {
 	case isNewline(first):
 		tb.tt = token.Newline
-		tb.add(first)
 		return nil
 
 	case isTerminator(first):
 		tb.tt = token.Terminator
-		tb.add(first)
 		return nil
 
 	case isSpace(first):
@@ -121,8 +111,6 @@ func acceptWhile(tb *tokenBuilder, f func(ru rune) bool) (bool, error) {
 }
 
 func scanSpaces(tb *tokenBuilder, first rune) error {
-	tb.add(first)
-
 	if _, e := acceptWhile(tb, isSpace); e != nil {
 		return tb.err(e, "Failed to scan spaces")
 	}
@@ -132,8 +120,6 @@ func scanSpaces(tb *tokenBuilder, first rune) error {
 }
 
 func scanComment(tb *tokenBuilder, first rune) error {
-	tb.add(first)
-
 	if e := tb.expect(rune('/'), "Sanity check!"); e != nil {
 		return e
 	}
@@ -147,7 +133,6 @@ func scanComment(tb *tokenBuilder, first rune) error {
 }
 
 func scanNumber(tb *tokenBuilder, first rune) error {
-	tb.add(first)
 	tb.tt = token.Number
 
 	if _, e := acceptWhile(tb, isDigit); e != nil {
@@ -181,8 +166,6 @@ func scanNumberFraction(tb *tokenBuilder) error {
 }
 
 func scanString(tb *tokenBuilder, first rune) error {
-	tb.add(first)
-
 	if e := scanStringBody(tb); e != nil {
 		return tb.err(e, "Failed to scan string body")
 	}
@@ -221,8 +204,6 @@ func scanStringBody(tb *tokenBuilder) error {
 }
 
 func scanWord(tb *tokenBuilder, first rune) error {
-	tb.add(first)
-
 	if _, e := acceptWhile(tb, isWordLetter); e != nil {
 		return tb.err(e, "Failed to scan variable or keyword")
 	}
@@ -262,13 +243,11 @@ func tryScanTwoRuneOperator(tb *tokenBuilder, first, second rune) (bool, error) 
 		return false, nil
 	}
 
-	tb.tt = tt
-	tb.add(first) // First
-	e := tb.any() // Second
-
-	if e != nil {
+	if e := tb.any(); e != nil {
 		return false, tb.err(e, "Failed to scan second symbol in operator")
 	}
+
+	tb.tt = tt
 	return true, nil
 }
 
@@ -281,15 +260,14 @@ func tryScanSingleRuneOperator(tb *tokenBuilder, first rune) bool {
 	}
 
 	tb.tt = tt
-	tb.add(first)
 	return true
 }
 
 func unknownSymbol(tb *tokenBuilder, first, second rune) error {
 	if second == rune(0) {
-		return tb.err(ErrUnknownSymbol, "Unknown symbol %q", first)
+		return pos.ErrorFor(tb.start, ErrUnknownSymbol, "Unknown symbol %q", first)
 	}
-	return tb.err(ErrUnknownSymbol, "Unknown symbol %q", []rune{first, second})
+	return pos.ErrorFor(tb.start, ErrUnknownSymbol, "Unknown symbol %q", []rune{first, second})
 }
 
 func isNewline(ru rune) bool {
