@@ -1,4 +1,4 @@
-package rinser
+package cleaner
 
 import (
 	"testing"
@@ -22,7 +22,25 @@ func assert(t *testing.T, given, exp []token.Token) {
 	e := Clean(r, w)
 
 	require.Nil(t, e, "%+v", e)
-	require.Equal(t, exp, w.List())
+	requireTokens(t, exp, w.List())
+}
+
+func requireTokens(t *testing.T, exp, act []token.Token) {
+	failMsg := "Failed to match expected tokens"
+
+	for i, expTk := range exp {
+		if len(act) == i {
+			require.Failf(t, failMsg, "At index %d\n\texpected %v\n\tbut no more tokens", i, expTk.Debug())
+		}
+
+		actTk := act[i]
+		require.Equal(t, expTk, actTk, "At index %d\n\texpected %v\n\tbut got %v", i, expTk.Debug(), actTk.Debug())
+	}
+
+	if len(act) > len(exp) {
+		i := len(exp)
+		require.Failf(t, failMsg, "Required tokens checked but at index %d\n\treceived unexpected %v", i, act[i].Debug())
+	}
 }
 
 func Test_1_Clean(t *testing.T) {
@@ -124,4 +142,73 @@ func Test_8_Clean(t *testing.T) {
 	var exp []token.Token
 
 	assert(t, given, exp)
+}
+
+func Test_9(t *testing.T) {
+	given := []token.Token{
+		tok(token.Number, "1"),
+		tok(token.Add, "+"),
+		tok(token.Newline, "\n"),
+		tok(token.Number, "2"),
+	}
+
+	exp := []token.Token{
+		tok(token.Number, "1"),
+		tok(token.Add, "+"),
+		tok(token.Number, "2"),
+	}
+
+	assert(t, given, exp)
+}
+
+func assertRemovesNewlineAfter(t *testing.T, given token.Token) {
+	in := []token.Token{
+		given,
+		tok(token.Newline, "\n"),
+	}
+
+	exp := []token.Token{
+		given,
+	}
+
+	assert(t, in, exp)
+}
+
+func Test_10(t *testing.T) {
+	assertRemovesNewlineAfter(t, tok(token.ParenOpen, "("))
+}
+
+func Test_11(t *testing.T) {
+	assertRemovesNewlineAfter(t, tok(token.BraceOpen, "{"))
+}
+
+func Test_12(t *testing.T) {
+	assertRemovesNewlineAfter(t, tok(token.BracketOpen, "["))
+}
+
+func assertRemovesNewlineBefore(t *testing.T, given token.Token) {
+	in := []token.Token{
+		tok(token.Number, "0"),
+		tok(token.Newline, "\n"),
+		given,
+	}
+
+	exp := []token.Token{
+		tok(token.Number, "0"),
+		given,
+	}
+
+	assert(t, in, exp)
+}
+
+func Test_13(t *testing.T) {
+	assertRemovesNewlineBefore(t, tok(token.ParenClose, ")"))
+}
+
+func Test_14(t *testing.T) {
+	assertRemovesNewlineBefore(t, tok(token.BraceClose, "}"))
+}
+
+func Test_15(t *testing.T) {
+	assertRemovesNewlineBefore(t, tok(token.BracketClose, "]"))
 }

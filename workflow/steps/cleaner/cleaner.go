@@ -1,5 +1,5 @@
-// Package cleaner removes compiler redundant tokens such as whitespace
-package rinser
+// Package cleaner removes redundant tokens such as spaces and some newlines
+package cleaner
 
 import (
 	"errors"
@@ -13,6 +13,7 @@ var zero token.Token
 
 type TokenReader interface {
 	More() bool
+	Peek() (token.Token, error)
 	Read() (token.Token, error)
 }
 
@@ -24,7 +25,7 @@ func Clean(r TokenReader, w TokenWriter) error {
 	var prev token.Token
 
 	for r.More() {
-		tk, e := nextToken(r, prev)
+		curr, e := nextToken(r, prev)
 
 		if errors.Is(e, inout.EOF) {
 			return nil
@@ -34,49 +35,91 @@ func Clean(r TokenReader, w TokenWriter) error {
 			return fmt.Errorf("Failed to clean tokens: %w", e)
 		}
 
-		if tk == zero {
+		if curr == zero {
 			continue
 		}
 
-		if e := w.Write(tk); e != nil {
+		if e := w.Write(curr); e != nil {
 			return fmt.Errorf("Failed to clean tokens: %w", e)
 		}
 
-		prev = tk
+		prev = curr
 	}
 
 	return nil
 }
 
 func nextToken(r TokenReader, prev token.Token) (token.Token, error) {
-	switch tk, e := r.Read(); {
+	switch curr, next, e := readPeek(r); {
 	case e != nil:
 		return zero, e
 
-	case isRedundant(tk.TokenType):
+	case isRedundant(curr.TokenType):
 		return zero, nil
 
-	case isEmptyLine(tk.TokenType, prev.TokenType):
+	case curr.TokenType != token.Newline:
+		return curr, nil
+
+	case isEmptyLine(prev.TokenType):
+		return zero, nil
+
+	case isArithmetic(prev.TokenType):
+		return zero, nil
+
+	case isOpener(prev.TokenType):
+		return zero, nil
+
+	case isCloser(next.TokenType):
 		return zero, nil
 
 	default:
-		return tk, nil
+		return curr, nil
 	}
 }
 
+func readPeek(r TokenReader) (curr, next token.Token, e error) {
+	if curr, e = r.Read(); e != nil {
+		return
+	}
+
+	if r.More() {
+		next, e = r.Peek()
+	}
+
+	return
+}
+
 func isRedundant(tt token.TokenType) bool {
+	return tt == token.Space || tt == token.Comment
+}
+
+func isEmptyLine(tt token.TokenType) bool {
+	return tt == token.Unknown || tt == token.Newline
+}
+
+func isArithmetic(tt token.TokenType) bool {
 	switch tt {
-	case token.Space, token.Comment:
+	case token.Add, token.Sub, token.Mul, token.Div, token.Mod:
 		return true
 	default:
 		return false
 	}
 }
 
-func isEmptyLine(curr, prev token.TokenType) bool {
-	if curr != token.Newline {
+func isOpener(tt token.TokenType) bool {
+	switch tt {
+	case token.ParenOpen, token.BraceOpen, token.BracketOpen:
+		return true
+	default:
 		return false
 	}
+}
 
-	return prev == token.Unknown || prev == token.Newline
+func isCloser(tt token.TokenType) bool {
+	switch tt {
+	case token.ParenClose, token.BraceClose, token.BracketClose:
+		return true
+	default:
+		return false
+	}
 }

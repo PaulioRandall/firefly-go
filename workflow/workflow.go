@@ -83,7 +83,7 @@ func clean(tks []token.Token) ([]token.Token, error) {
 	r := inout.NewListReader(tks)
 	w := inout.NewListWriter[token.Token]()
 
-	if e := rinser.Clean(r, w); e != nil {
+	if e := cleaner.Clean(r, w); e != nil {
 		return nil, fmt.Errorf("Failed to remove redundant tokens: %w", e)
 	}
 
