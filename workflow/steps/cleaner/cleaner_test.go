@@ -22,25 +22,7 @@ func assert(t *testing.T, given, exp []token.Token) {
 	e := Clean(r, w)
 
 	require.Nil(t, e, "%+v", e)
-	requireTokens(t, exp, w.List())
-}
-
-func requireTokens(t *testing.T, exp, act []token.Token) {
-	failMsg := "Failed to match expected tokens"
-
-	for i, expTk := range exp {
-		if len(act) == i {
-			require.Failf(t, failMsg, "At index %d\n\texpected %v\n\tbut no more tokens", i, expTk.Debug())
-		}
-
-		actTk := act[i]
-		require.Equal(t, expTk, actTk, "At index %d\n\texpected %v\n\tbut got %v", i, expTk.Debug(), actTk.Debug())
-	}
-
-	if len(act) > len(exp) {
-		i := len(exp)
-		require.Failf(t, failMsg, "Required tokens checked but at index %d\n\treceived unexpected %v", i, act[i].Debug())
-	}
+	tokentest.RequireEqual(t, exp, w.List())
 }
 
 func Test_1_Clean(t *testing.T) {

@@ -50,13 +50,6 @@ func (tb *tokenBuilder) Read() (rune, error) {
 	return ru, nil
 }
 
-func (tb *tokenBuilder) any() error {
-	_, e := tb.acceptFunc(func(have rune) bool {
-		return true
-	})
-	return e
-}
-
 func (tb *tokenBuilder) accept(want rune) (bool, error) {
 	return tb.acceptFunc(func(have rune) bool {
 		return have == want

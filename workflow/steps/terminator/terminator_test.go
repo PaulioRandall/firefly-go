@@ -8,6 +8,8 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/inout"
 	"github.com/PaulioRandall/firefly-go/workflow/pos"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
+
+	"github.com/PaulioRandall/firefly-go/workflow/token/tokentest"
 )
 
 func tok(tt token.TokenType, v string) token.Token {
@@ -21,7 +23,7 @@ func assert(t *testing.T, given, exp []token.Token) {
 	e := Terminate(r, w)
 
 	require.Nil(t, e, "%+v", e)
-	require.Equal(t, exp, w.List())
+	tokentest.RequireEqual(t, exp, w.List())
 }
 
 func Test_1(t *testing.T) {

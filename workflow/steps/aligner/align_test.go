@@ -22,7 +22,7 @@ func assert(t *testing.T, given, exp []token.Token) {
 	e := Align(r, w)
 
 	require.Nil(t, e, "%+v", e)
-	require.Equal(t, exp, w.List())
+	tokentest.RequireEqual(t, exp, w.List())
 }
 
 func Test_1_Align(t *testing.T) {

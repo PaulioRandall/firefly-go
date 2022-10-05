@@ -243,7 +243,7 @@ func tryScanTwoRuneOperator(tb *tokenBuilder, first, second rune) (bool, error) 
 		return false, nil
 	}
 
-	if e := tb.any(); e != nil {
+	if ok, e := tb.accept(second); !ok || e != nil {
 		return false, tb.err(e, "Failed to scan second symbol in operator")
 	}
 

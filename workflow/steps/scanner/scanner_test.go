@@ -36,7 +36,7 @@ func assertScan(t *testing.T, given string, exp []token.Token) {
 
 	e := Scan(r, w)
 	require.Nil(t, e, "%+v", e)
-	require.Equal(t, exp, w.List())
+	tokentest.RequireEqual(t, exp, w.List())
 }
 
 func assertError(t *testing.T, given string, exp error) {
