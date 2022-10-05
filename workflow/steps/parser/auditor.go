@@ -1,4 +1,4 @@
-package compiler
+package parser
 
 import (
 	"github.com/PaulioRandall/firefly-go/workflow/err"

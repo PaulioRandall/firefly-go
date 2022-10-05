@@ -1,5 +1,5 @@
-// Package compiler parses a list of tokens into abstract syntax trees
-package compiler
+// Package parser parses a list of tokens into abstract syntax trees
+package parser
 
 import (
 	"errors"
@@ -9,7 +9,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/tokenreader"
 )
 
-func Compile(tr tokenreader.TokenReader) ([]ast.Node, error) {
+func Parse(tr tokenreader.TokenReader) ([]ast.Node, error) {
 	var (
 		nodes []ast.Node
 		n     ast.Node

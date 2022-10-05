@@ -1,4 +1,4 @@
-package compiler
+package parser
 
 import (
 	"testing"
@@ -24,7 +24,7 @@ func literal(tt token.TokenType, v string) ast.Node {
 
 func assert(t *testing.T, given []token.Token, exp []ast.Node) {
 	tr := tokenreader.FromList(given...)
-	act, e := Compile(tr)
+	act, e := Parse(tr)
 
 	require.Nil(t, e, "%+v", e)
 	require.Equal(t, exp, act)

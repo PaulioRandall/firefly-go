@@ -7,7 +7,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/inout"
 	"github.com/PaulioRandall/firefly-go/workflow/steps/aligner"
 	"github.com/PaulioRandall/firefly-go/workflow/steps/cleaner"
-	"github.com/PaulioRandall/firefly-go/workflow/steps/compiler"
+	"github.com/PaulioRandall/firefly-go/workflow/steps/parser"
 	"github.com/PaulioRandall/firefly-go/workflow/steps/scanner"
 	"github.com/PaulioRandall/firefly-go/workflow/steps/terminator"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
@@ -58,7 +58,7 @@ func Parse(r RuneReader) ([]ast.Node, error) {
 
 	// TODO: Refactor next
 	tr := tokenreader.FromList(tks...)
-	nodes, e := compiler.Compile(tr)
+	nodes, e := parser.Parse(tr)
 	if e != nil {
 		return nil, fmt.Errorf("Failed to compile AST: %w", e)
 	}
