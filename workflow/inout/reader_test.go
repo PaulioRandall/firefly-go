@@ -6,6 +6,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func Test_enforceTypes_listReader(t *testing.T) {
+	_ = Reader[rune](&listReader[rune]{})
+}
+
 func Test_1_listReader_Peek(t *testing.T) {
 	lr := NewListReader([]rune(""))
 	_, e := lr.Peek()

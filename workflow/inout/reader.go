@@ -1,11 +1,5 @@
 package inout
 
-import (
-	"io"
-)
-
-var EOF = io.EOF
-
 type listReader[T any] struct {
 	idx  int
 	data []T
