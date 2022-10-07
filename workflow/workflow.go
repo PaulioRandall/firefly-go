@@ -5,28 +5,19 @@ import (
 
 	"github.com/PaulioRandall/firefly-go/workflow/ast"
 	"github.com/PaulioRandall/firefly-go/workflow/inout"
+	"github.com/PaulioRandall/firefly-go/workflow/token"
+
 	"github.com/PaulioRandall/firefly-go/workflow/steps/aligner"
 	"github.com/PaulioRandall/firefly-go/workflow/steps/cleaner"
 	"github.com/PaulioRandall/firefly-go/workflow/steps/parser"
 	"github.com/PaulioRandall/firefly-go/workflow/steps/scanner"
 	"github.com/PaulioRandall/firefly-go/workflow/steps/terminator"
-	"github.com/PaulioRandall/firefly-go/workflow/token"
-	"github.com/PaulioRandall/firefly-go/workflow/tokenreader"
 )
 
-type RuneReader interface {
-	More() bool
-	Peek() (rune, error)
-	Read() (rune, error)
-}
+type RuneReader = inout.Reader[rune]
+type NodeWriter = inout.Writer[ast.Node]
 
-/*
-type NodeOutput interface {
-	Write(ast.Node) error
-}
-*/
-
-func Parse(r RuneReader) ([]ast.Node, error) {
+func Parse(r RuneReader, w NodeWriter) error {
 
 	var (
 		tks    []token.Token
@@ -37,33 +28,26 @@ func Parse(r RuneReader) ([]ast.Node, error) {
 	)
 
 	if tks, e = scan(r); e != nil {
-		return nil, failed(e)
+		return failed(e)
 	} else if tks == nil {
-		return nil, nil
+		return nil
 	}
 
 	if tks, e = clean(tks); e != nil {
-		return nil, failed(e)
+		return failed(e)
 	} else if tks == nil {
-		return nil, nil
+		return nil
 	}
 
 	if tks, e = terminate(tks); e != nil {
-		return nil, failed(e)
+		return failed(e)
 	}
 
 	if tks, e = align(tks); e != nil {
-		return nil, failed(e)
+		return failed(e)
 	}
 
-	// TODO: Refactor next
-	tr := tokenreader.FromList(tks...)
-	nodes, e := parser.Parse(tr)
-	if e != nil {
-		return nil, fmt.Errorf("Failed to compile AST: %w", e)
-	}
-
-	return nodes, nil
+	return parse(tks, w)
 }
 
 func scan(r RuneReader) ([]token.Token, error) {
@@ -111,4 +95,14 @@ func terminate(tks []token.Token) ([]token.Token, error) {
 		return nil, fmt.Errorf("Failed to convert newlines to terminators: %w", e)
 	}
 	return w.List(), nil
+}
+
+func parse(tks []token.Token, w NodeWriter) error {
+	r := inout.NewListReader(tks)
+
+	if e := parser.Parse(r, w); e != nil {
+		return fmt.Errorf("Failed to parse AST: %w", e)
+	}
+
+	return nil
 }

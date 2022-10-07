@@ -10,11 +10,11 @@ type TokenReader = inout.Reader[token.Token]
 
 type auditor struct {
 	TokenReader
-	curr token.Token
+	last token.Token
 }
 
-func (a auditor) access() token.Token {
-	return a.curr
+func (a auditor) get() token.Token {
+	return a.last
 }
 
 func (a *auditor) accept(want token.TokenType) bool {
@@ -30,7 +30,7 @@ func (a *auditor) acceptIf(f func(token.TokenType) bool) bool {
 
 	tk, e := a.Peek()
 	if e != nil {
-		e = err.AfterToken(a.curr, e, "Failed to read token")
+		e = err.AfterToken(a.last, e, "Failed to read token")
 		panic(e)
 	}
 
@@ -38,7 +38,7 @@ func (a *auditor) acceptIf(f func(token.TokenType) bool) bool {
 		return false
 	}
 
-	a.curr, e = a.Read()
+	a.last, e = a.Read()
 	if e != nil {
 		e = err.AtToken(tk, e, "Failed to read token")
 		panic(e)
@@ -55,13 +55,13 @@ func (a *auditor) expect(want token.TokenType) token.Token {
 
 func (a *auditor) expectIf(f func(token.TokenType) bool, exp any) token.Token {
 	if !a.More() {
-		e := err.AfterToken(a.curr, err.UnexpectedEOF, "Expected %q but got EOF", exp)
+		e := err.AfterToken(a.last, err.UnexpectedEOF, "Expected %q but got EOF", exp)
 		panic(e)
 	}
 
 	tk, e := a.Read()
 	if e != nil {
-		e = err.AfterToken(a.curr, e, "Failed to read token")
+		e = err.AfterToken(a.last, e, "Failed to read token")
 		panic(e)
 	}
 
@@ -70,6 +70,6 @@ func (a *auditor) expectIf(f func(token.TokenType) bool, exp any) token.Token {
 		panic(e)
 	}
 
-	a.curr = tk
-	return a.curr
+	a.last = tk
+	return a.last
 }
