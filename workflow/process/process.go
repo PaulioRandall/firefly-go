@@ -16,22 +16,25 @@ import (
 // Note that a values marked for removal are scrubbed from history, that is,
 // it will not become the previous value in the subsequent ProcessItem call, it
 // will be the one before that.
-type ProcessItem[T comparable] func(prev, curr, next T) (T, error)
+type ProcessItem[In, Out comparable] func(prev, curr, next In) (Out, error)
 
-func Process[T comparable](
-	r inout.Reader[T],
-	w inout.Writer[T],
-	p ProcessItem[T],
+func Process[In, Out comparable](
+	r inout.Reader[In],
+	w inout.Writer[Out],
+	p ProcessItem[In, Out],
 ) error {
 
-	var zero, prev, curr, next T
-	var e error
+	var (
+		zeroIn, prev, curr, next In
+		zeroOut                  Out
+		e                        error
+	)
 
 	if next, e = readNext(r); e != nil {
 		return fmt.Errorf("[process.Process] Failed to read next value: %w", e)
 	}
 
-	for next != zero {
+	for next != zeroIn {
 
 		prev = curr
 		curr = next
@@ -41,17 +44,17 @@ func Process[T comparable](
 			return fmt.Errorf("[process.Process] Failed to read next value: %w", e)
 		}
 
-		v, e := p(prev, curr, next)
+		out, e := p(prev, curr, next)
 		if e != nil {
 			return fmt.Errorf("[process.Process] Failed to process value: %w", e)
 		}
 
-		if v == zero {
+		if out == zeroOut {
 			curr = prev
 			continue
 		}
 
-		if e = w.Write(v); e != nil {
+		if e = w.Write(out); e != nil {
 			return fmt.Errorf("[process.Process] Failed to write value: %w", e)
 		}
 	}
@@ -59,21 +62,21 @@ func Process[T comparable](
 	return nil
 }
 
-func readNext[T comparable](r inout.Reader[T]) (T, error) {
-	var zero T
+func readNext[In comparable](r inout.Reader[In]) (In, error) {
+	var zeroIn In
 
 	if !r.More() {
-		return zero, nil
+		return zeroIn, nil
 	}
 
-	v, e := r.Read()
+	in, e := r.Read()
 	if errors.Is(e, inout.EOF) {
-		return zero, nil
+		return zeroIn, nil
 	}
 
 	if e != nil {
-		return zero, e // TODO: wrap error
+		return zeroIn, e // TODO: wrap error
 	}
 
-	return v, nil
+	return in, nil
 }
