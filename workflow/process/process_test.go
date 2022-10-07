@@ -10,7 +10,7 @@ import (
 
 var zero = rune(0)
 
-func when[T any](t *testing.T, given []T, p ProcessItem[T]) ([]T, error) {
+func when[T comparable](t *testing.T, given []T, p ProcessItem[T]) ([]T, error) {
 	r := inout.NewListReader(given)
 	w := inout.NewListWriter[T]()
 	e := Process[T](r, w, p)
@@ -19,11 +19,11 @@ func when[T any](t *testing.T, given []T, p ProcessItem[T]) ([]T, error) {
 
 func Test_1(t *testing.T) {
 	given := []rune("a")
-	forProcess := func(prev, curr, next rune) (rune, bool, error) {
-		return curr, true, nil
+	forAcceptProcess := func(prev, curr, next rune) (rune, error) {
+		return curr, nil
 	}
 
-	act, e := when(t, given, forProcess)
+	act, e := when(t, given, forAcceptProcess)
 	exp := []rune("a")
 
 	require.Nil(t, e, "%+v", e)
@@ -32,11 +32,11 @@ func Test_1(t *testing.T) {
 
 func Test_2(t *testing.T) {
 	given := []rune("abc")
-	forProcess := func(prev, curr, next rune) (rune, bool, error) {
-		return curr, true, nil
+	forAcceptProcess := func(prev, curr, next rune) (rune, error) {
+		return curr, nil
 	}
 
-	act, e := when(t, given, forProcess)
+	act, e := when(t, given, forAcceptProcess)
 	exp := []rune("abc")
 
 	require.Nil(t, e, "%+v", e)
@@ -45,11 +45,11 @@ func Test_2(t *testing.T) {
 
 func Test_3(t *testing.T) {
 	given := []rune("abc")
-	forProcess := func(prev, curr, next rune) (rune, bool, error) {
-		return curr, false, nil
+	forRejectProcess := func(prev, curr, next rune) (rune, error) {
+		return rune(0), nil
 	}
 
-	act, e := when(t, given, forProcess)
+	act, e := when(t, given, forRejectProcess)
 	exp := []rune(nil)
 
 	require.Nil(t, e, "%+v", e)
@@ -58,7 +58,7 @@ func Test_3(t *testing.T) {
 
 func Test_4(t *testing.T) {
 	given := []rune("abc")
-	forProcess := func(prev, curr, next rune) (rune, bool, error) {
+	forModifyProcess := func(prev, curr, next rune) (rune, error) {
 		switch curr {
 		case 'a':
 			curr = 'x'
@@ -67,10 +67,10 @@ func Test_4(t *testing.T) {
 		case 'c':
 			curr = 'z'
 		}
-		return curr, true, nil
+		return curr, nil
 	}
 
-	act, e := when(t, given, forProcess)
+	act, e := when(t, given, forModifyProcess)
 	exp := []rune("xyz")
 
 	require.Nil(t, e, "%+v", e)
@@ -79,18 +79,18 @@ func Test_4(t *testing.T) {
 
 func Test_5(t *testing.T) {
 	given := []rune("abcd")
-	forProcess := func(prev, curr, next rune) (rune, bool, error) {
+	forMixedProcess := func(prev, curr, next rune) (rune, error) {
 		switch curr {
 		case 'b':
-			return 'y', true, nil
+			return 'y', nil
 		case 'c':
-			return rune(0), false, nil
+			return rune(0), nil
 		default:
-			return curr, true, nil
+			return curr, nil
 		}
 	}
 
-	act, e := when(t, given, forProcess)
+	act, e := when(t, given, forMixedProcess)
 	exp := []rune("ayd")
 
 	require.Nil(t, e, "%+v", e)

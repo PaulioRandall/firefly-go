@@ -20,30 +20,30 @@ func Clean(r Reader, w Writer) error {
 	return nil
 }
 
-func nextToken(prev, curr, next token.Token) (token.Token, bool, error) {
+func nextToken(prev, curr, next token.Token) (token.Token, error) {
 	var zero token.Token
 
 	switch {
 	case isRedundant(curr.TokenType):
-		return zero, false, nil
+		return zero, nil
 
 	case curr.TokenType != token.Newline:
-		return curr, true, nil
+		return curr, nil
 
 	case isEmptyLine(prev.TokenType):
-		return zero, false, nil
+		return zero, nil
 
 	case isArithmetic(prev.TokenType):
-		return zero, false, nil
+		return zero, nil
 
 	case isOpener(prev.TokenType):
-		return zero, false, nil
+		return zero, nil
 
 	case isCloser(next.TokenType):
-		return zero, false, nil
+		return zero, nil
 
 	default:
-		return curr, true, nil
+		return curr, nil
 	}
 }
 

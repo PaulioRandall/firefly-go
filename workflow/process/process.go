@@ -16,38 +16,37 @@ import (
 // Note that a values marked for removal are scrubbed from history, that is,
 // it will not become the previous value in the subsequent ProcessItem call, it
 // will be the one before that.
-type ProcessItem[T any] func(prev, curr, next T) (T, bool, error)
+type ProcessItem[T comparable] func(prev, curr, next T) (T, error)
 
-func Process[T any](
+func Process[T comparable](
 	r inout.Reader[T],
 	w inout.Writer[T],
 	p ProcessItem[T],
 ) error {
 
-	var prev, curr, next T
-	var more bool
+	var zero, prev, curr, next T
 	var e error
 
-	if next, more, e = readNext(r); e != nil {
+	if next, e = readNext(r); e != nil {
 		return fmt.Errorf("[dataproc.Stream] Failed to read next value: %w", e)
 	}
 
-	for more {
+	for next != zero {
 
 		prev = curr
 		curr = next
-		next, more, e = readNext(r)
+		next, e = readNext(r)
 
 		if e != nil {
 			return fmt.Errorf("[dataproc.Stream] Failed to read next value: %w", e)
 		}
 
-		v, keep, e := p(prev, curr, next)
+		v, e := p(prev, curr, next)
 		if e != nil {
 			return fmt.Errorf("[dataproc.Stream] Failed to process value: %w", e)
 		}
 
-		if !keep {
+		if v == zero {
 			curr = prev
 			continue
 		}
@@ -60,21 +59,21 @@ func Process[T any](
 	return nil
 }
 
-func readNext[T any](r inout.Reader[T]) (T, bool, error) {
+func readNext[T comparable](r inout.Reader[T]) (T, error) {
 	var zero T
 
 	if !r.More() {
-		return zero, false, nil
+		return zero, nil
 	}
 
 	v, e := r.Read()
 	if errors.Is(e, inout.EOF) {
-		return zero, false, nil
+		return zero, nil
 	}
 
 	if e != nil {
-		return zero, false, e // TODO: wrap error
+		return zero, e // TODO: wrap error
 	}
 
-	return v, true, nil
+	return v, nil
 }
