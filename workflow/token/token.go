@@ -20,6 +20,10 @@ func MakeToken(tt TokenType, val string, filePos pos.Range) Token {
 	}
 }
 
+func (tk Token) Where() pos.Range {
+	return tk.Range
+}
+
 func (tk Token) Debug() string {
 	return fmt.Sprintf("%s %q %s", tk.TokenType.String(), tk.Value, tk.Range)
 }

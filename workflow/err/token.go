@@ -22,9 +22,12 @@ func AtToken(tk token.Token, cause error, msg string, args ...interface{}) *tokE
 }
 
 func AfterToken(tk token.Token, cause error, msg string, args ...interface{}) *tokErr {
-	e := AtToken(tk, cause, msg, args...)
-	e.after = true
-	return e
+	return &tokErr{
+		after: true,
+		tk:    tk,
+		cause: cause,
+		msg:   fmt.Sprintf(msg, args...),
+	}
 }
 
 func (e tokErr) Error() string {

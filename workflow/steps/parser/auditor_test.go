@@ -7,103 +7,141 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/PaulioRandall/firefly-go/workflow/err"
+	"github.com/PaulioRandall/firefly-go/workflow/inout"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
-	"github.com/PaulioRandall/firefly-go/workflow/tokenreader"
 )
 
-func newAuditorForTest(tks ...token.Token) auditor {
+func aud(given ...token.Token) auditor {
 	return auditor{
-		TokenReader: tokenreader.FromList(tks...),
+		TokenReader: inout.NewListReader(given),
 	}
 }
 
 func Test_1_auditor_accept(t *testing.T) {
-	a := newAuditorForTest()
+	a := aud()
 
-	act := a.accept(token.Var)
+	accepted := a.accept(token.Var)
 
-	require.False(t, act)
+	require.False(t, accepted)
 }
 
 func Test_2_auditor_accept(t *testing.T) {
-	a := newAuditorForTest(
+	a := aud(
 		tok(token.String, `""`),
 	)
 
-	act := a.accept(token.Number)
+	accepted := a.accept(token.Number)
 
-	require.False(t, act)
+	require.False(t, accepted)
 	require.True(t, a.More())
 }
 
 func Test_3_auditor_accept(t *testing.T) {
-	a := newAuditorForTest(
+	a := aud(
 		tok(token.Var, "a"),
 	)
 
-	act := a.accept(token.Var)
+	accepted := a.accept(token.Var)
 
-	require.True(t, act)
+	require.True(t, accepted)
 	require.Equal(t, tok(token.Var, "a"), a.access())
 	require.False(t, a.More())
 }
 
 func Test_4_auditor_accept(t *testing.T) {
-	a := newAuditorForTest(
+	a := aud(
 		tok(token.String, `""`),
 		tok(token.Number, "1"),
 	)
 
 	a.accept(token.String)
-	act := a.accept(token.Number)
+	accepted := a.accept(token.Number)
 
-	require.True(t, act)
+	require.True(t, accepted)
 	require.Equal(t, tok(token.Number, "1"), a.access())
 	require.False(t, a.More())
 }
 
 func Test_5_auditor_expect(t *testing.T) {
-	a := newAuditorForTest()
+	a := aud()
 
-	e := a.expect(token.Var)
-
-	require.True(t, errors.Is(e, err.UnexpectedEOF))
+	require.Panics(t, func() {
+		_ = a.expect(token.EQU)
+	})
 }
 
 func Test_6_auditor_expect(t *testing.T) {
-	a := newAuditorForTest(
-		tok(token.String, `""`),
-	)
+	a := aud()
 
-	e := a.expect(token.Number)
+	defer func() {
+		e := recover()
+		require.NotNil(t, e)
 
-	require.True(t, errors.Is(e, err.UnexpectedToken))
+		isUnexpectedEOF := errors.Is(e.(error), err.UnexpectedEOF)
+		require.True(t, isUnexpectedEOF)
+	}()
+
+	_ = a.expect(token.EQU)
 }
 
 func Test_7_auditor_expect(t *testing.T) {
-	a := newAuditorForTest(
+	a := aud(
+		tok(token.NEQ, "!="),
+	)
+
+	require.Panics(t, func() {
+		_ = a.expect(token.EQU)
+	})
+}
+
+func Test_8_auditor_expect(t *testing.T) {
+	a := aud(
+		tok(token.NEQ, "!="),
+	)
+
+	defer func() {
+		e := recover()
+		require.NotNil(t, e)
+
+		isUnexpectedToken := errors.Is(e.(error), err.UnexpectedToken)
+		require.True(t, isUnexpectedToken)
+	}()
+
+	_ = a.expect(token.EQU)
+}
+
+func Test_9_auditor_expect(t *testing.T) {
+	a := aud(
 		tok(token.String, `""`),
 	)
 
-	e := a.expect(token.String)
+	tk := a.expect(token.String)
 
-	require.Nil(t, e, "%+v", e)
+	require.Equal(t, tok(token.String, `""`), tk)
 	require.Equal(t, tok(token.String, `""`), a.access())
 	require.False(t, a.More())
 }
 
-func Test_8_auditor_expect(t *testing.T) {
-	a := newAuditorForTest(
+func Test_10_auditor_expect(t *testing.T) {
+	a := aud(
 		tok(token.String, `""`),
 		tok(token.Number, "1"),
 	)
 
-	e := a.expect(token.String)
-	require.Nil(t, e, "%+v", e)
+	_ = a.expect(token.String)
+	require.True(t, a.More())
+}
 
-	e = a.expect(token.Number)
-	require.Nil(t, e, "%+v", e)
+func Test_11_auditor_expect(t *testing.T) {
+	a := aud(
+		tok(token.String, `""`),
+		tok(token.Number, "1"),
+	)
 
+	_ = a.expect(token.String)
+	tk := a.expect(token.Number)
+
+	require.Equal(t, tok(token.Number, "1"), tk)
 	require.Equal(t, tok(token.Number, "1"), a.access())
 	require.False(t, a.More())
 }

@@ -2,14 +2,11 @@ package parser
 
 import (
 	"github.com/PaulioRandall/firefly-go/workflow/err"
+	"github.com/PaulioRandall/firefly-go/workflow/inout"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
-type TokenReader interface {
-	More() bool
-	Read() token.Token
-	Peek() token.Token
-}
+type TokenReader = inout.Reader[token.Token]
 
 type auditor struct {
 	TokenReader
@@ -21,28 +18,46 @@ func (a auditor) access() token.Token {
 }
 
 func (a *auditor) accept(tt token.TokenType) bool {
-	if a.More() && a.Peek().TokenType == tt {
-		a.curr = a.Read()
-		return true
+	if !a.More() {
+		return false
 	}
-	return false
+
+	tk, e := a.Peek()
+	if e != nil {
+		e = err.AfterToken(a.curr, e, "Failed to read token")
+		panic(e)
+	}
+
+	if tk.TokenType != tt {
+		return false
+	}
+
+	a.curr, e = a.Read()
+	if e != nil {
+		e = err.AtToken(tk, e, "Failed to read token")
+		panic(e)
+	}
+
+	return true
 }
 
-func (a *auditor) expect(tt token.TokenType) error {
+func (a *auditor) expect(tt token.TokenType) token.Token {
 	if !a.More() {
-		return err.AfterToken(
-			a.curr,
-			err.UnexpectedEOF,
-			"Expected %q but got EOF", tt)
+		e := err.AfterToken(a.curr, err.UnexpectedEOF, "Expected %q but got EOF", tt)
+		panic(e)
 	}
 
-	a.curr = a.Read()
-	if tt != a.curr.TokenType {
-		return err.AfterToken(
-			a.curr,
-			err.UnexpectedToken,
-			"Expected %q but got %q", tt, a.curr.TokenType)
+	tk, e := a.Read()
+	if e != nil {
+		e = err.AfterToken(a.curr, e, "Failed to read token")
+		panic(e)
 	}
 
-	return nil
+	if tk.TokenType != tt {
+		e = err.AtToken(tk, err.UnexpectedToken, "Expected %q but got %q", tt, tk.TokenType)
+		panic(e)
+	}
+
+	a.curr = tk
+	return a.curr
 }
