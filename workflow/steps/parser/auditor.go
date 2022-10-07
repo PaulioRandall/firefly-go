@@ -10,7 +10,8 @@ type TokenReader = inout.Reader[token.Token]
 
 type auditor struct {
 	TokenReader
-	last token.Token
+	// next token.Token // TODO: impl but only used for put backs
+	last token.Token // TODO: rename to prev
 }
 
 func (a auditor) get() token.Token {

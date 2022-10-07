@@ -59,14 +59,16 @@ func parseStartingWithVariable(a *auditor) ast.Node {
 }
 
 func parseVariable(a *auditor, alreadyRead bool) ast.Variable {
+	var tk token.Token
+
 	if alreadyRead {
-		return ast.Variable{
-			Token: a.get(),
-		}
+		tk = a.get()
+	} else {
+		tk = a.expect(token.Var)
 	}
 
 	return ast.Variable{
-		Token: a.expect(token.Var),
+		Token: tk,
 	}
 }
 
