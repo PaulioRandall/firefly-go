@@ -17,7 +17,13 @@ func (a auditor) access() token.Token {
 	return a.curr
 }
 
-func (a *auditor) accept(tt token.TokenType) bool {
+func (a *auditor) accept(want token.TokenType) bool {
+	return a.acceptIf(func(have token.TokenType) bool {
+		return want == have
+	})
+}
+
+func (a *auditor) acceptIf(f func(token.TokenType) bool) bool {
 	if !a.More() {
 		return false
 	}
@@ -28,7 +34,7 @@ func (a *auditor) accept(tt token.TokenType) bool {
 		panic(e)
 	}
 
-	if tk.TokenType != tt {
+	if !f(tk.TokenType) {
 		return false
 	}
 
@@ -41,9 +47,15 @@ func (a *auditor) accept(tt token.TokenType) bool {
 	return true
 }
 
-func (a *auditor) expect(tt token.TokenType) token.Token {
+func (a *auditor) expect(want token.TokenType) token.Token {
+	return a.expectIf(func(have token.TokenType) bool {
+		return want == have
+	}, want.String())
+}
+
+func (a *auditor) expectIf(f func(token.TokenType) bool, exp any) token.Token {
 	if !a.More() {
-		e := err.AfterToken(a.curr, err.UnexpectedEOF, "Expected %q but got EOF", tt)
+		e := err.AfterToken(a.curr, err.UnexpectedEOF, "Expected %q but got EOF", exp)
 		panic(e)
 	}
 
@@ -53,8 +65,8 @@ func (a *auditor) expect(tt token.TokenType) token.Token {
 		panic(e)
 	}
 
-	if tk.TokenType != tt {
-		e = err.AtToken(tk, err.UnexpectedToken, "Expected %q but got %q", tt, tk.TokenType)
+	if !f(tk.TokenType) {
+		e = err.AtToken(tk, err.UnexpectedToken, "Expected %q but got %q", exp, tk.TokenType)
 		panic(e)
 	}
 
