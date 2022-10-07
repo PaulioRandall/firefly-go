@@ -2,66 +2,43 @@
 package aligner
 
 import (
+	"fmt"
+
+	"github.com/PaulioRandall/firefly-go/workflow/inout"
+	"github.com/PaulioRandall/firefly-go/workflow/process"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
-type TokenReader interface {
-	More() bool
-	Read() (token.Token, error)
-	Peek() (token.Token, error)
-}
-
-type TokenWriter interface {
-	Write(token.Token) error
-}
+type TokenReader = inout.Reader[token.Token]
+type TokenWriter = inout.Writer[token.Token]
 
 func Align(r TokenReader, w TokenWriter) error {
-	var prev token.Token
-
-	for r.More() {
-		curr, e := r.Read()
-		if e != nil {
-			return e // TODO: Wrap error using current/previous token position
-		}
-
-		if remove, e := removeToken(r, prev, curr); e != nil {
-			return e // TODO: Wrap error using current/previous token position
-		} else if remove {
-			continue
-		}
-
-		if e := w.Write(curr); e != nil {
-			return e // TODO: Wrap error using current/previous token position
-		}
-
-		prev = curr
+	e := process.Process(r, w, processNext)
+	if e != nil {
+		return fmt.Errorf("Failed to align tokens: %w", e)
 	}
-
 	return nil
 }
 
-func removeToken(r TokenReader, prev, curr token.Token) (bool, error) {
-	if isCSVTerminator(prev, curr) {
-		return true, nil
+func processNext(prev, curr, next token.Token) (token.Token, error) {
+	var zero token.Token
+
+	if isCommaBeforeTerminator(prev, curr) {
+		return zero, nil
 	}
 
-	if !r.More() {
-		return false, nil
+	if isCommaBeforeClosingParentheses(curr, next) {
+		return zero, nil
 	}
 
-	next, e := r.Peek()
-	if e != nil {
-		return false, e // TODO: Wrap error using current/previous token position
-	}
-
-	return isTrailingCSVComma(curr, next), nil
+	return curr, nil
 }
 
-func isCSVTerminator(prev, curr token.Token) bool {
+func isCommaBeforeTerminator(prev, curr token.Token) bool {
 	return prev.TokenType == token.Comma && curr.TokenType == token.Terminator
 }
 
-func isTrailingCSVComma(curr, next token.Token) bool {
+func isCommaBeforeClosingParentheses(curr, next token.Token) bool {
 	return curr.TokenType == token.Comma && isCloser(next.TokenType)
 }
 
