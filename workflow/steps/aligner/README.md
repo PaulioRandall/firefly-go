@@ -7,4 +7,4 @@ stray, but syntactically correct, Terminators and Commas
 ## Remove
 
 - Terminators that appear after Commas
-- Commas that appear before closing parentheses
+- Commas that appear before closing parentheses, braces, & brackets

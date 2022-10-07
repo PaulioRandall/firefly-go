@@ -9,9 +9,9 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
-type NodeWriter = inout.Writer[ast.Node]
+type ASTWriter = inout.Writer[ast.Node]
 
-func Parse(r TokenReader, w NodeWriter) (e error) {
+func Parse(r TokenReader, w ASTWriter) (e error) {
 	a := &auditor{
 		TokenReader: r,
 	}
@@ -23,25 +23,28 @@ func Parse(r TokenReader, w NodeWriter) (e error) {
 	}()
 
 	for r.More() {
-		var n ast.Node
-
-		switch {
-		case a.acceptIf(token.IsLiteral):
-			n = ast.Literal{Token: a.get()}
-		default:
-			panic(errors.New("Unexpected token")) // TODO: Wrap error
-		}
-
-		if n == nil {
-			panic(errors.New("Sanity check! Nil Node should never appear"))
-		}
-
-		if e = w.Write(n); e != nil {
+		n := parseNext(a)
+		e := w.Write(n)
+		if e != nil {
 			panic(e)
 		}
-
-		a.expect(token.Terminator)
 	}
 
 	return nil
+}
+
+func parseNext(a *auditor) (n ast.Node) {
+	switch {
+	case a.acceptIf(token.IsLiteral):
+		n = ast.Literal{Token: a.get()}
+	default:
+		panic(errors.New("Unexpected token")) // TODO: Wrap error
+	}
+
+	if n == nil {
+		panic(errors.New("Sanity check! Nil Node should never appear"))
+	}
+
+	a.expect(token.Terminator)
+	return n
 }

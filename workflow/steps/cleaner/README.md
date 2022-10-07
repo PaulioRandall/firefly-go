@@ -9,5 +9,5 @@ Package cleaner removes redundant tokens such as spaces and some newlines
 - Comments
 - Empty lines
 - Linefeeds after arithmetic operator
-- Linefeeds after opening parentheses
-- Linefeeds before closing parentheses 
+- Linefeeds after opening parentheses, braces, & brackets
+- Linefeeds before closing parentheses, braces, & brackets 
