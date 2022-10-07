@@ -28,7 +28,7 @@ func Process[T comparable](
 	var e error
 
 	if next, e = readNext(r); e != nil {
-		return fmt.Errorf("[dataproc.Stream] Failed to read next value: %w", e)
+		return fmt.Errorf("[process.Process] Failed to read next value: %w", e)
 	}
 
 	for next != zero {
@@ -38,12 +38,12 @@ func Process[T comparable](
 		next, e = readNext(r)
 
 		if e != nil {
-			return fmt.Errorf("[dataproc.Stream] Failed to read next value: %w", e)
+			return fmt.Errorf("[process.Process] Failed to read next value: %w", e)
 		}
 
 		v, e := p(prev, curr, next)
 		if e != nil {
-			return fmt.Errorf("[dataproc.Stream] Failed to process value: %w", e)
+			return fmt.Errorf("[process.Process] Failed to process value: %w", e)
 		}
 
 		if v == zero {
@@ -52,7 +52,7 @@ func Process[T comparable](
 		}
 
 		if e = w.Write(v); e != nil {
-			return fmt.Errorf("[dataproc.Stream] Failed to write value: %w", e)
+			return fmt.Errorf("[process.Process] Failed to write value: %w", e)
 		}
 	}
 

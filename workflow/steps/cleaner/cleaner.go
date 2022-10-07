@@ -9,18 +9,18 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
-type Reader = inout.Reader[token.Token]
-type Writer = inout.Writer[token.Token]
+type TokenReader = inout.Reader[token.Token]
+type TokenWriter = inout.Writer[token.Token]
 
-func Clean(r Reader, w Writer) error {
-	e := process.Process(r, w, nextToken)
+func Clean(r TokenReader, w TokenWriter) error {
+	e := process.Process(r, w, processNext)
 	if e != nil {
 		return fmt.Errorf("Failed to clean tokens: %w", e)
 	}
 	return nil
 }
 
-func nextToken(prev, curr, next token.Token) (token.Token, error) {
+func processNext(prev, curr, next token.Token) (token.Token, error) {
 	var zero token.Token
 
 	switch {

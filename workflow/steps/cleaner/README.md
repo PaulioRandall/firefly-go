@@ -1,8 +1,13 @@
 
 # Cleaning Rules
 
-## Remove
+Package cleaner removes redundant tokens such as spaces and some newlines
+
+## Removes
 
 - Spaces
 - Comments
-- Empty lines (two newlines in a row)
+- Empty lines
+- Linefeeds after arithmetic operator
+- Linefeeds after opening parentheses
+- Linefeeds before closing parentheses 
