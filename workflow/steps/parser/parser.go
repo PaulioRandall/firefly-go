@@ -20,7 +20,7 @@ func Parse(tr tokenreader.TokenReader) ([]ast.Node, error) {
 		tk := tr.Peek()
 
 		switch {
-		case tk.TokenType.IsLiteral():
+		case token.IsLiteral(tk.TokenType):
 			n, e = expectLiteral(tr)
 		default:
 			return nil, errors.New("Unexpected token") // TODO: Make proper error
@@ -47,7 +47,7 @@ func acceptLiteral(tr tokenreader.TokenReader) (ast.Literal, bool) {
 		return zero, false
 	}
 
-	if tr.Peek().TokenType.IsLiteral() {
+	if token.IsLiteral(tr.Peek().TokenType) {
 		n := ast.Literal{Token: tr.Read()}
 		return n, true
 	}
@@ -63,7 +63,7 @@ func expectLiteral(tr tokenreader.TokenReader) (ast.Literal, error) {
 	}
 
 	tk := tr.Read()
-	if !tk.TokenType.IsLiteral() {
+	if !token.IsLiteral(tk.TokenType) {
 		return zero, errors.New("Expected literal") // TODO: Make proper error
 	}
 

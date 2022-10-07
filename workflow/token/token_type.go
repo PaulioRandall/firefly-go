@@ -111,35 +111,35 @@ var symbolMap = map[TokenType]string{
 	BracketClose: "]",
 }
 
-func (tt TokenType) IsRedundant() bool {
-	return tt > _redundant_begin && tt < _redundant_end
-}
-
-func (tt TokenType) IsLiteral() bool {
-	return tt > _literal_begin && tt < _literal_end
-}
-
-func (tt TokenType) IsKeyword() bool {
-	return tt > _keywords_begin && tt < _keywords_end
-}
-
-func (tt TokenType) IsOperator() bool {
-	return tt > _operators_begin && tt < _operators_end
-}
-
 func (tt TokenType) String() string {
 	return symbolMap[tt]
 }
 
+func IsLiteral(tt TokenType) bool {
+	return tt > _literal_begin && tt < _literal_end
+}
+
+func IsRedundant(tt TokenType) bool {
+	return tt > _redundant_begin && tt < _redundant_end
+}
+
+func IsKeyword(tt TokenType) bool {
+	return tt > _keywords_begin && tt < _keywords_end
+}
+
+func IsOperator(tt TokenType) bool {
+	return tt > _operators_begin && tt < _operators_end
+}
+
 func Operators() map[TokenType]string {
 	return filter(func(tt TokenType, _ string) bool {
-		return tt.IsOperator()
+		return IsOperator(tt)
 	})
 }
 
 func IdentifyWordType(s string) TokenType {
 	tt := find(func(tt TokenType, symbol string) bool {
-		return tt.IsKeyword() && s == symbol
+		return IsKeyword(tt) && s == symbol
 	})
 
 	if tt == Unknown {
@@ -150,7 +150,7 @@ func IdentifyWordType(s string) TokenType {
 
 func IdentifyOperatorType(s string) TokenType {
 	return find(func(tt TokenType, symbol string) bool {
-		return tt.IsOperator() && s == symbol
+		return IsOperator(tt) && s == symbol
 	})
 }
 
