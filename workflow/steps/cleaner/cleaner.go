@@ -2,91 +2,49 @@
 package cleaner
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/PaulioRandall/firefly-go/workflow/inout"
+	"github.com/PaulioRandall/firefly-go/workflow/process"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
-var zero token.Token
+type Reader = inout.Reader[token.Token]
+type Writer = inout.Writer[token.Token]
 
-type TokenReader interface {
-	More() bool
-	Peek() (token.Token, error)
-	Read() (token.Token, error)
-}
-
-type TokenWriter interface {
-	Write(token.Token) error
-}
-
-func Clean(r TokenReader, w TokenWriter) error {
-	var prev token.Token
-
-	for r.More() {
-		curr, e := nextToken(r, prev)
-
-		if errors.Is(e, inout.EOF) {
-			return nil
-		}
-
-		if e != nil {
-			return fmt.Errorf("Failed to clean tokens: %w", e)
-		}
-
-		if curr == zero {
-			continue
-		}
-
-		if e := w.Write(curr); e != nil {
-			return fmt.Errorf("Failed to clean tokens: %w", e)
-		}
-
-		prev = curr
+func Clean(r Reader, w Writer) error {
+	e := process.Process(r, w, nextToken)
+	if e != nil {
+		return fmt.Errorf("Failed to clean tokens: %w", e)
 	}
-
 	return nil
 }
 
-func nextToken(r TokenReader, prev token.Token) (token.Token, error) {
-	switch curr, next, e := readPeek(r); {
-	case e != nil:
-		return zero, e
+func nextToken(prev, curr, next token.Token) (token.Token, bool, error) {
+	var zero token.Token
 
+	switch {
 	case isRedundant(curr.TokenType):
-		return zero, nil
+		return zero, false, nil
 
 	case curr.TokenType != token.Newline:
-		return curr, nil
+		return curr, true, nil
 
 	case isEmptyLine(prev.TokenType):
-		return zero, nil
+		return zero, false, nil
 
 	case isArithmetic(prev.TokenType):
-		return zero, nil
+		return zero, false, nil
 
 	case isOpener(prev.TokenType):
-		return zero, nil
+		return zero, false, nil
 
 	case isCloser(next.TokenType):
-		return zero, nil
+		return zero, false, nil
 
 	default:
-		return curr, nil
+		return curr, true, nil
 	}
-}
-
-func readPeek(r TokenReader) (curr, next token.Token, e error) {
-	if curr, e = r.Read(); e != nil {
-		return
-	}
-
-	if r.More() {
-		next, e = r.Peek()
-	}
-
-	return
 }
 
 func isRedundant(tt token.TokenType) bool {

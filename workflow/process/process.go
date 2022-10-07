@@ -28,10 +28,6 @@ func Process[T any](
 	var more bool
 	var e error
 
-	if !r.More() {
-		return nil
-	}
-
 	if next, more, e = readNext(r); e != nil {
 		return fmt.Errorf("[dataproc.Stream] Failed to read next value: %w", e)
 	}
