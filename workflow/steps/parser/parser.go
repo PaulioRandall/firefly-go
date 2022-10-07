@@ -12,7 +12,7 @@ import (
 type ASTWriter = inout.Writer[ast.Node]
 
 func Parse(r TokenReader, w ASTWriter) (e error) {
-	a := &auditor{
+	a := auditor{
 		TokenReader: r,
 	}
 
@@ -23,7 +23,7 @@ func Parse(r TokenReader, w ASTWriter) (e error) {
 	}()
 
 	for r.More() {
-		n := parseNext(a)
+		n := parseNext(&a)
 		e := w.Write(n)
 		if e != nil {
 			panic(e)
@@ -35,8 +35,9 @@ func Parse(r TokenReader, w ASTWriter) (e error) {
 
 func parseNext(a *auditor) (n ast.Node) {
 	switch {
-	case a.acceptIf(token.IsLiteral):
-		n = ast.Literal{Token: a.get()}
+	case a.accept(token.Var):
+		n = parseStartingWithVariable(a)
+
 	default:
 		panic(errors.New("Unexpected token")) // TODO: Wrap error
 	}
@@ -46,5 +47,81 @@ func parseNext(a *auditor) (n ast.Node) {
 	}
 
 	a.expect(token.Terminator)
+	return n
+}
+
+func parseStartingWithVariable(a *auditor) ast.Node {
+	if a.isNext(token.Comma) || a.isNext(token.Assign) {
+		return parseAssignment(a, true)
+	}
+
+	return nil // TODO: Panic with unknown statement error
+}
+
+func parseVariable(a *auditor, alreadyRead bool) ast.Variable {
+	if alreadyRead {
+		return ast.Variable{
+			Token: a.get(),
+		}
+	}
+
+	return ast.Variable{
+		Token: a.expect(token.Var),
+	}
+}
+
+func parseVariables(a *auditor, firstAlreadyRead bool) []ast.Variable {
+	var nodes []ast.Variable
+
+	v := parseVariable(a, firstAlreadyRead)
+	nodes = append(nodes, v)
+
+	for a.accept(token.Comma) {
+		v := parseVariable(a, false)
+		nodes = append(nodes, v)
+	}
+
+	return nodes
+}
+
+func parseExpression(a *auditor, alreadyRead bool) ast.Expr {
+	var tk token.Token
+
+	if alreadyRead {
+		tk = a.get()
+	} else {
+		tk = a.expect(token.Number)
+	}
+
+	return ast.Literal{
+		Token: tk,
+	}
+}
+
+func parseExpressions(a *auditor, firstAlreadyRead bool) []ast.Expr {
+	var nodes []ast.Expr
+
+	v := parseExpression(a, firstAlreadyRead)
+	nodes = append(nodes, v)
+
+	for a.accept(token.Comma) {
+		v := parseExpression(a, false)
+		nodes = append(nodes, v)
+	}
+
+	return nodes
+}
+
+func parseAssignment(a *auditor, firstAlreadyRead bool) ast.Assign {
+	n := ast.Assign{
+		Left:  parseVariables(a, firstAlreadyRead),
+		Token: a.expect(token.Assign),
+		Right: parseExpressions(a, false),
+	}
+
+	if len(n.Left) != len(n.Right) {
+		// TODO: Panic with not enough variables/expressions error
+	}
+
 	return n
 }

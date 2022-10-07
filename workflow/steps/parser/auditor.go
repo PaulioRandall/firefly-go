@@ -17,6 +17,26 @@ func (a auditor) get() token.Token {
 	return a.last
 }
 
+func (a *auditor) isNext(want token.TokenType) bool {
+	return a.doesNextMatch(func(have token.TokenType) bool {
+		return want == have
+	})
+}
+
+func (a *auditor) doesNextMatch(f func(token.TokenType) bool) bool {
+	if !a.More() {
+		return false
+	}
+
+	tk, e := a.Peek()
+	if e != nil {
+		e = err.AfterToken(a.last, e, "Failed to read token")
+		panic(e)
+	}
+
+	return f(tk.TokenType)
+}
+
 func (a *auditor) accept(want token.TokenType) bool {
 	return a.acceptIf(func(have token.TokenType) bool {
 		return want == have

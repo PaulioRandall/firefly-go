@@ -7,7 +7,7 @@ const (
 
 	Newline    // '\n'
 	Terminator // ;
-	Var
+	Var        // TODO: Rename to Variable
 
 	_redundant_begin
 	Space

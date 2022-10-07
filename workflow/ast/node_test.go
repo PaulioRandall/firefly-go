@@ -12,6 +12,6 @@ func Test_2_variable(t *testing.T) {
 	_ = Expr(Variable{})
 }
 
-func Test_3_variable(t *testing.T) {
+func Test_3_assign(t *testing.T) {
 	_ = Proc(Assign{})
 }

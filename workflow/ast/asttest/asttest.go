@@ -5,7 +5,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
-func Assign(tk token.Token, left ast.Variable, right ast.Expr) ast.Assign {
+func Assign(tk token.Token, left []ast.Variable, right []ast.Expr) ast.Assign {
 	return ast.Assign{
 		Token: tk,
 		Left:  left,

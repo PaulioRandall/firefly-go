@@ -17,8 +17,12 @@ func parseTok(tt token.TokenType, v string) token.Token {
 	return tokentest.Tok(tt, v)
 }
 
-func literal(tt token.TokenType, v string) ast.Node {
+func literal(tt token.TokenType, v string) ast.Literal {
 	return asttest.Literal(parseTok(tt, v))
+}
+
+func variable(tt token.TokenType, v string) ast.Variable {
+	return asttest.Variable(parseTok(tt, v))
 }
 
 func assert(t *testing.T, given []token.Token, exp []ast.Node) {
@@ -31,14 +35,57 @@ func assert(t *testing.T, given []token.Token, exp []ast.Node) {
 	require.Equal(t, exp, w.List())
 }
 
-func Test_1_Compile(t *testing.T) {
+func Test_1(t *testing.T) {
+	// a = 0
+
 	given := []token.Token{
+		parseTok(token.Var, "a"),
+		parseTok(token.Assign, "="),
 		parseTok(token.Number, "0"),
 		parseTok(token.Terminator, "\n"),
 	}
 
 	exp := []ast.Node{
-		literal(token.Number, "0"),
+		ast.Assign{
+			Token: parseTok(token.Assign, "="),
+			Left: []ast.Variable{
+				variable(token.Var, "a"),
+			},
+			Right: []ast.Expr{
+				literal(token.Number, "0"),
+			},
+		},
+	}
+
+	assert(t, given, exp)
+}
+
+func Test_2(t *testing.T) {
+	// a, b = 0, 1
+
+	given := []token.Token{
+		parseTok(token.Var, "a"),
+		parseTok(token.Comma, ","),
+		parseTok(token.Var, "b"),
+		parseTok(token.Assign, "="),
+		parseTok(token.Number, "0"),
+		parseTok(token.Comma, ","),
+		parseTok(token.Number, "1"),
+		parseTok(token.Terminator, "\n"),
+	}
+
+	exp := []ast.Node{
+		ast.Assign{
+			Token: parseTok(token.Assign, "="),
+			Left: []ast.Variable{
+				variable(token.Var, "a"),
+				variable(token.Var, "b"),
+			},
+			Right: []ast.Expr{
+				literal(token.Number, "0"),
+				literal(token.Number, "1"),
+			},
+		},
 	}
 
 	assert(t, given, exp)
