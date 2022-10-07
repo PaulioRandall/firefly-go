@@ -1,4 +1,4 @@
-// Package parser parses a list of tokens into abstract syntax trees
+// Package parser parses a series of tokens into series of abstract syntax trees
 package parser
 
 import (

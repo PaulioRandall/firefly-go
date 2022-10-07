@@ -9,7 +9,13 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/err"
 	"github.com/PaulioRandall/firefly-go/workflow/inout"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
+
+	"github.com/PaulioRandall/firefly-go/workflow/token/tokentest"
 )
+
+func audTok(tt token.TokenType, v string) token.Token {
+	return tokentest.Tok(tt, v)
+}
 
 func aud(given ...token.Token) auditor {
 	return auditor{
@@ -27,7 +33,7 @@ func Test_1_auditor_accept(t *testing.T) {
 
 func Test_2_auditor_accept(t *testing.T) {
 	a := aud(
-		tok(token.String, `""`),
+		audTok(token.String, `""`),
 	)
 
 	accepted := a.accept(token.Number)
@@ -38,27 +44,27 @@ func Test_2_auditor_accept(t *testing.T) {
 
 func Test_3_auditor_accept(t *testing.T) {
 	a := aud(
-		tok(token.Var, "a"),
+		audTok(token.Var, "a"),
 	)
 
 	accepted := a.accept(token.Var)
 
 	require.True(t, accepted)
-	require.Equal(t, tok(token.Var, "a"), a.access())
+	require.Equal(t, audTok(token.Var, "a"), a.access())
 	require.False(t, a.More())
 }
 
 func Test_4_auditor_accept(t *testing.T) {
 	a := aud(
-		tok(token.String, `""`),
-		tok(token.Number, "1"),
+		audTok(token.String, `""`),
+		audTok(token.Number, "1"),
 	)
 
 	a.accept(token.String)
 	accepted := a.accept(token.Number)
 
 	require.True(t, accepted)
-	require.Equal(t, tok(token.Number, "1"), a.access())
+	require.Equal(t, audTok(token.Number, "1"), a.access())
 	require.False(t, a.More())
 }
 
@@ -86,7 +92,7 @@ func Test_6_auditor_expect(t *testing.T) {
 
 func Test_7_auditor_expect(t *testing.T) {
 	a := aud(
-		tok(token.NEQ, "!="),
+		audTok(token.NEQ, "!="),
 	)
 
 	require.Panics(t, func() {
@@ -96,7 +102,7 @@ func Test_7_auditor_expect(t *testing.T) {
 
 func Test_8_auditor_expect(t *testing.T) {
 	a := aud(
-		tok(token.NEQ, "!="),
+		audTok(token.NEQ, "!="),
 	)
 
 	defer func() {
@@ -112,20 +118,20 @@ func Test_8_auditor_expect(t *testing.T) {
 
 func Test_9_auditor_expect(t *testing.T) {
 	a := aud(
-		tok(token.String, `""`),
+		audTok(token.String, `""`),
 	)
 
 	tk := a.expect(token.String)
 
-	require.Equal(t, tok(token.String, `""`), tk)
-	require.Equal(t, tok(token.String, `""`), a.access())
+	require.Equal(t, audTok(token.String, `""`), tk)
+	require.Equal(t, audTok(token.String, `""`), a.access())
 	require.False(t, a.More())
 }
 
 func Test_10_auditor_expect(t *testing.T) {
 	a := aud(
-		tok(token.String, `""`),
-		tok(token.Number, "1"),
+		audTok(token.String, `""`),
+		audTok(token.Number, "1"),
 	)
 
 	_ = a.expect(token.String)
@@ -134,14 +140,14 @@ func Test_10_auditor_expect(t *testing.T) {
 
 func Test_11_auditor_expect(t *testing.T) {
 	a := aud(
-		tok(token.String, `""`),
-		tok(token.Number, "1"),
+		audTok(token.String, `""`),
+		audTok(token.Number, "1"),
 	)
 
 	_ = a.expect(token.String)
 	tk := a.expect(token.Number)
 
-	require.Equal(t, tok(token.Number, "1"), tk)
-	require.Equal(t, tok(token.Number, "1"), a.access())
+	require.Equal(t, audTok(token.Number, "1"), tk)
+	require.Equal(t, audTok(token.Number, "1"), a.access())
 	require.False(t, a.More())
 }
