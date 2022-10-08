@@ -30,6 +30,7 @@ func Test_3_LinkedQueue(t *testing.T) {
 	q.Add('a')
 
 	require.True(t, q.More())
+	require.Equal(t, 1, q.Len())
 	require.Equal(t, 'a', q.Next())
 	require.Equal(t, 'a', q.Last())
 }
@@ -41,6 +42,7 @@ func Test_4_LinkedQueue(t *testing.T) {
 	q.Add('b')
 	q.Add('c')
 
+	require.Equal(t, 3, q.Len())
 	require.Equal(t, 'a', q.Next())
 	require.Equal(t, 'c', q.Last())
 }
@@ -59,6 +61,7 @@ func Test_6_LinkedQueue(t *testing.T) {
 	act := q.Take()
 
 	require.Equal(t, 'a', act)
+	require.Equal(t, 0, q.Len())
 	require.False(t, q.More())
 
 	require.Panics(t, func() {
@@ -80,9 +83,11 @@ func Test_7_LinkedQueue(t *testing.T) {
 	act := q.Take()
 
 	require.Equal(t, 'a', act)
-	require.True(t, q.More())
 	require.Equal(t, 'b', q.Next())
 	require.Equal(t, 'c', q.Last())
+
+	require.True(t, q.More())
+	require.Equal(t, 2, q.Len())
 }
 
 func Test_8_LinkedQueue(t *testing.T) {
@@ -98,6 +103,7 @@ func Test_8_LinkedQueue(t *testing.T) {
 
 	require.Equal(t, 'c', act)
 	require.False(t, q.More())
+	require.Equal(t, 0, q.Len())
 }
 
 func Test_9_LinkedQueue(t *testing.T) {
@@ -107,6 +113,9 @@ func Test_9_LinkedQueue(t *testing.T) {
 
 	require.Equal(t, 'a', q.Next())
 	require.Equal(t, 'a', q.Last())
+
+	require.True(t, q.More())
+	require.Equal(t, 1, q.Len())
 }
 
 func Test_10_LinkedQueue(t *testing.T) {
@@ -116,6 +125,7 @@ func Test_10_LinkedQueue(t *testing.T) {
 	q.Push('b')
 	q.Push('c')
 
+	require.Equal(t, 3, q.Len())
 	require.Equal(t, 'c', q.Next())
 	require.Equal(t, 'a', q.Last())
 }
@@ -135,6 +145,7 @@ func Test_12_LinkedQueue(t *testing.T) {
 
 	require.Equal(t, 'a', act)
 	require.False(t, q.More())
+	require.Equal(t, 0, q.Len())
 
 	require.Panics(t, func() {
 		q.Next()

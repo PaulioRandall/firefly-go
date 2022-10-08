@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"github.com/PaulioRandall/firefly-go/workflow/container"
 	"github.com/PaulioRandall/firefly-go/workflow/err"
 	"github.com/PaulioRandall/firefly-go/workflow/inout"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
@@ -12,7 +13,7 @@ type TokenReader = inout.Reader[token.Token]
 
 type auditor struct {
 	TokenReader
-	next token.Token // TODO: impl but only used for put backs
+	next container.Queue[token.Token]
 	prev token.Token
 }
 
@@ -20,16 +21,6 @@ func (a auditor) getPrev() token.Token {
 	return a.prev
 }
 
-/*
-func (a *auditor) putBack() {
-	if a.prev == zero {
-		e := err.AtToken(a.prev, nil, "Can't put back that which has not been read")
-		panic(e)
-	}
-
-	a.next, a.prev = a.prev, zero
-}
-*/
 func (a *auditor) isNext(want token.TokenType) bool {
 	return a.doesNextMatch(func(have token.TokenType) bool {
 		return want == have
