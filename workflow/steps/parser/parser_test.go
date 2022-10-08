@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -32,6 +33,15 @@ func assert(t *testing.T, given []token.Token, exp []ast.Node) {
 
 	require.Nil(t, e, "%+v", e)
 	require.Equal(t, exp, w.List())
+}
+
+func assertError(t *testing.T, given []token.Token, exp error) {
+	r := inout.NewListReader(given)
+	w := inout.NewListWriter[ast.Node]()
+
+	e := Parse(r, w)
+
+	require.True(t, errors.Is(e, exp))
 }
 
 func Test_1(t *testing.T) {
@@ -88,6 +98,22 @@ func Test_2(t *testing.T) {
 	}
 
 	assert(t, given, exp)
+}
+
+func Test_3(t *testing.T) {
+	// a b = 0, 1
+
+	given := []token.Token{
+		tok1(token.Var, "a"),
+		tok1(token.Var, "b"),
+		tok1(token.Assign, "="),
+		tok1(token.Number, "0"),
+		tok1(token.Comma, ","),
+		tok1(token.Number, "1"),
+		tok1(token.Terminator, "\n"),
+	}
+
+	assertError(t, given, UnexpectedToken)
 }
 
 // TODO: Test missing commas
