@@ -30,12 +30,24 @@ func (a auditor) getPrev() token.Token {
 
 func (a *auditor) peekNext() token.Token {
 	a.loadBuffer()
-	return a.buffer.First()
+
+	if tk, ok := a.buffer.First(); ok {
+		return tk
+	}
+
+	e := err.AfterToken(a.prev, nil, "Failed to peek token from buffer")
+	panic(e)
 }
 
 func (a *auditor) readNext() token.Token {
 	a.loadBuffer()
-	return a.buffer.Take()
+
+	if tk, ok := a.buffer.Take(); ok {
+		return tk
+	}
+
+	e := err.AfterToken(a.prev, nil, "Failed to read token from buffer")
+	panic(e)
 }
 
 func (a *auditor) loadBuffer() {

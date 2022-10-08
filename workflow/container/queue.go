@@ -1,15 +1,11 @@
 package container
 
-import (
-	"errors"
-)
-
 type Consumer[T any] interface {
 	More() bool
 	Empty() bool
 	Len() int
-	First() T
-	Take() T
+	First() (T, bool)
+	Take() (T, bool)
 	Return(T)
 }
 
@@ -17,9 +13,9 @@ type Provider[T any] interface {
 	More() bool
 	Empty() bool
 	Len() int
-	Last() T
+	Last() (T, bool)
 	Add(T)
-	Reclaim() T
+	Reclaim() (T, bool)
 }
 
 type Queue[T any] interface {
@@ -45,18 +41,22 @@ func (q LinkedQueue[T]) Len() int {
 	return q.size
 }
 
-func (q LinkedQueue[T]) First() T {
+func (q LinkedQueue[T]) First() (T, bool) {
 	if q.More() {
-		return q.front.v
+		return q.front.v, true
 	}
-	panic(errors.New("Queue is empty"))
+
+	var v T
+	return v, false
 }
 
-func (q LinkedQueue[T]) Last() T {
+func (q LinkedQueue[T]) Last() (T, bool) {
 	if q.More() {
-		return q.back.v
+		return q.back.v, true
 	}
-	panic(errors.New("Queue is empty"))
+
+	var v T
+	return v, false
 }
 
 func (q *LinkedQueue[T]) Add(v T) {
@@ -95,8 +95,12 @@ func (q *LinkedQueue[T]) Return(v T) {
 	q.size++
 }
 
-func (q *LinkedQueue[T]) Take() T {
-	v := q.First()
+func (q *LinkedQueue[T]) Take() (T, bool) {
+	v, ok := q.First()
+	if !ok {
+		return v, false
+	}
+
 	q.front = q.front.next
 	q.size--
 
@@ -104,11 +108,15 @@ func (q *LinkedQueue[T]) Take() T {
 		q.back = nil
 	}
 
-	return v
+	return v, true
 }
 
-func (q *LinkedQueue[T]) Reclaim() T {
-	v := q.Last()
+func (q *LinkedQueue[T]) Reclaim() (T, bool) {
+	v, ok := q.Last()
+	if !ok {
+		return v, false
+	}
+
 	q.back = q.back.prev
 	q.size--
 
@@ -116,5 +124,5 @@ func (q *LinkedQueue[T]) Reclaim() T {
 		q.front = nil
 	}
 
-	return v
+	return v, true
 }
