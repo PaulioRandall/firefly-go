@@ -116,6 +116,48 @@ func Test_3(t *testing.T) {
 	assertError(t, given, UnexpectedToken)
 }
 
-// TODO: Test missing commas
-// TODO: Test missing variable
-// TODO: Test missing expression
+func Test_4(t *testing.T) {
+	// a, b = 0 1
+
+	given := []token.Token{
+		tok1(token.Var, "a"),
+		tok1(token.Comma, ","),
+		tok1(token.Var, "b"),
+		tok1(token.Assign, "="),
+		tok1(token.Number, "0"),
+		tok1(token.Number, "1"),
+		tok1(token.Terminator, "\n"),
+	}
+
+	assertError(t, given, MissingExpr)
+}
+
+func Test_5(t *testing.T) {
+	// a, b = 0 1
+
+	given := []token.Token{
+		tok1(token.Var, "a"),
+		tok1(token.Comma, ","),
+		tok1(token.Var, "b"),
+		tok1(token.Assign, "="),
+		tok1(token.Number, "0"),
+		tok1(token.Terminator, "\n"),
+	}
+
+	assertError(t, given, MissingExpr)
+}
+
+func Test_6(t *testing.T) {
+	// a = 0, 1
+
+	given := []token.Token{
+		tok1(token.Var, "a"),
+		tok1(token.Assign, "="),
+		tok1(token.Number, "0"),
+		tok1(token.Comma, ","),
+		tok1(token.Number, "1"),
+		tok1(token.Terminator, "\n"),
+	}
+
+	assertError(t, given, MissingVar)
+}

@@ -12,6 +12,8 @@ import (
 type ASTWriter = inout.Writer[ast.Node]
 
 var UnexpectedToken = errors.New("Unexpected token")
+var MissingVar = errors.New("Missing variable")
+var MissingExpr = errors.New("Missing expression")
 
 func Parse(r TokenReader, w ASTWriter) (e error) {
 	a := auditor{
@@ -41,7 +43,7 @@ func parseNext(a *auditor) (n ast.Node) {
 		n = parseStartingWithVariable(a)
 
 	default:
-		panic(UnexpectedToken) // TODO: Wrap error
+		panic(UnexpectedToken)
 	}
 
 	if n == nil {
@@ -123,8 +125,10 @@ func parseAssignment(a *auditor, firstAlreadyRead bool) ast.Assign {
 	n.Token = a.expect(token.Assign)
 	n.Right = parseExpressions(a, false)
 
-	if len(n.Left) != len(n.Right) {
-		// TODO: Panic with not enough variables/expressions error
+	if len(n.Left) > len(n.Right) {
+		panic(MissingExpr)
+	} else if len(n.Left) < len(n.Right) {
+		panic(MissingVar)
 	}
 
 	return n
