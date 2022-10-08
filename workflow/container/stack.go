@@ -1,4 +1,4 @@
-package containers
+package container
 
 import (
 	"errors"
@@ -14,11 +14,6 @@ type Stack[T any] interface {
 
 type LinkedStack[T any] struct {
 	top *node[T]
-}
-
-type node[T any] struct {
-	v    T
-	next *node[T]
 }
 
 func (st LinkedStack[T]) More() bool {
