@@ -10,9 +10,9 @@ type Queue[T any] interface {
 	Front() T
 	Back() T
 	Add(T)
-	Push(T)
 	Take() T
-	Pop() T
+	Push(T)
+	Pull() T
 }
 
 type LinkedQueue[T any] struct {
@@ -58,6 +58,17 @@ func (q *LinkedQueue[T]) Add(v T) {
 	q.back = n
 }
 
+func (q *LinkedQueue[T]) Take() T {
+	v := q.Front()
+	q.front = q.front.next
+
+	if q.front == nil {
+		q.back = nil
+	}
+
+	return v
+}
+
 func (q *LinkedQueue[T]) Push(v T) {
 	n := &node[T]{
 		v: v,
@@ -74,18 +85,7 @@ func (q *LinkedQueue[T]) Push(v T) {
 	q.front = n
 }
 
-func (q *LinkedQueue[T]) Take() T {
-	v := q.Front()
-	q.front = q.front.next
-
-	if q.front == nil {
-		q.back = nil
-	}
-
-	return v
-}
-
-func (q *LinkedQueue[T]) Pop() T {
+func (q *LinkedQueue[T]) Pull() T {
 	v := q.Back()
 	q.back = q.back.prev
 

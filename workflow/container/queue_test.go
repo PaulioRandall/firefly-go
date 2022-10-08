@@ -123,7 +123,7 @@ func Test_10_LinkedQueue(t *testing.T) {
 func Test_11_LinkedQueue(t *testing.T) {
 	require.Panics(t, func() {
 		q := LinkedQueue[rune]{}
-		q.Pop()
+		q.Pull()
 	})
 }
 
@@ -131,7 +131,7 @@ func Test_12_LinkedQueue(t *testing.T) {
 	q := LinkedQueue[rune]{}
 
 	q.Add('a')
-	act := q.Pop()
+	act := q.Pull()
 
 	require.Equal(t, 'a', act)
 	require.False(t, q.More())
@@ -169,9 +169,9 @@ func Test_13_LinkedQueue(t *testing.T) {
 	q.Add('b')
 	q.Take()
 	q.Push('c')
-	q.Pop()
+	q.Pull()
 	q.Push('a')
-	q.Pop()
+	q.Pull()
 	q.Add('d')
 
 	exp := []rune{
