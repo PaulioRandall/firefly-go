@@ -16,9 +16,7 @@ var MissingVar = errors.New("Missing variable")
 var MissingExpr = errors.New("Missing expression")
 
 func Parse(r TokenReader, w ASTWriter) (e error) {
-	a := auditor{
-		TokenReader: r,
-	}
+	a := newAuditor(r)
 
 	defer func() {
 		if v := recover(); v != nil {
@@ -27,7 +25,7 @@ func Parse(r TokenReader, w ASTWriter) (e error) {
 	}()
 
 	for r.More() {
-		n := parseNext(&a)
+		n := parseNext(a)
 		e := w.Write(n)
 		if e != nil {
 			panic(e)

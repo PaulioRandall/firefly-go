@@ -12,13 +12,48 @@ var zero token.Token
 type TokenReader = inout.Reader[token.Token]
 
 type auditor struct {
-	TokenReader
-	next container.Queue[token.Token]
-	prev token.Token
+	reader TokenReader
+	buffer container.Queue[token.Token]
+	prev   token.Token
+}
+
+func newAuditor(r TokenReader) *auditor {
+	return &auditor{
+		reader: r,
+		buffer: &container.LinkedQueue[token.Token]{},
+	}
 }
 
 func (a auditor) getPrev() token.Token {
 	return a.prev
+}
+
+func (a *auditor) peekNext() token.Token {
+	a.loadBuffer()
+	return a.buffer.Next()
+}
+
+func (a *auditor) readNext() token.Token {
+	a.loadBuffer()
+	return a.buffer.Take()
+}
+
+func (a *auditor) loadBuffer() {
+	if a.buffer.More() {
+		return
+	}
+
+	tk, e := a.reader.Read()
+	if e != nil {
+		e = err.AfterToken(a.prev, e, "Failed to read token")
+		panic(e)
+	}
+
+	a.buffer.Add(tk)
+}
+
+func (a *auditor) more() bool {
+	return a.buffer.More() || a.reader.More()
 }
 
 func (a *auditor) isNext(want token.TokenType) bool {
@@ -28,16 +63,11 @@ func (a *auditor) isNext(want token.TokenType) bool {
 }
 
 func (a *auditor) doesNextMatch(f func(token.TokenType) bool) bool {
-	if !a.More() {
+	if !a.more() {
 		return false
 	}
 
-	tk, e := a.Peek()
-	if e != nil {
-		e = err.AfterToken(a.prev, e, "Failed to read token")
-		panic(e)
-	}
-
+	tk := a.peekNext()
 	return f(tk.TokenType)
 }
 
@@ -48,26 +78,15 @@ func (a *auditor) accept(want token.TokenType) bool {
 }
 
 func (a *auditor) acceptIf(f func(token.TokenType) bool) bool {
-	if !a.More() {
+	if !a.more() {
 		return false
 	}
 
-	tk, e := a.Peek()
-	if e != nil {
-		e = err.AfterToken(a.prev, e, "Failed to read token")
-		panic(e)
-	}
-
-	if !f(tk.TokenType) {
+	if !f(a.peekNext().TokenType) {
 		return false
 	}
 
-	a.prev, e = a.Read()
-	if e != nil {
-		e = err.AtToken(tk, e, "Failed to read token")
-		panic(e)
-	}
-
+	a.prev = a.readNext()
 	return true
 }
 
@@ -78,19 +97,14 @@ func (a *auditor) expect(want token.TokenType) token.Token {
 }
 
 func (a *auditor) expectIf(f func(token.TokenType) bool, exp any) token.Token {
-	if !a.More() {
+	if !a.more() {
 		e := err.AfterToken(a.prev, err.UnexpectedEOF, "Expected %q but got EOF", exp)
 		panic(e)
 	}
 
-	tk, e := a.Read()
-	if e != nil {
-		e = err.AfterToken(a.prev, e, "Failed to read token")
-		panic(e)
-	}
-
+	tk := a.readNext()
 	if !f(tk.TokenType) {
-		e = err.AtToken(tk, err.UnexpectedToken, "Expected %q but got %q", exp, tk.TokenType)
+		e := err.AtToken(tk, err.UnexpectedToken, "Expected %q but got %q", exp, tk.TokenType)
 		panic(e)
 	}
 
