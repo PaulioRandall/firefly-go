@@ -1,4 +1,4 @@
-package stack
+package containers
 
 import (
 	"github.com/stretchr/testify/require"

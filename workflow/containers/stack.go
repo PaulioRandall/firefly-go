@@ -1,10 +1,11 @@
-package stack
+package containers
 
 import (
 	"errors"
 )
 
 type Stack[T any] interface {
+	More() bool
 	Empty() bool
 	Top() T
 	Push(T)
@@ -20,15 +21,19 @@ type node[T any] struct {
 	next *node[T]
 }
 
+func (st LinkedStack[T]) More() bool {
+	return st.top != nil
+}
+
 func (st LinkedStack[T]) Empty() bool {
 	return st.top == nil
 }
 
 func (st *LinkedStack[T]) Top() T {
-	if st.Empty() {
-		panic(errors.New("Stack is empty"))
+	if st.More() {
+		return st.top.v
 	}
-	return st.top.v
+	panic(errors.New("Stack is empty"))
 }
 
 func (st *LinkedStack[T]) Push(v T) {
