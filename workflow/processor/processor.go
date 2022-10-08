@@ -1,5 +1,5 @@
-// Package process eases the processing of a stream of items
-package process
+// Package processor eases the processing of a stream of items
+package processor
 
 import (
 	"errors"
