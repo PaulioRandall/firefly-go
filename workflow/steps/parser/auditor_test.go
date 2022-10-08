@@ -50,7 +50,7 @@ func Test_3_auditor_accept(t *testing.T) {
 	accepted := a.accept(token.Var)
 
 	require.True(t, accepted)
-	require.Equal(t, audTok(token.Var, "a"), a.get())
+	require.Equal(t, audTok(token.Var, "a"), a.getPrev())
 	require.False(t, a.More())
 }
 
@@ -64,7 +64,7 @@ func Test_4_auditor_accept(t *testing.T) {
 	accepted := a.accept(token.Number)
 
 	require.True(t, accepted)
-	require.Equal(t, audTok(token.Number, "1"), a.get())
+	require.Equal(t, audTok(token.Number, "1"), a.getPrev())
 	require.False(t, a.More())
 }
 
@@ -124,7 +124,7 @@ func Test_9_auditor_expect(t *testing.T) {
 	tk := a.expect(token.String)
 
 	require.Equal(t, audTok(token.String, `""`), tk)
-	require.Equal(t, audTok(token.String, `""`), a.get())
+	require.Equal(t, audTok(token.String, `""`), a.getPrev())
 	require.False(t, a.More())
 }
 
@@ -148,7 +148,7 @@ func Test_11_auditor_expect(t *testing.T) {
 	tk := a.expect(token.Number)
 
 	require.Equal(t, audTok(token.Number, "1"), tk)
-	require.Equal(t, audTok(token.Number, "1"), a.get())
+	require.Equal(t, audTok(token.Number, "1"), a.getPrev())
 	require.False(t, a.More())
 }
 

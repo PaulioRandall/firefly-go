@@ -62,7 +62,7 @@ func parseVariable(a *auditor, alreadyRead bool) ast.Variable {
 	var tk token.Token
 
 	if alreadyRead {
-		tk = a.get()
+		tk = a.getPrev()
 	} else {
 		tk = a.expect(token.Var)
 	}
@@ -90,7 +90,7 @@ func parseExpression(a *auditor, alreadyRead bool) ast.Expr {
 	var tk token.Token
 
 	if alreadyRead {
-		tk = a.get()
+		tk = a.getPrev()
 	} else {
 		tk = a.expect(token.Number)
 	}
