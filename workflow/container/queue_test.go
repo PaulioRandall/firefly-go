@@ -103,7 +103,7 @@ func Test_8_LinkedQueue(t *testing.T) {
 func Test_9_LinkedQueue(t *testing.T) {
 	q := LinkedQueue[rune]{}
 
-	q.Push('a')
+	q.AddFront('a')
 
 	require.Equal(t, 'a', q.Front())
 	require.Equal(t, 'a', q.Back())
@@ -112,9 +112,9 @@ func Test_9_LinkedQueue(t *testing.T) {
 func Test_10_LinkedQueue(t *testing.T) {
 	q := LinkedQueue[rune]{}
 
-	q.Push('a')
-	q.Push('b')
-	q.Push('c')
+	q.AddFront('a')
+	q.AddFront('b')
+	q.AddFront('c')
 
 	require.Equal(t, 'c', q.Front())
 	require.Equal(t, 'a', q.Back())
@@ -123,7 +123,7 @@ func Test_10_LinkedQueue(t *testing.T) {
 func Test_11_LinkedQueue(t *testing.T) {
 	require.Panics(t, func() {
 		q := LinkedQueue[rune]{}
-		q.Pull()
+		q.TakeBack()
 	})
 }
 
@@ -131,7 +131,7 @@ func Test_12_LinkedQueue(t *testing.T) {
 	q := LinkedQueue[rune]{}
 
 	q.Add('a')
-	act := q.Pull()
+	act := q.TakeBack()
 
 	require.Equal(t, 'a', act)
 	require.False(t, q.More())
@@ -168,10 +168,10 @@ func Test_13_LinkedQueue(t *testing.T) {
 	q.Add('a')
 	q.Add('b')
 	q.Take()
-	q.Push('c')
-	q.Pull()
-	q.Push('a')
-	q.Pull()
+	q.AddFront('c')
+	q.TakeBack()
+	q.AddFront('a')
+	q.TakeBack()
 	q.Add('d')
 
 	exp := []rune{
