@@ -8,23 +8,23 @@ type Consumer[T any] interface {
 	More() bool
 	Empty() bool
 	Len() int
-	Next() T
+	First() T
 	Take() T
-	Push(T)
+	Return(T)
 }
 
-type Producer[T any] interface {
+type Provider[T any] interface {
 	More() bool
 	Empty() bool
 	Len() int
 	Last() T
 	Add(T)
-	TakeBack() T
+	Reclaim() T
 }
 
 type Queue[T any] interface {
 	Consumer[T]
-	Producer[T]
+	Provider[T]
 }
 
 type LinkedQueue[T any] struct {
@@ -45,7 +45,7 @@ func (q LinkedQueue[T]) Len() int {
 	return q.size
 }
 
-func (q LinkedQueue[T]) Next() T {
+func (q LinkedQueue[T]) First() T {
 	if q.More() {
 		return q.front.v
 	}
@@ -77,7 +77,7 @@ func (q *LinkedQueue[T]) Add(v T) {
 	q.size++
 }
 
-func (q *LinkedQueue[T]) Push(v T) {
+func (q *LinkedQueue[T]) Return(v T) {
 	n := &node[T]{
 		v: v,
 	}
@@ -96,7 +96,7 @@ func (q *LinkedQueue[T]) Push(v T) {
 }
 
 func (q *LinkedQueue[T]) Take() T {
-	v := q.Next()
+	v := q.First()
 	q.front = q.front.next
 	q.size--
 
@@ -107,7 +107,7 @@ func (q *LinkedQueue[T]) Take() T {
 	return v
 }
 
-func (q *LinkedQueue[T]) TakeBack() T {
+func (q *LinkedQueue[T]) Reclaim() T {
 	v := q.Last()
 	q.back = q.back.prev
 	q.size--

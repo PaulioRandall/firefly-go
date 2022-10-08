@@ -17,7 +17,7 @@ type tokenBuilder struct {
 	tt    token.TokenType
 }
 
-func newTokenBuilder(r inout.Reader[rune]) tokenBuilder {
+func newTokenBuilder(r ReaderOfRunes) tokenBuilder {
 	return tokenBuilder{
 		r: inout.NewRuneReader(r),
 		w: inout.NewListWriter[rune](),

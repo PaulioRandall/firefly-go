@@ -30,7 +30,7 @@ func (a auditor) getPrev() token.Token {
 
 func (a *auditor) peekNext() token.Token {
 	a.loadBuffer()
-	return a.buffer.Next()
+	return a.buffer.First()
 }
 
 func (a *auditor) readNext() token.Token {

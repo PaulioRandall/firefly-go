@@ -25,7 +25,10 @@ var (
 	zeroToken             token.Token
 )
 
-func Scan(r inout.Reader[rune], w inout.Writer[token.Token]) error {
+type ReaderOfRunes inout.Reader[rune]
+type TokenWriter inout.Writer[token.Token]
+
+func Scan(r ReaderOfRunes, w TokenWriter) error {
 	tb := newTokenBuilder(r)
 
 	for tb.More() {

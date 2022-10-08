@@ -13,7 +13,7 @@ func Test_LinkedQueue_enforceTypes(t *testing.T) {
 func Test_1_LinkedQueue(t *testing.T) {
 	require.Panics(t, func() {
 		q := LinkedQueue[rune]{}
-		q.Next()
+		q.First()
 	})
 }
 
@@ -31,7 +31,7 @@ func Test_3_LinkedQueue(t *testing.T) {
 
 	require.True(t, q.More())
 	require.Equal(t, 1, q.Len())
-	require.Equal(t, 'a', q.Next())
+	require.Equal(t, 'a', q.First())
 	require.Equal(t, 'a', q.Last())
 }
 
@@ -43,7 +43,7 @@ func Test_4_LinkedQueue(t *testing.T) {
 	q.Add('c')
 
 	require.Equal(t, 3, q.Len())
-	require.Equal(t, 'a', q.Next())
+	require.Equal(t, 'a', q.First())
 	require.Equal(t, 'c', q.Last())
 }
 
@@ -65,7 +65,7 @@ func Test_6_LinkedQueue(t *testing.T) {
 	require.False(t, q.More())
 
 	require.Panics(t, func() {
-		q.Next()
+		q.First()
 	})
 
 	require.Panics(t, func() {
@@ -83,7 +83,7 @@ func Test_7_LinkedQueue(t *testing.T) {
 	act := q.Take()
 
 	require.Equal(t, 'a', act)
-	require.Equal(t, 'b', q.Next())
+	require.Equal(t, 'b', q.First())
 	require.Equal(t, 'c', q.Last())
 
 	require.True(t, q.More())
@@ -109,9 +109,9 @@ func Test_8_LinkedQueue(t *testing.T) {
 func Test_9_LinkedQueue(t *testing.T) {
 	q := LinkedQueue[rune]{}
 
-	q.Push('a')
+	q.Return('a')
 
-	require.Equal(t, 'a', q.Next())
+	require.Equal(t, 'a', q.First())
 	require.Equal(t, 'a', q.Last())
 
 	require.True(t, q.More())
@@ -121,19 +121,19 @@ func Test_9_LinkedQueue(t *testing.T) {
 func Test_10_LinkedQueue(t *testing.T) {
 	q := LinkedQueue[rune]{}
 
-	q.Push('a')
-	q.Push('b')
-	q.Push('c')
+	q.Return('a')
+	q.Return('b')
+	q.Return('c')
 
 	require.Equal(t, 3, q.Len())
-	require.Equal(t, 'c', q.Next())
+	require.Equal(t, 'c', q.First())
 	require.Equal(t, 'a', q.Last())
 }
 
 func Test_11_LinkedQueue(t *testing.T) {
 	require.Panics(t, func() {
 		q := LinkedQueue[rune]{}
-		q.TakeBack()
+		q.Reclaim()
 	})
 }
 
@@ -141,14 +141,14 @@ func Test_12_LinkedQueue(t *testing.T) {
 	q := LinkedQueue[rune]{}
 
 	q.Add('a')
-	act := q.TakeBack()
+	act := q.Reclaim()
 
 	require.Equal(t, 'a', act)
 	require.False(t, q.More())
 	require.Equal(t, 0, q.Len())
 
 	require.Panics(t, func() {
-		q.Next()
+		q.First()
 	})
 
 	require.Panics(t, func() {
@@ -164,7 +164,7 @@ func assertQueue[T any](t *testing.T, exp []T, q Queue[T]) {
 	}
 
 	lastIdx := len(exp) - 1
-	require.Equal(t, exp[0], q.Next())
+	require.Equal(t, exp[0], q.First())
 	require.Equal(t, exp[lastIdx], q.Last())
 
 	for _, want := range exp {
@@ -179,10 +179,10 @@ func Test_13_LinkedQueue(t *testing.T) {
 	q.Add('a')
 	q.Add('b')
 	q.Take()
-	q.Push('c')
-	q.TakeBack()
-	q.Push('a')
-	q.TakeBack()
+	q.Return('c')
+	q.Reclaim()
+	q.Return('a')
+	q.Reclaim()
 	q.Add('d')
 
 	exp := []rune{
