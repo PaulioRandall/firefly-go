@@ -13,7 +13,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/workflow/token/tokentest"
 )
 
-func audTok(tt token.TokenType, v string) token.Token {
+func tok2(tt token.TokenType, v string) token.Token {
 	return tokentest.Tok(tt, v)
 }
 
@@ -33,7 +33,7 @@ func Test_1_auditor_accept(t *testing.T) {
 
 func Test_2_auditor_accept(t *testing.T) {
 	a := aud(
-		audTok(token.String, `""`),
+		tok2(token.String, `""`),
 	)
 
 	accepted := a.accept(token.Number)
@@ -44,27 +44,27 @@ func Test_2_auditor_accept(t *testing.T) {
 
 func Test_3_auditor_accept(t *testing.T) {
 	a := aud(
-		audTok(token.Var, "a"),
+		tok2(token.Var, "a"),
 	)
 
 	accepted := a.accept(token.Var)
 
 	require.True(t, accepted)
-	require.Equal(t, audTok(token.Var, "a"), a.getPrev())
+	require.Equal(t, tok2(token.Var, "a"), a.getPrev())
 	require.False(t, a.More())
 }
 
 func Test_4_auditor_accept(t *testing.T) {
 	a := aud(
-		audTok(token.String, `""`),
-		audTok(token.Number, "1"),
+		tok2(token.String, `""`),
+		tok2(token.Number, "1"),
 	)
 
 	a.accept(token.String)
 	accepted := a.accept(token.Number)
 
 	require.True(t, accepted)
-	require.Equal(t, audTok(token.Number, "1"), a.getPrev())
+	require.Equal(t, tok2(token.Number, "1"), a.getPrev())
 	require.False(t, a.More())
 }
 
@@ -92,7 +92,7 @@ func Test_6_auditor_expect(t *testing.T) {
 
 func Test_7_auditor_expect(t *testing.T) {
 	a := aud(
-		audTok(token.NEQ, "!="),
+		tok2(token.NEQ, "!="),
 	)
 
 	require.Panics(t, func() {
@@ -102,7 +102,7 @@ func Test_7_auditor_expect(t *testing.T) {
 
 func Test_8_auditor_expect(t *testing.T) {
 	a := aud(
-		audTok(token.NEQ, "!="),
+		tok2(token.NEQ, "!="),
 	)
 
 	defer func() {
@@ -118,20 +118,20 @@ func Test_8_auditor_expect(t *testing.T) {
 
 func Test_9_auditor_expect(t *testing.T) {
 	a := aud(
-		audTok(token.String, `""`),
+		tok2(token.String, `""`),
 	)
 
 	tk := a.expect(token.String)
 
-	require.Equal(t, audTok(token.String, `""`), tk)
-	require.Equal(t, audTok(token.String, `""`), a.getPrev())
+	require.Equal(t, tok2(token.String, `""`), tk)
+	require.Equal(t, tok2(token.String, `""`), a.getPrev())
 	require.False(t, a.More())
 }
 
 func Test_10_auditor_expect(t *testing.T) {
 	a := aud(
-		audTok(token.String, `""`),
-		audTok(token.Number, "1"),
+		tok2(token.String, `""`),
+		tok2(token.Number, "1"),
 	)
 
 	_ = a.expect(token.String)
@@ -140,21 +140,21 @@ func Test_10_auditor_expect(t *testing.T) {
 
 func Test_11_auditor_expect(t *testing.T) {
 	a := aud(
-		audTok(token.String, `""`),
-		audTok(token.Number, "1"),
+		tok2(token.String, `""`),
+		tok2(token.Number, "1"),
 	)
 
 	_ = a.expect(token.String)
 	tk := a.expect(token.Number)
 
-	require.Equal(t, audTok(token.Number, "1"), tk)
-	require.Equal(t, audTok(token.Number, "1"), a.getPrev())
+	require.Equal(t, tok2(token.Number, "1"), tk)
+	require.Equal(t, tok2(token.Number, "1"), a.getPrev())
 	require.False(t, a.More())
 }
 
 func Test_12_auditor_doesNextMatch(t *testing.T) {
 	a := aud(
-		audTok(token.String, `""`),
+		tok2(token.String, `""`),
 	)
 
 	varMatcher := func(tt token.TokenType) bool {
@@ -168,7 +168,7 @@ func Test_12_auditor_doesNextMatch(t *testing.T) {
 
 func Test_13_auditor_doesNextMatch(t *testing.T) {
 	a := aud(
-		audTok(token.String, `""`),
+		tok2(token.String, `""`),
 	)
 
 	stringMatcher := func(tt token.TokenType) bool {
@@ -182,7 +182,7 @@ func Test_13_auditor_doesNextMatch(t *testing.T) {
 
 func Test_14_auditor_isNext(t *testing.T) {
 	a := aud(
-		audTok(token.String, `""`),
+		tok2(token.String, `""`),
 	)
 
 	isMatch := a.isNext(token.Var)
@@ -192,7 +192,7 @@ func Test_14_auditor_isNext(t *testing.T) {
 
 func Test_15_auditor_isNext(t *testing.T) {
 	a := aud(
-		audTok(token.String, `""`),
+		tok2(token.String, `""`),
 	)
 
 	isMatch := a.isNext(token.String)

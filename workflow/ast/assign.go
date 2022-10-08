@@ -13,6 +13,14 @@ type Assign struct {
 	Right []Expr
 }
 
+func MakeAssign(tk token.Token, left []Variable, right []Expr) Assign {
+	return Assign{
+		Token: tk,
+		Left:  left,
+		Right: right,
+	}
+}
+
 func (n Assign) Debug() string {
 	return fmt.Sprintf("TODO: %q", n.Token.Value)
 }
