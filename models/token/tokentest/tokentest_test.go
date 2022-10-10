@@ -6,7 +6,8 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/PaulioRandall/firefly-go/utilities/pos"
-	"github.com/PaulioRandall/firefly-go/workflow/token"
+
+	"github.com/PaulioRandall/firefly-go/models/token"
 )
 
 func Test_1_TokenGenerator(t *testing.T) {

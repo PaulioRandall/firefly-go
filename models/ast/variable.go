@@ -3,7 +3,7 @@ package ast
 import (
 	"fmt"
 
-	"github.com/PaulioRandall/firefly-go/workflow/token"
+	"github.com/PaulioRandall/firefly-go/models/token"
 )
 
 type Variable struct {

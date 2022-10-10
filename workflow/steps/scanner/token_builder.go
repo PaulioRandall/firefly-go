@@ -3,9 +3,9 @@ package scanner
 import (
 	"errors"
 
+	"github.com/PaulioRandall/firefly-go/models/token"
 	"github.com/PaulioRandall/firefly-go/utilities/inout"
 	"github.com/PaulioRandall/firefly-go/utilities/pos"
-	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
 var ErrNotFound = errors.New("Unknown symbol")

@@ -1,8 +1,8 @@
 package asttest
 
 import (
-	"github.com/PaulioRandall/firefly-go/workflow/ast"
-	"github.com/PaulioRandall/firefly-go/workflow/token"
+	"github.com/PaulioRandall/firefly-go/models/ast"
+	"github.com/PaulioRandall/firefly-go/models/token"
 )
 
 func Vars(tks ...token.Token) []ast.Variable {

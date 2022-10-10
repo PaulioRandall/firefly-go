@@ -5,10 +5,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/PaulioRandall/firefly-go/models/token"
 	"github.com/PaulioRandall/firefly-go/utilities/inout"
-	"github.com/PaulioRandall/firefly-go/workflow/token"
 
-	"github.com/PaulioRandall/firefly-go/workflow/token/tokentest"
+	"github.com/PaulioRandall/firefly-go/models/token/tokentest"
 )
 
 func tok(tt token.TokenType, v string) token.Token {

@@ -1,10 +1,10 @@
 package parser
 
 import (
+	"github.com/PaulioRandall/firefly-go/models/err"
+	"github.com/PaulioRandall/firefly-go/models/token"
 	"github.com/PaulioRandall/firefly-go/utilities/container"
 	"github.com/PaulioRandall/firefly-go/utilities/inout"
-	"github.com/PaulioRandall/firefly-go/workflow/err"
-	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
 var zero token.Token

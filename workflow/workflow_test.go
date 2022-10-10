@@ -6,11 +6,12 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/PaulioRandall/firefly-go/utilities/inout"
-	"github.com/PaulioRandall/firefly-go/workflow/ast"
-	"github.com/PaulioRandall/firefly-go/workflow/token"
 
-	"github.com/PaulioRandall/firefly-go/workflow/ast/asttest"
-	"github.com/PaulioRandall/firefly-go/workflow/token/tokentest"
+	"github.com/PaulioRandall/firefly-go/models/ast"
+	"github.com/PaulioRandall/firefly-go/models/token"
+
+	"github.com/PaulioRandall/firefly-go/models/ast/asttest"
+	"github.com/PaulioRandall/firefly-go/models/token/tokentest"
 )
 
 func Test_1_Workflow(t *testing.T) {

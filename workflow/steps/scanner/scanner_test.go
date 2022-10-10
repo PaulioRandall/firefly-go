@@ -7,12 +7,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/PaulioRandall/firefly-go/models/err"
+	"github.com/PaulioRandall/firefly-go/models/token"
 	"github.com/PaulioRandall/firefly-go/utilities/inout"
 	"github.com/PaulioRandall/firefly-go/utilities/pos"
-	"github.com/PaulioRandall/firefly-go/workflow/err"
-	"github.com/PaulioRandall/firefly-go/workflow/token"
 
-	"github.com/PaulioRandall/firefly-go/workflow/token/tokentest"
+	"github.com/PaulioRandall/firefly-go/models/token/tokentest"
 )
 
 func assertToken(t *testing.T, given string, expType token.TokenType) {

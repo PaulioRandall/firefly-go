@@ -4,8 +4,8 @@ package aligner
 import (
 	"fmt"
 
+	"github.com/PaulioRandall/firefly-go/models/token"
 	"github.com/PaulioRandall/firefly-go/utilities/inout"
-	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
 type TokenReader = inout.Reader[token.Token]
