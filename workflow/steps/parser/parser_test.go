@@ -41,7 +41,11 @@ func assertError(t *testing.T, given []token.Token, exp error) {
 
 	e := Parse(r, w)
 
-	require.True(t, errors.Is(e, exp))
+	require.True(
+		t,
+		errors.Is(e, exp),
+		"Want error %q but got error %q", exp, e,
+	)
 }
 
 func Test_1(t *testing.T) {
@@ -160,4 +164,20 @@ func Test_6(t *testing.T) {
 	}
 
 	assertError(t, given, MissingVar)
+}
+
+func Test_7(t *testing.T) {
+	// a, b 0, 1
+
+	given := []token.Token{
+		tok1(token.Var, "a"),
+		tok1(token.Comma, ","),
+		tok1(token.Var, "b"),
+		tok1(token.Number, "0"),
+		tok1(token.Comma, ","),
+		tok1(token.Number, "1"),
+		tok1(token.Terminator, "\n"),
+	}
+
+	assertError(t, given, UnexpectedToken)
 }

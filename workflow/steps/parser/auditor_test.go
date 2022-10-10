@@ -107,7 +107,7 @@ func Test_8_auditor_expect(t *testing.T) {
 		e := recover()
 		require.NotNil(t, e)
 
-		isUnexpectedToken := errors.Is(e.(error), err.UnexpectedToken)
+		isUnexpectedToken := errors.Is(e.(error), UnexpectedToken)
 		require.True(t, isUnexpectedToken)
 	}()
 

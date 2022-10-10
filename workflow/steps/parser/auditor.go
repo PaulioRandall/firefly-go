@@ -120,7 +120,7 @@ func (a *auditor) expectIf(f func(token.TokenType) bool, exp any) token.Token {
 
 	tk := a.readNext()
 	if !f(tk.TokenType) {
-		e := err.AtToken(tk, err.UnexpectedToken, "Expected %q but got %q", exp, tk.TokenType)
+		e := err.AtToken(tk, UnexpectedToken, "Expected %q but got %q", exp, tk.TokenType)
 		panic(e)
 	}
 

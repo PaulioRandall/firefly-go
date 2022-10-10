@@ -11,10 +11,6 @@ import (
 
 type ASTWriter = inout.Writer[ast.Node]
 
-var UnexpectedToken = errors.New("Unexpected token")
-var MissingVar = errors.New("Missing variable")
-var MissingExpr = errors.New("Missing expression")
-
 func Parse(r TokenReader, w ASTWriter) (e error) {
 	a := newAuditor(r)
 
