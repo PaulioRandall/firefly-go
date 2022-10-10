@@ -38,7 +38,7 @@ func Parse(r TokenReader, w ASTWriter) (e error) {
 func parseNext(a *auditor) (n ast.Node) {
 	switch {
 	case a.accept(token.Var):
-		n = parseStartingWithVariable(a)
+		n = parseStartingWithVariable(a, a.prev)
 
 	default:
 		panic(UnexpectedToken)
@@ -52,76 +52,61 @@ func parseNext(a *auditor) (n ast.Node) {
 	return n
 }
 
-func parseStartingWithVariable(a *auditor) ast.Node {
+func parseStartingWithVariable(a *auditor, first token.Token) ast.Node {
 	if a.isNext(token.Comma) || a.isNext(token.Assign) {
-		return parseAssignment(a, true)
+		a.putback(first)
+		return parseAssignment(a)
 	}
 
 	panic(UnexpectedToken)
 }
 
-func parseVariable(a *auditor, alreadyRead bool) ast.Variable {
-	var tk token.Token
-
-	if alreadyRead {
-		tk = a.getPrev()
-	} else {
-		tk = a.expect(token.Var)
-	}
-
+func parseVariable(a *auditor) ast.Variable {
 	return ast.Variable{
-		Token: tk,
+		Token: a.expect(token.Var),
 	}
 }
 
-func parseVariables(a *auditor, firstAlreadyRead bool) []ast.Variable {
+func parseVariables(a *auditor) []ast.Variable {
 	var nodes []ast.Variable
 
-	v := parseVariable(a, firstAlreadyRead)
+	v := parseVariable(a)
 	nodes = append(nodes, v)
 
 	for a.accept(token.Comma) {
-		v := parseVariable(a, false)
+		v := parseVariable(a)
 		nodes = append(nodes, v)
 	}
 
 	return nodes
 }
 
-func parseExpression(a *auditor, alreadyRead bool) ast.Expr {
-	var tk token.Token
-
-	if alreadyRead {
-		tk = a.getPrev()
-	} else {
-		tk = a.expect(token.Number)
-	}
-
+func parseExpression(a *auditor) ast.Expr {
 	return ast.Literal{
-		Token: tk,
+		Token: a.expect(token.Number),
 	}
 }
 
-func parseExpressions(a *auditor, firstAlreadyRead bool) []ast.Expr {
+func parseExpressions(a *auditor) []ast.Expr {
 	var nodes []ast.Expr
 
-	v := parseExpression(a, firstAlreadyRead)
+	v := parseExpression(a)
 	nodes = append(nodes, v)
 
 	for a.accept(token.Comma) {
-		v := parseExpression(a, false)
+		v := parseExpression(a)
 		nodes = append(nodes, v)
 	}
 
 	return nodes
 }
 
-func parseAssignment(a *auditor, firstAlreadyRead bool) ast.Assign {
+func parseAssignment(a *auditor) ast.Assign {
 	n := ast.Assign{}
 
-	n.Left = parseVariables(a, firstAlreadyRead)
+	n.Left = parseVariables(a)
 	n.Token = a.expect(token.Assign)
-	n.Right = parseExpressions(a, false)
+	n.Right = parseExpressions(a)
 
 	if len(n.Left) > len(n.Right) {
 		panic(MissingExpr)

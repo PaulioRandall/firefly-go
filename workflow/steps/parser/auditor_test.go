@@ -197,3 +197,41 @@ func Test_15_auditor_isNext(t *testing.T) {
 
 	require.True(t, isMatch)
 }
+
+func Test_16_auditor_peekNext(t *testing.T) {
+	a := aud(
+		tok2(token.String, `""`),
+	)
+
+	tk := a.peekNext()
+
+	require.Equal(t, tok2(token.String, `""`), tk)
+	require.True(t, a.more())
+}
+
+func Test_17_auditor_peekNext(t *testing.T) {
+	a := aud()
+
+	require.Panics(t, func() {
+		_ = a.peekNext()
+	})
+}
+
+func Test_18_auditor_readNext(t *testing.T) {
+	a := aud()
+
+	require.Panics(t, func() {
+		_ = a.readNext()
+	})
+}
+
+func Test_19_auditor_readNext(t *testing.T) {
+	a := aud(
+		tok2(token.String, `""`),
+	)
+
+	tk := a.readNext()
+
+	require.Equal(t, tok2(token.String, `""`), tk)
+	require.False(t, a.more())
+}

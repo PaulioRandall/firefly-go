@@ -50,6 +50,10 @@ func (a *auditor) readNext() token.Token {
 	panic(e)
 }
 
+func (a *auditor) putback(tk token.Token) {
+	a.buffer.Return(tk)
+}
+
 func (a *auditor) loadBuffer() {
 	if a.buffer.More() {
 		return
