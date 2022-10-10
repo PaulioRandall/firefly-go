@@ -212,3 +212,28 @@ func Test_8(t *testing.T) {
 
 	assert(t, given, exp)
 }
+
+/*
+func Test_9(t *testing.T) {
+	// if true
+	// end
+
+	given := []token.Token{
+		tok1(token.If, "if"),
+		tok1(token.True, "true"),
+		tok1(token.Terminator, "\n"),
+		tok1(token.End, "end"),
+		tok1(token.Terminator, "\n"),
+	}
+
+	exp := []ast.Node{
+		ast.MakeIf(
+			given[0],
+			ast.MakeLiteral(given[1]),
+			nil,
+		),
+	}
+
+	assert(t, given, exp)
+}
+*/
