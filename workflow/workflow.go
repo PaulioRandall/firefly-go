@@ -8,11 +8,11 @@ import (
 	"github.com/PaulioRandall/firefly-go/models/ast"
 	"github.com/PaulioRandall/firefly-go/models/token"
 
-	"github.com/PaulioRandall/firefly-go/workflow/steps/aligner"
-	"github.com/PaulioRandall/firefly-go/workflow/steps/cleaner"
-	"github.com/PaulioRandall/firefly-go/workflow/steps/parser"
-	"github.com/PaulioRandall/firefly-go/workflow/steps/scanner"
-	"github.com/PaulioRandall/firefly-go/workflow/steps/terminator"
+	"github.com/PaulioRandall/firefly-go/workflow/aligner"
+	"github.com/PaulioRandall/firefly-go/workflow/cleaner"
+	"github.com/PaulioRandall/firefly-go/workflow/parser"
+	"github.com/PaulioRandall/firefly-go/workflow/scanner"
+	"github.com/PaulioRandall/firefly-go/workflow/terminator"
 )
 
 type RuneReader = inout.Reader[rune]
