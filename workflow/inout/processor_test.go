@@ -1,11 +1,9 @@
-package processor
+package inout
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-
-	"github.com/PaulioRandall/firefly-go/workflow/inout"
 )
 
 var zero = rune(0)
@@ -16,8 +14,8 @@ func when[In, Out comparable](
 	p ProcessItem[In, Out],
 ) ([]Out, error) {
 
-	r := inout.NewListReader(given)
-	w := inout.NewListWriter[Out]()
+	r := NewListReader(given)
+	w := NewListWriter[Out]()
 	e := Process[In, Out](r, w, p)
 
 	return w.List(), e

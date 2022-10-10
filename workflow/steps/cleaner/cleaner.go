@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/PaulioRandall/firefly-go/workflow/inout"
-	"github.com/PaulioRandall/firefly-go/workflow/processor"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
@@ -13,7 +12,7 @@ type TokenReader = inout.Reader[token.Token]
 type TokenWriter = inout.Writer[token.Token]
 
 func Clean(r TokenReader, w TokenWriter) error {
-	e := processor.Process(r, w, processNext)
+	e := inout.Process(r, w, processNext)
 	if e != nil {
 		return fmt.Errorf("Failed to clean tokens: %w", e)
 	}

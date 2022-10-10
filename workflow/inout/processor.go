@@ -1,11 +1,9 @@
 // Package processor eases the processing of a stream of items
-package processor
+package inout
 
 import (
 	"errors"
 	"fmt"
-
-	"github.com/PaulioRandall/firefly-go/workflow/inout"
 )
 
 // ProcessItem is a function designed for processing a value from one stream
@@ -19,8 +17,8 @@ import (
 type ProcessItem[In, Out comparable] func(prev, curr, next In) (Out, error)
 
 func Process[In, Out comparable](
-	r inout.Reader[In],
-	w inout.Writer[Out],
+	r Reader[In],
+	w Writer[Out],
 	p ProcessItem[In, Out],
 ) error {
 
@@ -62,7 +60,7 @@ func Process[In, Out comparable](
 	return nil
 }
 
-func readNext[In comparable](r inout.Reader[In]) (In, error) {
+func readNext[In comparable](r Reader[In]) (In, error) {
 	var zeroIn In
 
 	if !r.More() {
@@ -70,7 +68,7 @@ func readNext[In comparable](r inout.Reader[In]) (In, error) {
 	}
 
 	in, e := r.Read()
-	if errors.Is(e, inout.EOF) {
+	if errors.Is(e, EOF) {
 		return zeroIn, nil
 	}
 
