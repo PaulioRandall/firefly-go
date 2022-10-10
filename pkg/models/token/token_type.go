@@ -116,7 +116,9 @@ func (tt TokenType) String() string {
 }
 
 func IsLiteral(tt TokenType) bool {
-	return tt > _literal_begin && tt < _literal_end
+	return tt == False ||
+		tt == True ||
+		(tt > _literal_begin && tt < _literal_end)
 }
 
 func IsRedundant(tt TokenType) bool {

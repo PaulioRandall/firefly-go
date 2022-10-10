@@ -37,6 +37,9 @@ func parseNext(a *auditor) (n ast.Node) {
 	case a.accept(token.Var):
 		n = parseStartingWithVariable(a, a.prev)
 
+	case a.isNext(token.If):
+		n = parseIf(a)
+
 	default:
 		panic(UnexpectedToken)
 	}
@@ -80,7 +83,7 @@ func parseVariables(a *auditor) []ast.Variable {
 
 func parseExpression(a *auditor) ast.Expr {
 	return ast.Literal{
-		Token: a.expect(token.Number),
+		Token: a.expectIf(token.IsLiteral, "literal"),
 	}
 }
 
@@ -105,6 +108,7 @@ func parseAssignment(a *auditor) ast.Assign {
 	n.Token = a.expect(token.Assign)
 	n.Right = parseExpressions(a)
 
+	// TODO: Move specific parameter checks to the validator
 	if len(n.Left) > len(n.Right) {
 		panic(MissingExpr)
 	} else if len(n.Left) < len(n.Right) {
@@ -112,4 +116,8 @@ func parseAssignment(a *auditor) ast.Assign {
 	}
 
 	return n
+}
+
+func parseIf(a *auditor) ast.Stmt {
+	return nil
 }

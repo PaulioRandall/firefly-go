@@ -11,6 +11,7 @@ import (
 
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 
+	"github.com/PaulioRandall/firefly-go/pkg/models/ast/asttest"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
 )
 
@@ -181,4 +182,33 @@ func Test_7(t *testing.T) {
 	}
 
 	assertError(t, given, UnexpectedToken)
+}
+
+func Test_8(t *testing.T) {
+	// a, b, c := false, 0, ""
+
+	given := []token.Token{
+		tok1(token.Var, "a"),
+		tok1(token.Comma, ","),
+		tok1(token.Var, "b"),
+		tok1(token.Comma, ","),
+		tok1(token.Var, "c"),
+		tok1(token.Assign, "="), // 5
+		tok1(token.False, "false"),
+		tok1(token.Comma, ","),
+		tok1(token.Number, "0"),
+		tok1(token.Comma, ","),
+		tok1(token.String, `""`), // 10
+		tok1(token.Terminator, "\n"),
+	}
+
+	exp := []ast.Node{
+		ast.MakeAssign(
+			given[5],
+			asttest.Vars(given[0], given[2], given[4]),
+			asttest.LitExprs(given[6], given[8], given[10]),
+		),
+	}
+
+	assert(t, given, exp)
 }
