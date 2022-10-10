@@ -5,12 +5,12 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
-func parseAssignment(a *auditor) ast.Assign {
+func expectAssignment(a *auditor) ast.Assign {
 	n := ast.Assign{}
 
-	n.Left = parseVariables(a)
+	n.Left = expectVariables(a)
 	n.Token = a.expect(token.Assign)
-	n.Right = parseExpressions(a)
+	n.Right = expectExpressions(a)
 
 	// TODO: Move specific parameter checks to the validator
 	if len(n.Left) > len(n.Right) {

@@ -2,8 +2,6 @@
 package parser
 
 import (
-	"errors"
-
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 
@@ -21,42 +19,18 @@ func Parse(r TokenReader, w ASTWriter) (e error) {
 		}
 	}()
 
-	for r.More() {
-		n := parseNext(a)
-		e := w.Write(n)
-		if e != nil {
-			panic(e)
+	return parseRootStatements(a, w)
+}
+
+func parseRootStatements(a *auditor, w ASTWriter) error {
+	a.accept(token.Terminator)
+
+	for a.more() {
+		n := expectStatement(a)
+		if e := w.Write(n); e != nil {
+			return e // TODO: Wrap error
 		}
 	}
 
 	return nil
-}
-
-func parseNext(a *auditor) (n ast.Node) {
-	switch {
-	case a.accept(token.Var):
-		n = parseStartingWithVariable(a, a.prev)
-
-	case a.isNext(token.If):
-		n = parseIf(a)
-
-	default:
-		panic(UnexpectedToken)
-	}
-
-	if n == nil {
-		panic(errors.New("Sanity check! Nil Node should never appear"))
-	}
-
-	a.expect(token.Terminator)
-	return n
-}
-
-func parseStartingWithVariable(a *auditor, first token.Token) ast.Node {
-	if a.isNext(token.Comma) || a.isNext(token.Assign) {
-		a.putback(first)
-		return parseAssignment(a)
-	}
-
-	panic(UnexpectedToken)
 }

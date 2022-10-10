@@ -9,7 +9,7 @@ func parseIf(a *auditor) ast.If {
 	n := ast.If{}
 
 	n.Keyword = a.expect(token.If)
-	n.Condition = parseExpression(a)
+	n.Condition = expectExpression(a)
 	a.expect(token.Terminator)
 	n.Body = acceptStatements(a)
 	n.End = a.expect(token.End)
