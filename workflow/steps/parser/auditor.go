@@ -1,9 +1,9 @@
 package parser
 
 import (
-	"github.com/PaulioRandall/firefly-go/workflow/container"
+	"github.com/PaulioRandall/firefly-go/utilities/container"
+	"github.com/PaulioRandall/firefly-go/utilities/inout"
 	"github.com/PaulioRandall/firefly-go/workflow/err"
-	"github.com/PaulioRandall/firefly-go/workflow/inout"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 

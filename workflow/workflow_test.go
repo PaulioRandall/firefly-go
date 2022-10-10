@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/PaulioRandall/firefly-go/utilities/inout"
 	"github.com/PaulioRandall/firefly-go/workflow/ast"
-	"github.com/PaulioRandall/firefly-go/workflow/inout"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 
 	"github.com/PaulioRandall/firefly-go/workflow/ast/asttest"

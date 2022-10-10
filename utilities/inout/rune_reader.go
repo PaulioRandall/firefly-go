@@ -1,7 +1,7 @@
 package inout
 
 import (
-	"github.com/PaulioRandall/firefly-go/workflow/pos"
+	"github.com/PaulioRandall/firefly-go/utilities/pos"
 )
 
 type runeReader struct {

@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/PaulioRandall/firefly-go/workflow/pos"
+	"github.com/PaulioRandall/firefly-go/utilities/pos"
 	"github.com/PaulioRandall/firefly-go/workflow/token"
 )
 
