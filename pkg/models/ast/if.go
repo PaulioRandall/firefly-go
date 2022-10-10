@@ -8,19 +8,26 @@ import (
 
 type If struct {
 	baseExpr
-	keyword   token.Token
-	condition Expr
-	body      []Stmt
+	Keyword   token.Token
+	Condition Expr
+	Body      []Stmt
+	End       token.Token
 }
 
-func MakeIf(keyword token.Token, condition Expr, body []Stmt) If {
+func MakeIf(
+	keyword token.Token,
+	condition Expr,
+	body []Stmt,
+	end token.Token,
+) If {
 	return If{
-		keyword:   keyword,
-		condition: condition,
-		body:      body,
+		Keyword:   keyword,
+		Condition: condition,
+		Body:      body,
+		End:       end,
 	}
 }
 
 func (n If) Debug() string {
-	return fmt.Sprintf("If %q", n.keyword.Value)
+	return fmt.Sprintf("If %q", n.Keyword.Value)
 }

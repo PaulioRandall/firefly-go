@@ -213,7 +213,6 @@ func Test_8(t *testing.T) {
 	assert(t, given, exp)
 }
 
-/*
 func Test_9(t *testing.T) {
 	// if true
 	// end
@@ -231,9 +230,9 @@ func Test_9(t *testing.T) {
 			given[0],
 			ast.MakeLiteral(given[1]),
 			nil,
+			given[3],
 		),
 	}
 
 	assert(t, given, exp)
 }
-*/

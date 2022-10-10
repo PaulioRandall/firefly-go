@@ -2,9 +2,17 @@ package parser
 
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
-	//"github.com/PaulioRandall/firefly-go/pkg/models/token"
+	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
-func parseIf(a *auditor) ast.Stmt {
-	return nil
+func parseIf(a *auditor) ast.If {
+	n := ast.If{}
+
+	n.Keyword = a.expect(token.If)
+	n.Condition = parseExpression(a)
+	a.expect(token.Terminator)
+	n.Body = acceptStatements(a)
+	n.End = a.expect(token.End)
+
+	return n
 }
