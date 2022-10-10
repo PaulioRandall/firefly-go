@@ -6,11 +6,11 @@ import (
 )
 
 func expectAssignment(a *auditor) ast.Assign {
-	n := ast.Assign{}
-
-	n.Left = expectVariables(a)
-	n.Token = a.expect(token.Assign)
-	n.Right = expectExpressions(a)
+	n := ast.Assign{
+		Left:     expectVariables(a),
+		Operator: a.expect(token.Assign),
+		Right:    expectExpressions(a),
+	}
 
 	// TODO: Move specific parameter checks to the validator
 	if len(n.Left) > len(n.Right) {

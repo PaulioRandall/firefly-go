@@ -62,13 +62,9 @@ func Test_1(t *testing.T) {
 
 	exp := []ast.Node{
 		ast.MakeAssign(
-			tok1(token.Assign, "="),
-			[]ast.Variable{
-				variable(token.Var, "a"),
-			},
-			[]ast.Expr{
-				literal(token.Number, "0"),
-			},
+			asttest.Vars(given[0]),
+			given[1],
+			asttest.LitExprs(given[2]),
 		),
 	}
 
@@ -90,17 +86,11 @@ func Test_2(t *testing.T) {
 	}
 
 	exp := []ast.Node{
-		ast.Assign{
-			Token: tok1(token.Assign, "="),
-			Left: []ast.Variable{
-				variable(token.Var, "a"),
-				variable(token.Var, "b"),
-			},
-			Right: []ast.Expr{
-				literal(token.Number, "0"),
-				literal(token.Number, "1"),
-			},
-		},
+		ast.MakeAssign(
+			asttest.Vars(given[0], given[2]),
+			given[3],
+			asttest.LitExprs(given[4], given[6]),
+		),
 	}
 
 	assert(t, given, exp)
@@ -204,8 +194,8 @@ func Test_8(t *testing.T) {
 
 	exp := []ast.Node{
 		ast.MakeAssign(
-			given[5],
 			asttest.Vars(given[0], given[2], given[4]),
+			given[5],
 			asttest.LitExprs(given[6], given[8], given[10]),
 		),
 	}
@@ -231,6 +221,43 @@ func Test_9(t *testing.T) {
 			ast.MakeLiteral(given[1]),
 			nil,
 			given[3],
+		),
+	}
+
+	assert(t, given, exp)
+}
+
+func Test_10(t *testing.T) {
+	// if true
+	//   a = 0
+	// end
+
+	given := []token.Token{
+		tok1(token.If, "if"),
+		tok1(token.True, "true"),
+		tok1(token.Terminator, "\n"),
+		tok1(token.Var, "a"),
+		tok1(token.Assign, "="), // 4
+		tok1(token.Number, "0"),
+		tok1(token.Terminator, "\n"),
+		tok1(token.End, "end"),
+		tok1(token.Terminator, "\n"), // 8
+	}
+
+	body := []ast.Stmt{
+		ast.MakeAssign(
+			asttest.Vars(given[3]),
+			given[4],
+			asttest.LitExprs(given[5]),
+		),
+	}
+
+	exp := []ast.Node{
+		ast.MakeIf(
+			given[0],
+			ast.MakeLiteral(given[1]),
+			body,
+			given[7],
 		),
 	}
 

@@ -41,8 +41,8 @@ func Test_2_Workflow(t *testing.T) {
 
 	exp := []ast.Node{
 		ast.MakeAssign(
-			assSym,
 			asttest.Vars(varTk),
+			assSym,
 			asttest.LitExprs(exprTk),
 		),
 	}
@@ -82,8 +82,8 @@ func Test_3_Workflow(t *testing.T) {
 
 	exp := []ast.Node{
 		ast.MakeAssign(
-			assSym,
 			asttest.Vars(varTk1, varTk2, varTk3),
+			assSym,
 			asttest.LitExprs(exprTk1, exprTk2, exprTk3),
 		),
 	}

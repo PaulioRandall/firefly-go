@@ -8,19 +8,19 @@ import (
 
 type Assign struct {
 	baseProc
-	Token token.Token
-	Left  []Variable
-	Right []Expr
+	Left     []Variable
+	Operator token.Token
+	Right    []Expr
 }
 
-func MakeAssign(tk token.Token, left []Variable, right []Expr) Assign {
+func MakeAssign(left []Variable, op token.Token, right []Expr) Assign {
 	return Assign{
-		Token: tk,
-		Left:  left,
-		Right: right,
+		Left:     left,
+		Operator: op,
+		Right:    right,
 	}
 }
 
 func (n Assign) Debug() string {
-	return fmt.Sprintf("TODO: %q", n.Token.Value)
+	return fmt.Sprintf("TODO: %q", n.Operator.Value)
 }
