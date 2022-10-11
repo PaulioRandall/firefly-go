@@ -1,9 +1,10 @@
 package debug
 
 import (
-	"errors"
 	"fmt"
 	"strings"
+
+	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 )
 
 func Print(v any) {
@@ -17,34 +18,22 @@ func Println(v any) {
 func String(v any) string {
 	switch t := v.(type) {
 	case error:
-		Error(t)
+		return wrappedError(t)
+
+	case ast.Literal:
+		return astLiteral(t)
+	case ast.Variable:
+		return astVariable(t)
+	case ast.Assign:
+		return astAssign(t)
+	case ast.If:
+		return astIf(t)
 	}
 
 	return fmt.Sprintf("%+v", v)
 }
 
-func Error(e error) string {
-	sb := strings.Builder{}
-
-	if e == nil {
-		sb.WriteString("No error")
-	} else {
-		addErr(&sb, e)
-	}
-
-	return indentLines(sb.String())
-}
-
-func addErr(sb *strings.Builder, e error) {
-	if next := errors.Unwrap(e); next != nil {
-		addErr(sb, next)
-		sb.WriteRune('\n')
-	}
-
-	sb.WriteString(e.Error())
-}
-
-func indentLines(s string) string {
-	s = strings.ReplaceAll(s, "\n", "\n\t")
-	return strings.TrimSpace(s)
+func indentLines(s string, n int) string {
+	indents := strings.Repeat("  ", n)
+	return strings.ReplaceAll(s, "\n", "\n"+indents)
 }

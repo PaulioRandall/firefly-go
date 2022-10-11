@@ -1,0 +1,21 @@
+
+mapToString := M(_, v)
+	v < 0: "Negative"
+	v > 0: "Positive"
+end
+
+mapToName := M(n, default)
+	is 0: "Zero"
+	is 1: "One"
+	is 2: "Two"
+	true: default
+end
+
+mapToMessage := M(v)
+	v == 0: "Is 0"
+	is 1:   "Is 1"
+	is 2:   "Is 2"
+	v > 2:  "Greater than 2"
+	true:   "Negative"
+end
+

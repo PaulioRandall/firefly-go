@@ -34,77 +34,40 @@ type Expr interface {
 	expr()
 }
 
-type baseNode struct{}
-
-func (n baseNode) node() {}
-
-type baseStmt struct{ baseNode }
-
-func (n baseStmt) stmt() {}
-
-type baseProc struct{ baseStmt }
-
-func (n baseProc) proc() {}
-
-type baseExpr struct{ baseProc }
-
-func (n baseExpr) expr() {}
-
 type Literal struct {
-	baseExpr
-	Token token.Token
+	Operator token.Token
 }
 
-func MakeLiteral(tk token.Token) Literal {
-	return Literal{
-		Token: tk,
-	}
-}
+func (n Literal) node() {}
+func (n Literal) stmt() {}
+func (n Literal) proc() {}
+func (n Literal) expr() {}
 
 type Variable struct {
-	baseExpr
-	Token token.Token
+	Operator token.Token
 }
 
-func MakeVariable(tk token.Token) Variable {
-	return Variable{
-		Token: tk,
-	}
-}
+func (n Variable) node() {}
+func (n Variable) stmt() {}
+func (n Variable) proc() {}
+func (n Variable) expr() {}
 
 type Assign struct {
-	baseProc
 	Left     []Variable
 	Operator token.Token
 	Right    []Expr
 }
 
-func MakeAssign(left []Variable, op token.Token, right []Expr) Assign {
-	return Assign{
-		Left:     left,
-		Operator: op,
-		Right:    right,
-	}
-}
+func (n Assign) node() {}
+func (n Assign) stmt() {}
+func (n Assign) proc() {}
 
 type If struct {
-	baseExpr
 	Keyword   token.Token
 	Condition Expr
 	Body      []Stmt
 	End       token.Token
 }
 
-func MakeIf(
-	keyword token.Token,
-	condition Expr,
-	body []Stmt,
-	end token.Token,
-) If {
-	return If{
-		Keyword:   keyword,
-		Condition: condition,
-		Body:      body,
-		End:       end,
-	}
-}
+func (n If) node() {}
+func (n If) stmt() {}

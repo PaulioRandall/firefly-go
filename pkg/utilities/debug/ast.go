@@ -6,18 +6,20 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 )
 
-func AstVariable(n ast.Variable) string {
-	return fmt.Sprintf("Variable %q", n.Token.Value)
+func astVariable(n ast.Variable) string {
+	return fmt.Sprintf("Variable %q", n.Operator.Value)
 }
 
-func AstLiteral(n ast.Literal) string {
-	return fmt.Sprintf("Literal %q", n.Token.Value)
+func astLiteral(n ast.Literal) string {
+	return fmt.Sprintf("Literal %q", n.Operator.Value)
 }
 
-func AstAssign(n ast.Assign) string {
-	return fmt.Sprintf("TODO: %q", n.Operator.Value)
+func astAssign(n ast.Assign) string {
+	// TODO
+	return fmt.Sprintf("Assign: %q", n.Operator.Value)
 }
 
-func AstIf(n ast.If) string {
+func astIf(n ast.If) string {
+	// TODO
 	return fmt.Sprintf("If %q", n.Keyword.Value)
 }
