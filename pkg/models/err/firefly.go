@@ -31,6 +31,18 @@ func Newf(m string, args ...any) *fireflyError {
 	}
 }
 
+func NewPos(from pos.Pos, m string) *fireflyError {
+	e := New(m)
+	e.from = from
+	return e
+}
+
+func NewPosf(from pos.Pos, m string, args ...any) *fireflyError {
+	e := Newf(m, args...)
+	e.from = from
+	return e
+}
+
 func Wrap(cause error, m string) *fireflyError {
 	e := New(m)
 	e.cause = cause

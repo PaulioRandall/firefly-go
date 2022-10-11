@@ -36,9 +36,7 @@ func (a *auditor) peekNext() token.Token {
 		return tk
 	}
 
-	// TODO: Replace with FireflyError
-	e := err.AfterToken(a.prev, nil, "Failed to peek token from buffer")
-	panic(e)
+	panic(err.NewPos(a.prev.To, "Failed to peek token from buffer"))
 }
 
 func (a *auditor) readNext() token.Token {
@@ -48,9 +46,7 @@ func (a *auditor) readNext() token.Token {
 		return tk
 	}
 
-	// TODO: Replace with FireflyError
-	e := err.AfterToken(a.prev, nil, "Failed to read token from buffer")
-	panic(e)
+	panic(err.NewPos(a.prev.To, "Failed to read token from buffer"))
 }
 
 func (a *auditor) putback(tk token.Token) {
@@ -64,9 +60,7 @@ func (a *auditor) loadBuffer() {
 
 	tk, e := a.reader.Read()
 	if e != nil {
-		// TODO: Replace with FireflyError
-		e = err.AfterToken(a.prev, e, "Failed to read token")
-		panic(e)
+		panic(err.WrapPos(e, a.prev.To, "Failed to read token from reader"))
 	}
 
 	a.buffer.Add(tk)
@@ -118,16 +112,12 @@ func (a *auditor) expect(want token.TokenType) token.Token {
 
 func (a *auditor) expectFunc(exp any, f func(token.TokenType) bool) token.Token {
 	if !a.more() {
-		// TODO: Replace with FireflyError
-		e := err.AfterToken(a.prev, UnexpectedEOF, "Expected %q but got EOF", exp)
-		panic(e)
+		panic(err.WrapPosf(UnexpectedEOF, a.prev.To, "Expected %q but got EOF", exp))
 	}
 
 	tk := a.readNext()
 	if !f(tk.TokenType) {
-		// TODO: Replace with FireflyError
-		e := err.AtToken(tk, UnexpectedToken, "Expected %q but got %q", exp, tk.TokenType)
-		panic(e)
+		panic(err.WrapPosf(UnexpectedToken, a.prev.To, "Expected %q but got %q", exp, tk.TokenType))
 	}
 
 	a.prev = tk
