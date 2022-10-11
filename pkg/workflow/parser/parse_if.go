@@ -12,7 +12,7 @@ func parseIf(a *auditor) ast.If {
 	n.Condition = expectExpression(a)
 	a.expect(token.Terminator)
 	n.Body = acceptStatements(a)
-	n.End = a.expect(token.End)
+	n.End = a.expectWith(MissingEnd, token.End)
 
 	return n
 }

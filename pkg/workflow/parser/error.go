@@ -5,7 +5,9 @@ import (
 )
 
 var (
+	UnexpectedToken = errors.New("Unexpected token")
 	MissingVar      = errors.New("Missing variable")
 	MissingExpr     = errors.New("Missing expression")
-	UnexpectedToken = errors.New("Unexpected token")
+	MissingStmt     = errors.New("Missing statement")
+	MissingEnd      = errors.New("Missing end")
 )

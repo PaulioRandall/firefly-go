@@ -89,12 +89,12 @@ func (a *auditor) doesNextMatch(f func(token.TokenType) bool) bool {
 }
 
 func (a *auditor) accept(want token.TokenType) bool {
-	return a.acceptIf(func(have token.TokenType) bool {
+	return a.acceptFunc(func(have token.TokenType) bool {
 		return want == have
 	})
 }
 
-func (a *auditor) acceptIf(f func(token.TokenType) bool) bool {
+func (a *auditor) acceptFunc(f func(token.TokenType) bool) bool {
 	if !a.more() {
 		return false
 	}
@@ -108,12 +108,12 @@ func (a *auditor) acceptIf(f func(token.TokenType) bool) bool {
 }
 
 func (a *auditor) expect(want token.TokenType) token.Token {
-	return a.expectIf(func(have token.TokenType) bool {
+	return a.expectFunc(want.String(), func(have token.TokenType) bool {
 		return want == have
-	}, want.String())
+	})
 }
 
-func (a *auditor) expectIf(f func(token.TokenType) bool, exp any) token.Token {
+func (a *auditor) expectFunc(exp any, f func(token.TokenType) bool) token.Token {
 	if !a.more() {
 		e := err.AfterToken(a.prev, err.UnexpectedEOF, "Expected %q but got EOF", exp)
 		panic(e)
@@ -122,6 +122,26 @@ func (a *auditor) expectIf(f func(token.TokenType) bool, exp any) token.Token {
 	tk := a.readNext()
 	if !f(tk.TokenType) {
 		e := err.AtToken(tk, UnexpectedToken, "Expected %q but got %q", exp, tk.TokenType)
+		panic(e)
+	}
+
+	a.prev = tk
+	return a.prev
+}
+
+func (a *auditor) expectWith(e error, want token.TokenType) token.Token {
+	return a.expectFuncWith(e, func(have token.TokenType) bool {
+		return want == have
+	})
+}
+
+func (a *auditor) expectFuncWith(e error, f func(token.TokenType) bool) token.Token {
+	if !a.more() {
+		panic(e)
+	}
+
+	tk := a.readNext()
+	if !f(tk.TokenType) {
 		panic(e)
 	}
 

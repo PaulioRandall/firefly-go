@@ -25,6 +25,6 @@ func expectExpression(a *auditor) ast.Expr {
 
 func expectLiteral(a *auditor) ast.Expr {
 	return ast.Literal{
-		Token: a.expectIf(token.IsLiteral, "literal"),
+		Token: a.expectFunc("literal", token.IsLiteral),
 	}
 }

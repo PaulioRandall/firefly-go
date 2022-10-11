@@ -263,3 +263,20 @@ func Test_10(t *testing.T) {
 
 	assert(t, given, exp)
 }
+
+func Test_11(t *testing.T) {
+	// if true
+	//   a = 0
+
+	given := []token.Token{
+		tok1(token.If, "if"),
+		tok1(token.True, "true"),
+		tok1(token.Terminator, "\n"),
+		tok1(token.Var, "a"),
+		tok1(token.Assign, "="),
+		tok1(token.Number, "0"),
+		tok1(token.Terminator, "\n"),
+	}
+
+	assertError(t, given, MissingEnd)
+}

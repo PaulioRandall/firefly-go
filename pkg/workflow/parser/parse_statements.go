@@ -7,8 +7,6 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
-var MissingStmt = errors.New("Missing statement")
-
 func acceptStatements(a *auditor) []ast.Stmt {
 	var nodes []ast.Stmt
 
