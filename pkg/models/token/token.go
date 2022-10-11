@@ -31,15 +31,12 @@ func MakeTokenAt(tt TokenType, v string, from pos.Pos) Token {
 	}
 }
 
-func (tk Token) Where() pos.Range {
-	return pos.Range{
-		From: tk.From,
-		To:   tk.To,
-	}
+func (tk Token) Where() (pos.Pos, pos.Pos) {
+	return tk.From, tk.To
 }
 
 func (tk Token) Debug() string {
-	return fmt.Sprintf("%s %q %s", tk.TokenType.String(), tk.Value, tk.Where())
+	return fmt.Sprintf("%s %q %s", tk.TokenType.String(), tk.Value, pos.RangeString(tk.From, tk.To))
 }
 
 func (tk Token) String() string {

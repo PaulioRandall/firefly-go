@@ -59,35 +59,6 @@ func (p Pos) String() string {
 	return fmt.Sprintf("Offset=%d Line=%d Col=%d", p.Offset, p.Line, p.Col)
 }
 
-// ***** RETIRE *****
-
-type Range struct {
-	From Pos
-	To   Pos // exclusive
-}
-
-func RangeForString(from Pos, s string) Range {
-	rng := Range{
-		From: from,
-		To:   from,
-	}
-
-	rng.ShiftString(s)
-	return rng
-}
-
-func RawRangeForString(offset, line, col int, s string) Range {
-	return RangeForString(
-		At(offset, line, col),
-		s,
-	)
-}
-
-func (r *Range) ShiftString(s string) {
-	r.From = r.To
-	r.To.IncrementBy(s)
-}
-
-func (r Range) String() string {
-	return fmt.Sprintf("from { %v } to { %v }", r.From, r.To)
+func RangeString(from, to Pos) string {
+	return fmt.Sprintf("from { %v } to { %v }", from, to)
 }
