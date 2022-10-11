@@ -7,9 +7,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/PaulioRandall/firefly-go/pkg/models/err"
 	"github.com/PaulioRandall/firefly-go/pkg/models/pos"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
+	"github.com/PaulioRandall/firefly-go/pkg/utilities/debug"
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 
 	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
@@ -21,7 +21,7 @@ func assertToken(t *testing.T, given string, expType token.TokenType) {
 
 	e := Scan(r, w)
 
-	require.Nil(t, e, "Expected %q but got %+v", expType.String(), err.Debug(e))
+	require.Nil(t, e, "Expected %q but got %+v", expType.String(), debug.String(e))
 	require.Equal(t, 1, len(w.List()))
 
 	actType := w.List()[0].TokenType
