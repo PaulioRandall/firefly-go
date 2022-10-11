@@ -78,10 +78,10 @@ func Test_6_runeReader_Read(t *testing.T) {
 	r := NewRuneReader(lr)
 
 	_, _ = r.Read()
-	require.Equal(t, pos.PosAt(1, 0, 1), r.Where())
+	require.Equal(t, pos.At(1, 0, 1), r.Where())
 
 	_, _ = r.Read()
-	require.Equal(t, pos.PosAt(2, 0, 2), r.Where())
+	require.Equal(t, pos.At(2, 0, 2), r.Where())
 }
 
 func Test_7_runeReader_Read(t *testing.T) {
@@ -89,7 +89,7 @@ func Test_7_runeReader_Read(t *testing.T) {
 	r := NewRuneReader(lr)
 
 	_, _ = r.Read()
-	require.Equal(t, pos.PosAt(1, 1, 0), r.Where())
+	require.Equal(t, pos.At(1, 1, 0), r.Where())
 }
 
 func Test_8_runeReader_Read(t *testing.T) {
@@ -97,17 +97,17 @@ func Test_8_runeReader_Read(t *testing.T) {
 	r := NewRuneReader(lr)
 
 	_, _ = r.Read()
-	require.Equal(t, pos.PosAt(1, 1, 0), r.Where())
+	require.Equal(t, pos.At(1, 1, 0), r.Where())
 
 	_, _ = r.Read()
-	require.Equal(t, pos.PosAt(2, 1, 1), r.Where())
+	require.Equal(t, pos.At(2, 1, 1), r.Where())
 
 	_, _ = r.Read()
-	require.Equal(t, pos.PosAt(3, 2, 0), r.Where())
+	require.Equal(t, pos.At(3, 2, 0), r.Where())
 
 	_, _ = r.Read()
-	require.Equal(t, pos.PosAt(4, 2, 1), r.Where())
+	require.Equal(t, pos.At(4, 2, 1), r.Where())
 
 	_, _ = r.Read()
-	require.Equal(t, pos.PosAt(5, 3, 0), r.Where())
+	require.Equal(t, pos.At(5, 3, 0), r.Where())
 }
