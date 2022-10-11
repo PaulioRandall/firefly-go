@@ -29,6 +29,15 @@ func EndOf(from Pos, s string) Pos {
 	return from
 }
 
+func RangeFor(from Pos, s string) (Pos, Pos) {
+	return from, EndOf(from, s)
+}
+
+func RawRangeFor(offset, line, col int, s string) (Pos, Pos) {
+	from := At(offset, line, col)
+	return from, EndOf(from, s)
+}
+
 func (p *Pos) Increment(ru rune) {
 	p.Offset++
 
@@ -55,13 +64,6 @@ func (p Pos) String() string {
 type Range struct {
 	From Pos
 	To   Pos // exclusive
-}
-
-func RangeFor(from, to Pos) Range {
-	return Range{
-		From: from,
-		To:   to,
-	}
 }
 
 func RangeForString(from Pos, s string) Range {

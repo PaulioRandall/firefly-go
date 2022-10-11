@@ -54,10 +54,10 @@ func Test_1_Scan(t *testing.T) {
 func Test_7_Scan(t *testing.T) {
 	given := "\n"
 	exp := []token.Token{
-		token.MakeToken(
+		token.MakeTokenAt(
 			token.Newline,
 			given,
-			pos.RawRangeForString(0, 0, 0, given),
+			pos.At(0, 0, 0),
 		),
 	}
 

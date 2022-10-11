@@ -111,8 +111,7 @@ func (tb *tokenBuilder) expectFunc(
 func (tb *tokenBuilder) build() token.Token {
 	s := tb.String()
 
-	rng := pos.RangeFor(tb.start, tb.r.Where())
-	tk := token.MakeToken(tb.tt, s, rng)
+	tk := token.MakeToken(tb.tt, s, tb.start, tb.r.Where())
 
 	tb.start = tb.r.Where()
 	tb.tt = token.Unknown

@@ -10,17 +10,17 @@ import (
 )
 
 func Tok(tt token.TokenType, v string) token.Token {
-	return token.MakeToken(tt, v, pos.RawRangeForString(0, 0, 0, v))
+	return token.MakeTokenAt(tt, v, pos.Pos{})
 }
 
 type TokenGenerator func(token.TokenType, string) token.Token
 
 func NewTokenGenerator() TokenGenerator {
-	prev := pos.Range{}
+	var from, to pos.Pos
 
 	return func(tt token.TokenType, v string) token.Token {
-		prev.ShiftString(v)
-		return token.MakeToken(tt, v, prev)
+		from, to = pos.RangeFor(to, v)
+		return token.MakeToken(tt, v, from, to)
 	}
 }
 
