@@ -3,7 +3,7 @@ package inout
 import (
 	"io"
 
-	"github.com/PaulioRandall/firefly-go/pkg/utilities/pos"
+	"github.com/PaulioRandall/firefly-go/pkg/models/pos"
 )
 
 var EOF = io.EOF

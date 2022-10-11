@@ -5,8 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/PaulioRandall/firefly-go/pkg/utilities/pos"
-
+	"github.com/PaulioRandall/firefly-go/pkg/models/pos"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 

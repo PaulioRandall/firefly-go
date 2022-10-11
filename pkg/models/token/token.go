@@ -3,7 +3,7 @@ package token
 import (
 	"fmt"
 
-	"github.com/PaulioRandall/firefly-go/pkg/utilities/pos"
+	"github.com/PaulioRandall/firefly-go/pkg/models/pos"
 )
 
 type Token struct {
