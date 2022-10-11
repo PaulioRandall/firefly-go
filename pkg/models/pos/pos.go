@@ -18,17 +18,18 @@ func At(offset, line, col int) Pos {
 	}
 }
 
-func IncRune(p Pos, ru rune) Pos {
-	p.IncRune(ru)
+func EndAt(offset, line, col int, s string) Pos {
+	p := At(offset, line, col)
+	p.IncrementBy(s)
 	return p
 }
 
-func IncString(p Pos, s string) Pos {
-	p.IncString(s)
-	return p
+func EndOf(from Pos, s string) Pos {
+	from.IncrementBy(s)
+	return from
 }
 
-func (p *Pos) IncRune(ru rune) {
+func (p *Pos) Increment(ru rune) {
 	p.Offset++
 
 	if ru == '\n' {
@@ -39,17 +40,17 @@ func (p *Pos) IncRune(ru rune) {
 	}
 }
 
-func (p *Pos) IncString(s string) {
+func (p *Pos) IncrementBy(s string) {
 	for _, ru := range s {
-		p.IncRune(ru)
+		p.Increment(ru)
 	}
 }
-
-// ***** RETIRE *****
 
 func (p Pos) String() string {
 	return fmt.Sprintf("Offset=%d Line=%d Col=%d", p.Offset, p.Line, p.Col)
 }
+
+// ***** RETIRE *****
 
 type Range struct {
 	From Pos
@@ -82,7 +83,7 @@ func RawRangeForString(offset, line, col int, s string) Range {
 
 func (r *Range) ShiftString(s string) {
 	r.From = r.To
-	r.To.IncString(s)
+	r.To.IncrementBy(s)
 }
 
 func (r Range) String() string {

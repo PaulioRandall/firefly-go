@@ -33,7 +33,7 @@ func (r *runeReader) Read() (rune, error) {
 		return rune(0), e // TODO: Wrap error with pos
 	}
 
-	r.pos.IncRune(ru)
+	r.pos.Increment(ru)
 	return ru, nil
 }
 
