@@ -119,7 +119,7 @@ func (a *auditor) expect(want token.TokenType) token.Token {
 func (a *auditor) expectFunc(exp any, f func(token.TokenType) bool) token.Token {
 	if !a.more() {
 		// TODO: Replace with FireflyError
-		e := err.AfterToken(a.prev, err.UnexpectedEOF, "Expected %q but got EOF", exp)
+		e := err.AfterToken(a.prev, UnexpectedEOF, "Expected %q but got EOF", exp)
 		panic(e)
 	}
 

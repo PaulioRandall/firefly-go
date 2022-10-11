@@ -1,14 +1,14 @@
 package parser
 
 import (
-	"errors"
+	"github.com/PaulioRandall/firefly-go/pkg/models/err"
 )
 
 var (
-	// TODO: Replace with FireflyError
-	UnexpectedToken = errors.New("Unexpected token")
-	MissingVar      = errors.New("Missing variable")
-	MissingExpr     = errors.New("Missing expression")
-	MissingStmt     = errors.New("Missing statement")
-	MissingEnd      = errors.New("Missing end")
+	UnexpectedEOF   = err.New("Unexpected end of file")
+	UnexpectedToken = err.New("Unexpected token")
+	MissingVar      = err.New("Missing variable")
+	MissingExpr     = err.New("Missing expression")
+	MissingStmt     = err.New("Missing statement")
+	MissingEnd      = err.New("Missing end")
 )
