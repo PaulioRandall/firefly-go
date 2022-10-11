@@ -18,7 +18,15 @@ func At(offset, line, col int) Pos {
 	}
 }
 
-// ***** RETIRE *****
+func IncRune(p Pos, ru rune) Pos {
+	p.IncRune(ru)
+	return p
+}
+
+func IncString(p Pos, s string) Pos {
+	p.IncString(s)
+	return p
+}
 
 func (p *Pos) IncRune(ru rune) {
 	p.Offset++
@@ -36,6 +44,8 @@ func (p *Pos) IncString(s string) {
 		p.IncRune(ru)
 	}
 }
+
+// ***** RETIRE *****
 
 func (p Pos) String() string {
 	return fmt.Sprintf("Offset=%d Line=%d Col=%d", p.Offset, p.Line, p.Col)
