@@ -54,13 +54,13 @@ func Test_3(t *testing.T) {
 	given := []token.Token{
 		tok(token.Number, "0"),
 		tok(token.Newline, "\n"),
-		tok(token.Var, "a"),
+		tok(token.Identifier, "a"),
 	}
 
 	exp := []token.Token{
 		tok(token.Number, "0"),
 		tok(token.Terminator, "\n"),
-		tok(token.Var, "a"),
+		tok(token.Identifier, "a"),
 	}
 
 	assert(t, given, exp)

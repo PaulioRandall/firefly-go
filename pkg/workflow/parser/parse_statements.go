@@ -29,7 +29,7 @@ func expectStatements(a *auditor) []ast.Stmt {
 
 func expectStatement(a *auditor) (n ast.Stmt) {
 	switch {
-	case a.accept(token.Var):
+	case a.accept(token.Identifier):
 		n = expectVariableStatement(a, a.prev)
 
 	case a.isNext(token.If):

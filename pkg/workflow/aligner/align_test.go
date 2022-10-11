@@ -77,13 +77,13 @@ func Test_8_Align(t *testing.T) {
 	// c,]
 	given := []token.Token{
 		tok(token.BracketOpen, "["),
-		tok(token.Var, "a"),
+		tok(token.Identifier, "a"),
 		tok(token.Comma, ",1"),
 		tok(token.Terminator, "\n1"),
-		tok(token.Var, "b"),
+		tok(token.Identifier, "b"),
 		tok(token.Comma, ",2"),
 		tok(token.Terminator, "\n2"),
-		tok(token.Var, "c"),
+		tok(token.Identifier, "c"),
 		tok(token.Comma, ",3"),
 		tok(token.BracketClose, "]"),
 	}
@@ -91,11 +91,11 @@ func Test_8_Align(t *testing.T) {
 	// [a,b,c]
 	exp := []token.Token{
 		tok(token.BracketOpen, "["),
-		tok(token.Var, "a"),
+		tok(token.Identifier, "a"),
 		tok(token.Comma, ",1"),
-		tok(token.Var, "b"),
+		tok(token.Identifier, "b"),
 		tok(token.Comma, ",2"),
-		tok(token.Var, "c"),
+		tok(token.Identifier, "c"),
 		tok(token.BracketClose, "]"),
 	}
 
@@ -108,15 +108,15 @@ func Test_9_Align(t *testing.T) {
 	// d,]
 	given := []token.Token{
 		tok(token.BracketOpen, "["),
-		tok(token.Var, "a"),
+		tok(token.Identifier, "a"),
 		tok(token.Comma, ",1"),
 		tok(token.Terminator, "\n2"),
-		tok(token.Var, "b"),
+		tok(token.Identifier, "b"),
 		tok(token.Comma, ",2"),
-		tok(token.Var, "c"),
+		tok(token.Identifier, "c"),
 		tok(token.Comma, ",3"),
 		tok(token.Terminator, "\n3"),
-		tok(token.Var, "d"),
+		tok(token.Identifier, "d"),
 		tok(token.Comma, ",4"),
 		tok(token.BracketClose, "]"),
 	}
@@ -124,13 +124,13 @@ func Test_9_Align(t *testing.T) {
 	// [a,b,c,d]
 	exp := []token.Token{
 		tok(token.BracketOpen, "["),
-		tok(token.Var, "a"),
+		tok(token.Identifier, "a"),
 		tok(token.Comma, ",1"),
-		tok(token.Var, "b"),
+		tok(token.Identifier, "b"),
 		tok(token.Comma, ",2"),
-		tok(token.Var, "c"),
+		tok(token.Identifier, "c"),
 		tok(token.Comma, ",3"),
-		tok(token.Var, "d"),
+		tok(token.Identifier, "d"),
 		tok(token.BracketClose, "]"),
 	}
 

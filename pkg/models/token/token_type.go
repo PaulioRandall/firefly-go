@@ -7,17 +7,12 @@ const (
 
 	Newline    // '\n'
 	Terminator // ;
-	Var        // TODO: Rename to Variable
+	Identifier
 
 	_redundant_begin
 	Space
 	Comment
 	_redundant_end
-
-	_literal_begin
-	Number
-	String
-	_literal_end
 
 	_keywords_begin
 	If
@@ -29,9 +24,13 @@ const (
 	E
 	F
 	End
+	_literal_begin
 	True
 	False
 	_keywords_end
+	Number
+	String
+	_literal_end
 
 	_operators_begin
 	Assign // =
@@ -68,10 +67,11 @@ const (
 	_operators_end
 )
 
+// TODO: create meta data type with readable name & symbol
 var symbolMap = map[TokenType]string{
 	Newline:      "\n",
 	Terminator:   ";",
-	Var:          "",
+	Identifier:   "",
 	Space:        " ",
 	Comment:      "//",
 	Number:       "0",
@@ -116,9 +116,7 @@ func (tt TokenType) String() string {
 }
 
 func IsLiteral(tt TokenType) bool {
-	return tt == False ||
-		tt == True ||
-		(tt > _literal_begin && tt < _literal_end)
+	return tt > _literal_begin && tt < _literal_end
 }
 
 func IsRedundant(tt TokenType) bool {
@@ -145,7 +143,7 @@ func IdentifyWordType(s string) TokenType {
 	})
 
 	if tt == Unknown {
-		return Var
+		return Identifier
 	}
 	return tt
 }

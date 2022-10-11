@@ -238,27 +238,27 @@ func Test_56_Scan(t *testing.T) {
 }
 
 func Test_60_Scan(t *testing.T) {
-	assertToken(t, "abc", token.Var)
+	assertToken(t, "abc", token.Identifier)
 }
 
 func Test_61_Scan(t *testing.T) {
-	assertToken(t, "abc_xyz", token.Var)
+	assertToken(t, "abc_xyz", token.Identifier)
 }
 
 func Test_62_Scan(t *testing.T) {
-	assertToken(t, "forest", token.Var)
+	assertToken(t, "forest", token.Identifier)
 }
 
 func Test_63_Scan(t *testing.T) {
-	assertToken(t, "For", token.Var)
+	assertToken(t, "For", token.Identifier)
 }
 
 func Test_64_Scan(t *testing.T) {
-	assertToken(t, "FOR", token.Var)
+	assertToken(t, "FOR", token.Identifier)
 }
 
 func Test_65_Scan(t *testing.T) {
-	assertToken(t, "e", token.Var)
+	assertToken(t, "e", token.Identifier)
 }
 
 func Test_70_Scan(t *testing.T) {
@@ -362,7 +362,7 @@ func Test_200_Scan(t *testing.T) {
 
 	gen := tokentest.NewTokenGenerator()
 	exp := []token.Token{
-		gen(token.Var, "x"),
+		gen(token.Identifier, "x"),
 		gen(token.Space, " "),
 		gen(token.Assign, "="),
 		gen(token.Space, " "),
@@ -391,17 +391,17 @@ func Test_201_Scan(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 	exp := []token.Token{
 		// `x = true`
-		gen(token.Var, "x"),
+		gen(token.Identifier, "x"),
 		gen(token.Space, " "),
 		gen(token.Assign, "="),
 		gen(token.Space, " "),
 		gen(token.True, "true"),
 		gen(token.Newline, "\n"),
 		// `y, z = 1, "string"`
-		gen(token.Var, "y"),
+		gen(token.Identifier, "y"),
 		gen(token.Comma, ","),
 		gen(token.Space, " "),
-		gen(token.Var, "z"),
+		gen(token.Identifier, "z"),
 		gen(token.Space, " "),
 		gen(token.Assign, "="),
 		gen(token.Space, " "),
@@ -416,28 +416,28 @@ func Test_201_Scan(t *testing.T) {
 		gen(token.Comment, "// A function"),
 		gen(token.Newline, "\n"),
 		// `f := F(a, b) c, d {`
-		gen(token.Var, "f"),
+		gen(token.Identifier, "f"),
 		gen(token.Space, " "),
 		gen(token.Define, ":="),
 		gen(token.Space, " "),
 		gen(token.F, "F"),
 		gen(token.ParenOpen, "("),
-		gen(token.Var, "a"),
+		gen(token.Identifier, "a"),
 		gen(token.Comma, ","),
 		gen(token.Space, " "),
-		gen(token.Var, "b"),
+		gen(token.Identifier, "b"),
 		gen(token.ParenClose, ")"),
 		gen(token.Space, " "),
-		gen(token.Var, "c"),
+		gen(token.Identifier, "c"),
 		gen(token.Comma, ","),
 		gen(token.Space, " "),
-		gen(token.Var, "d"),
+		gen(token.Identifier, "d"),
 		gen(token.Newline, "\n"),
 		// `	when a`
 		gen(token.Space, "\t"),
 		gen(token.When, "when"),
 		gen(token.Space, " "),
-		gen(token.Var, "a"),
+		gen(token.Identifier, "a"),
 		gen(token.Newline, "\n"),
 		// ` 	is 1: @println("one")`
 		gen(token.Space, "\t\t"),
@@ -447,22 +447,22 @@ func Test_201_Scan(t *testing.T) {
 		gen(token.Colon, ":"),
 		gen(token.Space, " "),
 		gen(token.Spell, "@"),
-		gen(token.Var, "println"),
+		gen(token.Identifier, "println"),
 		gen(token.ParenOpen, "("),
 		gen(token.String, `"one"`),
 		gen(token.ParenClose, ")"),
 		gen(token.Newline, "\n"),
 		// `		a == b: @println("b")`,
 		gen(token.Space, "\t\t"),
-		gen(token.Var, "a"),
+		gen(token.Identifier, "a"),
 		gen(token.Space, " "),
 		gen(token.EQU, "=="),
 		gen(token.Space, " "),
-		gen(token.Var, "b"),
+		gen(token.Identifier, "b"),
 		gen(token.Colon, ":"),
 		gen(token.Space, " "),
 		gen(token.Spell, "@"),
-		gen(token.Var, "println"),
+		gen(token.Identifier, "println"),
 		gen(token.ParenOpen, "("),
 		gen(token.String, `"a == b"`),
 		gen(token.ParenClose, ")"),
@@ -473,7 +473,7 @@ func Test_201_Scan(t *testing.T) {
 		gen(token.Colon, ":"),
 		gen(token.Space, " "),
 		gen(token.Spell, "@"),
-		gen(token.Var, "println"),
+		gen(token.Identifier, "println"),
 		gen(token.ParenOpen, "("),
 		gen(token.String, `"meh"`),
 		gen(token.ParenClose, ")"),

@@ -23,7 +23,7 @@ func aud(given ...token.Token) *auditor {
 func Test_1_auditor_accept(t *testing.T) {
 	a := aud()
 
-	accepted := a.accept(token.Var)
+	accepted := a.accept(token.Identifier)
 
 	require.False(t, accepted)
 }
@@ -41,13 +41,13 @@ func Test_2_auditor_accept(t *testing.T) {
 
 func Test_3_auditor_accept(t *testing.T) {
 	a := aud(
-		tok2(token.Var, "a"),
+		tok2(token.Identifier, "a"),
 	)
 
-	accepted := a.accept(token.Var)
+	accepted := a.accept(token.Identifier)
 
 	require.True(t, accepted)
-	require.Equal(t, tok2(token.Var, "a"), a.getPrev())
+	require.Equal(t, tok2(token.Identifier, "a"), a.getPrev())
 	require.False(t, a.more())
 }
 
@@ -155,7 +155,7 @@ func Test_12_auditor_doesNextMatch(t *testing.T) {
 	)
 
 	varMatcher := func(tt token.TokenType) bool {
-		return tt == token.Var
+		return tt == token.Identifier
 	}
 
 	isMatch := a.doesNextMatch(varMatcher)
@@ -182,7 +182,7 @@ func Test_14_auditor_isNext(t *testing.T) {
 		tok2(token.String, `""`),
 	)
 
-	isMatch := a.isNext(token.Var)
+	isMatch := a.isNext(token.Identifier)
 
 	require.False(t, isMatch)
 }

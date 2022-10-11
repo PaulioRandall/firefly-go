@@ -19,9 +19,9 @@ func Test_1_IdentifyWordType(t *testing.T) {
 		"end":   End,
 		"true":  True,
 		"false": False,
-		"abc":   Var,
-		"For":   Var,
-		"e":     Var,
+		"abc":   Identifier,
+		"For":   Identifier,
+		"e":     Identifier,
 	}
 
 	for val, tt := range words {

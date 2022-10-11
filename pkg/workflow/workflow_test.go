@@ -32,7 +32,7 @@ func Test_2_Workflow(t *testing.T) {
 
 	var (
 		gen    = tokentest.NewTokenGenerator()
-		varTk  = gen(token.Var, "a")
+		varTk  = gen(token.Identifier, "a")
 		_      = gen(token.Space, " ")
 		assSym = gen(token.Assign, "=")
 		_      = gen(token.Space, " ")
@@ -61,13 +61,13 @@ func Test_3_Workflow(t *testing.T) {
 
 	var (
 		gen     = tokentest.NewTokenGenerator()
-		varTk1  = gen(token.Var, "a")
+		varTk1  = gen(token.Identifier, "a")
 		_       = gen(token.Comma, ",")
 		_       = gen(token.Space, " ")
-		varTk2  = gen(token.Var, "b")
+		varTk2  = gen(token.Identifier, "b")
 		_       = gen(token.Comma, ",")
 		_       = gen(token.Space, " ")
-		varTk3  = gen(token.Var, "c")
+		varTk3  = gen(token.Identifier, "c")
 		_       = gen(token.Space, " ")
 		assSym  = gen(token.Assign, "=")
 		_       = gen(token.Space, " ")
