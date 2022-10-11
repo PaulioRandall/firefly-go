@@ -1,7 +1,7 @@
 package ast
 
 import (
-	"fmt"
+	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
 // Node represents an AST, or put differently, a executable statement
@@ -11,9 +11,6 @@ import (
 // node's execution
 type Node interface {
 	node()
-	Debug() string
-	Print()
-	Println()
 }
 
 // Stmt is a constraint for an executable statement
@@ -39,10 +36,7 @@ type Expr interface {
 
 type baseNode struct{}
 
-func (n baseNode) node()         {}
-func (n baseNode) Debug() string { return "¯\\_(ツ)_/¯" }
-func (n baseNode) Print()        { fmt.Print(n.Debug()) }
-func (n baseNode) Println()      { fmt.Println(n.Debug()) }
+func (n baseNode) node() {}
 
 type baseStmt struct{ baseNode }
 
@@ -55,3 +49,62 @@ func (n baseProc) proc() {}
 type baseExpr struct{ baseProc }
 
 func (n baseExpr) expr() {}
+
+type Literal struct {
+	baseExpr
+	Token token.Token
+}
+
+func MakeLiteral(tk token.Token) Literal {
+	return Literal{
+		Token: tk,
+	}
+}
+
+type Variable struct {
+	baseExpr
+	Token token.Token
+}
+
+func MakeVariable(tk token.Token) Variable {
+	return Variable{
+		Token: tk,
+	}
+}
+
+type Assign struct {
+	baseProc
+	Left     []Variable
+	Operator token.Token
+	Right    []Expr
+}
+
+func MakeAssign(left []Variable, op token.Token, right []Expr) Assign {
+	return Assign{
+		Left:     left,
+		Operator: op,
+		Right:    right,
+	}
+}
+
+type If struct {
+	baseExpr
+	Keyword   token.Token
+	Condition Expr
+	Body      []Stmt
+	End       token.Token
+}
+
+func MakeIf(
+	keyword token.Token,
+	condition Expr,
+	body []Stmt,
+	end token.Token,
+) If {
+	return If{
+		Keyword:   keyword,
+		Condition: condition,
+		Body:      body,
+		End:       end,
+	}
+}
