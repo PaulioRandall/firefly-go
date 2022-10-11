@@ -1,14 +1,13 @@
 package scanner
 
 import (
-	"errors"
-
+	"github.com/PaulioRandall/firefly-go/pkg/models/err"
 	"github.com/PaulioRandall/firefly-go/pkg/models/pos"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 )
 
-var ErrNotFound = errors.New("Unknown symbol")
+var ErrNotFound = err.New("Unknown symbol")
 
 type tokenBuilder struct {
 	r     inout.RuneReader
@@ -22,10 +21,6 @@ func newTokenBuilder(r ReaderOfRunes) tokenBuilder {
 		r: inout.NewRuneReader(r),
 		w: inout.NewListWriter[rune](),
 	}
-}
-
-func (tb *tokenBuilder) err(cause error, errMsg string, args ...interface{}) error {
-	return pos.ErrorFor(tb.r.Where(), cause, errMsg, args...)
 }
 
 func (tb tokenBuilder) String() string {
@@ -43,7 +38,7 @@ func (tb *tokenBuilder) Peek() (rune, error) {
 func (tb *tokenBuilder) Read() (rune, error) {
 	ru, e := tb.r.Read()
 	if e != nil {
-		return rune(0), tb.err(e, "[tokenBuilder] Failed to read rune")
+		return rune(0), err.Wrap(e, "Failed to read rune")
 	}
 
 	tb.w.Write(ru)
@@ -71,7 +66,7 @@ func (tb *tokenBuilder) acceptFunc(f func(rune) bool) (bool, error) {
 	}
 
 	if _, e = tb.r.Read(); e != nil {
-		return false, e
+		return false, err.Wrap(e, "Failed to accept rune")
 	}
 
 	tb.w.Write(have)
@@ -93,16 +88,16 @@ func (tb *tokenBuilder) expectFunc(
 	args ...interface{}) error {
 
 	if !tb.r.More() {
-		return inout.EOF
+		return err.Wrap(inout.EOF, "Unexpected EOF")
 	}
 
 	found, e := tb.acceptFunc(f)
 	if e != nil {
-		return tb.err(e, errMsg, args...)
+		return err.Wrapf(e, errMsg, args...)
 	}
 
 	if !found {
-		return tb.err(ErrNotFound, errMsg, args...)
+		return err.Wrapf(ErrNotFound, errMsg, args...)
 	}
 
 	return nil

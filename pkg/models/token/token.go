@@ -36,7 +36,7 @@ func (tk Token) Where() (pos.Pos, pos.Pos) {
 }
 
 func (tk Token) Debug() string {
-	return fmt.Sprintf("%s %q %s", tk.TokenType.String(), tk.Value, pos.RangeString(tk.From, tk.To))
+	return fmt.Sprintf("%s %q %s", tk.TokenType.String(), tk.Value, pos.WhereString(tk))
 }
 
 func (tk Token) String() string {

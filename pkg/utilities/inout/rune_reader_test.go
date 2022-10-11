@@ -1,6 +1,7 @@
 package inout
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -13,12 +14,16 @@ func Test_enforceTypes_runeReader(t *testing.T) {
 	_ = RuneReader(&runeReader{})
 }
 
+func requireEOF(t *testing.T, e error) {
+	require.True(t, errors.Is(e, EOF), "Expected EOF error")
+}
+
 func Test_1_runeReader_Peek(t *testing.T) {
 	lr := NewListReader([]rune(""))
 	r := NewRuneReader(lr)
 
 	_, e := r.Peek()
-	require.Equal(t, EOF, e)
+	requireEOF(t, e)
 	require.Empty(t, r.Where())
 }
 
@@ -45,7 +50,7 @@ func Test_3_runeReader_Read(t *testing.T) {
 
 	_, e := r.Read()
 
-	require.Equal(t, EOF, e)
+	requireEOF(t, e)
 	require.Empty(t, r.Where())
 }
 

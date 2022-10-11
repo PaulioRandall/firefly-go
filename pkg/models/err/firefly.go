@@ -43,7 +43,31 @@ func Wrapf(cause error, m string, args ...any) *fireflyError {
 	return e
 }
 
-func (e *fireflyError) SetWhere(from, to pos.Pos) *fireflyError {
+func WrapPos(cause error, from pos.Pos, m string) *fireflyError {
+	e := New(m)
+	e.cause = cause
+	e.from = from
+	return e
+}
+
+func WrapPosf(cause error, from pos.Pos, m string, args ...any) *fireflyError {
+	e := Newf(m, args...)
+	e.cause = cause
+	e.from = from
+	return e
+}
+
+func WrapRange(cause error, from, to pos.Pos, m string) *fireflyError {
+	e := New(m)
+	e.cause = cause
+	e.from = from
+	e.to = to
+	return e
+}
+
+func WrapRangef(cause error, from, to pos.Pos, m string, args ...any) *fireflyError {
+	e := Newf(m, args...)
+	e.cause = cause
 	e.from = from
 	e.to = to
 	return e

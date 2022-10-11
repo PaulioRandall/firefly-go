@@ -4,6 +4,10 @@ import (
 	"fmt"
 )
 
+type Wherer interface {
+	Where() (from, to Pos)
+}
+
 type Pos struct {
 	Offset int
 	Line   int // index
@@ -60,5 +64,10 @@ func (p Pos) String() string {
 }
 
 func RangeString(from, to Pos) string {
+	return fmt.Sprintf("from { %v } to { %v }", from, to)
+}
+
+func WhereString(wherer Wherer) string {
+	from, to := wherer.Where()
 	return fmt.Sprintf("from { %v } to { %v }", from, to)
 }

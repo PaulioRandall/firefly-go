@@ -3,10 +3,11 @@ package inout
 import (
 	"io"
 
+	"github.com/PaulioRandall/firefly-go/pkg/models/err"
 	"github.com/PaulioRandall/firefly-go/pkg/models/pos"
 )
 
-var EOF = io.EOF
+var EOF = err.Wrap(io.EOF, io.EOF.Error())
 
 type Reader[T any] interface {
 	More() bool
