@@ -6,51 +6,57 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/pos"
 )
 
-type FireflyError struct {
-	Message string
-	Cause   error
-	From    pos.Pos
-	To      pos.Pos
+type FireflyError interface {
+	error
+	Unwrap() error
+	Where() (pos.Pos, pos.Pos)
 }
 
-func New(m string) *FireflyError {
-	return &FireflyError{
-		Message: m,
+type fireflyError struct {
+	msg   string
+	cause error
+	from  pos.Pos
+	to    pos.Pos
+}
+
+func New(m string) *fireflyError {
+	return &fireflyError{
+		msg: m,
 	}
 }
 
-func Newf(m string, args ...any) *FireflyError {
-	return &FireflyError{
-		Message: fmt.Sprintf(m, args...),
+func Newf(m string, args ...any) *fireflyError {
+	return &fireflyError{
+		msg: fmt.Sprintf(m, args...),
 	}
 }
 
-func Wrap(cause error, m string) *FireflyError {
+func Wrap(cause error, m string) *fireflyError {
 	e := New(m)
-	e.Cause = cause
+	e.cause = cause
 	return e
 }
 
-func Wrapf(cause error, m string, args ...any) *FireflyError {
+func Wrapf(cause error, m string, args ...any) *fireflyError {
 	e := Newf(m, args...)
-	e.Cause = cause
+	e.cause = cause
 	return e
 }
 
-func (e *FireflyError) SetWhere(from, to pos.Pos) *FireflyError {
-	e.From = from
-	e.To = to
+func (e *fireflyError) SetWhere(from, to pos.Pos) *fireflyError {
+	e.from = from
+	e.to = to
 	return e
 }
 
-func (e *FireflyError) Error() string {
-	return e.Message
+func (e *fireflyError) Error() string {
+	return e.msg
 }
 
-func (e *FireflyError) Unwrap() error {
-	return e.Cause
+func (e *fireflyError) Unwrap() error {
+	return e.cause
 }
 
-func (e *FireflyError) Where() (pos.Pos, pos.Pos) {
-	return e.From, e.To
+func (e *fireflyError) Where() (pos.Pos, pos.Pos) {
+	return e.from, e.to
 }
