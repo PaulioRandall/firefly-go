@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// TODO: Create debug pkg with procedural funcs rather than reciver funcs
 func Debug(e error) string {
 	sb := &strings.Builder{}
 

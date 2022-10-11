@@ -15,7 +15,8 @@ func Parse(r TokenReader, w ASTWriter) (e error) {
 
 	defer func() {
 		if v := recover(); v != nil {
-			e = v.(error) // TODO: Wrap error
+			// TODO: Replace or wrap with FireflyError
+			e = v.(error)
 		}
 	}()
 
@@ -28,7 +29,8 @@ func parseRootStatements(a *auditor, w ASTWriter) error {
 	for a.more() {
 		n := expectStatement(a)
 		if e := w.Write(n); e != nil {
-			return e // TODO: Wrap error
+			// TODO: Replace or wrap with FireflyError
+			return e
 		}
 	}
 

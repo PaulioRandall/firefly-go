@@ -7,7 +7,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/pos"
 )
 
-var EOF = err.Wrap(io.EOF, io.EOF.Error())
+var EOF = err.Wrap(io.EOF, "EOF (inout)")
 
 type Reader[T any] interface {
 	More() bool

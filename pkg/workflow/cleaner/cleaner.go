@@ -14,6 +14,7 @@ type TokenWriter = inout.Writer[token.Token]
 func Clean(r TokenReader, w TokenWriter) error {
 	e := inout.Process(r, w, processNext)
 	if e != nil {
+		// TODO: REplace with err pkg
 		return fmt.Errorf("Failed to clean tokens: %w", e)
 	}
 	return nil

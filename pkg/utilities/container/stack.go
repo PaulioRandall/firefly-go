@@ -28,7 +28,7 @@ func (st *LinkedStack[T]) Top() T {
 	if st.More() {
 		return st.top.v
 	}
-	panic(errors.New("Stack is empty"))
+	panic(errors.New("Stack is empty")) // TODO: Replace with bool
 }
 
 func (st *LinkedStack[T]) Push(v T) {

@@ -29,6 +29,7 @@ func Process[In, Out comparable](
 	)
 
 	if next, e = readNext(r); e != nil {
+		// TODO: Replace with err pkg
 		return fmt.Errorf("[process.Process] Failed to read next value: %w", e)
 	}
 

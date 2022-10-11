@@ -6,6 +6,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
+// TODO: Remove
 type tokErr struct {
 	tk    token.Token
 	after bool
@@ -21,6 +22,7 @@ func AtToken(tk token.Token, cause error, msg string, args ...interface{}) *tokE
 	}
 }
 
+// TODO: Create err.After() that creates a FireflyError by calling Token.Where()
 func AfterToken(tk token.Token, cause error, msg string, args ...interface{}) *tokErr {
 	return &tokErr{
 		after: true,

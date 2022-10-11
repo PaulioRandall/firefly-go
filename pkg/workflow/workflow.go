@@ -24,6 +24,7 @@ func Parse(r RuneReader, w NodeWriter) error {
 		tks    []token.Token
 		e      error
 		failed = func(e error) error {
+			// TODO: Replace or wrap with FireflyError
 			return fmt.Errorf("Failed to parse scroll: %w", e)
 		}
 	)
@@ -55,6 +56,7 @@ func scan(r RuneReader) ([]token.Token, error) {
 	w := inout.NewListWriter[token.Token]()
 
 	if e := scanner.Scan(r, w); e != nil {
+		// TODO: Replace or wrap with FireflyError
 		return nil, fmt.Errorf("Failed to scan tokens: %w", e)
 	}
 
@@ -69,6 +71,7 @@ func clean(tks []token.Token) ([]token.Token, error) {
 	w := inout.NewListWriter[token.Token]()
 
 	if e := cleaner.Clean(r, w); e != nil {
+		// TODO: Replace or wrap with FireflyError
 		return nil, fmt.Errorf("Failed to remove redundant tokens: %w", e)
 	}
 
@@ -83,6 +86,7 @@ func align(tks []token.Token) ([]token.Token, error) {
 	w := inout.NewListWriter[token.Token]()
 
 	if e := aligner.Align(r, w); e != nil {
+		// TODO: Replace or wrap with FireflyError
 		return nil, fmt.Errorf("Failed to inline comma separated values: %w", e)
 	}
 	return w.List(), nil
@@ -93,6 +97,7 @@ func terminate(tks []token.Token) ([]token.Token, error) {
 	w := inout.NewListWriter[token.Token]()
 
 	if e := terminator.Terminate(r, w); e != nil {
+		// TODO: Replace or wrap with FireflyError
 		return nil, fmt.Errorf("Failed to convert newlines to terminators: %w", e)
 	}
 	return w.List(), nil
@@ -102,6 +107,7 @@ func parse(tks []token.Token, w NodeWriter) error {
 	r := inout.NewListReader(tks)
 
 	if e := parser.Parse(r, w); e != nil {
+		// TODO: Replace or wrap with FireflyError
 		return fmt.Errorf("Failed to parse AST: %w", e)
 	}
 

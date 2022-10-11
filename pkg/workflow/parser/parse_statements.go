@@ -40,6 +40,7 @@ func expectStatement(a *auditor) (n ast.Stmt) {
 	}
 
 	if n == nil {
+		// TODO: Replace with FireflyError
 		panic(errors.New("Sanity check! Nil Node should never appear"))
 	}
 
