@@ -1,4 +1,3 @@
-// Package processor eases the processing of a stream of items
 package inout
 
 import (
@@ -6,7 +5,7 @@ import (
 	"fmt"
 )
 
-// ProcessItem is a function designed for processing a value from one stream
+// StreamItem is a function designed for processing a value from one stream
 // before it goes into another. It accepts the previous, current, and next item
 // in stream. The first return value is to be written out if the second boolean
 // value is true, else it is removed from processsing.
@@ -14,12 +13,12 @@ import (
 // Note that a values marked for removal are scrubbed from history, that is,
 // it will not become the previous value in the subsequent ProcessItem call, it
 // will be the one before that.
-type ProcessItem[In, Out comparable] func(prev, curr, next In) (Out, error)
+type StreamItem[In, Out comparable] func(prev, curr, next In) (Out, error)
 
-func Process[In, Out comparable](
+func Stream[In, Out comparable](
 	r Reader[In],
 	w Writer[Out],
-	p ProcessItem[In, Out],
+	f StreamItem[In, Out],
 ) error {
 
 	var (
@@ -43,7 +42,7 @@ func Process[In, Out comparable](
 			return fmt.Errorf("[process.Process] Failed to read next value: %w", e)
 		}
 
-		out, e := p(prev, curr, next)
+		out, e := f(prev, curr, next)
 		if e != nil {
 			return fmt.Errorf("[process.Process] Failed to process value: %w", e)
 		}

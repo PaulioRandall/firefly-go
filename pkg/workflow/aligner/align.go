@@ -12,7 +12,7 @@ type TokenReader = inout.Reader[token.Token]
 type TokenWriter = inout.Writer[token.Token]
 
 func Align(r TokenReader, w TokenWriter) error {
-	e := inout.Process(r, w, processNext)
+	e := inout.Stream(r, w, processNext)
 	if e != nil {
 		// TODO: REplace with err pkg
 		return fmt.Errorf("Failed to align tokens: %w", e)

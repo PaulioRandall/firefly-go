@@ -12,7 +12,7 @@ type TokenReader = inout.Reader[token.Token]
 type TokenWriter = inout.Writer[token.Token]
 
 func Terminate(r TokenReader, w TokenWriter) error {
-	e := inout.Process(r, w, processNext)
+	e := inout.Stream(r, w, processNext)
 	if e != nil {
 		// TODO: Replace or wrap with FireflyError
 		return fmt.Errorf("Failed to convert newlines to terminators: %w", e)

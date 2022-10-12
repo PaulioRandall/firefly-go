@@ -11,12 +11,12 @@ var zero = rune(0)
 func when[In, Out comparable](
 	t *testing.T,
 	given []In,
-	p ProcessItem[In, Out],
+	f StreamItem[In, Out],
 ) ([]Out, error) {
 
 	r := NewListReader(given)
 	w := NewListWriter[Out]()
-	e := Process[In, Out](r, w, p)
+	e := Stream[In, Out](r, w, f)
 
 	return w.List(), e
 }
