@@ -4,43 +4,45 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/err"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
+
+	"github.com/PaulioRandall/firefly-go/pkg/utilities/auditor"
 )
 
-func expectStatements(a *auditor) []ast.Stmt {
+func expectStatements(a *auditor.Auditor) []ast.Stmt {
 	var nodes []ast.Stmt
 
-	for a.more() && !a.isNext(token.End) {
+	for a.More() && !a.IsNext(token.End) {
 		nodes = append(nodes, expectStatement(a))
 	}
 
 	return nodes
 }
 
-func expectStatement(a *auditor) (n ast.Stmt) {
+func expectStatement(a *auditor.Auditor) (n ast.Stmt) {
 	switch {
-	case a.accept(token.Identifier):
-		n = expectVariableStatement(a, a.prev)
+	case a.Accept(token.Identifier):
+		n = expectVariableStatement(a, a.Prev())
 
-	case a.isNext(token.If):
+	case a.IsNext(token.If):
 		n = parseIf(a)
 
 	default:
-		panic(UnexpectedToken)
+		panic(auditor.UnexpectedToken)
 	}
 
 	if n == nil {
 		panic(err.New("Sanity check! Nil Node should never appear"))
 	}
 
-	a.expect(token.Terminator)
+	a.Expect(token.Terminator)
 	return n
 }
 
-func expectVariableStatement(a *auditor, first token.Token) ast.Stmt {
-	if a.isNext(token.Comma) || a.isNext(token.Assign) {
-		a.putback(first)
+func expectVariableStatement(a *auditor.Auditor, first token.Token) ast.Stmt {
+	if a.IsNext(token.Comma) || a.IsNext(token.Assign) {
+		a.Putback(first)
 		return expectAssignment(a)
 	}
 
-	panic(UnexpectedToken)
+	panic(auditor.UnexpectedToken)
 }

@@ -1,4 +1,4 @@
-package parser
+package auditor
 
 import (
 	"testing"
@@ -17,14 +17,14 @@ func tok2(tt token.TokenType, v string) token.Token {
 	return tokentest.Tok(tt, v)
 }
 
-func aud(given ...token.Token) *auditor {
-	return newAuditor(inout.NewListReader(given))
+func aud(given ...token.Token) *Auditor {
+	return NewAuditor(inout.NewListReader(given))
 }
 
 func Test_1_auditor_accept(t *testing.T) {
 	a := aud()
 
-	accepted := a.accept(token.Identifier)
+	accepted := a.Accept(token.Identifier)
 
 	require.False(t, accepted)
 }
@@ -34,10 +34,10 @@ func Test_2_auditor_accept(t *testing.T) {
 		tok2(token.String, `""`),
 	)
 
-	accepted := a.accept(token.Number)
+	accepted := a.Accept(token.Number)
 
 	require.False(t, accepted)
-	require.True(t, a.more())
+	require.True(t, a.More())
 }
 
 func Test_3_auditor_accept(t *testing.T) {
@@ -45,11 +45,11 @@ func Test_3_auditor_accept(t *testing.T) {
 		tok2(token.Identifier, "a"),
 	)
 
-	accepted := a.accept(token.Identifier)
+	accepted := a.Accept(token.Identifier)
 
 	require.True(t, accepted)
-	require.Equal(t, tok2(token.Identifier, "a"), a.getPrev())
-	require.False(t, a.more())
+	require.Equal(t, tok2(token.Identifier, "a"), a.Prev())
+	require.False(t, a.More())
 }
 
 func Test_4_auditor_accept(t *testing.T) {
@@ -58,19 +58,19 @@ func Test_4_auditor_accept(t *testing.T) {
 		tok2(token.Number, "1"),
 	)
 
-	a.accept(token.String)
-	accepted := a.accept(token.Number)
+	a.Accept(token.String)
+	accepted := a.Accept(token.Number)
 
 	require.True(t, accepted)
-	require.Equal(t, tok2(token.Number, "1"), a.getPrev())
-	require.False(t, a.more())
+	require.Equal(t, tok2(token.Number, "1"), a.Prev())
+	require.False(t, a.More())
 }
 
 func Test_5_auditor_expect(t *testing.T) {
 	a := aud()
 
 	require.Panics(t, func() {
-		_ = a.expect(token.EQU)
+		_ = a.Expect(token.EQU)
 	})
 }
 
@@ -85,7 +85,7 @@ func Test_6_auditor_expect(t *testing.T) {
 		require.True(t, isUnexpectedEOF)
 	}()
 
-	_ = a.expect(token.EQU)
+	_ = a.Expect(token.EQU)
 }
 
 func Test_7_auditor_expect(t *testing.T) {
@@ -94,7 +94,7 @@ func Test_7_auditor_expect(t *testing.T) {
 	)
 
 	require.Panics(t, func() {
-		_ = a.expect(token.EQU)
+		_ = a.Expect(token.EQU)
 	})
 }
 
@@ -111,7 +111,7 @@ func Test_8_auditor_expect(t *testing.T) {
 		require.True(t, isUnexpectedToken)
 	}()
 
-	_ = a.expect(token.EQU)
+	_ = a.Expect(token.EQU)
 }
 
 func Test_9_auditor_expect(t *testing.T) {
@@ -119,11 +119,11 @@ func Test_9_auditor_expect(t *testing.T) {
 		tok2(token.String, `""`),
 	)
 
-	tk := a.expect(token.String)
+	tk := a.Expect(token.String)
 
 	require.Equal(t, tok2(token.String, `""`), tk)
-	require.Equal(t, tok2(token.String, `""`), a.getPrev())
-	require.False(t, a.more())
+	require.Equal(t, tok2(token.String, `""`), a.Prev())
+	require.False(t, a.More())
 }
 
 func Test_10_auditor_expect(t *testing.T) {
@@ -132,8 +132,8 @@ func Test_10_auditor_expect(t *testing.T) {
 		tok2(token.Number, "1"),
 	)
 
-	_ = a.expect(token.String)
-	require.True(t, a.more())
+	_ = a.Expect(token.String)
+	require.True(t, a.More())
 }
 
 func Test_11_auditor_expect(t *testing.T) {
@@ -142,12 +142,12 @@ func Test_11_auditor_expect(t *testing.T) {
 		tok2(token.Number, "1"),
 	)
 
-	_ = a.expect(token.String)
-	tk := a.expect(token.Number)
+	_ = a.Expect(token.String)
+	tk := a.Expect(token.Number)
 
 	require.Equal(t, tok2(token.Number, "1"), tk)
-	require.Equal(t, tok2(token.Number, "1"), a.getPrev())
-	require.False(t, a.more())
+	require.Equal(t, tok2(token.Number, "1"), a.Prev())
+	require.False(t, a.More())
 }
 
 func Test_12_auditor_doesNextMatch(t *testing.T) {
@@ -159,7 +159,7 @@ func Test_12_auditor_doesNextMatch(t *testing.T) {
 		return tt == token.Identifier
 	}
 
-	isMatch := a.doesNextMatch(varMatcher)
+	isMatch := a.DoesNextMatch(varMatcher)
 
 	require.False(t, isMatch)
 }
@@ -173,7 +173,7 @@ func Test_13_auditor_doesNextMatch(t *testing.T) {
 		return tt == token.String
 	}
 
-	isMatch := a.doesNextMatch(stringMatcher)
+	isMatch := a.DoesNextMatch(stringMatcher)
 
 	require.True(t, isMatch)
 }
@@ -183,7 +183,7 @@ func Test_14_auditor_isNext(t *testing.T) {
 		tok2(token.String, `""`),
 	)
 
-	isMatch := a.isNext(token.Identifier)
+	isMatch := a.IsNext(token.Identifier)
 
 	require.False(t, isMatch)
 }
@@ -193,7 +193,7 @@ func Test_15_auditor_isNext(t *testing.T) {
 		tok2(token.String, `""`),
 	)
 
-	isMatch := a.isNext(token.String)
+	isMatch := a.IsNext(token.String)
 
 	require.True(t, isMatch)
 }
@@ -203,17 +203,17 @@ func Test_16_auditor_peekNext(t *testing.T) {
 		tok2(token.String, `""`),
 	)
 
-	tk := a.peekNext()
+	tk := a.Peek()
 
 	require.Equal(t, tok2(token.String, `""`), tk)
-	require.True(t, a.more())
+	require.True(t, a.More())
 }
 
 func Test_17_auditor_peekNext(t *testing.T) {
 	a := aud()
 
 	require.Panics(t, func() {
-		_ = a.peekNext()
+		_ = a.Peek()
 	})
 }
 
@@ -221,7 +221,7 @@ func Test_18_auditor_readNext(t *testing.T) {
 	a := aud()
 
 	require.Panics(t, func() {
-		_ = a.readNext()
+		_ = a.Read()
 	})
 }
 
@@ -230,8 +230,8 @@ func Test_19_auditor_readNext(t *testing.T) {
 		tok2(token.String, `""`),
 	)
 
-	tk := a.readNext()
+	tk := a.Read()
 
 	require.Equal(t, tok2(token.String, `""`), tk)
-	require.False(t, a.more())
+	require.False(t, a.More())
 }

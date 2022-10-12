@@ -6,6 +6,8 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 
+	"github.com/PaulioRandall/firefly-go/pkg/utilities/auditor"
+
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast/asttest"
 )
 
@@ -68,7 +70,7 @@ func Test_parseAssign_3(t *testing.T) {
 		tok1(token.Terminator, "\n"),
 	}
 
-	assertError(t, given, UnexpectedToken)
+	assertError(t, given, auditor.UnexpectedToken)
 }
 
 func Test_parseAssign_4(t *testing.T) {
@@ -130,7 +132,7 @@ func Test_parseAssign_7(t *testing.T) {
 		tok1(token.Terminator, "\n"),
 	}
 
-	assertError(t, given, UnexpectedToken)
+	assertError(t, given, auditor.UnexpectedToken)
 }
 
 func Test_parseAssign_8(t *testing.T) {

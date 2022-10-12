@@ -6,6 +6,8 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 
+	"github.com/PaulioRandall/firefly-go/pkg/utilities/auditor"
+
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast/asttest"
 )
 
@@ -84,5 +86,5 @@ func Test_parseIf_3(t *testing.T) {
 		tok1(token.Terminator, "\n"),
 	}
 
-	assertError(t, given, UnexpectedEOF)
+	assertError(t, given, auditor.UnexpectedEOF)
 }

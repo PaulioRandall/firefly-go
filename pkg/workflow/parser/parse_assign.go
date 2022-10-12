@@ -3,12 +3,14 @@ package parser
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
+
+	"github.com/PaulioRandall/firefly-go/pkg/utilities/auditor"
 )
 
-func expectAssignment(a *auditor) ast.Assign {
+func expectAssignment(a *auditor.Auditor) ast.Assign {
 	n := ast.Assign{
 		Left:     expectVariables(a),
-		Operator: a.expect(token.Assign),
+		Operator: a.Expect(token.Assign),
 		Right:    expectExpressions(a),
 	}
 

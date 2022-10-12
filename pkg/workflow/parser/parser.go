@@ -6,13 +6,15 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/err"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 
+	"github.com/PaulioRandall/firefly-go/pkg/utilities/auditor"
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 )
 
+type ReaderOfTokens = inout.Reader[token.Token]
 type WriterOfNodes = inout.Writer[ast.Node]
 
 func Parse(r ReaderOfTokens, w WriterOfNodes) (e error) {
-	a := newAuditor(r)
+	a := auditor.NewAuditor(r)
 
 	defer func() {
 		if v := recover(); v != nil {
@@ -23,10 +25,10 @@ func Parse(r ReaderOfTokens, w WriterOfNodes) (e error) {
 	return parseRootStatements(a, w)
 }
 
-func parseRootStatements(a *auditor, w WriterOfNodes) error {
-	a.accept(token.Terminator)
+func parseRootStatements(a *auditor.Auditor, w WriterOfNodes) error {
+	a.Accept(token.Terminator)
 
-	for a.more() {
+	for a.More() {
 		n := expectStatement(a)
 		if e := w.Write(n); e != nil {
 			return err.Wrap(e, "Parser failed to parse statements in the root scope")
