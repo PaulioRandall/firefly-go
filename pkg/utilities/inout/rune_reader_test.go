@@ -10,8 +10,8 @@ import (
 )
 
 func Test_enforceTypes_runeReader(t *testing.T) {
-	_ = Reader[rune](&runeReader{})
-	_ = RuneReader(&runeReader{})
+	_ = Reader[rune](&readerOfRunes{})
+	_ = ReaderOfRunes(&readerOfRunes{})
 }
 
 func requireEOF(t *testing.T, e error) {
@@ -20,7 +20,7 @@ func requireEOF(t *testing.T, e error) {
 
 func Test_1_runeReader_Peek(t *testing.T) {
 	lr := NewListReader([]rune(""))
-	r := NewRuneReader(lr)
+	r := NewReaderOfRunes(lr)
 
 	_, e := r.Peek()
 	requireEOF(t, e)
@@ -29,7 +29,7 @@ func Test_1_runeReader_Peek(t *testing.T) {
 
 func Test_2_runeReader_Peek(t *testing.T) {
 	lr := NewListReader([]rune("abc"))
-	r := NewRuneReader(lr)
+	r := NewReaderOfRunes(lr)
 
 	v, e := r.Peek()
 	require.Nil(t, e)
@@ -46,7 +46,7 @@ func Test_2_runeReader_Peek(t *testing.T) {
 
 func Test_3_runeReader_Read(t *testing.T) {
 	lr := NewListReader([]rune(""))
-	r := NewRuneReader(lr)
+	r := NewReaderOfRunes(lr)
 
 	_, e := r.Read()
 
@@ -56,7 +56,7 @@ func Test_3_runeReader_Read(t *testing.T) {
 
 func Test_4_runeReader_Read(t *testing.T) {
 	lr := NewListReader([]rune("ab"))
-	r := NewRuneReader(lr)
+	r := NewReaderOfRunes(lr)
 
 	v, e := r.Read()
 	require.Nil(t, e, "%+v", e)
@@ -69,7 +69,7 @@ func Test_4_runeReader_Read(t *testing.T) {
 
 func Test_5_runeReader_Read(t *testing.T) {
 	lr := NewListReader([]rune("ab"))
-	r := NewRuneReader(lr)
+	r := NewReaderOfRunes(lr)
 
 	_, _ = r.Read()
 	require.True(t, r.More())
@@ -80,7 +80,7 @@ func Test_5_runeReader_Read(t *testing.T) {
 
 func Test_6_runeReader_Read(t *testing.T) {
 	lr := NewListReader([]rune("ab"))
-	r := NewRuneReader(lr)
+	r := NewReaderOfRunes(lr)
 
 	_, _ = r.Read()
 	require.Equal(t, pos.At(1, 0, 1), r.Where())
@@ -91,7 +91,7 @@ func Test_6_runeReader_Read(t *testing.T) {
 
 func Test_7_runeReader_Read(t *testing.T) {
 	lr := NewListReader([]rune("\n"))
-	r := NewRuneReader(lr)
+	r := NewReaderOfRunes(lr)
 
 	_, _ = r.Read()
 	require.Equal(t, pos.At(1, 1, 0), r.Where())
@@ -99,7 +99,7 @@ func Test_7_runeReader_Read(t *testing.T) {
 
 func Test_8_runeReader_Read(t *testing.T) {
 	lr := NewListReader([]rune("\na\nb\n"))
-	r := NewRuneReader(lr)
+	r := NewReaderOfRunes(lr)
 
 	_, _ = r.Read()
 	require.Equal(t, pos.At(1, 1, 0), r.Where())

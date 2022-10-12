@@ -2,17 +2,16 @@
 package validator
 
 import (
-	//"errors"
-
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
+	"github.com/PaulioRandall/firefly-go/pkg/models/err"
 	//"github.com/PaulioRandall/firefly-go/pkg/models/token"
 
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 )
 
-type ASTReader = inout.Reader[ast.Node]
-type ASTWriter = inout.Writer[ast.Node]
+type ReaderOfNodes = inout.Reader[ast.Node]
+type WriterOfNodes = inout.Writer[ast.Node]
 
-func Parse(r ASTReader, w ASTWriter) (e error) {
-	return nil
+func Parse(r ReaderOfNodes, w WriterOfNodes) (e error) {
+	return err.New("Not yet implemented")
 }

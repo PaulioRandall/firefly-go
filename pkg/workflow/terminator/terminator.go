@@ -8,10 +8,10 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 )
 
-type TokenReader = inout.Reader[token.Token]
-type TokenWriter = inout.Writer[token.Token]
+type ReaderOfTokens = inout.Reader[token.Token]
+type WriterOfTokens = inout.Writer[token.Token]
 
-func Terminate(r TokenReader, w TokenWriter) error {
+func Terminate(r ReaderOfTokens, w WriterOfTokens) error {
 	e := inout.Stream(r, w, processNext)
 	if e != nil {
 		return err.Wrap(e, "Terminator failed to convert newlines to terminators")

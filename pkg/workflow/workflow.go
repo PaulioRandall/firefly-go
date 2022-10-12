@@ -14,10 +14,10 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/workflow/terminator"
 )
 
-type RuneReader = inout.Reader[rune]
-type NodeWriter = inout.Writer[ast.Node]
+type ReaderOfRunes = inout.Reader[rune]
+type WriterOfNodes = inout.Writer[ast.Node]
 
-func Parse(r RuneReader, w NodeWriter) error {
+func Parse(r ReaderOfRunes, w WriterOfNodes) error {
 
 	var (
 		tks        []token.Token
@@ -50,7 +50,7 @@ func Parse(r RuneReader, w NodeWriter) error {
 	return parse(tks, w)
 }
 
-func scan(r RuneReader) ([]token.Token, error) {
+func scan(r ReaderOfRunes) ([]token.Token, error) {
 	w := inout.NewListWriter[token.Token]()
 
 	if e := scanner.Scan(r, w); e != nil {
@@ -97,7 +97,7 @@ func terminate(tks []token.Token) ([]token.Token, error) {
 	return w.List(), nil
 }
 
-func parse(tks []token.Token, w NodeWriter) error {
+func parse(tks []token.Token, w WriterOfNodes) error {
 	r := inout.NewListReader(tks)
 
 	if e := parser.Parse(r, w); e != nil {

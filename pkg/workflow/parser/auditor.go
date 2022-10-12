@@ -10,15 +10,15 @@ import (
 
 var zero token.Token
 
-type TokenReader = inout.Reader[token.Token]
+type ReaderOfTokens = inout.Reader[token.Token]
 
 type auditor struct {
-	reader TokenReader
+	reader ReaderOfTokens
 	buffer container.Queue[token.Token]
 	prev   token.Token
 }
 
-func newAuditor(r TokenReader) *auditor {
+func newAuditor(r ReaderOfTokens) *auditor {
 	return &auditor{
 		reader: r,
 		buffer: &container.LinkedQueue[token.Token]{},

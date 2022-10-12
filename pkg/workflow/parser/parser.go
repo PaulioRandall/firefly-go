@@ -9,9 +9,9 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 )
 
-type ASTWriter = inout.Writer[ast.Node]
+type WriterOfNodes = inout.Writer[ast.Node]
 
-func Parse(r TokenReader, w ASTWriter) (e error) {
+func Parse(r ReaderOfTokens, w WriterOfNodes) (e error) {
 	a := newAuditor(r)
 
 	defer func() {
@@ -23,7 +23,7 @@ func Parse(r TokenReader, w ASTWriter) (e error) {
 	return parseRootStatements(a, w)
 }
 
-func parseRootStatements(a *auditor, w ASTWriter) error {
+func parseRootStatements(a *auditor, w WriterOfNodes) error {
 	a.accept(token.Terminator)
 
 	for a.more() {

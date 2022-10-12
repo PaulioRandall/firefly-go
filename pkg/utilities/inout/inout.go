@@ -15,7 +15,7 @@ type Reader[T any] interface {
 	Read() (T, error)
 }
 
-type RuneReader interface {
+type ReaderOfRunes interface {
 	Reader[rune]
 	Where() pos.Pos
 }

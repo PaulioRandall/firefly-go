@@ -10,7 +10,7 @@ import (
 var ErrNotFound = err.New("Unknown symbol")
 
 type tokenBuilder struct {
-	r     inout.RuneReader
+	r     inout.ReaderOfRunes
 	w     inout.ListWriter[rune]
 	start pos.Pos
 	tt    token.TokenType
@@ -18,7 +18,7 @@ type tokenBuilder struct {
 
 func newTokenBuilder(r ReaderOfRunes) tokenBuilder {
 	return tokenBuilder{
-		r: inout.NewRuneReader(r),
+		r: inout.NewReaderOfRunes(r),
 		w: inout.NewListWriter[rune](),
 	}
 }
