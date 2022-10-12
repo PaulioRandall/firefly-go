@@ -37,3 +37,17 @@ func MakeIf(
 		End:       end,
 	}
 }
+
+func MakeWhen(
+	keyword token.Token,
+	subject Expr,
+	cases []WhenCase,
+	end token.Token,
+) When {
+	return When{
+		Keyword: keyword,
+		Subject: subject,
+		Cases:   cases,
+		End:     end,
+	}
+}

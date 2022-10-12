@@ -71,3 +71,22 @@ type If struct {
 
 func (n If) node() {}
 func (n If) stmt() {}
+
+// TODO: Add to debug pkg
+type When struct {
+	Keyword token.Token
+	Subject Expr
+	Cases   []WhenCase
+	End     token.Token
+}
+
+func (n When) node() {}
+func (n When) stmt() {}
+
+// TODO: Add to debug pkg
+type WhenCase struct {
+	Condition Expr
+	Stmt      Stmt
+}
+
+func (n WhenCase) node() {}

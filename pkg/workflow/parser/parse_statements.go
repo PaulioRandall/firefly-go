@@ -11,7 +11,7 @@ import (
 func expectStatements(a *auditor.Auditor) []ast.Stmt {
 	var nodes []ast.Stmt
 
-	for a.More() && !a.IsNext(token.End) {
+	for notEndOfBlock(a) {
 		nodes = append(nodes, expectStatement(a))
 	}
 
@@ -25,6 +25,9 @@ func expectStatement(a *auditor.Auditor) (n ast.Stmt) {
 
 	case a.IsNext(token.If):
 		n = parseIf(a)
+
+	case a.IsNext(token.When):
+		n = expectWhen(a)
 
 	default:
 		panic(auditor.UnexpectedToken)
