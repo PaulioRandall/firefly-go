@@ -16,7 +16,7 @@ func parseIf(a *auditor.Auditor) ast.If {
 	a.Expect(token.Terminator)
 
 	n.Body = expectStatements(a)
-	n.End = a.ExpectWith(MissingEnd, token.End)
+	n.End = a.Expect(token.End)
 
 	return n
 }

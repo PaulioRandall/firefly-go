@@ -128,23 +128,3 @@ func (a *Auditor) ExpectFunc(exp any, f func(token.TokenType) bool) token.Token 
 	a.prev = tk
 	return a.prev
 }
-
-func (a *Auditor) ExpectWith(e error, want token.TokenType) token.Token {
-	return a.ExpectFuncWith(e, func(have token.TokenType) bool {
-		return want == have
-	})
-}
-
-func (a *Auditor) ExpectFuncWith(e error, f func(token.TokenType) bool) token.Token {
-	if !a.More() {
-		panic(err.WrapPosf(UnexpectedEOF, a.prev.To, "Failed to match token"))
-	}
-
-	tk := a.Read()
-	if !f(tk.TokenType) {
-		panic(err.WrapPosf(e, a.prev.To, "Failed to match token"))
-	}
-
-	a.prev = tk
-	return a.prev
-}
