@@ -2,7 +2,8 @@ package inout
 
 import (
 	"errors"
-	"fmt"
+
+	"github.com/PaulioRandall/firefly-go/pkg/models/err"
 )
 
 // StreamItem is a function designed for processing a value from one stream
@@ -28,8 +29,7 @@ func Stream[In, Out comparable](
 	)
 
 	if next, e = readNext(r); e != nil {
-		// TODO: Replace with err pkg
-		return fmt.Errorf("[process.Process] Failed to read next value: %w", e)
+		return err.Wrap(e, "Stream failed to read from reader")
 	}
 
 	for next != zeroIn {
@@ -39,12 +39,12 @@ func Stream[In, Out comparable](
 		next, e = readNext(r)
 
 		if e != nil {
-			return fmt.Errorf("[process.Process] Failed to read next value: %w", e)
+			return err.Wrap(e, "Stream failed to read from reader")
 		}
 
 		out, e := f(prev, curr, next)
 		if e != nil {
-			return fmt.Errorf("[process.Process] Failed to process value: %w", e)
+			return err.Wrap(e, "Stream failed to stream item")
 		}
 
 		if out == zeroOut {
@@ -53,7 +53,7 @@ func Stream[In, Out comparable](
 		}
 
 		if e = w.Write(out); e != nil {
-			return fmt.Errorf("[process.Process] Failed to write value: %w", e)
+			return err.Wrap(e, "Stream failed to write item to writer")
 		}
 	}
 
@@ -73,7 +73,7 @@ func readNext[In comparable](r Reader[In]) (In, error) {
 	}
 
 	if e != nil {
-		return zeroIn, e // TODO: wrap error
+		return zeroIn, err.Wrap(e, "Failed to read from reader")
 	}
 
 	return in, nil
