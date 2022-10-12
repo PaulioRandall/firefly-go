@@ -60,6 +60,7 @@ func scan(r ReaderOfRunes) ([]token.Token, error) {
 	if w.Empty() {
 		return nil, nil
 	}
+
 	return w.List(), nil
 }
 
@@ -74,6 +75,7 @@ func clean(tks []token.Token) ([]token.Token, error) {
 	if w.Empty() {
 		return nil, nil
 	}
+
 	return w.List(), nil
 }
 
@@ -84,6 +86,7 @@ func align(tks []token.Token) ([]token.Token, error) {
 	if e := aligner.Align(r, w); e != nil {
 		return nil, err.Wrap(e, "Failed to align tokens")
 	}
+
 	return w.List(), nil
 }
 
@@ -94,6 +97,7 @@ func terminate(tks []token.Token) ([]token.Token, error) {
 	if e := terminator.Terminate(r, w); e != nil {
 		return nil, err.Wrap(e, "Failed to convert newlines to terminators")
 	}
+
 	return w.List(), nil
 }
 

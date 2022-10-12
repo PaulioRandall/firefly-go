@@ -13,7 +13,7 @@ func parseIf(a *auditor) ast.If {
 
 	a.expect(token.Terminator)
 
-	n.Body = acceptStatements(a)
+	n.Body = expectStatements(a)
 	n.End = a.expectWith(MissingEnd, token.End)
 
 	return n

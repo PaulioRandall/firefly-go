@@ -6,21 +6,11 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
-func acceptStatements(a *auditor) []ast.Stmt {
+func expectStatements(a *auditor) []ast.Stmt {
 	var nodes []ast.Stmt
 
 	for a.more() && !a.isNext(token.End) {
 		nodes = append(nodes, expectStatement(a))
-	}
-
-	return nodes
-}
-
-func expectStatements(a *auditor) []ast.Stmt {
-	nodes := acceptStatements(a)
-
-	if len(nodes) == 0 {
-		panic(MissingStmt)
 	}
 
 	return nodes
