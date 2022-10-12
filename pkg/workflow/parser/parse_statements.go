@@ -1,9 +1,8 @@
 package parser
 
 import (
-	"errors"
-
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
+	"github.com/PaulioRandall/firefly-go/pkg/models/err"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
@@ -40,8 +39,7 @@ func expectStatement(a *auditor) (n ast.Stmt) {
 	}
 
 	if n == nil {
-		// TODO: Replace with FireflyError
-		panic(errors.New("Sanity check! Nil Node should never appear"))
+		panic(err.New("Sanity check! Nil Node should never appear"))
 	}
 
 	a.expect(token.Terminator)

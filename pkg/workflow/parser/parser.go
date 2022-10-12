@@ -3,6 +3,7 @@ package parser
 
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
+	"github.com/PaulioRandall/firefly-go/pkg/models/err"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
@@ -15,8 +16,7 @@ func Parse(r TokenReader, w ASTWriter) (e error) {
 
 	defer func() {
 		if v := recover(); v != nil {
-			// TODO: Replace or wrap with FireflyError
-			e = v.(error)
+			e = err.Wrap(v.(error), "Recovered from parse fail")
 		}
 	}()
 
@@ -29,8 +29,7 @@ func parseRootStatements(a *auditor, w ASTWriter) error {
 	for a.more() {
 		n := expectStatement(a)
 		if e := w.Write(n); e != nil {
-			// TODO: Replace or wrap with FireflyError
-			return e
+			return err.Wrap(e, "Parser failed to parse statements in the root scope")
 		}
 	}
 

@@ -132,13 +132,12 @@ func (a *auditor) expectWith(e error, want token.TokenType) token.Token {
 
 func (a *auditor) expectFuncWith(e error, f func(token.TokenType) bool) token.Token {
 	if !a.more() {
-		// TODO: Replace with FireflyError
-		panic(e)
+		panic(err.WrapPosf(UnexpectedEOF, a.prev.To, "Failed to match token"))
 	}
 
 	tk := a.readNext()
 	if !f(tk.TokenType) {
-		panic(e)
+		panic(err.WrapPosf(e, a.prev.To, "Failed to match token"))
 	}
 
 	a.prev = tk

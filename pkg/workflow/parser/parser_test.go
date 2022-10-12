@@ -278,5 +278,5 @@ func Test_11(t *testing.T) {
 		tok1(token.Terminator, "\n"),
 	}
 
-	assertError(t, given, MissingEnd)
+	assertError(t, given, UnexpectedEOF)
 }
