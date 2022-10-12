@@ -2,9 +2,9 @@
 package aligner
 
 import (
-	"fmt"
-
+	"github.com/PaulioRandall/firefly-go/pkg/models/err"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
+
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 )
 
@@ -14,8 +14,7 @@ type TokenWriter = inout.Writer[token.Token]
 func Align(r TokenReader, w TokenWriter) error {
 	e := inout.Stream(r, w, processNext)
 	if e != nil {
-		// TODO: REplace with err pkg
-		return fmt.Errorf("Failed to align tokens: %w", e)
+		return err.Wrap(e, "Aligner failed to align tokens")
 	}
 	return nil
 }

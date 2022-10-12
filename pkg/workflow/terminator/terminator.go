@@ -2,9 +2,9 @@
 package terminator
 
 import (
-	"fmt"
-
+	"github.com/PaulioRandall/firefly-go/pkg/models/err"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
+
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 )
 
@@ -14,8 +14,7 @@ type TokenWriter = inout.Writer[token.Token]
 func Terminate(r TokenReader, w TokenWriter) error {
 	e := inout.Stream(r, w, processNext)
 	if e != nil {
-		// TODO: Replace or wrap with FireflyError
-		return fmt.Errorf("Failed to convert newlines to terminators: %w", e)
+		return err.Wrap(e, "Terminator failed to convert newlines to terminators")
 	}
 	return nil
 }
