@@ -2,11 +2,11 @@
 package scanner
 
 import (
-	"errors"
 	"unicode"
 
 	"github.com/PaulioRandall/firefly-go/pkg/models/err"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
+
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 )
 
@@ -52,7 +52,7 @@ func scanNext(tb *tokenBuilder) error {
 	}
 
 	second, e := tb.Peek()
-	if e != nil && errors.Is(e, inout.EOF) {
+	if e != nil && err.Is(e, inout.EOF) {
 		second, e = rune(0), nil
 	} else if e != nil {
 		return err.Wrap(e, "Failed to scan next token")

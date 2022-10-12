@@ -1,8 +1,9 @@
 package debug
 
 import (
-	"errors"
 	"strings"
+
+	"github.com/PaulioRandall/firefly-go/pkg/models/err"
 )
 
 func wrappedError(e error) string {
@@ -18,7 +19,7 @@ func wrappedError(e error) string {
 }
 
 func addErr(sb *strings.Builder, e error) {
-	if next := errors.Unwrap(e); next != nil {
+	if next := err.Unwrap(e); next != nil {
 		addErr(sb, next)
 		sb.WriteRune('\n')
 	}

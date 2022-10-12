@@ -1,14 +1,15 @@
 package scanner
 
 import (
-	"errors"
 	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/PaulioRandall/firefly-go/pkg/models/err"
 	"github.com/PaulioRandall/firefly-go/pkg/models/pos"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
+
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/debug"
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 
@@ -44,7 +45,7 @@ func assertError(t *testing.T, given string, exp error) {
 	w := inout.NewListWriter[token.Token]()
 
 	e := Scan(r, w)
-	require.True(t, errors.Is(e, exp), "Expected %+v", exp.Error())
+	require.True(t, err.Is(e, exp), "Expected %+v", exp.Error())
 }
 
 func Test_1_Scan(t *testing.T) {

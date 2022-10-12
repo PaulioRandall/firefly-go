@@ -1,12 +1,13 @@
 package parser
 
 import (
-	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/PaulioRandall/firefly-go/pkg/models/err"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
+
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 
 	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
@@ -80,7 +81,7 @@ func Test_6_auditor_expect(t *testing.T) {
 		e := recover()
 		require.NotNil(t, e)
 
-		isUnexpectedEOF := errors.Is(e.(error), UnexpectedEOF)
+		isUnexpectedEOF := err.Is(e.(error), UnexpectedEOF)
 		require.True(t, isUnexpectedEOF)
 	}()
 
@@ -106,7 +107,7 @@ func Test_8_auditor_expect(t *testing.T) {
 		e := recover()
 		require.NotNil(t, e)
 
-		isUnexpectedToken := errors.Is(e.(error), UnexpectedToken)
+		isUnexpectedToken := err.Is(e.(error), UnexpectedToken)
 		require.True(t, isUnexpectedToken)
 	}()
 

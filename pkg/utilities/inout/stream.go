@@ -1,8 +1,6 @@
 package inout
 
 import (
-	"errors"
-
 	"github.com/PaulioRandall/firefly-go/pkg/models/err"
 )
 
@@ -68,7 +66,7 @@ func readNext[In comparable](r Reader[In]) (In, error) {
 	}
 
 	in, e := r.Read()
-	if errors.Is(e, EOF) {
+	if err.Is(e, EOF) {
 		return zeroIn, nil
 	}
 

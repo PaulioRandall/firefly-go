@@ -1,12 +1,12 @@
 package parser
 
 import (
-	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
+	"github.com/PaulioRandall/firefly-go/pkg/models/err"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
@@ -43,11 +43,7 @@ func assertError(t *testing.T, given []token.Token, exp error) {
 
 	e := Parse(r, w)
 
-	require.True(
-		t,
-		errors.Is(e, exp),
-		"Want error %q but got error %q", exp, e,
-	)
+	require.True(t, err.Is(e, exp), "Want error %q but got error %q", exp, e)
 }
 
 func Test_1(t *testing.T) {
