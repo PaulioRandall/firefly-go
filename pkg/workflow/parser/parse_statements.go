@@ -8,7 +8,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/auditor"
 )
 
-func expectStatements(a *auditor.Auditor) []ast.Stmt {
+func acceptStatements(a *auditor.Auditor) []ast.Stmt {
 	var nodes []ast.Stmt
 
 	for notEndOfBlock(a) {
@@ -30,7 +30,7 @@ func expectStatement(a *auditor.Auditor) (n ast.Stmt) {
 		n = expectWhen(a)
 
 	default:
-		panic(auditor.UnexpectedToken)
+		panic(UnexpectedToken)
 	}
 
 	if n == nil {
@@ -47,5 +47,5 @@ func expectVariableStatement(a *auditor.Auditor, first token.Token) ast.Stmt {
 		return expectAssignment(a)
 	}
 
-	panic(auditor.UnexpectedToken)
+	panic(UnexpectedToken)
 }

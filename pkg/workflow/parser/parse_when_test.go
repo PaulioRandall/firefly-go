@@ -14,10 +14,10 @@ func Test_parseWhen_1(t *testing.T) {
 	// end
 
 	given := []token.Token{
-		tok1(token.When, "when"),
-		tok1(token.Terminator, "\n"),
-		tok1(token.End, "end"),
-		tok1(token.Terminator, "\n"),
+		tok(token.When, "when"),
+		tok(token.Terminator, "\n"),
+		tok(token.End, "end"),
+		tok(token.Terminator, "\n"),
 	}
 
 	exp := []ast.Node{
@@ -37,17 +37,17 @@ func Test_parseWhen_2(t *testing.T) {
 	// end
 
 	given := []token.Token{
-		tok1(token.When, "when"),
-		tok1(token.Number, "1"),
-		tok1(token.Terminator, "\n"),
-		tok1(token.End, "end"),
-		tok1(token.Terminator, "\n"),
+		tok(token.When, "when"),
+		tok(token.Number, "1"),
+		tok(token.Terminator, "\n"),
+		tok(token.End, "end"),
+		tok(token.Terminator, "\n"),
 	}
 
 	exp := []ast.Node{
 		ast.MakeWhen(
 			given[0],
-			ast.MakeLiteral(tok1(token.Number, "1")),
+			ast.MakeLiteral(tok(token.Number, "1")),
 			nil,
 			given[3],
 		),

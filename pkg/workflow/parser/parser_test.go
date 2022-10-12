@@ -15,16 +15,16 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
 )
 
-func tok1(tt token.TokenType, v string) token.Token {
+func tok(tt token.TokenType, v string) token.Token {
 	return tokentest.Tok(tt, v)
 }
 
 func literal(tt token.TokenType, v string) ast.Literal {
-	return ast.MakeLiteral(tok1(tt, v))
+	return ast.MakeLiteral(tok(tt, v))
 }
 
 func variable(tt token.TokenType, v string) ast.Variable {
-	return ast.MakeVariable(tok1(tt, v))
+	return ast.MakeVariable(tok(tt, v))
 }
 
 func assert(t *testing.T, given []token.Token, exp []ast.Node) {

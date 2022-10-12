@@ -6,8 +6,6 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 
-	"github.com/PaulioRandall/firefly-go/pkg/utilities/auditor"
-
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast/asttest"
 )
 
@@ -16,11 +14,11 @@ func Test_parseIf_1(t *testing.T) {
 	// end
 
 	given := []token.Token{
-		tok1(token.If, "if"),
-		tok1(token.True, "true"),
-		tok1(token.Terminator, "\n"),
-		tok1(token.End, "end"),
-		tok1(token.Terminator, "\n"),
+		tok(token.If, "if"),
+		tok(token.True, "true"),
+		tok(token.Terminator, "\n"),
+		tok(token.End, "end"),
+		tok(token.Terminator, "\n"),
 	}
 
 	exp := []ast.Node{
@@ -41,15 +39,15 @@ func Test_parseIf_2(t *testing.T) {
 	// end
 
 	given := []token.Token{
-		tok1(token.If, "if"),
-		tok1(token.True, "true"),
-		tok1(token.Terminator, "\n"),
-		tok1(token.Identifier, "a"),
-		tok1(token.Assign, "="), // 4
-		tok1(token.Number, "0"),
-		tok1(token.Terminator, "\n"),
-		tok1(token.End, "end"),
-		tok1(token.Terminator, "\n"), // 8
+		tok(token.If, "if"),
+		tok(token.True, "true"),
+		tok(token.Terminator, "\n"),
+		tok(token.Identifier, "a"),
+		tok(token.Assign, "="), // 4
+		tok(token.Number, "0"),
+		tok(token.Terminator, "\n"),
+		tok(token.End, "end"),
+		tok(token.Terminator, "\n"), // 8
 	}
 
 	body := []ast.Stmt{
@@ -77,14 +75,14 @@ func Test_parseIf_3(t *testing.T) {
 	//   a = 0
 
 	given := []token.Token{
-		tok1(token.If, "if"),
-		tok1(token.True, "true"),
-		tok1(token.Terminator, "\n"),
-		tok1(token.Identifier, "a"),
-		tok1(token.Assign, "="),
-		tok1(token.Number, "0"),
-		tok1(token.Terminator, "\n"),
+		tok(token.If, "if"),
+		tok(token.True, "true"),
+		tok(token.Terminator, "\n"),
+		tok(token.Identifier, "a"),
+		tok(token.Assign, "="),
+		tok(token.Number, "0"),
+		tok(token.Terminator, "\n"),
 	}
 
-	assertError(t, given, auditor.UnexpectedEOF)
+	assertError(t, given, UnexpectedEOF)
 }

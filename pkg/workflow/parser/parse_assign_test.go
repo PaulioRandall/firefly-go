@@ -15,10 +15,10 @@ func Test_parseAssign_1(t *testing.T) {
 	// a = 0
 
 	given := []token.Token{
-		tok1(token.Identifier, "a"),
-		tok1(token.Assign, "="),
-		tok1(token.Number, "0"),
-		tok1(token.Terminator, "\n"),
+		tok(token.Identifier, "a"),
+		tok(token.Assign, "="),
+		tok(token.Number, "0"),
+		tok(token.Terminator, "\n"),
 	}
 
 	exp := []ast.Node{
@@ -36,14 +36,14 @@ func Test_parseAssign_2(t *testing.T) {
 	// a, b = 0, 1
 
 	given := []token.Token{
-		tok1(token.Identifier, "a"),
-		tok1(token.Comma, ","),
-		tok1(token.Identifier, "b"),
-		tok1(token.Assign, "="),
-		tok1(token.Number, "0"),
-		tok1(token.Comma, ","),
-		tok1(token.Number, "1"),
-		tok1(token.Terminator, "\n"),
+		tok(token.Identifier, "a"),
+		tok(token.Comma, ","),
+		tok(token.Identifier, "b"),
+		tok(token.Assign, "="),
+		tok(token.Number, "0"),
+		tok(token.Comma, ","),
+		tok(token.Number, "1"),
+		tok(token.Terminator, "\n"),
 	}
 
 	exp := []ast.Node{
@@ -61,13 +61,13 @@ func Test_parseAssign_3(t *testing.T) {
 	// a b = 0, 1
 
 	given := []token.Token{
-		tok1(token.Identifier, "a"),
-		tok1(token.Identifier, "b"),
-		tok1(token.Assign, "="),
-		tok1(token.Number, "0"),
-		tok1(token.Comma, ","),
-		tok1(token.Number, "1"),
-		tok1(token.Terminator, "\n"),
+		tok(token.Identifier, "a"),
+		tok(token.Identifier, "b"),
+		tok(token.Assign, "="),
+		tok(token.Number, "0"),
+		tok(token.Comma, ","),
+		tok(token.Number, "1"),
+		tok(token.Terminator, "\n"),
 	}
 
 	assertError(t, given, auditor.UnexpectedToken)
@@ -77,13 +77,13 @@ func Test_parseAssign_4(t *testing.T) {
 	// a, b = 0 1
 
 	given := []token.Token{
-		tok1(token.Identifier, "a"),
-		tok1(token.Comma, ","),
-		tok1(token.Identifier, "b"),
-		tok1(token.Assign, "="),
-		tok1(token.Number, "0"),
-		tok1(token.Number, "1"),
-		tok1(token.Terminator, "\n"),
+		tok(token.Identifier, "a"),
+		tok(token.Comma, ","),
+		tok(token.Identifier, "b"),
+		tok(token.Assign, "="),
+		tok(token.Number, "0"),
+		tok(token.Number, "1"),
+		tok(token.Terminator, "\n"),
 	}
 
 	assertError(t, given, MissingExpr)
@@ -93,12 +93,12 @@ func Test_parseAssign_5(t *testing.T) {
 	// a, b = 0
 
 	given := []token.Token{
-		tok1(token.Identifier, "a"),
-		tok1(token.Comma, ","),
-		tok1(token.Identifier, "b"),
-		tok1(token.Assign, "="),
-		tok1(token.Number, "0"),
-		tok1(token.Terminator, "\n"),
+		tok(token.Identifier, "a"),
+		tok(token.Comma, ","),
+		tok(token.Identifier, "b"),
+		tok(token.Assign, "="),
+		tok(token.Number, "0"),
+		tok(token.Terminator, "\n"),
 	}
 
 	assertError(t, given, MissingExpr)
@@ -108,12 +108,12 @@ func Test_parseAssign_6(t *testing.T) {
 	// a = 0, 1
 
 	given := []token.Token{
-		tok1(token.Identifier, "a"),
-		tok1(token.Assign, "="),
-		tok1(token.Number, "0"),
-		tok1(token.Comma, ","),
-		tok1(token.Number, "1"),
-		tok1(token.Terminator, "\n"),
+		tok(token.Identifier, "a"),
+		tok(token.Assign, "="),
+		tok(token.Number, "0"),
+		tok(token.Comma, ","),
+		tok(token.Number, "1"),
+		tok(token.Terminator, "\n"),
 	}
 
 	assertError(t, given, MissingVar)
@@ -123,13 +123,13 @@ func Test_parseAssign_7(t *testing.T) {
 	// a, b 0, 1
 
 	given := []token.Token{
-		tok1(token.Identifier, "a"),
-		tok1(token.Comma, ","),
-		tok1(token.Identifier, "b"),
-		tok1(token.Number, "0"),
-		tok1(token.Comma, ","),
-		tok1(token.Number, "1"),
-		tok1(token.Terminator, "\n"),
+		tok(token.Identifier, "a"),
+		tok(token.Comma, ","),
+		tok(token.Identifier, "b"),
+		tok(token.Number, "0"),
+		tok(token.Comma, ","),
+		tok(token.Number, "1"),
+		tok(token.Terminator, "\n"),
 	}
 
 	assertError(t, given, auditor.UnexpectedToken)
@@ -139,18 +139,18 @@ func Test_parseAssign_8(t *testing.T) {
 	// a, b, c = false, 0, ""
 
 	given := []token.Token{
-		tok1(token.Identifier, "a"),
-		tok1(token.Comma, ","),
-		tok1(token.Identifier, "b"),
-		tok1(token.Comma, ","),
-		tok1(token.Identifier, "c"),
-		tok1(token.Assign, "="), // 5
-		tok1(token.False, "false"),
-		tok1(token.Comma, ","),
-		tok1(token.Number, "0"),
-		tok1(token.Comma, ","),
-		tok1(token.String, `""`), // 10
-		tok1(token.Terminator, "\n"),
+		tok(token.Identifier, "a"),
+		tok(token.Comma, ","),
+		tok(token.Identifier, "b"),
+		tok(token.Comma, ","),
+		tok(token.Identifier, "c"),
+		tok(token.Assign, "="), // 5
+		tok(token.False, "false"),
+		tok(token.Comma, ","),
+		tok(token.Number, "0"),
+		tok(token.Comma, ","),
+		tok(token.String, `""`), // 10
+		tok(token.Terminator, "\n"),
 	}
 
 	exp := []ast.Node{
