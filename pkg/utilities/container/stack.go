@@ -1,15 +1,11 @@
 package container
 
-import (
-	"errors"
-)
-
 type Stack[T any] interface {
 	More() bool
 	Empty() bool
-	Top() T
+	Top() (T, bool)
 	Push(T)
-	Pop() T
+	Pop() (T, bool)
 }
 
 type LinkedStack[T any] struct {
@@ -24,11 +20,13 @@ func (st LinkedStack[T]) Empty() bool {
 	return st.top == nil
 }
 
-func (st *LinkedStack[T]) Top() T {
+func (st *LinkedStack[T]) Top() (T, bool) {
 	if st.More() {
-		return st.top.v
+		return st.top.v, true
 	}
-	panic(errors.New("Stack is empty")) // TODO: Replace with bool
+
+	var zero T
+	return zero, false
 }
 
 func (st *LinkedStack[T]) Push(v T) {
@@ -38,8 +36,12 @@ func (st *LinkedStack[T]) Push(v T) {
 	}
 }
 
-func (st *LinkedStack[T]) Pop() T {
-	v := st.Top()
-	st.top = st.top.next
-	return v
+func (st *LinkedStack[T]) Pop() (T, bool) {
+	if v, ok := st.Top(); ok {
+		st.top = st.top.next
+		return v, true
+	}
+
+	var zero T
+	return zero, false
 }

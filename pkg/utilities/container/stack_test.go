@@ -11,30 +11,34 @@ func Test_LinkedStack_enforceTypes(t *testing.T) {
 }
 
 func Test_1_LinkedStack(t *testing.T) {
-	require.Panics(t, func() {
-		st := LinkedStack[rune]{}
-		st.Top()
-	})
+	st := LinkedStack[rune]{}
+	_, ok := st.Top()
+	require.False(t, ok)
 }
 
 func Test_2_LinkedStack(t *testing.T) {
-	require.Panics(t, func() {
-		st := LinkedStack[rune]{}
-		st.Pop()
-	})
+	st := LinkedStack[rune]{}
+	_, ok := st.Pop()
+	require.False(t, ok)
 }
 
 func Test_3_LinkedStack(t *testing.T) {
 	st := LinkedStack[rune]{}
 	st.Push('a')
-	require.Equal(t, 'a', st.Top())
+
+	v, ok := st.Top()
+	require.True(t, ok)
+	require.Equal(t, 'a', v)
 }
 
 func Test_4_LinkedStack(t *testing.T) {
 	st := LinkedStack[rune]{}
 	st.Push('a')
 	st.Push('b')
-	require.Equal(t, 'b', st.Top())
+
+	v, ok := st.Top()
+	require.True(t, ok)
+	require.Equal(t, 'b', v)
 }
 
 func Test_5_LinkedStack(t *testing.T) {
@@ -43,6 +47,11 @@ func Test_5_LinkedStack(t *testing.T) {
 	st.Push('a')
 	st.Push('b')
 
-	require.Equal(t, 'b', st.Pop())
-	require.Equal(t, 'a', st.Pop())
+	v, ok := st.Pop()
+	require.True(t, ok)
+	require.Equal(t, 'b', v)
+
+	v, ok = st.Pop()
+	require.True(t, ok)
+	require.Equal(t, 'a', v)
 }
