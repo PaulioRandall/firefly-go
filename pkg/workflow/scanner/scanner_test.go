@@ -281,7 +281,7 @@ func Test_76(t *testing.T) {
 }
 
 func Test_77(t *testing.T) {
-	assertToken(t, "E", token.Expr)
+	assertToken(t, "F", token.Func)
 }
 
 func Test_78(t *testing.T) {

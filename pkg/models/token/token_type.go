@@ -21,7 +21,7 @@ const (
 	Watch
 	When
 	Is
-	Expr // TODO: Rename as Func
+	Func
 	Proc
 	End
 	_literal_begin
@@ -81,7 +81,7 @@ var nameMap = map[TokenType]string{
 	Watch:        "Watch",
 	When:         "When",
 	Is:           "Is",
-	Expr:         "Expression",
+	Func:         "Function",
 	Proc:         "Procedure",
 	End:          "End",
 	True:         "True",
@@ -92,10 +92,10 @@ var nameMap = map[TokenType]string{
 	Colon:        "Colon",
 	Spell:        "Spell",
 	Add:          "Add",
-	Sub:          "Sub",
-	Mul:          "Mul",
-	Div:          "Div",
-	Mod:          "Mod",
+	Sub:          "Subtract",
+	Mul:          "Multiply",
+	Div:          "Divide",
+	Mod:          "Remainder",
 	LT:           "Less Than",
 	GT:           "More Than",
 	LTE:          "Less Than Equal",

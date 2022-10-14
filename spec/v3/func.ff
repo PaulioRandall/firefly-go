@@ -1,7 +1,7 @@
 // Function
+// Inline
+// Must return one thing
 
-divide := F(a, b) result, error
-	// ...
-end
+add := F(a, b) a + b
 
-result, error = divide(4, 2)
+result = add(4, 2)
