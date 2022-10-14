@@ -31,11 +31,15 @@ println() {
 }
 
 goDoc() {
+  doc_port=":6060"
+
   println "Documentation..."
-  println "* http://localhost:6060/"
-  println "* http://localhost:6060/pkg/#thirdparty"
+  println "\t" "Firefly - http://localhost${doc_port}/pkg/github.com/PaulioRandall/firefly-go/"
+  println "\t" "Libs    - http://localhost${doc_port}/pkg/#thirdparty"
+  println "\t" "Go      - http://localhost${doc_port}/pkg/#stdlib"
+  println "\t" "All     - http://localhost${doc_port}/"
   
-  godoc -http=:6060
+  godoc -http=${doc_port}
 }
 
 clean() {
