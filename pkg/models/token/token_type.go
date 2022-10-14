@@ -22,7 +22,7 @@ const (
 	When
 	Is
 	Expr // TODO: Rename as Func
-	Func // TODO: Rename as Proc
+	Proc
 	End
 	_literal_begin
 	True
@@ -82,7 +82,7 @@ var nameMap = map[TokenType]string{
 	When:         "When",
 	Is:           "Is",
 	Expr:         "Expression",
-	Func:         "Function",
+	Proc:         "Procedure",
 	End:          "End",
 	True:         "True",
 	False:        "False",

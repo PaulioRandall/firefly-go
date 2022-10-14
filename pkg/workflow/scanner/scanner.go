@@ -221,8 +221,8 @@ func scanWord(tb *tokenBuilder, first rune) error {
 		tb.tt = token.Is
 	case "E":
 		tb.tt = token.Expr
-	case "F":
-		tb.tt = token.Func
+	case "P":
+		tb.tt = token.Proc
 	case "end":
 		tb.tt = token.End
 	case "true":

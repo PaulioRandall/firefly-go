@@ -6,7 +6,6 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/PaulioRandall/firefly-go/pkg/models/pos"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/debug"
@@ -49,21 +48,12 @@ func assertError(t *testing.T, given string, exp error) {
 }
 
 func Test_1(t *testing.T) {
+	t.Log("Empty scanner input should return empty token list, not an error")
 	assertScan(t, "", nil)
 }
 
 func Test_2(t *testing.T) {
-	given := "\n"
-
-	exp := []token.Token{
-		token.MakeTokenAt(
-			token.Newline,
-			given,
-			pos.At(0, 0, 0),
-		),
-	}
-
-	assertScan(t, given, exp)
+	assertToken(t, "\n", token.Newline)
 }
 
 func Test_3(t *testing.T) {
@@ -295,7 +285,7 @@ func Test_77(t *testing.T) {
 }
 
 func Test_78(t *testing.T) {
-	assertToken(t, "F", token.Func)
+	assertToken(t, "P", token.Proc)
 }
 
 func Test_79(t *testing.T) {
@@ -374,119 +364,129 @@ func Test_200(t *testing.T) {
 }
 
 func Test_201(t *testing.T) {
-	given := strings.Join([]string{
-		`x = true`,
-		`y, z = 123.456, "string"`,
-		``,
-		`// A function`,
-		`f := F(a, b) c, d`,
-		`	when a`,
-		`		is 1: @println("one")`,
-		`		a == b: @println("a == b")`,
-		`		true: @println("meh")`,
-		`	end`,
-		`end`,
-		``,
-	}, "\n")
-
+	lines := []string{}
+	exp := []token.Token{}
 	gen := tokentest.NewTokenGenerator()
-	exp := []token.Token{
-		// `x = true`
-		gen(token.Identifier, "x"),
-		gen(token.Space, " "),
-		gen(token.Assign, "="),
-		gen(token.Space, " "),
-		gen(token.True, "true"),
-		gen(token.Newline, "\n"),
-		// `y, z = 1, "string"`
-		gen(token.Identifier, "y"),
-		gen(token.Comma, ","),
-		gen(token.Space, " "),
-		gen(token.Identifier, "z"),
-		gen(token.Space, " "),
-		gen(token.Assign, "="),
-		gen(token.Space, " "),
-		gen(token.Number, "123.456"),
-		gen(token.Comma, ","),
-		gen(token.Space, " "),
-		gen(token.String, `"string"`),
-		gen(token.Newline, "\n"),
-		// ``
-		gen(token.Newline, "\n"),
-		// `// A function`
-		gen(token.Comment, "// A function"),
-		gen(token.Newline, "\n"),
-		// `f := F(a, b) c, d {`
-		gen(token.Identifier, "f"),
-		gen(token.Space, " "),
-		gen(token.Define, ":="),
-		gen(token.Space, " "),
-		gen(token.Func, "F"),
-		gen(token.ParenOpen, "("),
-		gen(token.Identifier, "a"),
-		gen(token.Comma, ","),
-		gen(token.Space, " "),
-		gen(token.Identifier, "b"),
-		gen(token.ParenClose, ")"),
-		gen(token.Space, " "),
-		gen(token.Identifier, "c"),
-		gen(token.Comma, ","),
-		gen(token.Space, " "),
-		gen(token.Identifier, "d"),
-		gen(token.Newline, "\n"),
-		// `	when a`
-		gen(token.Space, "\t"),
-		gen(token.When, "when"),
-		gen(token.Space, " "),
-		gen(token.Identifier, "a"),
-		gen(token.Newline, "\n"),
-		// ` 	is 1: @println("one")`
-		gen(token.Space, "\t\t"),
-		gen(token.Is, "is"),
-		gen(token.Space, " "),
-		gen(token.Number, "1"),
-		gen(token.Colon, ":"),
-		gen(token.Space, " "),
-		gen(token.Spell, "@"),
-		gen(token.Identifier, "println"),
-		gen(token.ParenOpen, "("),
-		gen(token.String, `"one"`),
-		gen(token.ParenClose, ")"),
-		gen(token.Newline, "\n"),
-		// `		a == b: @println("b")`,
-		gen(token.Space, "\t\t"),
-		gen(token.Identifier, "a"),
-		gen(token.Space, " "),
-		gen(token.EQU, "=="),
-		gen(token.Space, " "),
-		gen(token.Identifier, "b"),
-		gen(token.Colon, ":"),
-		gen(token.Space, " "),
-		gen(token.Spell, "@"),
-		gen(token.Identifier, "println"),
-		gen(token.ParenOpen, "("),
-		gen(token.String, `"a == b"`),
-		gen(token.ParenClose, ")"),
-		gen(token.Newline, "\n"),
-		// `		true: @println("meh")`
-		gen(token.Space, "\t\t"),
-		gen(token.True, "true"),
-		gen(token.Colon, ":"),
-		gen(token.Space, " "),
-		gen(token.Spell, "@"),
-		gen(token.Identifier, "println"),
-		gen(token.ParenOpen, "("),
-		gen(token.String, `"meh"`),
-		gen(token.ParenClose, ")"),
-		gen(token.Newline, "\n"),
-		// `	}`
-		gen(token.Space, "\t"),
-		gen(token.End, "end"),
-		gen(token.Newline, "\n"),
-		// `}`
-		gen(token.End, "end"),
-		gen(token.Newline, "\n"),
+
+	line := func(s string) {
+		lines = append(lines, s)
 	}
 
+	then := func(tt token.TokenType, v string) {
+		exp = append(exp, gen(tt, v))
+	}
+
+	mustStartWith := then
+	thenEndWith := then
+	mustBeEmptyWith := then
+
+	line(`x = true`)
+	mustStartWith(token.Identifier, "x")
+	then(token.Space, " ")
+	then(token.Assign, "=")
+	then(token.Space, " ")
+	then(token.True, "true")
+	thenEndWith(token.Newline, "\n")
+
+	line(`y, z = 123.456, "string"`)
+	mustStartWith(token.Identifier, "y")
+	then(token.Comma, ",")
+	then(token.Space, " ")
+	then(token.Identifier, "z")
+	then(token.Space, " ")
+	then(token.Assign, "=")
+	then(token.Space, " ")
+	then(token.Number, "123.456")
+	then(token.Comma, ",")
+	then(token.Space, " ")
+	then(token.String, `"string"`)
+	thenEndWith(token.Newline, "\n")
+
+	line(``)
+	mustBeEmptyWith(token.Newline, "\n")
+
+	line(`// A procedure`)
+	mustStartWith(token.Comment, "// A procedure")
+	thenEndWith(token.Newline, "\n")
+
+	line(`f := P(a, b) c, d`)
+	mustStartWith(token.Identifier, "f")
+	then(token.Space, " ")
+	then(token.Define, ":=")
+	then(token.Space, " ")
+	then(token.Proc, "P")
+	then(token.ParenOpen, "(")
+	then(token.Identifier, "a")
+	then(token.Comma, ",")
+	then(token.Space, " ")
+	then(token.Identifier, "b")
+	then(token.ParenClose, ")")
+	then(token.Space, " ")
+	then(token.Identifier, "c")
+	then(token.Comma, ",")
+	then(token.Space, " ")
+	then(token.Identifier, "d")
+	thenEndWith(token.Newline, "\n")
+
+	line(`	when a`)
+	mustStartWith(token.Space, "\t")
+	then(token.When, "when")
+	then(token.Space, " ")
+	then(token.Identifier, "a")
+	thenEndWith(token.Newline, "\n")
+
+	line(`		is 1: @println("one")`)
+	mustStartWith(token.Space, "\t\t")
+	then(token.Is, "is")
+	then(token.Space, " ")
+	then(token.Number, "1")
+	then(token.Colon, ":")
+	then(token.Space, " ")
+	then(token.Spell, "@")
+	then(token.Identifier, "println")
+	then(token.ParenOpen, "(")
+	then(token.String, `"one"`)
+	then(token.ParenClose, ")")
+	thenEndWith(token.Newline, "\n")
+
+	line(`		a == b: @println("a == b")`)
+	mustStartWith(token.Space, "\t\t")
+	then(token.Identifier, "a")
+	then(token.Space, " ")
+	then(token.EQU, "==")
+	then(token.Space, " ")
+	then(token.Identifier, "b")
+	then(token.Colon, ":")
+	then(token.Space, " ")
+	then(token.Spell, "@")
+	then(token.Identifier, "println")
+	then(token.ParenOpen, "(")
+	then(token.String, `"a == b"`)
+	then(token.ParenClose, ")")
+	thenEndWith(token.Newline, "\n")
+
+	line(`		true: @println("meh")`)
+	mustStartWith(token.Space, "\t\t")
+	then(token.True, "true")
+	then(token.Colon, ":")
+	then(token.Space, " ")
+	then(token.Spell, "@")
+	then(token.Identifier, "println")
+	then(token.ParenOpen, "(")
+	then(token.String, `"meh"`)
+	then(token.ParenClose, ")")
+	thenEndWith(token.Newline, "\n")
+
+	line(`	end`)
+	mustStartWith(token.Space, "\t")
+	then(token.End, "end")
+	thenEndWith(token.Newline, "\n")
+
+	line(`end`)
+	mustStartWith(token.End, "end")
+	thenEndWith(token.Newline, "\n")
+	line(``)
+
+	given := strings.Join(lines, "\n")
 	assertScan(t, given, exp)
 }
