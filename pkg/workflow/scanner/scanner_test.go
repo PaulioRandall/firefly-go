@@ -48,11 +48,11 @@ func assertError(t *testing.T, given string, exp error) {
 	require.True(t, err.Is(e, exp), "Expected %+v", exp.Error())
 }
 
-func Test_1_Scan(t *testing.T) {
+func Test_1(t *testing.T) {
 	assertScan(t, "", nil)
 }
 
-func Test_7_Scan(t *testing.T) {
+func Test_2(t *testing.T) {
 	given := "\n"
 
 	exp := []token.Token{
@@ -66,299 +66,299 @@ func Test_7_Scan(t *testing.T) {
 	assertScan(t, given, exp)
 }
 
-func Test_10_Scan(t *testing.T) {
-	assertToken(t, "=", token.Assign)
-}
-
-func Test_11_Scan(t *testing.T) {
-	assertToken(t, ":=", token.Define)
-}
-
-func Test_12_Scan(t *testing.T) {
-	assertToken(t, ";", token.Terminator)
-}
-
-func Test_13_Scan(t *testing.T) {
-	assertToken(t, ",", token.Comma)
-}
-
-func Test_14_Scan(t *testing.T) {
-	assertToken(t, ":", token.Colon)
-}
-
-func Test_15_Scan(t *testing.T) {
-	assertToken(t, "@", token.Spell)
-}
-
-func Test_16_Scan(t *testing.T) {
+func Test_3(t *testing.T) {
 	assertToken(t, "+", token.Add)
 }
 
-func Test_17_Scan(t *testing.T) {
+func Test_4(t *testing.T) {
 	assertToken(t, "-", token.Sub)
 }
 
-func Test_18_Scan(t *testing.T) {
+func Test_5(t *testing.T) {
 	assertToken(t, "*", token.Mul)
 }
 
-func Test_19_Scan(t *testing.T) {
+func Test_6(t *testing.T) {
 	assertToken(t, "/", token.Div)
 }
 
-func Test_20_Scan(t *testing.T) {
+func Test_7(t *testing.T) {
 	assertToken(t, "%", token.Mod)
 }
 
-func Test_21_Scan(t *testing.T) {
+func Test_8(t *testing.T) {
 	assertToken(t, "<", token.LT)
 }
 
-func Test_22_Scan(t *testing.T) {
+func Test_9(t *testing.T) {
 	assertToken(t, ">", token.GT)
 }
 
-func Test_23_Scan(t *testing.T) {
+func Test_10(t *testing.T) {
 	assertToken(t, "<=", token.LTE)
 }
 
-func Test_24_Scan(t *testing.T) {
+func Test_11(t *testing.T) {
 	assertToken(t, ">=", token.GTE)
 }
 
-func Test_25_Scan(t *testing.T) {
+func Test_12(t *testing.T) {
 	assertToken(t, "==", token.EQU)
 }
 
-func Test_26_Scan(t *testing.T) {
+func Test_13(t *testing.T) {
 	assertToken(t, "!=", token.NEQ)
 }
 
-func Test_27_Scan(t *testing.T) {
+func Test_14(t *testing.T) {
+	assertToken(t, "=", token.Assign)
+}
+
+func Test_15(t *testing.T) {
+	assertToken(t, ":=", token.Define)
+}
+
+func Test_16(t *testing.T) {
+	assertToken(t, ":", token.Colon)
+}
+
+func Test_17(t *testing.T) {
+	assertToken(t, ";", token.Terminator)
+}
+
+func Test_18(t *testing.T) {
+	assertToken(t, ",", token.Comma)
+}
+
+func Test_19(t *testing.T) {
+	assertToken(t, "@", token.Spell)
+}
+
+func Test_20(t *testing.T) {
 	assertToken(t, "(", token.ParenOpen)
 }
 
-func Test_28_Scan(t *testing.T) {
+func Test_21(t *testing.T) {
 	assertToken(t, ")", token.ParenClose)
 }
 
-func Test_29_Scan(t *testing.T) {
+func Test_22(t *testing.T) {
 	assertToken(t, "{", token.BraceOpen)
 }
 
-func Test_30_Scan(t *testing.T) {
+func Test_23(t *testing.T) {
 	assertToken(t, "}", token.BraceClose)
 }
 
-func Test_31_Scan(t *testing.T) {
+func Test_24(t *testing.T) {
 	assertToken(t, "[", token.BracketOpen)
 }
 
-func Test_32_Scan(t *testing.T) {
+func Test_25(t *testing.T) {
 	assertToken(t, "]", token.BracketClose)
 }
 
-func Test_33_Scan(t *testing.T) {
+func Test_33(t *testing.T) {
 	assertToken(t, `""`, token.String)
 }
 
-func Test_34_Scan(t *testing.T) {
+func Test_34(t *testing.T) {
 	assertToken(t, `"a"`, token.String)
 }
 
-func Test_35_Scan(t *testing.T) {
+func Test_35(t *testing.T) {
 	assertToken(t, `"abc"`, token.String)
 }
 
-func Test_36_Scan(t *testing.T) {
+func Test_36(t *testing.T) {
 	assertToken(t, `"   "`, token.String)
 }
 
-func Test_37_Scan(t *testing.T) {
+func Test_37(t *testing.T) {
 	assertToken(t, `"\\"`, token.String)
 }
 
-func Test_38_Scan(t *testing.T) {
+func Test_38(t *testing.T) {
 	assertToken(t, `"\\\\\\"`, token.String)
 }
 
-func Test_39_Scan(t *testing.T) {
+func Test_39(t *testing.T) {
 	assertToken(t, `"\"\"\""`, token.String)
 }
 
-func Test_40_Scan(t *testing.T) {
+func Test_40(t *testing.T) {
 	assertToken(t, " ", token.Space)
 }
 
-func Test_41_Scan(t *testing.T) {
+func Test_41(t *testing.T) {
 	assertToken(t, "\t", token.Space)
 }
 
-func Test_42_Scan(t *testing.T) {
+func Test_42(t *testing.T) {
 	assertToken(t, "\v", token.Space)
 }
 
-func Test_43_Scan(t *testing.T) {
+func Test_43(t *testing.T) {
 	assertToken(t, "\r", token.Space)
 }
 
-func Test_44_Scan(t *testing.T) {
+func Test_44(t *testing.T) {
 	assertToken(t, "\f", token.Space)
 }
 
-func Test_45_Scan(t *testing.T) {
+func Test_45(t *testing.T) {
 	assertToken(t, "  \t\v \f\r   \v\v\t", token.Space)
 }
 
-func Test_50_Scan(t *testing.T) {
+func Test_50(t *testing.T) {
 	assertToken(t, "0", token.Number)
 }
 
-func Test_51_Scan(t *testing.T) {
+func Test_51(t *testing.T) {
 	assertToken(t, "0.00000", token.Number)
 }
 
-func Test_52_Scan(t *testing.T) {
+func Test_52(t *testing.T) {
 	assertToken(t, "0.1", token.Number)
 }
 
-func Test_53_Scan(t *testing.T) {
+func Test_53(t *testing.T) {
 	assertToken(t, "1", token.Number)
 }
 
-func Test_54_Scan(t *testing.T) {
+func Test_54(t *testing.T) {
 	assertToken(t, "1.1234567890", token.Number)
 }
 
-func Test_55_Scan(t *testing.T) {
+func Test_55(t *testing.T) {
 	assertToken(t, "123456789.987654321", token.Number)
 }
 
-func Test_56_Scan(t *testing.T) {
+func Test_56(t *testing.T) {
 	assertToken(t, "9", token.Number)
 }
 
-func Test_60_Scan(t *testing.T) {
+func Test_60(t *testing.T) {
 	assertToken(t, "abc", token.Identifier)
 }
 
-func Test_61_Scan(t *testing.T) {
+func Test_61(t *testing.T) {
 	assertToken(t, "abc_xyz", token.Identifier)
 }
 
-func Test_62_Scan(t *testing.T) {
+func Test_62(t *testing.T) {
 	assertToken(t, "forest", token.Identifier)
 }
 
-func Test_63_Scan(t *testing.T) {
+func Test_63(t *testing.T) {
 	assertToken(t, "For", token.Identifier)
 }
 
-func Test_64_Scan(t *testing.T) {
+func Test_64(t *testing.T) {
 	assertToken(t, "FOR", token.Identifier)
 }
 
-func Test_65_Scan(t *testing.T) {
+func Test_65(t *testing.T) {
 	assertToken(t, "e", token.Identifier)
 }
 
-func Test_70_Scan(t *testing.T) {
+func Test_70(t *testing.T) {
 	assertToken(t, "if", token.If)
 }
 
-func Test_71_Scan(t *testing.T) {
+func Test_71(t *testing.T) {
 	assertToken(t, "for", token.For)
 }
 
-func Test_72_Scan(t *testing.T) {
+func Test_72(t *testing.T) {
 	assertToken(t, "in", token.In)
 }
 
-func Test_73_Scan(t *testing.T) {
+func Test_73(t *testing.T) {
 	assertToken(t, "if", token.If)
 }
 
-func Test_74_Scan(t *testing.T) {
+func Test_74(t *testing.T) {
 	assertToken(t, "watch", token.Watch)
 }
 
-func Test_75_Scan(t *testing.T) {
+func Test_75(t *testing.T) {
 	assertToken(t, "when", token.When)
 }
 
-func Test_76_Scan(t *testing.T) {
+func Test_76(t *testing.T) {
 	assertToken(t, "is", token.Is)
 }
 
-func Test_77_Scan(t *testing.T) {
+func Test_77(t *testing.T) {
 	assertToken(t, "E", token.E)
 }
 
-func Test_78_Scan(t *testing.T) {
+func Test_78(t *testing.T) {
 	assertToken(t, "F", token.F)
 }
 
-func Test_79_Scan(t *testing.T) {
+func Test_79(t *testing.T) {
 	assertToken(t, "true", token.True)
 }
 
-func Test_80_Scan(t *testing.T) {
+func Test_80(t *testing.T) {
 	assertToken(t, "false", token.False)
 }
 
-func Test_81_Scan(t *testing.T) {
+func Test_81(t *testing.T) {
 	assertToken(t, `"\\"`, token.String)
 }
 
-func Test_82_Scan(t *testing.T) {
+func Test_82(t *testing.T) {
 	assertToken(t, "//", token.Comment)
 }
 
-func Test_83_Scan(t *testing.T) {
+func Test_83(t *testing.T) {
 	assertToken(t, "// abc", token.Comment)
 }
 
-func Test_100_Scan(t *testing.T) {
+func Test_100(t *testing.T) {
 	assertError(t, "~", ErrUnknownSymbol)
 }
 
-func Test_101_Scan(t *testing.T) {
+func Test_101(t *testing.T) {
 	assertError(t, `"`, ErrUnterminatedString)
 }
 
-func Test_102_Scan(t *testing.T) {
+func Test_102(t *testing.T) {
 	assertError(t, `"""`, ErrUnterminatedString)
 }
 
-func Test_103_Scan(t *testing.T) {
+func Test_103(t *testing.T) {
 	assertError(t, `"\`, ErrUnterminatedString)
 }
 
-func Test_104_Scan(t *testing.T) {
+func Test_104(t *testing.T) {
 	assertError(t, `"\"`, ErrUnterminatedString)
 }
 
-func Test_105_Scan(t *testing.T) {
+func Test_105(t *testing.T) {
 	assertError(t, `"\\\"`, ErrUnterminatedString)
 }
 
-func Test_106_Scan(t *testing.T) {
+func Test_106(t *testing.T) {
 	assertError(t, "=!", ErrUnknownSymbol)
 }
 
-func Test_107_Scan(t *testing.T) {
+func Test_107(t *testing.T) {
 	assertError(t, ".", ErrUnknownSymbol)
 }
 
-func Test_108_Scan(t *testing.T) {
+func Test_108(t *testing.T) {
 	assertError(t, "0.", ErrMissingFractional)
 }
 
-func Test_109_Scan(t *testing.T) {
+func Test_109(t *testing.T) {
 	assertError(t, "0.a", ErrMissingFractional)
 }
 
-func Test_200_Scan(t *testing.T) {
+func Test_200(t *testing.T) {
 	given := "x = 1"
 
 	gen := tokentest.NewTokenGenerator()
@@ -373,7 +373,7 @@ func Test_200_Scan(t *testing.T) {
 	assertScan(t, given, exp)
 }
 
-func Test_201_Scan(t *testing.T) {
+func Test_201(t *testing.T) {
 	given := strings.Join([]string{
 		`x = true`,
 		`y, z = 123.456, "string"`,

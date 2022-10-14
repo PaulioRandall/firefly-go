@@ -211,49 +211,96 @@ func scanWord(tb *tokenBuilder, first rune) error {
 }
 
 func scanOperator(tb *tokenBuilder, first, second rune) error {
-	ok, e := tryScanTwoRuneOperator(tb, first, second)
-	if e != nil {
+
+	one := func(tb *tokenBuilder, tt token.TokenType) error {
+		tb.tt = tt
+		return nil
+	}
+
+	two := func(tb *tokenBuilder, tt token.TokenType) error {
+		tb.tt = tt
+
+		if _, e := tb.accept(second); e != nil {
+			return err.Wrap(e, "Failed to scan operator")
+		}
+
+		return nil
+	}
+
+	switch {
+	case first == '+':
+		return one(tb, token.Add)
+
+	case first == '-':
+		return one(tb, token.Sub)
+
+	case first == '*':
+		return one(tb, token.Mul)
+
+	case first == '/':
+		return one(tb, token.Div)
+
+	case first == '%':
+		return one(tb, token.Mod)
+
+	case first == '<' && second == '=':
+		return two(tb, token.LTE)
+
+	case first == '>' && second == '=':
+		return two(tb, token.GTE)
+
+	case first == '<':
+		return one(tb, token.LT)
+
+	case first == '>':
+		return one(tb, token.GT)
+
+	case first == '=' && second == '=':
+		return two(tb, token.EQU)
+
+	case first == '!' && second == '=':
+		return two(tb, token.NEQ)
+
+	case first == '=':
+		return one(tb, token.Assign)
+
+	case first == ':' && second == '=':
+		return two(tb, token.Define)
+
+	case first == ':':
+		return one(tb, token.Colon)
+
+	case first == ';':
+		return one(tb, token.Terminator)
+
+	case first == ',':
+		return one(tb, token.Comma)
+
+	case first == '@':
+		return one(tb, token.Spell)
+
+	case first == '(':
+		return one(tb, token.ParenOpen)
+
+	case first == ')':
+		return one(tb, token.ParenClose)
+
+	case first == '{':
+		return one(tb, token.BraceOpen)
+
+	case first == '}':
+		return one(tb, token.BraceClose)
+
+	case first == '[':
+		return one(tb, token.BracketOpen)
+
+	case first == ']':
+		return one(tb, token.BracketClose)
+
+	default:
+		e := unknownSymbol(tb, first, second)
 		return err.Wrap(e, "Failed to scan operator")
 	}
-
-	if ok {
-		return nil
-	}
-
-	if tryScanSingleRuneOperator(tb, first) {
-		return nil
-	}
-
-	e = unknownSymbol(tb, first, second)
-	return err.Wrap(e, "Failed to scan operator")
-}
-
-func tryScanTwoRuneOperator(tb *tokenBuilder, first, second rune) (bool, error) {
-	val := []rune{first, second}
-	tt := token.IdentifyOperatorType(string(val))
-
-	if tt == token.Unknown {
-		return false, nil
-	}
-
-	if ok, e := tb.accept(second); !ok || e != nil {
-		return false, err.Wrap(e, "Failed to scan second symbol in operator")
-	}
-
-	tb.tt = tt
-	return true, nil
-}
-
-func tryScanSingleRuneOperator(tb *tokenBuilder, first rune) bool {
-	val := []rune{first}
-	tt := token.IdentifyOperatorType(string(val))
-
-	if tt == token.Unknown {
-		return false
-	}
-
-	tb.tt = tt
-	return true
 }
 
 func unknownSymbol(tb *tokenBuilder, first, second rune) error {
