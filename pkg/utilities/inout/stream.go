@@ -1,7 +1,7 @@
 package inout
 
 import (
-	"github.com/PaulioRandall/firefly-go/pkg/models/err"
+	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
 
 // StreamItem is a function designed for processing a value from one stream

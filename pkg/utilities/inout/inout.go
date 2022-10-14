@@ -3,8 +3,9 @@ package inout
 import (
 	"io"
 
-	"github.com/PaulioRandall/firefly-go/pkg/models/err"
 	"github.com/PaulioRandall/firefly-go/pkg/models/pos"
+
+	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
 
 var EOF = err.Wrap(io.EOF, "EOF (inout)")

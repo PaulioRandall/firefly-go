@@ -1,9 +1,8 @@
 package parser
 
 import (
-	"github.com/PaulioRandall/firefly-go/pkg/models/err"
-
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/auditor"
+	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
 
 var (

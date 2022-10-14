@@ -3,7 +3,7 @@ package debug
 import (
 	"strings"
 
-	"github.com/PaulioRandall/firefly-go/pkg/models/err"
+	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
 
 func wrappedError(e error) string {

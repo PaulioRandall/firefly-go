@@ -1,9 +1,10 @@
 package scanner
 
 import (
-	"github.com/PaulioRandall/firefly-go/pkg/models/err"
 	"github.com/PaulioRandall/firefly-go/pkg/models/pos"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
+
+	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 )
 

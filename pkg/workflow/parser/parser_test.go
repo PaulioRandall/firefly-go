@@ -6,10 +6,10 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
-	"github.com/PaulioRandall/firefly-go/pkg/models/err"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/debug"
+	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 
 	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
