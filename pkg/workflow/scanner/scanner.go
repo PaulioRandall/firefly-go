@@ -206,7 +206,33 @@ func scanWord(tb *tokenBuilder, first rune) error {
 		return err.Wrap(e, "Failed to scan variable or keyword")
 	}
 
-	tb.tt = token.IdentifyWordType(tb.String())
+	switch tb.String() {
+	case "if":
+		tb.tt = token.If
+	case "for":
+		tb.tt = token.For
+	case "in":
+		tb.tt = token.In
+	case "watch":
+		tb.tt = token.Watch
+	case "when":
+		tb.tt = token.When
+	case "is":
+		tb.tt = token.Is
+	case "E":
+		tb.tt = token.Expr
+	case "F":
+		tb.tt = token.Func
+	case "end":
+		tb.tt = token.End
+	case "true":
+		tb.tt = token.True
+	case "false":
+		tb.tt = token.False
+	default:
+		tb.tt = token.Identifier
+	}
+
 	return nil
 }
 

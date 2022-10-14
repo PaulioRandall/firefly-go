@@ -291,11 +291,11 @@ func Test_76(t *testing.T) {
 }
 
 func Test_77(t *testing.T) {
-	assertToken(t, "E", token.E)
+	assertToken(t, "E", token.Expr)
 }
 
 func Test_78(t *testing.T) {
-	assertToken(t, "F", token.F)
+	assertToken(t, "F", token.Func)
 }
 
 func Test_79(t *testing.T) {
@@ -421,7 +421,7 @@ func Test_201(t *testing.T) {
 		gen(token.Space, " "),
 		gen(token.Define, ":="),
 		gen(token.Space, " "),
-		gen(token.F, "F"),
+		gen(token.Func, "F"),
 		gen(token.ParenOpen, "("),
 		gen(token.Identifier, "a"),
 		gen(token.Comma, ","),

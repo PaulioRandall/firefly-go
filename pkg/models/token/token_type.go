@@ -21,8 +21,8 @@ const (
 	Watch
 	When
 	Is
-	E
-	F
+	Expr // TODO: Rename as Func
+	Func // TODO: Rename as Proc
 	End
 	_literal_begin
 	True
@@ -67,52 +67,51 @@ const (
 	_operators_end
 )
 
-// TODO: create meta data type with readable name & symbol
-var symbolMap = map[TokenType]string{
-	Newline:      "\n",
-	Terminator:   ";",
-	Identifier:   "",
-	Space:        " ",
-	Comment:      "//",
-	Number:       "0",
-	String:       `""`,
-	If:           "if",
-	For:          "for",
-	In:           "in",
-	Watch:        "watch",
-	When:         "when",
-	Is:           "is",
-	E:            "E",
-	F:            "F",
-	End:          "end",
-	True:         "true",
-	False:        "false",
-	Assign:       "=",
-	Define:       ":=",
-	Comma:        ",",
-	Colon:        ":",
-	Spell:        "@",
-	Add:          "+",
-	Sub:          "-",
-	Mul:          "*",
-	Div:          "/",
-	Mod:          "%",
-	LT:           "<",
-	GT:           ">",
-	LTE:          "<=",
-	GTE:          ">=",
-	EQU:          "==",
-	NEQ:          "!=",
-	ParenOpen:    "(",
-	ParenClose:   ")",
-	BraceOpen:    "{",
-	BraceClose:   "}",
-	BracketOpen:  "[",
-	BracketClose: "]",
+var nameMap = map[TokenType]string{
+	Newline:      "Newline",
+	Terminator:   "Terminator",
+	Identifier:   "Identifier",
+	Space:        "Space",
+	Comment:      "Comment",
+	Number:       "Number",
+	String:       "String",
+	If:           "If",
+	For:          "For",
+	In:           "In",
+	Watch:        "Watch",
+	When:         "When",
+	Is:           "Is",
+	Expr:         "Expression",
+	Func:         "Function",
+	End:          "End",
+	True:         "True",
+	False:        "False",
+	Assign:       "Assign",
+	Define:       "Define",
+	Comma:        "Comma",
+	Colon:        "Colon",
+	Spell:        "Spell",
+	Add:          "Add",
+	Sub:          "Sub",
+	Mul:          "Mul",
+	Div:          "Div",
+	Mod:          "Mod",
+	LT:           "Less Than",
+	GT:           "More Than",
+	LTE:          "Less Than Equal",
+	GTE:          "More Than Equal",
+	EQU:          "Equal",
+	NEQ:          "Not Equal",
+	ParenOpen:    "Paren Open",
+	ParenClose:   "Paren Close",
+	BraceOpen:    "Brace Open",
+	BraceClose:   "Brace Close",
+	BracketOpen:  "Bracket Open",
+	BracketClose: "Bracket Close",
 }
 
 func (tt TokenType) String() string {
-	return symbolMap[tt]
+	return nameMap[tt]
 }
 
 func IsLiteral(tt TokenType) bool {
@@ -137,36 +136,10 @@ func Operators() map[TokenType]string {
 	})
 }
 
-func IdentifyWordType(s string) TokenType {
-	tt := find(func(tt TokenType, symbol string) bool {
-		return IsKeyword(tt) && s == symbol
-	})
-
-	if tt == Unknown {
-		return Identifier
-	}
-	return tt
-}
-
-func IdentifyOperatorType(s string) TokenType {
-	return find(func(tt TokenType, symbol string) bool {
-		return IsOperator(tt) && s == symbol
-	})
-}
-
-func find(f func(TokenType, string) bool) TokenType {
-	for tt, symbol := range symbolMap {
-		if f(tt, symbol) {
-			return tt
-		}
-	}
-	return Unknown
-}
-
 func filter(f func(TokenType, string) bool) map[TokenType]string {
 	res := map[TokenType]string{}
 
-	for tt, symbol := range symbolMap {
+	for tt, symbol := range nameMap {
 		if f(tt, symbol) {
 			res[tt] = symbol
 		}
