@@ -40,5 +40,5 @@ func (tk Token) Debug() string {
 }
 
 func (tk Token) String() string {
-	return fmt.Sprintf("%s: %q", tk.TokenType.String(), tk.Value)
+	return fmt.Sprintf("%s %q", tk.TokenType.String(), tk.Value)
 }

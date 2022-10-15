@@ -15,7 +15,7 @@ func wrappedError(e error) string {
 		addErr(&sb, e)
 	}
 
-	return indentLines(sb.String(), 1)
+	return indentLines(sb.String(), 1, false)
 }
 
 func addErr(sb *strings.Builder, e error) {
