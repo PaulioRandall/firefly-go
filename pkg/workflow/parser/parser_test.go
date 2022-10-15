@@ -12,6 +12,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 
+	"github.com/PaulioRandall/firefly-go/pkg/models/ast/asttest"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
 )
 
@@ -20,11 +21,11 @@ func tok(tt token.TokenType, v string) token.Token {
 }
 
 func literal(tt token.TokenType, v string) ast.Literal {
-	return ast.MakeLiteral(tok(tt, v))
+	return asttest.Literal(tok(tt, v))
 }
 
 func variable(tt token.TokenType, v string) ast.Variable {
-	return ast.MakeVariable(tok(tt, v))
+	return asttest.Variable(tok(tt, v))
 }
 
 func assert(t *testing.T, given []token.Token, exp []ast.Node) {

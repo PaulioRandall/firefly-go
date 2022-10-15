@@ -6,7 +6,8 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 	//"github.com/PaulioRandall/firefly-go/pkg/utilities/auditor"
-	//"github.com/PaulioRandall/firefly-go/pkg/models/ast/asttest"
+
+	"github.com/PaulioRandall/firefly-go/pkg/models/ast/asttest"
 )
 
 func Test_parseWhen_1(t *testing.T) {
@@ -21,7 +22,7 @@ func Test_parseWhen_1(t *testing.T) {
 	}
 
 	exp := []ast.Node{
-		ast.MakeWhen(
+		asttest.When(
 			given[0],
 			nil,
 			nil,
@@ -45,9 +46,9 @@ func Test_parseWhen_2(t *testing.T) {
 	}
 
 	exp := []ast.Node{
-		ast.MakeWhen(
+		asttest.When(
 			given[0],
-			ast.MakeLiteral(tok(token.Number, "1")),
+			asttest.Literal(tok(token.Number, "1")),
 			nil,
 			given[3],
 		),

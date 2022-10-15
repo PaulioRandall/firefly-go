@@ -1,6 +1,7 @@
 package ast
 
 import (
+	"github.com/PaulioRandall/firefly-go/pkg/models/pos"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
@@ -11,6 +12,9 @@ import (
 // node's execution
 type Node interface {
 	node()
+
+	// Where returns the start and end positions of
+	// Where() (from, to pos.Pos)
 }
 
 // Stmt is a constraint for an executable statement
@@ -34,7 +38,18 @@ type Expr interface {
 	expr()
 }
 
+// rangedNode is a node that can be mapped to a range of runes within a file
+type rangedNode struct {
+	from, to pos.Pos
+}
+
+func (n rangedNode) node() {}
+func (n rangedNode) Where() (from, to pos.Pos) {
+	return n.from, n.to
+}
+
 type Literal struct {
+	rangedNode
 	Operator token.Token
 }
 

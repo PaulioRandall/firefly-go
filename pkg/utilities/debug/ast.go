@@ -23,3 +23,13 @@ func astIf(n ast.If) string {
 	// TODO
 	return fmt.Sprintf("If %q", n.Keyword.Value)
 }
+
+func astWhen(n ast.When) string {
+	// TODO
+	return fmt.Sprintf("When %q", n.Keyword.Value)
+}
+
+func astWhenCase(n ast.WhenCase) string {
+	// TODO
+	return fmt.Sprintf("WhenCase")
+}

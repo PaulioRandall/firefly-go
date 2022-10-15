@@ -22,10 +22,10 @@ func Test_parseAssign_1(t *testing.T) {
 	}
 
 	exp := []ast.Node{
-		ast.MakeAssign(
-			asttest.Vars(given[0]),
+		asttest.Assign(
+			asttest.Variables(given[0]),
 			given[1],
-			asttest.LitExprs(given[2]),
+			asttest.Expressions(given[2]),
 		),
 	}
 
@@ -47,10 +47,10 @@ func Test_parseAssign_2(t *testing.T) {
 	}
 
 	exp := []ast.Node{
-		ast.MakeAssign(
-			asttest.Vars(given[0], given[2]),
+		asttest.Assign(
+			asttest.Variables(given[0], given[2]),
 			given[3],
-			asttest.LitExprs(given[4], given[6]),
+			asttest.Expressions(given[4], given[6]),
 		),
 	}
 
@@ -154,10 +154,10 @@ func Test_parseAssign_8(t *testing.T) {
 	}
 
 	exp := []ast.Node{
-		ast.MakeAssign(
-			asttest.Vars(given[0], given[2], given[4]),
+		asttest.Assign(
+			asttest.Variables(given[0], given[2], given[4]),
 			given[5],
-			asttest.LitExprs(given[6], given[8], given[10]),
+			asttest.Expressions(given[6], given[8], given[10]),
 		),
 	}
 

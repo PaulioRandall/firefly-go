@@ -22,9 +22,9 @@ func Test_parseIf_1(t *testing.T) {
 	}
 
 	exp := []ast.Node{
-		ast.MakeIf(
+		asttest.If(
 			given[0],
-			ast.MakeLiteral(given[1]),
+			asttest.Literal(given[1]),
 			nil,
 			given[3],
 		),
@@ -51,17 +51,17 @@ func Test_parseIf_2(t *testing.T) {
 	}
 
 	body := []ast.Stmt{
-		ast.MakeAssign(
-			asttest.Vars(given[3]),
+		asttest.Assign(
+			asttest.Variables(given[3]),
 			given[4],
-			asttest.LitExprs(given[5]),
+			asttest.Expressions(given[5]),
 		),
 	}
 
 	exp := []ast.Node{
-		ast.MakeIf(
+		asttest.If(
 			given[0],
-			ast.MakeLiteral(given[1]),
+			asttest.Literal(given[1]),
 			body,
 			given[7],
 		),
