@@ -25,7 +25,7 @@ func Test_parseAssign_1(t *testing.T) {
 		asttest.Assign(
 			asttest.Variables(given[0]),
 			given[1],
-			asttest.Expressions(given[2]),
+			asttest.ExprSet(asttest.Expressions(given[2])...),
 		),
 	}
 
@@ -50,7 +50,7 @@ func Test_parseAssign_2(t *testing.T) {
 		asttest.Assign(
 			asttest.Variables(given[0], given[2]),
 			given[3],
-			asttest.Expressions(given[4], given[6]),
+			asttest.ExprSet(asttest.Expressions(given[4], given[6])...),
 		),
 	}
 
@@ -73,6 +73,7 @@ func Test_parseAssign_3(t *testing.T) {
 	assertError(t, given, auditor.UnexpectedToken)
 }
 
+/* TODO: Move to validator
 func Test_parseAssign_4(t *testing.T) {
 	// a, b = 0 1
 
@@ -118,6 +119,7 @@ func Test_parseAssign_6(t *testing.T) {
 
 	assertError(t, given, MissingVar)
 }
+*/
 
 func Test_parseAssign_7(t *testing.T) {
 	// a, b 0, 1
@@ -157,7 +159,9 @@ func Test_parseAssign_8(t *testing.T) {
 		asttest.Assign(
 			asttest.Variables(given[0], given[2], given[4]),
 			given[5],
-			asttest.Expressions(given[6], given[8], given[10]),
+			asttest.ExprSet(
+				asttest.Expressions(given[6], given[8], given[10])...,
+			),
 		),
 	}
 

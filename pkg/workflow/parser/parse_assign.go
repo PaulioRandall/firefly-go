@@ -11,15 +11,19 @@ func expectAssignment(a *auditor.Auditor) ast.Assign {
 	n := ast.Assign{
 		Left:     expectVariables(a),
 		Operator: a.Expect(token.Assign),
-		Right:    expectExpressions(a),
+		Right: ast.ExprSet{
+			Exprs: expectExpressions(a),
+		},
 	}
 
-	// TODO: Move specific parameter checks to the validator
-	if len(n.Left) > len(n.Right) {
-		panic(MissingExpr)
-	} else if len(n.Left) < len(n.Right) {
-		panic(MissingVar)
-	}
+	/*
+		// TODO: Move specific parameter checks to the validator
+		if len(n.Left) > len(n.Right) {
+			panic(MissingExpr)
+		} else if len(n.Left) < len(n.Right) {
+			panic(MissingVar)
+		}
+	*/
 
 	return n
 }

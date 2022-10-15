@@ -54,7 +54,7 @@ func Test_parseIf_2(t *testing.T) {
 		asttest.Assign(
 			asttest.Variables(given[3]),
 			given[4],
-			asttest.Expressions(given[5]),
+			asttest.ExprSet(asttest.Expressions(given[5])...),
 		),
 	}
 

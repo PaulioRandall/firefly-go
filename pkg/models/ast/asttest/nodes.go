@@ -17,7 +17,7 @@ func Variable(id token.Token) ast.Variable {
 	}
 }
 
-func Assign(left []ast.Variable, op token.Token, right []ast.Expr) ast.Assign {
+func Assign(left []ast.Variable, op token.Token, right ast.Stmt) ast.Assign {
 	return ast.Assign{
 		Left:     left,
 		Operator: op,
@@ -50,5 +50,11 @@ func When(
 		Subject: subject,
 		Cases:   cases,
 		End:     end,
+	}
+}
+
+func ExprSet(exprs ...ast.Expr) ast.ExprSet {
+	return ast.ExprSet{
+		Exprs: exprs,
 	}
 }

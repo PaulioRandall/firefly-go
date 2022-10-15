@@ -78,11 +78,19 @@ type Assign struct {
 	rangedNode
 	Left     []Variable
 	Operator token.Token
-	Right    []Expr
+	Right    Stmt
 }
 
 func (n Assign) stmt() {}
 func (n Assign) proc() {}
+
+type ExprSet struct {
+	rangedNode
+	Exprs []Expr
+}
+
+func (n ExprSet) stmt() {}
+func (n ExprSet) proc() {}
 
 // If represents a conditional block of statements
 type If struct {
