@@ -5,20 +5,21 @@ import (
 
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
-	//"github.com/PaulioRandall/firefly-go/pkg/utilities/auditor"
 
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast/asttest"
+	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
 )
 
 func Test_parseWhen_1(t *testing.T) {
 	// when
 	// end
 
+	gen := tokentest.NewTokenGenerator()
 	given := []token.Token{
-		tok(token.When, "when"),
-		tok(token.Terminator, "\n"),
-		tok(token.End, "end"),
-		tok(token.Terminator, "\n"),
+		gen(token.When, "when"),
+		gen(token.Terminator, "\n"),
+		gen(token.End, "end"),
+		gen(token.Terminator, "\n"),
 	}
 
 	exp := []ast.Node{
@@ -37,18 +38,19 @@ func Test_parseWhen_2(t *testing.T) {
 	// when 1
 	// end
 
+	gen := tokentest.NewTokenGenerator()
 	given := []token.Token{
-		tok(token.When, "when"),
-		tok(token.Number, "1"),
-		tok(token.Terminator, "\n"),
-		tok(token.End, "end"),
-		tok(token.Terminator, "\n"),
+		gen(token.When, "when"),
+		gen(token.Number, "1"),
+		gen(token.Terminator, "\n"),
+		gen(token.End, "end"),
+		gen(token.Terminator, "\n"),
 	}
 
 	exp := []ast.Node{
 		asttest.When(
 			given[0],
-			asttest.Literal(tok(token.Number, "1")),
+			asttest.Literal(given[1]),
 			nil,
 			given[3],
 		),

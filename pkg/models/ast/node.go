@@ -38,87 +38,110 @@ type Expr interface {
 	expr()
 }
 
-// rangedNode is a node that can be mapped to a range of runes within a file
-type rangedNode struct {
-	from, to pos.Pos
-}
-
-func (n rangedNode) node() {}
-func (n rangedNode) Where() (from, to pos.Pos) {
-	return n.from, n.to
-}
-
 // Literal represents one of the following literal tokens:
 // - True
 // - False
 // - Number
 // - String
 type Literal struct {
-	rangedNode
 	Token token.Token
 }
 
+func (n Literal) node() {}
 func (n Literal) stmt() {}
 func (n Literal) proc() {}
 func (n Literal) expr() {}
+func (n Literal) Where() (from, to pos.Pos) {
+	return n.Token.Where()
+}
 
 // Variable represents a variable value referenced using an identifier
 type Variable struct {
-	rangedNode
 	Identifier token.Token
 }
 
+func (n Variable) node() {}
 func (n Variable) stmt() {}
 func (n Variable) proc() {}
 func (n Variable) expr() {}
+func (n Variable) Where() (from, to pos.Pos) {
+	return n.Identifier.Where()
+}
 
 // Assign represents an assignment with left being the target variables and
 // right being the statement that determines the new or updated variable values
 type Assign struct {
-	rangedNode
 	Left     []Variable
 	Operator token.Token
 	Right    Stmt
 }
 
+func (n Assign) node() {}
 func (n Assign) stmt() {}
 func (n Assign) proc() {}
+func (n Assign) Where() (from, to pos.Pos) {
+	from, _ = n.Left[0].Where()
+	_, to = n.Right.Where()
+	return from, to
+}
 
 type ExprSet struct {
-	rangedNode
 	Exprs []Expr
 }
 
+func (n ExprSet) node() {}
 func (n ExprSet) stmt() {}
 func (n ExprSet) proc() {}
+func (n ExprSet) Where() (from, to pos.Pos) {
+	lastIdx := len(n.Exprs) - 1
+	from, _ = n.Exprs[0].Where()
+	_, to = n.Exprs[lastIdx].Where()
+	return from, to
+}
 
 // If represents a conditional block of statements
 type If struct {
-	rangedNode
 	Keyword   token.Token
 	Condition Expr
 	Body      []Stmt
 	End       token.Token
 }
 
+func (n If) node() {}
 func (n If) stmt() {}
+func (n If) Where() (from, to pos.Pos) {
+	from, _ = n.Keyword.Where()
+	_, to = n.End.Where()
+	return from, to
+}
 
 // When represents a match block or branch with multiple options
 type When struct {
-	rangedNode
 	Keyword token.Token
 	Subject Expr
 	Cases   []WhenCase
 	End     token.Token
 }
 
+func (n When) node() {}
 func (n When) stmt() {}
+func (n When) Where() (from, to pos.Pos) {
+	from, _ = n.Keyword.Where()
+	_, to = n.End.Where()
+	return from, to
+}
 
 // WhenCase represents a matchable case within a When block
 //
 // Basically a sophisticated switch case without fallthrough
 type WhenCase struct {
-	rangedNode
 	Condition Expr
 	Statement Stmt
+}
+
+func (n WhenCase) node() {}
+func (n WhenCase) Where() (from, to pos.Pos) {
+	from, _ = n.Condition.Where()
+	_, to = n.Statement.Where()
+	return from, to
 }

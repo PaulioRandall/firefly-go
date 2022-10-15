@@ -8,7 +8,7 @@ import (
 )
 
 func expectAssignment(a *auditor.Auditor) ast.Assign {
-	n := ast.Assign{
+	return ast.Assign{
 		Left:     expectVariables(a),
 		Operator: a.Expect(token.Assign),
 		Right: ast.ExprSet{
@@ -24,6 +24,4 @@ func expectAssignment(a *auditor.Auditor) ast.Assign {
 			panic(MissingVar)
 		}
 	*/
-
-	return n
 }

@@ -7,18 +7,20 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast/asttest"
+	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
 )
 
 func Test_parseIf_1(t *testing.T) {
 	// if true
 	// end
 
+	gen := tokentest.NewTokenGenerator()
 	given := []token.Token{
-		tok(token.If, "if"),
-		tok(token.True, "true"),
-		tok(token.Terminator, "\n"),
-		tok(token.End, "end"),
-		tok(token.Terminator, "\n"),
+		gen(token.If, "if"),
+		gen(token.True, "true"),
+		gen(token.Terminator, "\n"),
+		gen(token.End, "end"),
+		gen(token.Terminator, "\n"),
 	}
 
 	exp := []ast.Node{
@@ -38,16 +40,17 @@ func Test_parseIf_2(t *testing.T) {
 	//   a = 0
 	// end
 
+	gen := tokentest.NewTokenGenerator()
 	given := []token.Token{
-		tok(token.If, "if"),
-		tok(token.True, "true"),
-		tok(token.Terminator, "\n"),
-		tok(token.Identifier, "a"),
-		tok(token.Assign, "="), // 4
-		tok(token.Number, "0"),
-		tok(token.Terminator, "\n"),
-		tok(token.End, "end"),
-		tok(token.Terminator, "\n"), // 8
+		gen(token.If, "if"),
+		gen(token.True, "true"),
+		gen(token.Terminator, "\n"),
+		gen(token.Identifier, "a"),
+		gen(token.Assign, "="), // 4
+		gen(token.Number, "0"),
+		gen(token.Terminator, "\n"),
+		gen(token.End, "end"),
+		gen(token.Terminator, "\n"), // 8
 	}
 
 	body := []ast.Stmt{
@@ -74,14 +77,15 @@ func Test_parseIf_3(t *testing.T) {
 	// if true
 	//   a = 0
 
+	gen := tokentest.NewTokenGenerator()
 	given := []token.Token{
-		tok(token.If, "if"),
-		tok(token.True, "true"),
-		tok(token.Terminator, "\n"),
-		tok(token.Identifier, "a"),
-		tok(token.Assign, "="),
-		tok(token.Number, "0"),
-		tok(token.Terminator, "\n"),
+		gen(token.If, "if"),
+		gen(token.True, "true"),
+		gen(token.Terminator, "\n"),
+		gen(token.Identifier, "a"),
+		gen(token.Assign, "="),
+		gen(token.Number, "0"),
+		gen(token.Terminator, "\n"),
 	}
 
 	assertError(t, given, UnexpectedEOF)

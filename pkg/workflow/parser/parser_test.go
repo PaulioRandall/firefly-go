@@ -36,6 +36,17 @@ func assert(t *testing.T, given []token.Token, exp []ast.Node) {
 
 	require.Nil(t, e, "%s", debug.String(e))
 	require.Equal(t, exp, w.List())
+
+	for i, n := range w.List() {
+		assertWhere(t, exp[i], n)
+	}
+}
+
+func assertWhere(t *testing.T, exp, act ast.Node) {
+	expFrom, expTo := exp.Where()
+	actFrom, actTo := act.Where()
+	require.Equal(t, expFrom, actFrom)
+	require.Equal(t, expTo, actTo)
 }
 
 func assertError(t *testing.T, given []token.Token, exp error) {
