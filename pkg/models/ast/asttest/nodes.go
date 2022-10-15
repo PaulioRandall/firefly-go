@@ -5,15 +5,15 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
-func Literal(op token.Token) ast.Literal {
+func Literal(tk token.Token) ast.Literal {
 	return ast.Literal{
-		Operator: op,
+		Token: tk,
 	}
 }
 
-func Variable(op token.Token) ast.Variable {
+func Variable(id token.Token) ast.Variable {
 	return ast.Variable{
-		Operator: op,
+		Identifier: id,
 	}
 }
 

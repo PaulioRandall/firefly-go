@@ -32,7 +32,7 @@ func acceptLiteral(a *auditor.Auditor) ast.Expr {
 	}
 
 	return ast.Literal{
-		Operator: a.Prev(),
+		Token: a.Prev(),
 	}
 }
 
@@ -56,6 +56,6 @@ func expectExpression(a *auditor.Auditor) ast.Expr {
 
 func expectLiteral(a *auditor.Auditor) ast.Expr {
 	return ast.Literal{
-		Operator: a.ExpectFunc("literal", token.IsLiteral),
+		Token: a.ExpectFunc("literal", token.IsLiteral),
 	}
 }

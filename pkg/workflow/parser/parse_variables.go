@@ -23,6 +23,6 @@ func expectVariables(a *auditor.Auditor) []ast.Variable {
 
 func expectVariable(a *auditor.Auditor) ast.Variable {
 	return ast.Variable{
-		Operator: a.Expect(token.Identifier),
+		Identifier: a.Expect(token.Identifier),
 	}
 }

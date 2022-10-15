@@ -7,11 +7,11 @@ import (
 )
 
 func astVariable(n ast.Variable) string {
-	return fmt.Sprintf("Variable %q", n.Operator.Value)
+	return fmt.Sprintf("Variable %q", n.Identifier.Value)
 }
 
 func astLiteral(n ast.Literal) string {
-	return fmt.Sprintf("Literal %q", n.Operator.Value)
+	return fmt.Sprintf("Literal %q", n.Token.Value)
 }
 
 func astAssign(n ast.Assign) string {
