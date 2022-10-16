@@ -1,49 +1,46 @@
 package auditor
 
 import (
-	"github.com/PaulioRandall/firefly-go/pkg/models/token"
+	"github.com/PaulioRandall/firefly-go/pkg/models/pos"
 
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/container"
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 )
 
-var zero token.Token
-
-type ReaderOfTokens = inout.Reader[token.Token]
-
-type Auditor struct {
-	reader ReaderOfTokens
-	buffer container.Queue[token.Token]
-	prev   token.Token
+type Auditor[T pos.Positioned] struct {
+	reader inout.Reader[T]
+	buffer container.Queue[T]
+	prev   T
 }
 
-func NewAuditor(r ReaderOfTokens) *Auditor {
-	return &Auditor{
+func NewAuditor[T pos.Positioned](r inout.Reader[T]) *Auditor[T] {
+	return &Auditor[T]{
 		reader: r,
-		buffer: &container.LinkedQueue[token.Token]{},
+		buffer: &container.LinkedQueue[T]{},
 	}
 }
 
-func (a Auditor) Prev() token.Token {
+func (a Auditor[T]) Prev() T {
 	return a.prev
 }
 
-func (a *Auditor) More() bool {
+func (a *Auditor[T]) More() bool {
 	return a.buffer.More() || a.reader.More()
 }
 
-func (a *Auditor) Peek() token.Token {
+func (a *Auditor[T]) Peek() T {
 	a.loadBuffer()
 
 	if tk, ok := a.buffer.First(); ok {
 		return tk
 	}
 
-	panic(err.NewPos(a.prev.To, "Failed to peek token from buffer"))
+	_, to := a.prev.Where()
+	panic(err.WrapPos(inout.EOF, to, "Failed to peek from buffer"))
 }
 
-func (a *Auditor) Read() token.Token {
+func (a *Auditor[T]) Read() T {
 	a.loadBuffer()
 
 	if tk, ok := a.buffer.Take(); ok {
@@ -51,22 +48,24 @@ func (a *Auditor) Read() token.Token {
 		return tk
 	}
 
-	panic(err.NewPos(a.prev.To, "Failed to read token from buffer"))
+	_, to := a.prev.Where()
+	panic(err.WrapPos(inout.EOF, to, "Failed to read from buffer"))
 }
 
-func (a *Auditor) Putback(tk token.Token) {
-	a.buffer.Return(tk)
+func (a *Auditor[T]) Putback(v T) {
+	a.buffer.Return(v)
 }
 
-func (a *Auditor) loadBuffer() {
+func (a *Auditor[T]) loadBuffer() {
 	if a.buffer.More() {
 		return
 	}
 
-	tk, e := a.reader.Read()
+	v, e := a.reader.Read()
 	if e != nil {
-		panic(err.WrapPos(e, a.prev.To, "Failed to read token from reader"))
+		_, to := a.prev.Where()
+		panic(err.WrapPos(e, to, "Failed to read from reader"))
 	}
 
-	a.buffer.Add(tk)
+	a.buffer.Add(v)
 }

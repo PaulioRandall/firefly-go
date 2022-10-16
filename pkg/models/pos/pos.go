@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-type Wherer interface {
+type Positioned interface {
 	Where() (from, to Pos)
 }
 
@@ -67,7 +67,7 @@ func RangeString(from, to Pos) string {
 	return fmt.Sprintf("from { %v } to { %v }", from, to)
 }
 
-func WhereString(wherer Wherer) string {
-	from, to := wherer.Where()
+func WhereString(p Positioned) string {
+	from, to := p.Where()
 	return fmt.Sprintf("from { %v } to { %v }", from, to)
 }

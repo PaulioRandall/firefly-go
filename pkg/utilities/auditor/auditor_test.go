@@ -16,8 +16,8 @@ func tok(tt token.TokenType, v string) token.Token {
 	return tokentest.Tok(tt, v)
 }
 
-func aud(given ...token.Token) *Auditor {
-	return NewAuditor(inout.NewListReader(given))
+func aud(given ...token.Token) *Auditor[token.Token] {
+	return NewAuditor[token.Token](inout.NewListReader[token.Token](given))
 }
 
 func Test_1(t *testing.T) {

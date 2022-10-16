@@ -13,8 +13,10 @@ import (
 type ReaderOfTokens = inout.Reader[token.Token]
 type WriterOfNodes = inout.Writer[ast.Node]
 
+type tokenAuditor = *auditor.Auditor[token.Token]
+
 func Parse(r ReaderOfTokens, w WriterOfNodes) (e error) {
-	a := auditor.NewAuditor(r)
+	a := tokenAuditor(auditor.NewAuditor[token.Token](r))
 
 	defer func() {
 		if v := recover(); v != nil {
@@ -25,7 +27,7 @@ func Parse(r ReaderOfTokens, w WriterOfNodes) (e error) {
 	return parseRootStatements(a, w)
 }
 
-func parseRootStatements(a *auditor.Auditor, w WriterOfNodes) error {
+func parseRootStatements(a tokenAuditor, w WriterOfNodes) error {
 	accept(a, token.Terminator)
 
 	for a.More() {

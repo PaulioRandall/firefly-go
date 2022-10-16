@@ -3,11 +3,9 @@ package parser
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
-
-	"github.com/PaulioRandall/firefly-go/pkg/utilities/auditor"
 )
 
-func acceptExpressions(a *auditor.Auditor) []ast.Expr {
+func acceptExpressions(a tokenAuditor) []ast.Expr {
 	var nodes []ast.Expr
 
 	for a.More() {
@@ -22,11 +20,11 @@ func acceptExpressions(a *auditor.Auditor) []ast.Expr {
 	return nodes
 }
 
-func acceptExpression(a *auditor.Auditor) ast.Expr {
+func acceptExpression(a tokenAuditor) ast.Expr {
 	return acceptLiteral(a)
 }
 
-func acceptLiteral(a *auditor.Auditor) ast.Expr {
+func acceptLiteral(a tokenAuditor) ast.Expr {
 	if !acceptFunc(a, token.IsLiteral) {
 		return nil
 	}
@@ -36,7 +34,7 @@ func acceptLiteral(a *auditor.Auditor) ast.Expr {
 	}
 }
 
-func expectExpressions(a *auditor.Auditor) []ast.Expr {
+func expectExpressions(a tokenAuditor) []ast.Expr {
 	var nodes []ast.Expr
 
 	v := expectExpression(a)
@@ -50,11 +48,11 @@ func expectExpressions(a *auditor.Auditor) []ast.Expr {
 	return nodes
 }
 
-func expectExpression(a *auditor.Auditor) ast.Expr {
+func expectExpression(a tokenAuditor) ast.Expr {
 	return expectLiteral(a)
 }
 
-func expectLiteral(a *auditor.Auditor) ast.Expr {
+func expectLiteral(a tokenAuditor) ast.Expr {
 	return ast.Literal{
 		Token: expectFunc(a, "literal", token.IsLiteral),
 	}

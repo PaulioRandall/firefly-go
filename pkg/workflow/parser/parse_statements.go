@@ -4,11 +4,10 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 
-	"github.com/PaulioRandall/firefly-go/pkg/utilities/auditor"
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
 
-func acceptStatements(a *auditor.Auditor) []ast.Stmt {
+func acceptStatements(a tokenAuditor) []ast.Stmt {
 	var nodes []ast.Stmt
 
 	for notEndOfBlock(a) {
@@ -18,7 +17,7 @@ func acceptStatements(a *auditor.Auditor) []ast.Stmt {
 	return nodes
 }
 
-func expectStatement(a *auditor.Auditor) (n ast.Stmt) {
+func expectStatement(a tokenAuditor) (n ast.Stmt) {
 	switch {
 	case accept(a, token.Identifier):
 		n = expectVariableStatement(a, a.Prev())
@@ -41,7 +40,7 @@ func expectStatement(a *auditor.Auditor) (n ast.Stmt) {
 	return n
 }
 
-func expectVariableStatement(a *auditor.Auditor, first token.Token) ast.Stmt {
+func expectVariableStatement(a tokenAuditor, first token.Token) ast.Stmt {
 	if isNext(a, token.Comma) || isNext(a, token.Assign) {
 		a.Putback(first)
 		return expectAssignment(a)

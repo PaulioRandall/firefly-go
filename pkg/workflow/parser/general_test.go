@@ -12,8 +12,8 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 )
 
-func aud(given ...token.Token) *auditor.Auditor {
-	return auditor.NewAuditor(inout.NewListReader(given))
+func aud(given ...token.Token) tokenAuditor {
+	return auditor.NewAuditor[token.Token](inout.NewListReader(given))
 }
 
 func Test_1_general(t *testing.T) {

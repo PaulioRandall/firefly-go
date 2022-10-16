@@ -3,11 +3,9 @@ package parser
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
-
-	"github.com/PaulioRandall/firefly-go/pkg/utilities/auditor"
 )
 
-func expectWhen(a *auditor.Auditor) ast.When {
+func expectWhen(a tokenAuditor) ast.When {
 	n := ast.When{}
 
 	n.Keyword = expect(a, token.When)
@@ -21,7 +19,7 @@ func expectWhen(a *auditor.Auditor) ast.When {
 	return n
 }
 
-func acceptWhenCases(a *auditor.Auditor) []ast.WhenCase {
+func acceptWhenCases(a tokenAuditor) []ast.WhenCase {
 	var cases []ast.WhenCase
 
 	for notEndOfBlock(a) {
@@ -32,6 +30,6 @@ func acceptWhenCases(a *auditor.Auditor) []ast.WhenCase {
 	return cases
 }
 
-func expectWhenCase(a *auditor.Auditor) ast.WhenCase {
+func expectWhenCase(a tokenAuditor) ast.WhenCase {
 	return ast.WhenCase{}
 }
