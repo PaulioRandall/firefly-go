@@ -27,7 +27,7 @@ func acceptExpression(a *auditor.Auditor) ast.Expr {
 }
 
 func acceptLiteral(a *auditor.Auditor) ast.Expr {
-	if !a.AcceptFunc(token.IsLiteral) {
+	if !acceptFunc(a, token.IsLiteral) {
 		return nil
 	}
 
@@ -42,7 +42,7 @@ func expectExpressions(a *auditor.Auditor) []ast.Expr {
 	v := expectExpression(a)
 	nodes = append(nodes, v)
 
-	for a.Accept(token.Comma) {
+	for accept(a, token.Comma) {
 		v := expectExpression(a)
 		nodes = append(nodes, v)
 	}
@@ -56,6 +56,6 @@ func expectExpression(a *auditor.Auditor) ast.Expr {
 
 func expectLiteral(a *auditor.Auditor) ast.Expr {
 	return ast.Literal{
-		Token: a.ExpectFunc("literal", token.IsLiteral),
+		Token: expectFunc(a, "literal", token.IsLiteral),
 	}
 }

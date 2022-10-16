@@ -26,7 +26,7 @@ func Parse(r ReaderOfTokens, w WriterOfNodes) (e error) {
 }
 
 func parseRootStatements(a *auditor.Auditor, w WriterOfNodes) error {
-	a.Accept(token.Terminator)
+	accept(a, token.Terminator)
 
 	for a.More() {
 		n := expectStatement(a)

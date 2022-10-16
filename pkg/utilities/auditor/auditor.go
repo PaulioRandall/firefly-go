@@ -8,12 +8,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 )
 
-var (
-	zero token.Token
-
-	UnexpectedEOF   = err.New("Unexpected end of file")
-	UnexpectedToken = err.New("Unexpected token")
-)
+var zero token.Token
 
 type ReaderOfTokens = inout.Reader[token.Token]
 
@@ -52,6 +47,7 @@ func (a *Auditor) Read() token.Token {
 	a.loadBuffer()
 
 	if tk, ok := a.buffer.Take(); ok {
+		a.prev = tk
 		return tk
 	}
 
@@ -73,43 +69,4 @@ func (a *Auditor) loadBuffer() {
 	}
 
 	a.buffer.Add(tk)
-}
-
-func (a *Auditor) Accept(want token.TokenType) bool {
-	return a.AcceptFunc(func(have token.TokenType) bool {
-		return want == have
-	})
-}
-
-func (a *Auditor) AcceptFunc(f func(token.TokenType) bool) bool {
-	if !a.More() {
-		return false
-	}
-
-	if !f(a.Peek().TokenType) {
-		return false
-	}
-
-	a.prev = a.Read()
-	return true
-}
-
-func (a *Auditor) Expect(want token.TokenType) token.Token {
-	return a.ExpectFunc(want.String(), func(have token.TokenType) bool {
-		return want == have
-	})
-}
-
-func (a *Auditor) ExpectFunc(exp any, f func(token.TokenType) bool) token.Token {
-	if !a.More() {
-		panic(err.WrapPosf(UnexpectedEOF, a.prev.To, "Expected %q but got EOF", exp))
-	}
-
-	tk := a.Read()
-	if !f(tk.TokenType) {
-		panic(err.WrapPosf(UnexpectedToken, a.prev.To, "Expected %q but got %q", exp, tk.TokenType))
-	}
-
-	a.prev = tk
-	return a.prev
 }

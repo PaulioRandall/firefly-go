@@ -10,7 +10,7 @@ import (
 func expectAssignment(a *auditor.Auditor) ast.Assign {
 	return ast.Assign{
 		Left:     expectVariables(a),
-		Operator: a.Expect(token.Assign),
+		Operator: expect(a, token.Assign),
 		Right: ast.ExprSet{
 			Exprs: expectExpressions(a),
 		},

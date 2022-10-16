@@ -10,13 +10,13 @@ import (
 func parseIf(a *auditor.Auditor) ast.If {
 	n := ast.If{}
 
-	n.Keyword = a.Expect(token.If)
+	n.Keyword = expect(a, token.If)
 	n.Condition = expectExpression(a)
 
-	a.Expect(token.Terminator)
+	expect(a, token.Terminator)
 
 	n.Body = acceptStatements(a)
-	n.End = a.Expect(token.End)
+	n.End = expect(a, token.End)
 
 	return n
 }

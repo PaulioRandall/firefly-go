@@ -13,7 +13,7 @@ func expectVariables(a *auditor.Auditor) []ast.Variable {
 	v := expectVariable(a)
 	nodes = append(nodes, v)
 
-	for a.Accept(token.Comma) {
+	for accept(a, token.Comma) {
 		v := expectVariable(a)
 		nodes = append(nodes, v)
 	}
@@ -23,6 +23,6 @@ func expectVariables(a *auditor.Auditor) []ast.Variable {
 
 func expectVariable(a *auditor.Auditor) ast.Variable {
 	return ast.Variable{
-		Identifier: a.Expect(token.Identifier),
+		Identifier: expect(a, token.Identifier),
 	}
 }

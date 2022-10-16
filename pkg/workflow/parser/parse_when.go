@@ -10,13 +10,13 @@ import (
 func expectWhen(a *auditor.Auditor) ast.When {
 	n := ast.When{}
 
-	n.Keyword = a.Expect(token.When)
+	n.Keyword = expect(a, token.When)
 	n.Subject = acceptExpression(a)
 
-	a.Expect(token.Terminator)
+	expect(a, token.Terminator)
 
 	n.Cases = acceptWhenCases(a)
-	n.End = a.Expect(token.End)
+	n.End = expect(a, token.End)
 
 	return n
 }
@@ -26,7 +26,7 @@ func acceptWhenCases(a *auditor.Auditor) []ast.WhenCase {
 
 	for notEndOfBlock(a) {
 		cases = append(cases, expectWhenCase(a))
-		a.Expect(token.Terminator)
+		expect(a, token.Terminator)
 	}
 
 	return cases

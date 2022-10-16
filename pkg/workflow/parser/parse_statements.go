@@ -20,7 +20,7 @@ func acceptStatements(a *auditor.Auditor) []ast.Stmt {
 
 func expectStatement(a *auditor.Auditor) (n ast.Stmt) {
 	switch {
-	case a.Accept(token.Identifier):
+	case accept(a, token.Identifier):
 		n = expectVariableStatement(a, a.Prev())
 
 	case isNext(a, token.If):
@@ -37,7 +37,7 @@ func expectStatement(a *auditor.Auditor) (n ast.Stmt) {
 		panic(err.New("Sanity check! Nil Node should never appear"))
 	}
 
-	a.Expect(token.Terminator)
+	expect(a, token.Terminator)
 	return n
 }
 
