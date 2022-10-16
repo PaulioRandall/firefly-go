@@ -21,7 +21,7 @@ func when[In, Out comparable](
 	return w.List(), e
 }
 
-func Test_1(t *testing.T) {
+func Test_1_stream(t *testing.T) {
 	given := []rune("a")
 	acceptEverything := func(prev, curr, next rune) (rune, error) {
 		return curr, nil
@@ -34,7 +34,7 @@ func Test_1(t *testing.T) {
 	require.Equal(t, exp, act)
 }
 
-func Test_2(t *testing.T) {
+func Test_2_stream(t *testing.T) {
 	given := []rune("abc")
 	acceptEverything := func(prev, curr, next rune) (rune, error) {
 		return curr, nil
@@ -47,7 +47,7 @@ func Test_2(t *testing.T) {
 	require.Equal(t, exp, act)
 }
 
-func Test_3(t *testing.T) {
+func Test_3_stream(t *testing.T) {
 	given := []rune("abc")
 	rejectEverything := func(prev, curr, next rune) (rune, error) {
 		return rune(0), nil
@@ -60,7 +60,7 @@ func Test_3(t *testing.T) {
 	require.Equal(t, exp, act)
 }
 
-func Test_4(t *testing.T) {
+func Test_4_stream(t *testing.T) {
 	given := []rune("abc")
 	mapToXYZ := func(prev, curr, next rune) (rune, error) {
 		switch curr {
@@ -81,7 +81,7 @@ func Test_4(t *testing.T) {
 	require.Equal(t, exp, act)
 }
 
-func Test_5(t *testing.T) {
+func Test_5_stream(t *testing.T) {
 	given := []rune("abcd")
 	forMixedProcess := func(prev, curr, next rune) (rune, error) {
 		switch curr {
@@ -101,7 +101,7 @@ func Test_5(t *testing.T) {
 	require.Equal(t, exp, act)
 }
 
-func Test_6(t *testing.T) {
+func Test_6_stream(t *testing.T) {
 	given := []rune("abc")
 	invertCaseAndConvToString := func(prev, curr, next rune) (string, error) {
 		return string(curr ^ ' '), nil // Invert case

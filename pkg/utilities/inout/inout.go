@@ -21,6 +21,18 @@ type ReaderOfRunes interface {
 	Where() pos.Pos
 }
 
+type PanicReader[T any] interface {
+	More() bool
+	Peek() T
+	Read() T
+}
+
+type PanicPosReader[T pos.Positioned] interface {
+	PanicReader[T]
+	Prev() T
+	Putback(T)
+}
+
 type Writer[T any] interface {
 	Write(T) error
 	WriteMany(...T) error
