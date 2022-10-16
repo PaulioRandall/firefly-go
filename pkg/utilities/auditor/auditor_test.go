@@ -150,54 +150,6 @@ func Test_11_auditor_expect(t *testing.T) {
 	require.False(t, a.More())
 }
 
-func Test_12_auditor_doesNextMatch(t *testing.T) {
-	a := aud(
-		tok2(token.String, `""`),
-	)
-
-	varMatcher := func(tt token.TokenType) bool {
-		return tt == token.Identifier
-	}
-
-	isMatch := a.DoesNextMatch(varMatcher)
-
-	require.False(t, isMatch)
-}
-
-func Test_13_auditor_doesNextMatch(t *testing.T) {
-	a := aud(
-		tok2(token.String, `""`),
-	)
-
-	stringMatcher := func(tt token.TokenType) bool {
-		return tt == token.String
-	}
-
-	isMatch := a.DoesNextMatch(stringMatcher)
-
-	require.True(t, isMatch)
-}
-
-func Test_14_auditor_isNext(t *testing.T) {
-	a := aud(
-		tok2(token.String, `""`),
-	)
-
-	isMatch := a.IsNext(token.Identifier)
-
-	require.False(t, isMatch)
-}
-
-func Test_15_auditor_isNext(t *testing.T) {
-	a := aud(
-		tok2(token.String, `""`),
-	)
-
-	isMatch := a.IsNext(token.String)
-
-	require.True(t, isMatch)
-}
-
 func Test_16_auditor_peekNext(t *testing.T) {
 	a := aud(
 		tok2(token.String, `""`),

@@ -23,10 +23,10 @@ func expectStatement(a *auditor.Auditor) (n ast.Stmt) {
 	case a.Accept(token.Identifier):
 		n = expectVariableStatement(a, a.Prev())
 
-	case a.IsNext(token.If):
+	case isNext(a, token.If):
 		n = parseIf(a)
 
-	case a.IsNext(token.When):
+	case isNext(a, token.When):
 		n = expectWhen(a)
 
 	default:
@@ -42,7 +42,7 @@ func expectStatement(a *auditor.Auditor) (n ast.Stmt) {
 }
 
 func expectVariableStatement(a *auditor.Auditor, first token.Token) ast.Stmt {
-	if a.IsNext(token.Comma) || a.IsNext(token.Assign) {
+	if isNext(a, token.Comma) || isNext(a, token.Assign) {
 		a.Putback(first)
 		return expectAssignment(a)
 	}

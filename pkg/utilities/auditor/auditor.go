@@ -75,21 +75,6 @@ func (a *Auditor) loadBuffer() {
 	a.buffer.Add(tk)
 }
 
-func (a *Auditor) IsNext(want token.TokenType) bool {
-	return a.DoesNextMatch(func(have token.TokenType) bool {
-		return want == have
-	})
-}
-
-func (a *Auditor) DoesNextMatch(f func(token.TokenType) bool) bool {
-	if !a.More() {
-		return false
-	}
-
-	tk := a.Peek()
-	return f(tk.TokenType)
-}
-
 func (a *Auditor) Accept(want token.TokenType) bool {
 	return a.AcceptFunc(func(have token.TokenType) bool {
 		return want == have
