@@ -57,3 +57,14 @@ func expectLiteral(r PosReaderOfTokens) ast.Expr {
 		Token: expectFunc(r, "literal", token.IsLiteral),
 	}
 }
+
+func operation(r PosReaderOfTokens, left ast.Expr) ast.Expr {
+
+	if !acceptFunc(r, token.IsBinaryOperator) {
+		return left
+	}
+
+	// TODO: continue
+
+	return nil
+}

@@ -9,6 +9,12 @@ const (
 	Terminator // ;
 	Identifier
 
+	Assign // =
+	Define // :=
+	Comma  // ,
+	Colon  // :
+	Spell  // @
+
 	_redundant_begin
 	Space
 	Comment
@@ -31,13 +37,6 @@ const (
 	Number
 	String
 	_literal_end
-
-	_operators_begin
-	Assign // =
-	Define // :=
-	Comma  // ,
-	Colon  // :
-	Spell  // @
 
 	_arith_begin
 	Add // +
@@ -64,7 +63,6 @@ const (
 	BracketOpen  // [
 	BracketClose // ]
 	_paren_end
-	_operators_end
 )
 
 var nameMap = map[TokenType]string{
@@ -126,14 +124,9 @@ func IsKeyword(tt TokenType) bool {
 	return tt > _keywords_begin && tt < _keywords_end
 }
 
-func IsOperator(tt TokenType) bool {
-	return tt > _operators_begin && tt < _operators_end
-}
-
-func Operators() map[TokenType]string {
-	return filter(func(tt TokenType, _ string) bool {
-		return IsOperator(tt)
-	})
+func IsBinaryOperator(tt TokenType) bool {
+	return (tt > _arith_begin && tt < _arith_end) ||
+		(tt > _cmp_begin && tt < _cmp_end)
 }
 
 func filter(f func(TokenType, string) bool) map[TokenType]string {

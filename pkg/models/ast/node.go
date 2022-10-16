@@ -68,6 +68,23 @@ func (n Variable) Where() (from, to pos.Pos) {
 	return n.Identifier.Where()
 }
 
+// BinaryOperation represents an expression with two operators
+type BinaryOperation struct {
+	Left     Expr
+	Operator token.Token
+	Right    Expr
+}
+
+func (n BinaryOperation) node() {}
+func (n BinaryOperation) stmt() {}
+func (n BinaryOperation) proc() {}
+func (n BinaryOperation) expr() {}
+func (n BinaryOperation) Where() (from, to pos.Pos) {
+	from, _ = n.Left.Where()
+	_, to = n.Right.Where()
+	return from, to
+}
+
 // Assign represents an assignment with left being the target variables and
 // right being the statement that determines the new or updated variable values
 type Assign struct {

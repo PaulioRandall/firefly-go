@@ -73,3 +73,23 @@ func Test_parseExpr_4(t *testing.T) {
 
 	assert(t, given, exp)
 }
+
+/*
+func Test_parseExpr_5(t *testing.T) {
+	// 1 + 1
+
+	gen := tokentest.NewTokenGenerator()
+	given := []token.Token{
+		gen(token.Number, "1"),
+		gen(token.Add, "+"),
+		gen(token.Number, "1"),
+		gen(token.Terminator, "\n"),
+	}
+
+	exp := []ast.Node{
+		asttest.Literal(given[0]),
+	}
+
+	assert(t, given, exp)
+}
+*/
