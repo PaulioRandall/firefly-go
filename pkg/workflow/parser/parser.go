@@ -12,10 +12,11 @@ import (
 type ReaderOfTokens = inout.Reader[token.Token]
 type WriterOfNodes = inout.Writer[ast.Node]
 
-type BufReaderOfTokens = inout.PosReader[token.Token]
+type PosReaderOfTokens = inout.PosReader[token.Token]
 
 func Parse(r ReaderOfTokens, w WriterOfNodes) (e error) {
-	br := BufReaderOfTokens(inout.NewPosReader[token.Token](r))
+	br := inout.NewBufReader[token.Token](r)
+	pr := inout.NewPosReader[token.Token](br)
 
 	defer func() {
 		if v := recover(); v != nil {
@@ -23,10 +24,10 @@ func Parse(r ReaderOfTokens, w WriterOfNodes) (e error) {
 		}
 	}()
 
-	return parseRootStatements(br, w)
+	return parseRootStatements(pr, w)
 }
 
-func parseRootStatements(r BufReaderOfTokens, w WriterOfNodes) error {
+func parseRootStatements(r PosReaderOfTokens, w WriterOfNodes) error {
 	accept(r, token.Terminator)
 
 	for r.More() {

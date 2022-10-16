@@ -6,25 +6,25 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
 
-func notEndOfBlock(r BufReaderOfTokens) bool {
+func notEndOfBlock(r PosReaderOfTokens) bool {
 	return r.More() && !isNext(r, token.End)
 }
 
-func isNext(r BufReaderOfTokens, want token.TokenType) bool {
+func isNext(r PosReaderOfTokens, want token.TokenType) bool {
 	if r.More() {
 		return want == r.Peek().TokenType
 	}
 	return false
 }
 
-func doesNextMatch(r BufReaderOfTokens, f func(token.TokenType) bool) bool {
+func doesNextMatch(r PosReaderOfTokens, f func(token.TokenType) bool) bool {
 	if r.More() {
 		return f(r.Peek().TokenType)
 	}
 	return false
 }
 
-func accept(r BufReaderOfTokens, want token.TokenType) bool {
+func accept(r PosReaderOfTokens, want token.TokenType) bool {
 	if !r.More() {
 		return false
 	}
@@ -37,7 +37,7 @@ func accept(r BufReaderOfTokens, want token.TokenType) bool {
 	return false
 }
 
-func acceptFunc(r BufReaderOfTokens, f func(token.TokenType) bool) bool {
+func acceptFunc(r PosReaderOfTokens, f func(token.TokenType) bool) bool {
 	if !r.More() {
 		return false
 	}
@@ -50,7 +50,7 @@ func acceptFunc(r BufReaderOfTokens, f func(token.TokenType) bool) bool {
 	return false
 }
 
-func expect(r BufReaderOfTokens, want token.TokenType) token.Token {
+func expect(r PosReaderOfTokens, want token.TokenType) token.Token {
 	if !r.More() {
 		panic(err.WrapPosf(UnexpectedEOF, r.Prev().To, "Expected %q but got EOF", want))
 	}
@@ -63,7 +63,7 @@ func expect(r BufReaderOfTokens, want token.TokenType) token.Token {
 	panic(err.WrapPosf(UnexpectedToken, r.Prev().To, "Expected %q but got %q", want, tk.TokenType))
 }
 
-func expectFunc(r BufReaderOfTokens, want any, f func(token.TokenType) bool) token.Token {
+func expectFunc(r PosReaderOfTokens, want any, f func(token.TokenType) bool) token.Token {
 	if !r.More() {
 		panic(err.WrapPosf(UnexpectedEOF, r.Prev().To, "Expected %q but got EOF", want))
 	}

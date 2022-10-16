@@ -5,7 +5,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
-func parseIf(r BufReaderOfTokens) ast.If {
+func parseIf(r PosReaderOfTokens) ast.If {
 	n := ast.If{}
 
 	n.Keyword = expect(r, token.If)

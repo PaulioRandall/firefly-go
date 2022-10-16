@@ -5,7 +5,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
-func expectAssignment(r BufReaderOfTokens) ast.Assign {
+func expectAssignment(r PosReaderOfTokens) ast.Assign {
 	return ast.Assign{
 		Left:     expectVariables(r),
 		Operator: expect(r, token.Assign),

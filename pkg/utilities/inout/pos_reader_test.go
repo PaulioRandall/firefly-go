@@ -15,7 +15,9 @@ func tok(tt token.TokenType, v string) token.Token {
 }
 
 func newPR(given ...token.Token) PosReader[token.Token] {
-	return NewPosReader[token.Token](NewListReader[token.Token](given))
+	lr := NewListReader[token.Token](given)
+	br := NewBufReader[token.Token](lr)
+	return NewPosReader[token.Token](br)
 }
 
 // TODO: Test Putback & Prev funcs

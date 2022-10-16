@@ -7,7 +7,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
 
-func acceptStatements(r BufReaderOfTokens) []ast.Stmt {
+func acceptStatements(r PosReaderOfTokens) []ast.Stmt {
 	var nodes []ast.Stmt
 
 	for notEndOfBlock(r) {
@@ -17,7 +17,7 @@ func acceptStatements(r BufReaderOfTokens) []ast.Stmt {
 	return nodes
 }
 
-func expectStatement(r BufReaderOfTokens) (n ast.Stmt) {
+func expectStatement(r PosReaderOfTokens) (n ast.Stmt) {
 	switch {
 	case accept(r, token.Identifier):
 		n = expectVariableStatement(r, r.Prev())
@@ -40,7 +40,7 @@ func expectStatement(r BufReaderOfTokens) (n ast.Stmt) {
 	return n
 }
 
-func expectVariableStatement(r BufReaderOfTokens, first token.Token) ast.Stmt {
+func expectVariableStatement(r PosReaderOfTokens, first token.Token) ast.Stmt {
 	if isNext(r, token.Comma) || isNext(r, token.Assign) {
 		r.Putback(first)
 		return expectAssignment(r)
