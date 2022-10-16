@@ -28,6 +28,9 @@ func expectStatement(r PosReaderOfTokens) (n ast.Stmt) {
 	case isNext(r, token.When):
 		n = expectWhen(r)
 
+	case doesNextMatch(r, token.IsLiteral):
+		n = expectLiteral(r)
+
 	default:
 		panic(UnexpectedToken)
 	}
