@@ -7,22 +7,18 @@ import (
 )
 
 type readerOfRunes struct {
-	src Reader[rune]
+	Reader[rune]
 	pos pos.Pos
 }
 
 func NewReaderOfRunes(r Reader[rune]) *readerOfRunes {
 	return &readerOfRunes{
-		src: r,
+		Reader: r,
 	}
 }
 
-func (r readerOfRunes) More() bool {
-	return r.src.More()
-}
-
 func (r *readerOfRunes) Peek() (rune, error) {
-	ru, e := r.src.Peek()
+	ru, e := r.Reader.Peek()
 	if e != nil {
 		return rune(0), err.WrapPos(e, r.pos, "Failed to read rune")
 	}
@@ -30,7 +26,7 @@ func (r *readerOfRunes) Peek() (rune, error) {
 }
 
 func (r *readerOfRunes) Read() (rune, error) {
-	ru, e := r.src.Read()
+	ru, e := r.Reader.Read()
 	if e != nil {
 		return rune(0), err.WrapPos(e, r.pos, "Failed to read rune")
 	}

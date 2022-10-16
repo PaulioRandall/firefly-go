@@ -6,10 +6,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func Test_enforceTypes_listWriter(t *testing.T) {
-	_ = Writer[rune](&listWriter[rune]{})
-}
-
 func Test_1_listWriter_Write(t *testing.T) {
 	w := NewListWriter[string]()
 	exp := []string{"abc"}

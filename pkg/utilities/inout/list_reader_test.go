@@ -6,54 +6,54 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func Test_enforceTypes_listReader(t *testing.T) {
-	_ = Reader[rune](&listReader[rune]{})
+func newLR(given string) Reader[rune] {
+	return NewListReader([]rune(given))
 }
 
-func Test_1_listReader_Peek(t *testing.T) {
-	lr := NewListReader([]rune(""))
-	_, e := lr.Peek()
+func Test_1_listReader(t *testing.T) {
+	r := newLR("")
+	_, e := r.Peek()
 	require.Equal(t, EOF, e)
 }
 
-func Test_2_listReader_Peek(t *testing.T) {
-	lr := NewListReader([]rune("abc"))
+func Test_2_listReader(t *testing.T) {
+	r := newLR("abc")
 
-	v, e := lr.Peek()
+	v, e := r.Peek()
 	require.Nil(t, e)
 	require.Equal(t, 'a', v)
-	require.True(t, lr.More())
+	require.True(t, r.More())
 
-	v, e = lr.Peek()
+	v, e = r.Peek()
 	require.Nil(t, e)
 	require.Equal(t, 'a', v)
-	require.True(t, lr.More())
+	require.True(t, r.More())
 }
 
-func Test_1_listReader_Read(t *testing.T) {
-	lr := NewListReader([]rune(""))
-	_, e := lr.Read()
+func Test_3_listReader(t *testing.T) {
+	r := newLR("")
+	_, e := r.Read()
 	require.Equal(t, EOF, e)
 }
 
-func Test_2_listReader_Read(t *testing.T) {
-	lr := NewListReader([]rune("abc"))
+func Test_4_listReader(t *testing.T) {
+	r := newLR("abc")
 
-	v, e := lr.Read()
+	v, e := r.Read()
 	require.Nil(t, e, "%+v", e)
 	require.Equal(t, 'a', v)
-	require.True(t, lr.More())
+	require.True(t, r.More())
 
-	v, e = lr.Read()
+	v, e = r.Read()
 	require.Nil(t, e, "%+v", e)
 	require.Equal(t, 'b', v)
-	require.True(t, lr.More())
+	require.True(t, r.More())
 
-	v, e = lr.Read()
+	v, e = r.Read()
 	require.Nil(t, e, "%+v", e)
 	require.Equal(t, 'c', v)
-	require.False(t, lr.More())
+	require.False(t, r.More())
 
-	_, e = lr.Read()
+	_, e = r.Read()
 	require.Equal(t, EOF, e)
 }

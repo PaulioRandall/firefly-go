@@ -6,21 +6,13 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
-
-	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
 )
-
-func tok(tt token.TokenType, v string) token.Token {
-	return tokentest.Tok(tt, v)
-}
 
 func newPR(given ...token.Token) PosReader[token.Token] {
 	lr := NewListReader[token.Token](given)
 	br := NewBufReader[token.Token](lr)
 	return NewPosReader[token.Token](br)
 }
-
-// TODO: Test Putback & Prev funcs
 
 func Test_1_posReader(t *testing.T) {
 	given := []token.Token{

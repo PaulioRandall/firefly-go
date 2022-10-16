@@ -7,7 +7,8 @@ import (
 )
 
 func newBR(given ...rune) BufReader[rune] {
-	return NewBufReader[rune](NewListReader[rune](given))
+	lr := NewListReader[rune](given)
+	return NewBufReader[rune](lr)
 }
 
 func Test_1_bufReader(t *testing.T) {
