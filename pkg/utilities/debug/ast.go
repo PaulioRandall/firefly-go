@@ -24,8 +24,10 @@ func astNode(n ast.Node) string {
 	switch t := n.(type) {
 	case ast.Stmt:
 		return astStmt(t)
-		//case ast.WhenCase:
-		//  return astWhenCase(t)
+	case ast.WhenCase:
+		return astWhenCase(t)
+	case nil:
+		return "Nil"
 	}
 
 	return "Unknown AST Node"
@@ -35,10 +37,12 @@ func astStmt(n ast.Stmt) string {
 	switch t := n.(type) {
 	case ast.Proc:
 		return astProc(t)
-	case ast.If:
-		return astIf(t)
 	case ast.Assign:
 		return astAssign(t)
+	case ast.If:
+		return astIf(t)
+	case ast.When:
+		return astWhen(t)
 	}
 
 	return "Unknown AST Stmt"
@@ -102,8 +106,15 @@ func astIf(n ast.If) string {
 }
 
 func astWhen(n ast.When) string {
-	// TODO
-	return fmt.Sprintf("When %q", n.Keyword.Value)
+	sb := &strings.Builder{}
+
+	writeLine(sb, "When:")
+	writeIndentLine(sb, "Keyword: ", n.Keyword.String())
+	writeIndentLine(sb, "Subject: ", astNode(n.Subject))
+	writeIndentLine(sb, "Cases: ", astNodes[ast.WhenCase](n.Cases))
+	writeIndent(sb, "End: ", n.End.String())
+
+	return sb.String()
 }
 
 func astWhenCase(n ast.WhenCase) string {
