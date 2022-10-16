@@ -7,26 +7,26 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
 
-func acceptStatements(a tokenAuditor) []ast.Stmt {
+func acceptStatements(r BufReaderOfTokens) []ast.Stmt {
 	var nodes []ast.Stmt
 
-	for notEndOfBlock(a) {
-		nodes = append(nodes, expectStatement(a))
+	for notEndOfBlock(r) {
+		nodes = append(nodes, expectStatement(r))
 	}
 
 	return nodes
 }
 
-func expectStatement(a tokenAuditor) (n ast.Stmt) {
+func expectStatement(r BufReaderOfTokens) (n ast.Stmt) {
 	switch {
-	case accept(a, token.Identifier):
-		n = expectVariableStatement(a, a.Prev())
+	case accept(r, token.Identifier):
+		n = expectVariableStatement(r, r.Prev())
 
-	case isNext(a, token.If):
-		n = parseIf(a)
+	case isNext(r, token.If):
+		n = parseIf(r)
 
-	case isNext(a, token.When):
-		n = expectWhen(a)
+	case isNext(r, token.When):
+		n = expectWhen(r)
 
 	default:
 		panic(UnexpectedToken)
@@ -36,14 +36,14 @@ func expectStatement(a tokenAuditor) (n ast.Stmt) {
 		panic(err.New("Sanity check! Nil Node should never appear"))
 	}
 
-	expect(a, token.Terminator)
+	expect(r, token.Terminator)
 	return n
 }
 
-func expectVariableStatement(a tokenAuditor, first token.Token) ast.Stmt {
-	if isNext(a, token.Comma) || isNext(a, token.Assign) {
-		a.Putback(first)
-		return expectAssignment(a)
+func expectVariableStatement(r BufReaderOfTokens, first token.Token) ast.Stmt {
+	if isNext(r, token.Comma) || isNext(r, token.Assign) {
+		r.Putback(first)
+		return expectAssignment(r)
 	}
 
 	panic(UnexpectedToken)

@@ -16,6 +16,12 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
 )
 
+func newBR(given ...token.Token) BufReaderOfTokens {
+	return inout.NewPosReader[token.Token](
+		inout.NewListReader[token.Token](given),
+	)
+}
+
 func tok(tt token.TokenType, v string) token.Token {
 	return tokentest.Tok(tt, v)
 }

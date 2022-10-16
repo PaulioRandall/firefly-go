@@ -7,28 +7,28 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
 
-type panicPosReader[T pos.Positioned] struct {
+type posReader[T pos.Positioned] struct {
 	reader Reader[T]
 	buffer container.Queue[T]
 	prev   T
 }
 
-func NewPanicPosReader[T pos.Positioned](r Reader[T]) *panicPosReader[T] {
-	return &panicPosReader[T]{
+func NewPosReader[T pos.Positioned](r Reader[T]) *posReader[T] {
+	return &posReader[T]{
 		reader: r,
 		buffer: &container.LinkedQueue[T]{},
 	}
 }
 
-func (a panicPosReader[T]) Prev() T {
+func (a posReader[T]) Prev() T {
 	return a.prev
 }
 
-func (a *panicPosReader[T]) More() bool {
+func (a *posReader[T]) More() bool {
 	return a.buffer.More() || a.reader.More()
 }
 
-func (a *panicPosReader[T]) Peek() T {
+func (a *posReader[T]) Peek() T {
 	a.loadBuffer()
 
 	if tk, ok := a.buffer.First(); ok {
@@ -39,7 +39,7 @@ func (a *panicPosReader[T]) Peek() T {
 	panic(err.WrapPos(EOF, to, "Failed to peek from buffer"))
 }
 
-func (a *panicPosReader[T]) Read() T {
+func (a *posReader[T]) Read() T {
 	a.loadBuffer()
 
 	if tk, ok := a.buffer.Take(); ok {
@@ -51,11 +51,11 @@ func (a *panicPosReader[T]) Read() T {
 	panic(err.WrapPos(EOF, to, "Failed to read from buffer"))
 }
 
-func (a *panicPosReader[T]) Putback(v T) {
+func (a *posReader[T]) Putback(v T) {
 	a.buffer.Return(v)
 }
 
-func (a *panicPosReader[T]) loadBuffer() {
+func (a *posReader[T]) loadBuffer() {
 	if a.buffer.More() {
 		return
 	}

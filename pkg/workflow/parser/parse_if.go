@@ -5,16 +5,16 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
-func parseIf(a tokenAuditor) ast.If {
+func parseIf(r BufReaderOfTokens) ast.If {
 	n := ast.If{}
 
-	n.Keyword = expect(a, token.If)
-	n.Condition = expectExpression(a)
+	n.Keyword = expect(r, token.If)
+	n.Condition = expectExpression(r)
 
-	expect(a, token.Terminator)
+	expect(r, token.Terminator)
 
-	n.Body = acceptStatements(a)
-	n.End = expect(a, token.End)
+	n.Body = acceptStatements(r)
+	n.End = expect(r, token.End)
 
 	return n
 }

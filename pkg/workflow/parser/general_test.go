@@ -7,17 +7,11 @@ import (
 
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 
-	"github.com/PaulioRandall/firefly-go/pkg/utilities/auditor"
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
-	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 )
 
-func aud(given ...token.Token) tokenAuditor {
-	return auditor.NewAuditor[token.Token](inout.NewListReader(given))
-}
-
 func Test_1_general(t *testing.T) {
-	a := aud(
+	r := newBR(
 		tok(token.String, `""`),
 	)
 
@@ -25,13 +19,13 @@ func Test_1_general(t *testing.T) {
 		return tt == token.Identifier
 	}
 
-	isMatch := doesNextMatch(a, varMatcher)
+	isMatch := doesNextMatch(r, varMatcher)
 
 	require.False(t, isMatch)
 }
 
 func Test_2_general(t *testing.T) {
-	a := aud(
+	r := newBR(
 		tok(token.String, `""`),
 	)
 
@@ -39,34 +33,34 @@ func Test_2_general(t *testing.T) {
 		return tt == token.String
 	}
 
-	isMatch := doesNextMatch(a, stringMatcher)
+	isMatch := doesNextMatch(r, stringMatcher)
 
 	require.True(t, isMatch)
 }
 
 func Test_3_general(t *testing.T) {
-	a := aud(
+	r := newBR(
 		tok(token.String, `""`),
 	)
 
-	isMatch := isNext(a, token.Identifier)
+	isMatch := isNext(r, token.Identifier)
 
 	require.False(t, isMatch)
 }
 
 func Test_4_general(t *testing.T) {
-	a := aud(
+	r := newBR(
 		tok(token.String, `""`),
 	)
 
-	isMatch := isNext(a, token.String)
+	isMatch := isNext(r, token.String)
 
 	require.True(t, isMatch)
 }
 
 func Test_5_general(t *testing.T) {
-	a := aud()
-	accepted := accept(a, token.Identifier)
+	r := newBR()
+	accepted := accept(r, token.Identifier)
 
 	require.False(t, accepted)
 }
@@ -76,11 +70,11 @@ func Test_6_general(t *testing.T) {
 		tok(token.String, `""`),
 	}
 
-	a := aud(given...)
-	accepted := accept(a, token.Number)
+	r := newBR(given...)
+	accepted := accept(r, token.Number)
 
 	require.False(t, accepted)
-	require.True(t, a.More())
+	require.True(t, r.More())
 }
 
 func Test_7_general(t *testing.T) {
@@ -88,12 +82,12 @@ func Test_7_general(t *testing.T) {
 		tok(token.Identifier, "a"),
 	}
 
-	a := aud(given...)
-	accepted := accept(a, token.Identifier)
+	r := newBR(given...)
+	accepted := accept(r, token.Identifier)
 
 	require.True(t, accepted)
-	require.Equal(t, given[0], a.Prev())
-	require.False(t, a.More())
+	require.Equal(t, given[0], r.Prev())
+	require.False(t, r.More())
 }
 
 func Test_8_general(t *testing.T) {
@@ -102,25 +96,25 @@ func Test_8_general(t *testing.T) {
 		tok(token.Number, "1"),
 	}
 
-	a := aud(given...)
-	accept(a, token.String)
-	accepted := accept(a, token.Number)
+	r := newBR(given...)
+	accept(r, token.String)
+	accepted := accept(r, token.Number)
 
 	require.True(t, accepted)
-	require.Equal(t, given[1], a.Prev())
-	require.False(t, a.More())
+	require.Equal(t, given[1], r.Prev())
+	require.False(t, r.More())
 }
 
 func Test_9_general(t *testing.T) {
-	a := aud()
+	r := newBR()
 
 	require.Panics(t, func() {
-		_ = expect(a, token.EQU)
+		_ = expect(r, token.EQU)
 	})
 }
 
 func Test_10_general(t *testing.T) {
-	a := aud()
+	r := newBR()
 
 	defer func() {
 		e := recover()
@@ -130,21 +124,21 @@ func Test_10_general(t *testing.T) {
 		require.True(t, isUnexpectedEOF)
 	}()
 
-	_ = expect(a, token.EQU)
+	_ = expect(r, token.EQU)
 }
 
 func Test_11_general(t *testing.T) {
-	a := aud(
+	r := newBR(
 		tok(token.NEQ, "!="),
 	)
 
 	require.Panics(t, func() {
-		_ = expect(a, token.EQU)
+		_ = expect(r, token.EQU)
 	})
 }
 
 func Test_12_general(t *testing.T) {
-	a := aud(
+	r := newBR(
 		tok(token.NEQ, "!="),
 	)
 
@@ -156,7 +150,7 @@ func Test_12_general(t *testing.T) {
 		require.True(t, isUnexpectedToken)
 	}()
 
-	_ = expect(a, token.EQU)
+	_ = expect(r, token.EQU)
 }
 
 func Test_13_general(t *testing.T) {
@@ -164,23 +158,23 @@ func Test_13_general(t *testing.T) {
 		tok(token.String, `""`),
 	}
 
-	a := aud(given...)
-	tk := expect(a, token.String)
+	r := newBR(given...)
+	tk := expect(r, token.String)
 
 	require.Equal(t, given[0], tk)
-	require.Equal(t, given[0], a.Prev())
-	require.False(t, a.More())
+	require.Equal(t, given[0], r.Prev())
+	require.False(t, r.More())
 }
 
-func Test_14_auditor_expect(t *testing.T) {
+func Test_14_general(t *testing.T) {
 	given := []token.Token{
 		tok(token.String, `""`),
 		tok(token.Number, "1"),
 	}
 
-	a := aud(given...)
-	_ = expect(a, token.String)
-	require.True(t, a.More())
+	r := newBR(given...)
+	_ = expect(r, token.String)
+	require.True(t, r.More())
 }
 
 func Test_15_general(t *testing.T) {
@@ -189,11 +183,11 @@ func Test_15_general(t *testing.T) {
 		tok(token.Number, "1"),
 	}
 
-	a := aud(given...)
-	_ = expect(a, token.String)
-	tk := expect(a, token.Number)
+	r := newBR(given...)
+	_ = expect(r, token.String)
+	tk := expect(r, token.Number)
 
 	require.Equal(t, given[1], tk)
-	require.Equal(t, given[1], a.Prev())
-	require.False(t, a.More())
+	require.Equal(t, given[1], r.Prev())
+	require.False(t, r.More())
 }

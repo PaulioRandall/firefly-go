@@ -5,11 +5,11 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
-func acceptExpressions(a tokenAuditor) []ast.Expr {
+func acceptExpressions(r BufReaderOfTokens) []ast.Expr {
 	var nodes []ast.Expr
 
-	for a.More() {
-		v := acceptExpression(a)
+	for r.More() {
+		v := acceptExpression(r)
 		if v == nil {
 			break
 		}
@@ -20,40 +20,40 @@ func acceptExpressions(a tokenAuditor) []ast.Expr {
 	return nodes
 }
 
-func acceptExpression(a tokenAuditor) ast.Expr {
-	return acceptLiteral(a)
+func acceptExpression(r BufReaderOfTokens) ast.Expr {
+	return acceptLiteral(r)
 }
 
-func acceptLiteral(a tokenAuditor) ast.Expr {
-	if !acceptFunc(a, token.IsLiteral) {
+func acceptLiteral(r BufReaderOfTokens) ast.Expr {
+	if !acceptFunc(r, token.IsLiteral) {
 		return nil
 	}
 
 	return ast.Literal{
-		Token: a.Prev(),
+		Token: r.Prev(),
 	}
 }
 
-func expectExpressions(a tokenAuditor) []ast.Expr {
+func expectExpressions(r BufReaderOfTokens) []ast.Expr {
 	var nodes []ast.Expr
 
-	v := expectExpression(a)
+	v := expectExpression(r)
 	nodes = append(nodes, v)
 
-	for accept(a, token.Comma) {
-		v := expectExpression(a)
+	for accept(r, token.Comma) {
+		v := expectExpression(r)
 		nodes = append(nodes, v)
 	}
 
 	return nodes
 }
 
-func expectExpression(a tokenAuditor) ast.Expr {
-	return expectLiteral(a)
+func expectExpression(r BufReaderOfTokens) ast.Expr {
+	return expectLiteral(r)
 }
 
-func expectLiteral(a tokenAuditor) ast.Expr {
+func expectLiteral(r BufReaderOfTokens) ast.Expr {
 	return ast.Literal{
-		Token: expectFunc(a, "literal", token.IsLiteral),
+		Token: expectFunc(r, "literal", token.IsLiteral),
 	}
 }

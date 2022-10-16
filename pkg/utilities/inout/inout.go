@@ -27,7 +27,7 @@ type PanicReader[T any] interface {
 	Read() T
 }
 
-type PanicPosReader[T pos.Positioned] interface {
+type PosReader[T pos.Positioned] interface {
 	PanicReader[T]
 	Prev() T
 	Putback(T)

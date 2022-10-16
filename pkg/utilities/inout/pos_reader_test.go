@@ -14,46 +14,46 @@ func tok(tt token.TokenType, v string) token.Token {
 	return tokentest.Tok(tt, v)
 }
 
-func newPPR(given ...token.Token) PanicPosReader[token.Token] {
-	return NewPanicPosReader[token.Token](NewListReader[token.Token](given))
+func newPR(given ...token.Token) PosReader[token.Token] {
+	return NewPosReader[token.Token](NewListReader[token.Token](given))
 }
 
 // TODO: Test Putback & Prev funcs
 
-func Test_1_panicPosReader(t *testing.T) {
+func Test_1_posReader(t *testing.T) {
 	given := []token.Token{
 		tok(token.String, `""`),
 	}
 
-	ppr := newPPR(given...)
+	ppr := newPR(given...)
 	tk := ppr.Peek()
 
 	require.Equal(t, given[0], tk)
 	require.True(t, ppr.More())
 }
 
-func Test_2v(t *testing.T) {
-	ppr := newPPR()
+func Test_2_posReader(t *testing.T) {
+	ppr := newPR()
 
 	require.Panics(t, func() {
 		_ = ppr.Peek()
 	})
 }
 
-func Test_3_panicPosReader(t *testing.T) {
-	ppr := newPPR()
+func Test_3_posReader(t *testing.T) {
+	ppr := newPR()
 
 	require.Panics(t, func() {
 		_ = ppr.Read()
 	})
 }
 
-func Test_4_panicPosReader(t *testing.T) {
+func Test_4_posReader(t *testing.T) {
 	given := []token.Token{
 		tok(token.String, `""`),
 	}
 
-	ppr := newPPR(given...)
+	ppr := newPR(given...)
 	tk := ppr.Read()
 
 	require.Equal(t, given[0], tk)
