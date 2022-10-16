@@ -16,6 +16,12 @@ type Reader[T any] interface {
 	Read() (T, error)
 }
 
+type BufReader[T any] interface {
+	Reader[T]
+	Prev() T
+	Putback(T)
+}
+
 type ReaderOfRunes interface {
 	Reader[rune]
 	Where() pos.Pos
