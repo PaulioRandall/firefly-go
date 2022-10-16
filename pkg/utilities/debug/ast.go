@@ -22,8 +22,8 @@ func astNodes[T ast.Node](nodes []T) string {
 
 func astNode(n ast.Node) string {
 	switch t := n.(type) {
-	case ast.Proc:
-		return astProc(t)
+	case ast.Stmt:
+		return astStmt(t)
 		//case ast.WhenCase:
 		//  return astWhenCase(t)
 	}
@@ -31,25 +31,25 @@ func astNode(n ast.Node) string {
 	return "Unknown AST Node"
 }
 
-func astProc(n ast.Proc) string {
+func astStmt(n ast.Stmt) string {
 	switch t := n.(type) {
-	case ast.Stmt:
-		return astStmt(t)
+	case ast.Proc:
+		return astProc(t)
+	case ast.If:
+		return astIf(t)
+	case ast.Assign:
+		return astAssign(t)
 	}
 
-	return "Unknown AST Proc"
+	return "Unknown AST Stmt"
 }
 
-func astStmt(n ast.Stmt) string {
+func astProc(n ast.Stmt) string {
 	switch t := n.(type) {
 	case ast.Expr:
 		return astExpr(t)
 	case ast.ExprSet:
 		return astExprSet(t)
-	case ast.Assign:
-		return astAssign(t)
-	case ast.If:
-		return astIf(t)
 	}
 
 	return "Unknown AST Stmt"
@@ -90,8 +90,15 @@ func astExprSet(n ast.ExprSet) string {
 }
 
 func astIf(n ast.If) string {
-	// TODO
-	return fmt.Sprintf("If %q", n.Keyword.Value)
+	sb := &strings.Builder{}
+
+	writeLine(sb, "If:")
+	writeIndentLine(sb, "Keyword: ", n.Keyword.String())
+	writeIndentLine(sb, "Condition: ", astNode(n.Condition))
+	writeIndentLine(sb, "Body: ", astNodes[ast.Stmt](n.Body))
+	writeIndent(sb, "End: ", n.End.String())
+
+	return sb.String()
 }
 
 func astWhen(n ast.When) string {

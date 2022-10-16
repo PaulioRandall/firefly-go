@@ -30,8 +30,9 @@ func assertWhere(t *testing.T, exp, act Node) {
 func Test_enforceTypes(t *testing.T) {
 	_ = Stmt(If{})
 	_ = Stmt(When{})
+	_ = Stmt(Assign{})
 
-	_ = Proc(Assign{})
+	_ = Proc(ExprSet{})
 
 	_ = Expr(Literal{})
 	_ = Expr(Variable{})

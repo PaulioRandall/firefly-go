@@ -78,7 +78,6 @@ type Assign struct {
 
 func (n Assign) node() {}
 func (n Assign) stmt() {}
-func (n Assign) proc() {}
 func (n Assign) Where() (from, to pos.Pos) {
 	from, _ = n.Left[0].Where()
 	_, to = n.Right.Where()
