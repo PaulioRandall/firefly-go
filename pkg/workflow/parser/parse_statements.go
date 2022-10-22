@@ -29,7 +29,7 @@ func expectStatement(a auditor) (n ast.Stmt) {
 		n = expectWhen(a)
 
 	case a.match(token.IsLiteral):
-		n = expectLiteral(a)
+		n = expectExpression(a)
 
 	default:
 		panic(UnexpectedToken)

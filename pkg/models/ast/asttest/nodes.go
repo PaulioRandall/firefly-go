@@ -58,3 +58,15 @@ func ExprSet(exprs ...ast.Expr) ast.ExprSet {
 		Exprs: exprs,
 	}
 }
+
+func BinaryOperation(
+	left ast.Expr,
+	op token.Token,
+	right ast.Expr,
+) ast.BinaryOperation {
+	return ast.BinaryOperation{
+		Left:     left,
+		Operator: op,
+		Right:    right,
+	}
+}

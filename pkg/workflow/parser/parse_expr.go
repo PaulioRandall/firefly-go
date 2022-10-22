@@ -21,8 +21,21 @@ func acceptExpressions(a auditor) []ast.Expr {
 }
 
 func acceptExpression(a auditor) ast.Expr {
-	left := acceptLiteral(a)
-	return operation(a, left)
+	if expr := acceptOperand(a); expr != nil {
+		return operation(a, expr, 0)
+	}
+	return nil
+}
+
+func acceptOperand(a auditor) ast.Expr {
+	switch {
+	case !a.More():
+		return nil
+	case a.match(token.IsLiteral):
+		return expectLiteral(a)
+	default:
+		return nil
+	}
 }
 
 func acceptLiteral(a auditor) ast.Expr {
@@ -51,8 +64,20 @@ func expectExpressions(a auditor) []ast.Expr {
 }
 
 func expectExpression(a auditor) ast.Expr {
-	left := acceptLiteral(a)
-	return operation(a, left)
+	left := expectOperand(a)
+	return operation(a, left, 0)
+}
+
+func expectOperand(a auditor) ast.Expr {
+	if !a.More() {
+		panic(a.unexpectedEOF("operand"))
+	}
+
+	if expr := acceptOperand(a); expr != nil {
+		return expr
+	}
+
+	panic(a.unexpected("operand", a.Peek()))
 }
 
 func expectLiteral(a auditor) ast.Expr {
@@ -61,20 +86,25 @@ func expectLiteral(a auditor) ast.Expr {
 	}
 }
 
-func operation(a auditor, left ast.Expr) ast.Expr {
+func operation(a auditor, left ast.Expr, leftOperatorPriorty int) ast.Expr {
 	if !a.notMatch(token.IsBinaryOperator) {
 		return left
 	}
 
-	if a.hasPriority(left) {
+	if leftOperatorPriorty >= a.Peek().Precedence() {
 		return left
 	}
 
-	return binaryOperation(a, left, a.Next())
-}
+	op := a.Next()
 
-func binaryOperation(a auditor, left ast.Expr, op token.Token) ast.Expr {
-	// 1 +
-	// 1
-	panic(a.unexpected("Right operand", "TODO"))
+	right := expectOperand(a)
+	right = operation(a, right, op.Precedence())
+
+	left = ast.BinaryOperation{
+		Left:     left,
+		Operator: op,
+		Right:    right,
+	}
+
+	return operation(a, left, leftOperatorPriorty)
 }

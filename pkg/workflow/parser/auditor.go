@@ -14,6 +14,10 @@ func (a *auditor) More() bool {
 	return a.r.More()
 }
 
+func (a *auditor) Peek() token.TokenType {
+	return a.r.Peek().TokenType
+}
+
 func (a *auditor) Prev() token.Token {
 	return a.r.Prev()
 }
@@ -56,8 +60,8 @@ func (a *auditor) notMatch(f func(token.TokenType) bool) bool {
 
 type Ranked interface{ Precedence() int }
 
-func (a *auditor) hasPriority(subject Ranked) bool {
-	return subject.Precedence() > a.r.Peek().TokenType.Precedence()
+func (a *auditor) hasPriorityOver(other Ranked) bool {
+	return a.r.Peek().TokenType.Precedence() > other.Precedence()
 }
 
 func (a *auditor) accept(want token.TokenType) bool {
