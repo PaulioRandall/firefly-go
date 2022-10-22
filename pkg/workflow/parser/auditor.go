@@ -56,7 +56,7 @@ func (a *auditor) accept(want token.TokenType) bool {
 	return false
 }
 
-func (a *auditor) acceptFunc(f func(token.TokenType) bool) bool {
+func (a *auditor) acceptIf(f func(token.TokenType) bool) bool {
 	if !a.r.More() {
 		return false
 	}
@@ -67,6 +67,20 @@ func (a *auditor) acceptFunc(f func(token.TokenType) bool) bool {
 	}
 
 	return false
+}
+
+func (a *auditor) acquire(want token.TokenType) (token.Token, bool) {
+	if a.accept(want) {
+		return a.Prev(), true
+	}
+	return token.Token{}, false
+}
+
+func (a *auditor) acquireIf(f func(token.TokenType) bool) (token.Token, bool) {
+	if a.acceptIf(f) {
+		return a.Prev(), true
+	}
+	return token.Token{}, false
 }
 
 func (a *auditor) expect(want token.TokenType) token.Token {
@@ -82,7 +96,7 @@ func (a *auditor) expect(want token.TokenType) token.Token {
 	panic(a.unexpected(want, tk.TokenType))
 }
 
-func (a *auditor) expectFunc(want any, f func(token.TokenType) bool) token.Token {
+func (a *auditor) expectFor(want any, f func(token.TokenType) bool) token.Token {
 	if !a.r.More() {
 		panic(a.unexpectedEOF(want))
 	}

@@ -11,10 +11,10 @@ func parseIf(a auditor) ast.If {
 	n.Keyword = a.expect(token.If)
 	n.Condition = expectExpression(a)
 
-	a.expect(token.Terminator)
+	expectTerminator(a)
 
 	n.Body = acceptStatements(a)
-	n.End = a.expect(token.End)
+	n.End = expectEndOfBlock(a)
 
 	return n
 }

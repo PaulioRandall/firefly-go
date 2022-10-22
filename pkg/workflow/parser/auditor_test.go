@@ -191,3 +191,52 @@ func Test_15_general(t *testing.T) {
 	require.Equal(t, given[1], a.Prev())
 	require.False(t, a.More())
 }
+
+func Test_16_general(t *testing.T) {
+	a := newAud()
+	_, accepted := a.acquire(token.Identifier)
+
+	require.False(t, accepted)
+}
+
+func Test_17_general(t *testing.T) {
+	given := []token.Token{
+		tok(token.String, `""`),
+	}
+
+	a := newAud(given...)
+	_, accepted := a.acquire(token.Number)
+
+	require.False(t, accepted)
+	require.True(t, a.More())
+}
+
+func Test_18_general(t *testing.T) {
+	given := []token.Token{
+		tok(token.Identifier, "a"),
+	}
+
+	a := newAud(given...)
+	tk, accepted := a.acquire(token.Identifier)
+
+	require.True(t, accepted)
+	require.Equal(t, given[0], tk)
+	require.Equal(t, tk, a.Prev())
+	require.False(t, a.More())
+}
+
+func Test_19_general(t *testing.T) {
+	given := []token.Token{
+		tok(token.String, `""`),
+		tok(token.Number, "1"),
+	}
+
+	a := newAud(given...)
+	a.accept(token.String)
+	tk, accepted := a.acquire(token.Number)
+
+	require.True(t, accepted)
+	require.Equal(t, given[1], tk)
+	require.Equal(t, tk, a.Prev())
+	require.False(t, a.More())
+}

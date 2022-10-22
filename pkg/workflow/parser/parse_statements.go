@@ -39,7 +39,7 @@ func expectStatement(a auditor) (n ast.Stmt) {
 		panic(err.New("Sanity check! Nil Node should never appear"))
 	}
 
-	a.expect(token.Terminator)
+	expectEndOfStmt(a)
 	return n
 }
 

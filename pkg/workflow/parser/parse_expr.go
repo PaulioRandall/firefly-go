@@ -26,12 +26,13 @@ func acceptExpression(a auditor) ast.Expr {
 }
 
 func acceptLiteral(a auditor) ast.Expr {
-	if !a.acceptFunc(token.IsLiteral) {
+	tk, ok := a.acquireIf(token.IsLiteral)
+	if !ok {
 		return nil
 	}
 
 	return ast.Literal{
-		Token: a.Prev(),
+		Token: tk,
 	}
 }
 
@@ -56,13 +57,13 @@ func expectExpression(a auditor) ast.Expr {
 
 func expectLiteral(a auditor) ast.Expr {
 	return ast.Literal{
-		Token: a.expectFunc("literal", token.IsLiteral),
+		Token: a.expectFor("literal", token.IsLiteral),
 	}
 }
 
 func operation(a auditor, left ast.Expr) ast.Expr {
-
-	if !a.acceptFunc(token.IsBinaryOperator) {
+	_, ok := a.acquireIf(token.IsBinaryOperator)
+	if !ok {
 		return left
 	}
 

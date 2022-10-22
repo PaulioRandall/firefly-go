@@ -11,10 +11,10 @@ func expectWhen(a auditor) ast.When {
 	n.Keyword = a.expect(token.When)
 	n.Subject = acceptExpression(a)
 
-	a.expect(token.Terminator)
+	expectTerminator(a)
 
 	n.Cases = acceptWhenCases(a)
-	n.End = a.expect(token.End)
+	n.End = expectEndOfBlock(a)
 
 	return n
 }
@@ -24,12 +24,13 @@ func acceptWhenCases(a auditor) []ast.WhenCase {
 
 	for isNotEndOfBlock(a) {
 		cases = append(cases, expectWhenCase(a))
-		a.expect(token.Terminator)
+		expectTerminator(a)
 	}
 
 	return cases
 }
 
 func expectWhenCase(a auditor) ast.WhenCase {
+	// TODO
 	return ast.WhenCase{}
 }
