@@ -19,7 +19,7 @@ func Test_1_general(t *testing.T) {
 		return tt == token.Identifier
 	}
 
-	isMatch := doesNextMatch(r, varMatcher)
+	isMatch := match(r, varMatcher)
 
 	require.False(t, isMatch)
 }
@@ -33,7 +33,7 @@ func Test_2_general(t *testing.T) {
 		return tt == token.String
 	}
 
-	isMatch := doesNextMatch(r, stringMatcher)
+	isMatch := match(r, stringMatcher)
 
 	require.True(t, isMatch)
 }
@@ -43,7 +43,7 @@ func Test_3_general(t *testing.T) {
 		tok(token.String, `""`),
 	)
 
-	isMatch := isNext(r, token.Identifier)
+	isMatch := is(r, token.Identifier)
 
 	require.False(t, isMatch)
 }
@@ -53,7 +53,7 @@ func Test_4_general(t *testing.T) {
 		tok(token.String, `""`),
 	)
 
-	isMatch := isNext(r, token.String)
+	isMatch := is(r, token.String)
 
 	require.True(t, isMatch)
 }

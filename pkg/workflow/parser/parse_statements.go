@@ -10,7 +10,7 @@ import (
 func acceptStatements(r PosReaderOfTokens) []ast.Stmt {
 	var nodes []ast.Stmt
 
-	for notEndOfBlock(r) {
+	for isNotEndOfBlock(r) {
 		nodes = append(nodes, expectStatement(r))
 	}
 
@@ -22,13 +22,13 @@ func expectStatement(r PosReaderOfTokens) (n ast.Stmt) {
 	case accept(r, token.Identifier):
 		n = expectVariableStatement(r, r.Prev())
 
-	case isNext(r, token.If):
+	case is(r, token.If):
 		n = parseIf(r)
 
-	case isNext(r, token.When):
+	case is(r, token.When):
 		n = expectWhen(r)
 
-	case doesNextMatch(r, token.IsLiteral):
+	case match(r, token.IsLiteral):
 		n = expectLiteral(r)
 
 	default:
@@ -44,7 +44,7 @@ func expectStatement(r PosReaderOfTokens) (n ast.Stmt) {
 }
 
 func expectVariableStatement(r PosReaderOfTokens, first token.Token) ast.Stmt {
-	if isNext(r, token.Comma) || isNext(r, token.Assign) {
+	if is(r, token.Comma) || is(r, token.Assign) {
 		r.Putback(first)
 		return expectAssignment(r)
 	}

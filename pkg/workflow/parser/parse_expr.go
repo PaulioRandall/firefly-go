@@ -21,7 +21,8 @@ func acceptExpressions(r PosReaderOfTokens) []ast.Expr {
 }
 
 func acceptExpression(r PosReaderOfTokens) ast.Expr {
-	return acceptLiteral(r)
+	left := acceptLiteral(r)
+	return operation(r, left)
 }
 
 func acceptLiteral(r PosReaderOfTokens) ast.Expr {
@@ -49,7 +50,8 @@ func expectExpressions(r PosReaderOfTokens) []ast.Expr {
 }
 
 func expectExpression(r PosReaderOfTokens) ast.Expr {
-	return expectLiteral(r)
+	left := acceptLiteral(r)
+	return operation(r, left)
 }
 
 func expectLiteral(r PosReaderOfTokens) ast.Expr {
@@ -64,6 +66,13 @@ func operation(r PosReaderOfTokens, left ast.Expr) ast.Expr {
 		return left
 	}
 
+	// 1
+	// + 1
+	/*
+		if acceptOperator() {
+
+		}
+	*/
 	// TODO: continue
 
 	return nil

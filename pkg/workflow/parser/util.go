@@ -6,18 +6,26 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
 
-func notEndOfBlock(r PosReaderOfTokens) bool {
-	return r.More() && !isNext(r, token.End)
-}
-
-func isNext(r PosReaderOfTokens, want token.TokenType) bool {
+func is(r PosReaderOfTokens, want token.TokenType) bool {
 	if r.More() {
 		return want == r.Peek().TokenType
 	}
 	return false
 }
 
-func doesNextMatch(r PosReaderOfTokens, f func(token.TokenType) bool) bool {
+func isNot(r PosReaderOfTokens, want token.TokenType) bool {
+	if r.More() {
+		return want != r.Peek().TokenType
+	}
+	return true
+}
+
+// KEEP
+func isNotEndOfBlock(r PosReaderOfTokens) bool {
+	return r.More() && isNot(r, token.End)
+}
+
+func match(r PosReaderOfTokens, f func(token.TokenType) bool) bool {
 	if r.More() {
 		return f(r.Peek().TokenType)
 	}

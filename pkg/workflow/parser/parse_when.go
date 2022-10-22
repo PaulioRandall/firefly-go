@@ -22,7 +22,7 @@ func expectWhen(r PosReaderOfTokens) ast.When {
 func acceptWhenCases(r PosReaderOfTokens) []ast.WhenCase {
 	var cases []ast.WhenCase
 
-	for notEndOfBlock(r) {
+	for isNotEndOfBlock(r) {
 		cases = append(cases, expectWhenCase(r))
 		expect(r, token.Terminator)
 	}
