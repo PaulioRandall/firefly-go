@@ -36,6 +36,7 @@ type Proc interface {
 type Expr interface {
 	Proc
 	expr()
+	Precedence() int
 }
 
 // Literal represents one of the following literal tokens:
@@ -51,6 +52,9 @@ func (n Literal) node() {}
 func (n Literal) stmt() {}
 func (n Literal) proc() {}
 func (n Literal) expr() {}
+func (n Literal) Precedence() int {
+	return n.Token.Precedence()
+}
 func (n Literal) Where() (from, to pos.Pos) {
 	return n.Token.Where()
 }
@@ -64,6 +68,9 @@ func (n Variable) node() {}
 func (n Variable) stmt() {}
 func (n Variable) proc() {}
 func (n Variable) expr() {}
+func (n Variable) Precedence() int {
+	return n.Identifier.Precedence()
+}
 func (n Variable) Where() (from, to pos.Pos) {
 	return n.Identifier.Where()
 }
@@ -79,6 +86,9 @@ func (n BinaryOperation) node() {}
 func (n BinaryOperation) stmt() {}
 func (n BinaryOperation) proc() {}
 func (n BinaryOperation) expr() {}
+func (n BinaryOperation) Precedence() int {
+	return n.Operator.Precedence()
+}
 func (n BinaryOperation) Where() (from, to pos.Pos) {
 	from, _ = n.Left.Where()
 	_, to = n.Right.Where()

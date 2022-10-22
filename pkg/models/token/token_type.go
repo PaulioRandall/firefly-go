@@ -112,6 +112,17 @@ func (tt TokenType) String() string {
 	return nameMap[tt]
 }
 
+func (tt TokenType) Precedence() int {
+	switch tt {
+	case Mul, Div:
+		return 2
+	case Add, Sub:
+		return 1
+	default:
+		return 0
+	}
+}
+
 func IsLiteral(tt TokenType) bool {
 	return tt > _literal_begin && tt < _literal_end
 }

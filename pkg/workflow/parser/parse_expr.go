@@ -62,19 +62,19 @@ func expectLiteral(a auditor) ast.Expr {
 }
 
 func operation(a auditor, left ast.Expr) ast.Expr {
-	_, ok := a.acquireIf(token.IsBinaryOperator)
-	if !ok {
+	if !a.notMatch(token.IsBinaryOperator) {
 		return left
 	}
 
+	if a.hasPriority(left) {
+		return left
+	}
+
+	return binaryOperation(a, left, a.Next())
+}
+
+func binaryOperation(a auditor, left ast.Expr, op token.Token) ast.Expr {
+	// 1 +
 	// 1
-	// + 1
-	/*
-		if acceptOperator() {
-
-		}
-	*/
-	// TODO: continue
-
-	return nil
+	panic(a.unexpected("Right operand", "TODO"))
 }
