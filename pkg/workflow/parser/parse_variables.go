@@ -5,22 +5,22 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
-func expectVariables(r PosReaderOfTokens) []ast.Variable {
+func expectVariables(a auditor) []ast.Variable {
 	var nodes []ast.Variable
 
-	v := expectVariable(r)
+	v := expectVariable(a)
 	nodes = append(nodes, v)
 
-	for accept(r, token.Comma) {
-		v := expectVariable(r)
+	for a.accept(token.Comma) {
+		v := expectVariable(a)
 		nodes = append(nodes, v)
 	}
 
 	return nodes
 }
 
-func expectVariable(r PosReaderOfTokens) ast.Variable {
+func expectVariable(a auditor) ast.Variable {
 	return ast.Variable{
-		Identifier: expect(r, token.Identifier),
+		Identifier: a.expect(token.Identifier),
 	}
 }

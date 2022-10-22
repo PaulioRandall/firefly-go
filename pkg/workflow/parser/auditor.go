@@ -14,6 +14,14 @@ func (a *auditor) More() bool {
 	return a.r.More()
 }
 
+func (a *auditor) Prev() token.Token {
+	return a.r.Prev()
+}
+
+func (a *auditor) Putback(tk token.Token) {
+	a.r.Putback(tk)
+}
+
 func (a *auditor) is(want token.TokenType) bool {
 	if a.r.More() {
 		return want == a.r.Peek().TokenType
@@ -63,7 +71,7 @@ func (a *auditor) acceptFunc(f func(token.TokenType) bool) bool {
 
 func (a *auditor) expect(want token.TokenType) token.Token {
 	if !a.r.More() {
-		panic(err.WrapPosf(UnexpectedEOF, a.r.Prev().To, "Expected %q but got EOF", want))
+		panic(a.unexpectedEOF(want))
 	}
 
 	tk := a.r.Peek()
@@ -71,12 +79,12 @@ func (a *auditor) expect(want token.TokenType) token.Token {
 		return a.r.Read()
 	}
 
-	panic(err.WrapPosf(UnexpectedToken, a.r.Prev().To, "Expected %q but got %q", want, tk.TokenType))
+	panic(a.unexpected(want, tk.TokenType))
 }
 
 func (a *auditor) expectFunc(want any, f func(token.TokenType) bool) token.Token {
 	if !a.r.More() {
-		panic(err.WrapPosf(UnexpectedEOF, a.r.Prev().To, "Expected %q but got EOF", want))
+		panic(a.unexpectedEOF(want))
 	}
 
 	tk := a.r.Peek()
@@ -84,5 +92,17 @@ func (a *auditor) expectFunc(want any, f func(token.TokenType) bool) token.Token
 		return a.r.Read()
 	}
 
-	panic(err.WrapPosf(UnexpectedToken, a.r.Prev().To, "Expected %q but got %q", want, tk.TokenType))
+	panic(a.unexpected(want, tk.TokenType))
+}
+
+func (a *auditor) unexpected(expected, got any) error {
+	return a.wrapErr(UnexpectedToken, "Expected %q but got %q", expected, got)
+}
+
+func (a *auditor) unexpectedEOF(expected any) error {
+	return a.wrapErr(UnexpectedEOF, "Expected %q but got EOF", expected)
+}
+
+func (a *auditor) wrapErr(cause error, msg string, args ...any) error {
+	return err.WrapPosf(cause, a.r.Prev().To, msg, args...)
 }

@@ -5,31 +5,31 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
-func expectWhen(r PosReaderOfTokens) ast.When {
+func expectWhen(a auditor) ast.When {
 	n := ast.When{}
 
-	n.Keyword = expect(r, token.When)
-	n.Subject = acceptExpression(r)
+	n.Keyword = a.expect(token.When)
+	n.Subject = acceptExpression(a)
 
-	expect(r, token.Terminator)
+	a.expect(token.Terminator)
 
-	n.Cases = acceptWhenCases(r)
-	n.End = expect(r, token.End)
+	n.Cases = acceptWhenCases(a)
+	n.End = a.expect(token.End)
 
 	return n
 }
 
-func acceptWhenCases(r PosReaderOfTokens) []ast.WhenCase {
+func acceptWhenCases(a auditor) []ast.WhenCase {
 	var cases []ast.WhenCase
 
-	for isNotEndOfBlock(r) {
-		cases = append(cases, expectWhenCase(r))
-		expect(r, token.Terminator)
+	for isNotEndOfBlock(a) {
+		cases = append(cases, expectWhenCase(a))
+		a.expect(token.Terminator)
 	}
 
 	return cases
 }
 
-func expectWhenCase(r PosReaderOfTokens) ast.WhenCase {
+func expectWhenCase(a auditor) ast.WhenCase {
 	return ast.WhenCase{}
 }

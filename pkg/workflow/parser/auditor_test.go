@@ -11,7 +11,7 @@ import (
 )
 
 func Test_1_general(t *testing.T) {
-	r := newBR(
+	a := newAud(
 		tok(token.String, `""`),
 	)
 
@@ -19,13 +19,13 @@ func Test_1_general(t *testing.T) {
 		return tt == token.Identifier
 	}
 
-	isMatch := match(r, varMatcher)
+	isMatch := a.match(varMatcher)
 
 	require.False(t, isMatch)
 }
 
 func Test_2_general(t *testing.T) {
-	r := newBR(
+	a := newAud(
 		tok(token.String, `""`),
 	)
 
@@ -33,34 +33,34 @@ func Test_2_general(t *testing.T) {
 		return tt == token.String
 	}
 
-	isMatch := match(r, stringMatcher)
+	isMatch := a.match(stringMatcher)
 
 	require.True(t, isMatch)
 }
 
 func Test_3_general(t *testing.T) {
-	r := newBR(
+	a := newAud(
 		tok(token.String, `""`),
 	)
 
-	isMatch := is(r, token.Identifier)
+	isMatch := a.is(token.Identifier)
 
 	require.False(t, isMatch)
 }
 
 func Test_4_general(t *testing.T) {
-	r := newBR(
+	a := newAud(
 		tok(token.String, `""`),
 	)
 
-	isMatch := is(r, token.String)
+	isMatch := a.is(token.String)
 
 	require.True(t, isMatch)
 }
 
 func Test_5_general(t *testing.T) {
-	r := newBR()
-	accepted := accept(r, token.Identifier)
+	a := newAud()
+	accepted := a.accept(token.Identifier)
 
 	require.False(t, accepted)
 }
@@ -70,11 +70,11 @@ func Test_6_general(t *testing.T) {
 		tok(token.String, `""`),
 	}
 
-	r := newBR(given...)
-	accepted := accept(r, token.Number)
+	a := newAud(given...)
+	accepted := a.accept(token.Number)
 
 	require.False(t, accepted)
-	require.True(t, r.More())
+	require.True(t, a.More())
 }
 
 func Test_7_general(t *testing.T) {
@@ -82,12 +82,12 @@ func Test_7_general(t *testing.T) {
 		tok(token.Identifier, "a"),
 	}
 
-	r := newBR(given...)
-	accepted := accept(r, token.Identifier)
+	a := newAud(given...)
+	accepted := a.accept(token.Identifier)
 
 	require.True(t, accepted)
-	require.Equal(t, given[0], r.Prev())
-	require.False(t, r.More())
+	require.Equal(t, given[0], a.Prev())
+	require.False(t, a.More())
 }
 
 func Test_8_general(t *testing.T) {
@@ -96,25 +96,25 @@ func Test_8_general(t *testing.T) {
 		tok(token.Number, "1"),
 	}
 
-	r := newBR(given...)
-	accept(r, token.String)
-	accepted := accept(r, token.Number)
+	a := newAud(given...)
+	a.accept(token.String)
+	accepted := a.accept(token.Number)
 
 	require.True(t, accepted)
-	require.Equal(t, given[1], r.Prev())
-	require.False(t, r.More())
+	require.Equal(t, given[1], a.Prev())
+	require.False(t, a.More())
 }
 
 func Test_9_general(t *testing.T) {
-	r := newBR()
+	a := newAud()
 
 	require.Panics(t, func() {
-		_ = expect(r, token.EQU)
+		_ = a.expect(token.EQU)
 	})
 }
 
 func Test_10_general(t *testing.T) {
-	r := newBR()
+	a := newAud()
 
 	defer func() {
 		e := recover()
@@ -124,21 +124,21 @@ func Test_10_general(t *testing.T) {
 		require.True(t, isUnexpectedEOF)
 	}()
 
-	_ = expect(r, token.EQU)
+	_ = a.expect(token.EQU)
 }
 
 func Test_11_general(t *testing.T) {
-	r := newBR(
+	a := newAud(
 		tok(token.NEQ, "!="),
 	)
 
 	require.Panics(t, func() {
-		_ = expect(r, token.EQU)
+		_ = a.expect(token.EQU)
 	})
 }
 
 func Test_12_general(t *testing.T) {
-	r := newBR(
+	a := newAud(
 		tok(token.NEQ, "!="),
 	)
 
@@ -150,7 +150,7 @@ func Test_12_general(t *testing.T) {
 		require.True(t, isUnexpectedToken)
 	}()
 
-	_ = expect(r, token.EQU)
+	_ = a.expect(token.EQU)
 }
 
 func Test_13_general(t *testing.T) {
@@ -158,12 +158,12 @@ func Test_13_general(t *testing.T) {
 		tok(token.String, `""`),
 	}
 
-	r := newBR(given...)
-	tk := expect(r, token.String)
+	a := newAud(given...)
+	tk := a.expect(token.String)
 
 	require.Equal(t, given[0], tk)
-	require.Equal(t, given[0], r.Prev())
-	require.False(t, r.More())
+	require.Equal(t, given[0], a.Prev())
+	require.False(t, a.More())
 }
 
 func Test_14_general(t *testing.T) {
@@ -172,9 +172,9 @@ func Test_14_general(t *testing.T) {
 		tok(token.Number, "1"),
 	}
 
-	r := newBR(given...)
-	_ = expect(r, token.String)
-	require.True(t, r.More())
+	a := newAud(given...)
+	_ = a.expect(token.String)
+	require.True(t, a.More())
 }
 
 func Test_15_general(t *testing.T) {
@@ -183,11 +183,11 @@ func Test_15_general(t *testing.T) {
 		tok(token.Number, "1"),
 	}
 
-	r := newBR(given...)
-	_ = expect(r, token.String)
-	tk := expect(r, token.Number)
+	a := newAud(given...)
+	_ = a.expect(token.String)
+	tk := a.expect(token.Number)
 
 	require.Equal(t, given[1], tk)
-	require.Equal(t, given[1], r.Prev())
-	require.False(t, r.More())
+	require.Equal(t, given[1], a.Prev())
+	require.False(t, a.More())
 }

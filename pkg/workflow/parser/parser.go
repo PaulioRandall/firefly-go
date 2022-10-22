@@ -17,6 +17,9 @@ type PosReaderOfTokens = inout.PosReader[token.Token]
 func Parse(r ReaderOfTokens, w WriterOfNodes) (e error) {
 	br := inout.NewBufReader[token.Token](r)
 	pr := inout.NewPosReader[token.Token](br)
+	a := auditor{
+		r: pr,
+	}
 
 	defer func() {
 		if v := recover(); v != nil {
@@ -24,14 +27,14 @@ func Parse(r ReaderOfTokens, w WriterOfNodes) (e error) {
 		}
 	}()
 
-	return parseRootStatements(pr, w)
+	return parseRootStatements(a, w)
 }
 
-func parseRootStatements(r PosReaderOfTokens, w WriterOfNodes) error {
-	accept(r, token.Terminator)
+func parseRootStatements(a auditor, w WriterOfNodes) error {
+	a.accept(token.Terminator)
 
-	for r.More() {
-		n := expectStatement(r)
+	for a.More() {
+		n := expectStatement(a)
 		if e := w.Write(n); e != nil {
 			return err.Wrap(e, "Parser failed to parse statements in the root scope")
 		}
