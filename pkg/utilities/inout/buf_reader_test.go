@@ -4,6 +4,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+
+	"github.com/PaulioRandall/firefly-go/pkg/utilities/debug"
 )
 
 func newBR(given ...rune) BufReader[rune] {
@@ -25,13 +27,16 @@ func Test_1_bufReader(t *testing.T) {
 func Test_2_bufReader(t *testing.T) {
 	r := newBR()
 	_, e := r.Peek()
+	debug.Println(e)
 	requireEOF(t, e)
+	requireError(t, e, ErrRead, "Expected ErrRead error")
 }
 
 func Test_3_bufReader(t *testing.T) {
 	r := newBR()
 	_, e := r.Read()
 	requireEOF(t, e)
+	requireError(t, e, ErrRead, "Expected ErrRead error")
 }
 
 func Test_4_bufReader(t *testing.T) {

@@ -8,7 +8,11 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
 
-var EOF = err.Wrap(io.EOF, "EOF (inout)")
+var (
+	EOF             = err.Wrap(io.EOF, "EOF (inout)")
+	ErrRead         = err.Trackable("Failed to read or peek next value")
+	ErrReadDelegate = err.Trackable("Failed to read from delegate")
+)
 
 type Reader[T any] interface {
 	More() bool

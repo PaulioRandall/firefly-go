@@ -1,5 +1,9 @@
 package err
 
+import (
+	"github.com/PaulioRandall/firefly-go/pkg/models/pos"
+)
+
 // trackableError is an error that is tracked through it's error message.
 //
 // This is so that specific error type can be tracked without the underlying
@@ -26,8 +30,22 @@ func Trackable(m string) *trackableError {
 // errors.Is will return true if the receiving and resultant error are the
 // inputs thus allowing a fairly specific error to be tracked while keeping
 // the cause irrelevant.
-func (e trackableError) Track(cause error) *trackableError {
-	e.cause = cause
+func (e trackableError) Track(
+	cause error,
+	msg string,
+	args ...any,
+) *trackableError {
+	e.cause = Wrapf(cause, msg, args...)
+	return &e
+}
+
+func (e trackableError) TrackPos(
+	cause error,
+	from pos.Pos,
+	msg string,
+	args ...any,
+) *trackableError {
+	e.cause = WrapPosf(cause, from, msg, args...)
 	return &e
 }
 

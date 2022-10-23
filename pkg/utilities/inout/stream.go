@@ -27,7 +27,7 @@ func Stream[In, Out comparable](
 	)
 
 	if next, e = readNext(r); e != nil {
-		return err.Wrap(e, "Stream failed to read from reader")
+		return ErrRead.Track(e, "Stream failed to read from reader")
 	}
 
 	for next != zeroIn {
@@ -37,12 +37,12 @@ func Stream[In, Out comparable](
 		next, e = readNext(r)
 
 		if e != nil {
-			return err.Wrap(e, "Stream failed to read from reader")
+			return ErrRead.Track(e, "Stream failed to read from reader")
 		}
 
 		out, e := f(prev, curr, next)
 		if e != nil {
-			return err.Wrap(e, "Stream failed to stream item")
+			return ErrRead.Track(e, "Stream failed to stream item")
 		}
 
 		if out == zeroOut {
@@ -51,7 +51,7 @@ func Stream[In, Out comparable](
 		}
 
 		if e = w.Write(out); e != nil {
-			return err.Wrap(e, "Stream failed to write item to writer")
+			return ErrRead.Track(e, "Stream failed to write item to writer")
 		}
 	}
 
@@ -71,7 +71,7 @@ func readNext[In comparable](r Reader[In]) (In, error) {
 	}
 
 	if e != nil {
-		return zeroIn, err.Wrap(e, "Failed to read from reader")
+		return zeroIn, ErrRead.Track(e, "Failed to read from reader")
 	}
 
 	return in, nil

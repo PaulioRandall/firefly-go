@@ -2,7 +2,6 @@ package inout
 
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/container"
-	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
 
 type bufReader[T any] struct {
@@ -30,31 +29,22 @@ func (r *bufReader[T]) Peek() (T, error) {
 	var zero T
 
 	if e := r.buff(); e != nil {
-		return zero, err.Wrap(e, "Failed to peek")
+		return zero, ErrRead.Track(e, "Peeking failed")
 	}
 
-	v, ok := r.buffer.First()
-	if !ok {
-		return zero, err.New("Sanity check! Buffer shouldn't be empty")
-	}
-
-	return v, nil
+	r.prev, _ = r.buffer.First()
+	return r.prev, nil
 }
 
 func (r *bufReader[T]) Read() (T, error) {
 	var zero T
 
 	if e := r.buff(); e != nil {
-		return zero, err.Wrap(e, "Failed to read")
+		return zero, ErrRead.Track(e, "Reading failed")
 	}
 
-	v, ok := r.buffer.Take()
-	if !ok {
-		return zero, err.New("Sanity check! Buffer shouldn't be empty")
-	}
-
-	r.prev = v
-	return v, nil
+	r.prev, _ = r.buffer.Take()
+	return r.prev, nil
 }
 
 func (r *bufReader[T]) Putback(v T) {
@@ -68,7 +58,7 @@ func (r *bufReader[T]) buff() error {
 
 	v, e := r.reader.Read()
 	if e != nil {
-		return err.Wrap(e, "Failed to buffer from reader")
+		return ErrReadDelegate.Track(e, "Buffering failed")
 	}
 
 	r.buffer.Add(v)

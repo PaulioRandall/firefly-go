@@ -2,8 +2,6 @@ package inout
 
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/pos"
-
-	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
 
 type posReader[T pos.Positioned] struct {
@@ -21,7 +19,7 @@ func (r *posReader[T]) Peek() T {
 
 	if e != nil {
 		_, to := r.Prev().Where()
-		panic(err.WrapPos(e, to, "Failed to peek"))
+		panic(ErrReadDelegate.TrackPos(e, to, "Peeking failed"))
 	}
 
 	return v
@@ -32,7 +30,7 @@ func (r *posReader[T]) Read() T {
 
 	if e != nil {
 		_, to := r.Prev().Where()
-		panic(err.WrapPos(e, to, "Failed to read"))
+		panic(ErrReadDelegate.TrackPos(e, to, "Reading failed"))
 	}
 
 	return v
