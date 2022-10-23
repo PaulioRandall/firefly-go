@@ -114,9 +114,13 @@ func (tt TokenType) String() string {
 
 func (tt TokenType) Precedence() int {
 	switch tt {
-	case Mul, Div:
-		return 2
+	case Mul, Div, Mod:
+		return 4
 	case Add, Sub:
+		return 3
+	case LT, GT, LTE, GTE:
+		return 2
+	case EQU, NEQ:
 		return 1
 	default:
 		return 0

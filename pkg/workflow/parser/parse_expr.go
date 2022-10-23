@@ -31,6 +31,8 @@ func acceptOperand(a auditor) ast.Expr {
 	switch {
 	case !a.More():
 		return nil
+	case a.is(token.Identifier):
+		return expectIdentifier(a)
 	case a.match(token.IsLiteral):
 		return expectLiteral(a)
 	default:
@@ -83,6 +85,12 @@ func expectOperand(a auditor) ast.Expr {
 func expectLiteral(a auditor) ast.Expr {
 	return ast.Literal{
 		Token: a.expectFor("literal", token.IsLiteral),
+	}
+}
+
+func expectIdentifier(a auditor) ast.Expr {
+	return ast.Variable{
+		Identifier: a.expect(token.Identifier),
 	}
 }
 
