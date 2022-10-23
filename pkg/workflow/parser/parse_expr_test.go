@@ -3,10 +3,8 @@ package parser
 import (
 	"testing"
 
-	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 
-	"github.com/PaulioRandall/firefly-go/pkg/models/ast/asttest"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
 )
 
@@ -19,11 +17,7 @@ func Test_parseExpr_1(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	exp := []ast.Node{
-		asttest.Literal(given[0]),
-	}
-
-	doParseTest(t, given, exp)
+	doParseTest(t, given, lit(given[0]))
 }
 
 func Test_parseExpr_2(t *testing.T) {
@@ -31,15 +25,11 @@ func Test_parseExpr_2(t *testing.T) {
 
 	// "abc"
 	given := []token.Token{
-		gen(token.String, "abc"),
+		gen(token.String, `"abc"`),
 		gen(token.Terminator, "\n"),
 	}
 
-	exp := []ast.Node{
-		asttest.Literal(given[0]),
-	}
-
-	doParseTest(t, given, exp)
+	doParseTest(t, given, lit(given[0]))
 }
 
 func Test_parseExpr_3(t *testing.T) {
@@ -51,11 +41,7 @@ func Test_parseExpr_3(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	exp := []ast.Node{
-		asttest.Literal(given[0]),
-	}
-
-	doParseTest(t, given, exp)
+	doParseTest(t, given, lit(given[0]))
 }
 
 func Test_parseExpr_4(t *testing.T) {
@@ -67,11 +53,7 @@ func Test_parseExpr_4(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	exp := []ast.Node{
-		asttest.Literal(given[0]),
-	}
-
-	doParseTest(t, given, exp)
+	doParseTest(t, given, lit(given[0]))
 }
 
 func Test_parseExpr_5(t *testing.T) {
@@ -85,13 +67,11 @@ func Test_parseExpr_5(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	exp := []ast.Node{
-		asttest.BinaryOperation(
-			asttest.Literal(given[0]),
-			given[1],
-			asttest.Literal(given[2]),
-		),
-	}
+	exp := binOp(
+		lit(given[0]),
+		given[1],
+		lit(given[2]),
+	)
 
 	doParseTest(t, given, exp)
 }
@@ -111,16 +91,18 @@ func Test_parseExpr_6(t *testing.T) {
 	}
 
 	// 1 + 2
-	a := asttest.BinaryOperation(
-		asttest.Literal(given[0]),
+	a := binOp(
+		lit(given[0]),
 		given[1],
-		asttest.Literal(given[2]),
+		lit(given[2]),
 	)
 
-	exp := []ast.Node{
-		// a + 3
-		asttest.BinaryOperation(a, given[3], asttest.Literal(given[4])),
-	}
+	// a + 3
+	exp := binOp(
+		a,
+		given[3],
+		lit(given[4]),
+	)
 
 	doParseTest(t, given, exp)
 }
@@ -140,16 +122,18 @@ func Test_parseExpr_7(t *testing.T) {
 	}
 
 	// 2 * 3
-	a := asttest.BinaryOperation(
-		asttest.Literal(given[2]),
+	a := binOp(
+		lit(given[2]),
 		given[3],
-		asttest.Literal(given[4]),
+		lit(given[4]),
 	)
 
 	// 1 + a
-	exp := []ast.Node{
-		asttest.BinaryOperation(asttest.Literal(given[0]), given[1], a),
-	}
+	exp := binOp(
+		lit(given[0]),
+		given[1],
+		a,
+	)
 
 	doParseTest(t, given, exp)
 }
@@ -169,16 +153,18 @@ func Test_parseExpr_8(t *testing.T) {
 	}
 
 	// 1 * 2
-	a := asttest.BinaryOperation(
-		asttest.Literal(given[0]),
+	a := binOp(
+		lit(given[0]),
 		given[1],
-		asttest.Literal(given[2]),
+		lit(given[2]),
 	)
 
-	exp := []ast.Node{
-		// a + 3
-		asttest.BinaryOperation(a, given[3], asttest.Literal(given[4])),
-	}
+	// a + 3
+	exp := binOp(
+		a,
+		given[3],
+		lit(given[4]),
+	)
 
 	doParseTest(t, given, exp)
 }
@@ -200,23 +186,25 @@ func Test_parseExpr_9(t *testing.T) {
 	}
 
 	// 1 * 2
-	a := asttest.BinaryOperation(
-		asttest.Literal(given[0]),
+	a := binOp(
+		lit(given[0]),
 		given[1],
-		asttest.Literal(given[2]),
+		lit(given[2]),
 	)
 
 	// 3 * 4
-	b := asttest.BinaryOperation(
-		asttest.Literal(given[4]),
+	b := binOp(
+		lit(given[4]),
 		given[5],
-		asttest.Literal(given[6]),
+		lit(given[6]),
 	)
 
-	exp := []ast.Node{
-		// a + b
-		asttest.BinaryOperation(a, given[3], b),
-	}
+	// a + b
+	exp := binOp(
+		a,
+		given[3],
+		b,
+	)
 
 	doParseTest(t, given, exp)
 }

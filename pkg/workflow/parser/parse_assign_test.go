@@ -3,17 +3,15 @@ package parser
 import (
 	"testing"
 
-	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 
-	"github.com/PaulioRandall/firefly-go/pkg/models/ast/asttest"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
 )
 
 func Test_parseAssign_1(t *testing.T) {
-	// a = 0
-
 	gen := tokentest.NewTokenGenerator()
+
+	// a = 0
 	given := []token.Token{
 		gen(token.Identifier, "a"),
 		gen(token.Assign, "="),
@@ -21,21 +19,19 @@ func Test_parseAssign_1(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	exp := []ast.Node{
-		asttest.Assign(
-			asttest.Variables(given[0]),
-			given[1],
-			asttest.ExprSet(asttest.Expressions(given[2])...),
-		),
-	}
+	exp := assStmt(
+		vars(given[0]),
+		given[1],
+		lits(given[2]),
+	)
 
 	doParseTest(t, given, exp)
 }
 
 func Test_parseAssign_2(t *testing.T) {
-	// a, b = 0, 1
-
 	gen := tokentest.NewTokenGenerator()
+
+	// a, b = 0, 1
 	given := []token.Token{
 		gen(token.Identifier, "a"),
 		gen(token.Comma, ","),
@@ -47,21 +43,19 @@ func Test_parseAssign_2(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	exp := []ast.Node{
-		asttest.Assign(
-			asttest.Variables(given[0], given[2]),
-			given[3],
-			asttest.ExprSet(asttest.Expressions(given[4], given[6])...),
-		),
-	}
+	exp := assStmt(
+		vars(given[0], given[2]),
+		given[3],
+		lits(given[4], given[6]),
+	)
 
 	doParseTest(t, given, exp)
 }
 
 func Test_parseAssign_3(t *testing.T) {
-	// a b = 0, 1
-
 	gen := tokentest.NewTokenGenerator()
+
+	// a b = 0, 1
 	given := []token.Token{
 		gen(token.Identifier, "a"),
 		gen(token.Identifier, "b"),
@@ -124,9 +118,9 @@ func Test_parseAssign_6(t *testing.T) {
 */
 
 func Test_parseAssign_7(t *testing.T) {
-	// a, b 0, 1
-
 	gen := tokentest.NewTokenGenerator()
+
+	// a, b 0, 1
 	given := []token.Token{
 		gen(token.Identifier, "a"),
 		gen(token.Comma, ","),
@@ -141,9 +135,9 @@ func Test_parseAssign_7(t *testing.T) {
 }
 
 func Test_parseAssign_8(t *testing.T) {
-	// a, b, c = false, 0, ""
-
 	gen := tokentest.NewTokenGenerator()
+
+	// a, b, c = false, 0, ""
 	given := []token.Token{
 		gen(token.Identifier, "a"),
 		gen(token.Comma, ","),
@@ -159,15 +153,11 @@ func Test_parseAssign_8(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	exp := []ast.Node{
-		asttest.Assign(
-			asttest.Variables(given[0], given[2], given[4]),
-			given[5],
-			asttest.ExprSet(
-				asttest.Expressions(given[6], given[8], given[10])...,
-			),
-		),
-	}
+	exp := assStmt(
+		vars(given[0], given[2], given[4]),
+		given[5],
+		lits(given[6], given[8], given[10]),
+	)
 
 	doParseTest(t, given, exp)
 }

@@ -27,15 +27,63 @@ func tok(tt token.TokenType, v string) token.Token {
 	return tokentest.Tok(tt, v)
 }
 
-func literal(tt token.TokenType, v string) ast.Literal {
-	return asttest.Literal(tok(tt, v))
+func lit(tk token.Token) ast.Literal {
+	return asttest.Literal(tk)
 }
 
-func variable(tt token.TokenType, v string) ast.Variable {
-	return asttest.Variable(tok(tt, v))
+func lits(tks ...token.Token) []ast.Expr {
+	var nodes []ast.Expr
+
+	for _, tk := range tks {
+		nodes = append(nodes, asttest.Literal(tk))
+	}
+
+	return nodes
 }
 
-func doParseTest(t *testing.T, given []token.Token, exp []ast.Node) {
+func vars(tks ...token.Token) []ast.Variable {
+	return asttest.Variables(tks...)
+}
+
+func binOp(left ast.Expr, op token.Token, right ast.Expr) ast.Expr {
+	return asttest.BinaryOperation(left, op, right)
+}
+
+func exprs(tks ...token.Token) []ast.Expr {
+	return asttest.Expressions(tks...)
+}
+
+func assStmt(left []ast.Variable, op token.Token, right []ast.Expr) ast.Assign {
+	return asttest.Assign(
+		left,
+		op,
+		asttest.ExprSet(right...),
+	)
+}
+
+func whenStmt(
+	keyword token.Token,
+	subject ast.Expr,
+	cases []ast.WhenCase,
+	end token.Token,
+) ast.When {
+	return asttest.When(keyword, subject, cases, end)
+}
+
+func stmts(stmts ...ast.Stmt) []ast.Stmt {
+	return stmts
+}
+
+func ifStmt(
+	keyword token.Token,
+	condition ast.Expr,
+	body []ast.Stmt,
+	end token.Token,
+) ast.If {
+	return asttest.If(keyword, condition, body, end)
+}
+
+func doParseTest(t *testing.T, given []token.Token, exp ...ast.Node) {
 	r := inout.NewListReader(given)
 	w := inout.NewListWriter[ast.Node]()
 

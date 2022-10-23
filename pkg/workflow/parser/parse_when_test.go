@@ -3,18 +3,16 @@ package parser
 import (
 	"testing"
 
-	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 
-	"github.com/PaulioRandall/firefly-go/pkg/models/ast/asttest"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
 )
 
 func Test_parseWhen_1(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
 	// when
 	// end
-
-	gen := tokentest.NewTokenGenerator()
 	given := []token.Token{
 		gen(token.When, "when"),
 		gen(token.Terminator, "\n"),
@@ -22,23 +20,21 @@ func Test_parseWhen_1(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	exp := []ast.Node{
-		asttest.When(
-			given[0],
-			nil,
-			nil,
-			given[2],
-		),
-	}
+	exp := whenStmt(
+		given[0],
+		nil,
+		nil,
+		given[2],
+	)
 
 	doParseTest(t, given, exp)
 }
 
 func Test_parseWhen_2(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
 	// when 1
 	// end
-
-	gen := tokentest.NewTokenGenerator()
 	given := []token.Token{
 		gen(token.When, "when"),
 		gen(token.Number, "1"),
@@ -47,14 +43,12 @@ func Test_parseWhen_2(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	exp := []ast.Node{
-		asttest.When(
-			given[0],
-			asttest.Literal(given[1]),
-			nil,
-			given[3],
-		),
-	}
+	exp := whenStmt(
+		given[0],
+		lit(given[1]),
+		nil,
+		given[3],
+	)
 
 	doParseTest(t, given, exp)
 }

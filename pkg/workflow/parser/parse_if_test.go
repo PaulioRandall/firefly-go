@@ -3,18 +3,16 @@ package parser
 import (
 	"testing"
 
-	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 
-	"github.com/PaulioRandall/firefly-go/pkg/models/ast/asttest"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
 )
 
 func Test_parseIf_1(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
 	// if true
 	// end
-
-	gen := tokentest.NewTokenGenerator()
 	given := []token.Token{
 		gen(token.If, "if"),
 		gen(token.True, "true"),
@@ -23,24 +21,22 @@ func Test_parseIf_1(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	exp := []ast.Node{
-		asttest.If(
-			given[0],
-			asttest.Literal(given[1]),
-			nil,
-			given[3],
-		),
-	}
+	exp := ifStmt(
+		given[0],
+		lit(given[1]),
+		nil,
+		given[3],
+	)
 
 	doParseTest(t, given, exp)
 }
 
 func Test_parseIf_2(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
 	// if true
 	//   a = 0
 	// end
-
-	gen := tokentest.NewTokenGenerator()
 	given := []token.Token{
 		gen(token.If, "if"),
 		gen(token.True, "true"),
@@ -53,31 +49,29 @@ func Test_parseIf_2(t *testing.T) {
 		gen(token.Terminator, "\n"), // 8
 	}
 
-	body := []ast.Stmt{
-		asttest.Assign(
-			asttest.Variables(given[3]),
+	body := stmts(
+		assStmt(
+			vars(given[3]),
 			given[4],
-			asttest.ExprSet(asttest.Expressions(given[5])...),
+			lits(given[5]),
 		),
-	}
+	)
 
-	exp := []ast.Node{
-		asttest.If(
-			given[0],
-			asttest.Literal(given[1]),
-			body,
-			given[7],
-		),
-	}
+	exp := ifStmt(
+		given[0],
+		lit(given[1]),
+		body,
+		given[7],
+	)
 
 	doParseTest(t, given, exp)
 }
 
 func Test_parseIf_3(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
 	// if true
 	//   a = 0
-
-	gen := tokentest.NewTokenGenerator()
 	given := []token.Token{
 		gen(token.If, "if"),
 		gen(token.True, "true"),
