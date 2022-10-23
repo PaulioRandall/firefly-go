@@ -11,10 +11,12 @@ import (
 type ReaderOfTokens = inout.Reader[token.Token]
 type WriterOfTokens = inout.Writer[token.Token]
 
+var ErrCleaning = err.Trackable("Token cleaning failed")
+
 func Clean(r ReaderOfTokens, w WriterOfTokens) error {
 	e := inout.Stream(r, w, processNext)
 	if e != nil {
-		return err.Wrap(e, "Cleaner failed to clean tokens")
+		return ErrCleaning.Track(e, "Cleaner failed to clean tokens")
 	}
 	return nil
 }

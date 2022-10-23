@@ -18,8 +18,7 @@ const (
 )
 
 var (
-	ErrTokenScanFail      = err.Trackable("Failed to scan token")
-	ErrTokenWriteFail     = err.Trackable("Failed to write scanned token")
+	ErrScanning           = err.Trackable("Token scanning failed")
 	ErrUnknownSymbol      = err.Trackable("Unknown symbol")
 	ErrUnterminatedString = err.Trackable("Unterminated string")
 	ErrMissingFractional  = err.Trackable("Missing fractional part of number")
@@ -34,12 +33,12 @@ func Scan(r ReaderOfRunes, w WriterOfTokens) error {
 
 	for tb.More() {
 		if e := scanNext(&tb); e != nil {
-			return ErrTokenScanFail.Track(e, "Failed to scan token")
+			return ErrScanning.Track(e, "Failed to scan token")
 		}
 
 		tk := tb.build()
 		if e := w.Write(tk); e != nil {
-			return ErrTokenWriteFail.Track(e, "Could not write scanned token")
+			return ErrScanning.Track(e, "Could not write scanned token")
 		}
 	}
 

@@ -11,10 +11,12 @@ import (
 type ReaderOfTokens = inout.Reader[token.Token]
 type WriterOfTokens = inout.Writer[token.Token]
 
+var ErrAligning = err.Trackable("Aligning failed")
+
 func Align(r ReaderOfTokens, w WriterOfTokens) error {
 	e := inout.Stream(r, w, processNext)
 	if e != nil {
-		return err.Wrap(e, "Aligner failed to align tokens")
+		return ErrAligning.Track(e, "Aligner failed to align tokens")
 	}
 	return nil
 }

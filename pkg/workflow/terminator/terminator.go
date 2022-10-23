@@ -11,10 +11,12 @@ import (
 type ReaderOfTokens = inout.Reader[token.Token]
 type WriterOfTokens = inout.Writer[token.Token]
 
+var ErrTerminating = err.Trackable("Terminator conversion failed")
+
 func Terminate(r ReaderOfTokens, w WriterOfTokens) error {
 	e := inout.Stream(r, w, processNext)
 	if e != nil {
-		return err.Wrap(e, "Terminator failed to convert newlines to terminators")
+		return ErrTerminating.Track(e, "Terminator failed to convert newlines to terminators")
 	}
 	return nil
 }
