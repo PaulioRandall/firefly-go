@@ -31,7 +31,7 @@ func Test_parseWhen_1(t *testing.T) {
 		),
 	}
 
-	assert(t, given, exp)
+	doParseTest(t, given, exp)
 }
 
 func Test_parseWhen_2(t *testing.T) {
@@ -56,7 +56,7 @@ func Test_parseWhen_2(t *testing.T) {
 		),
 	}
 
-	assert(t, given, exp)
+	doParseTest(t, given, exp)
 }
 
 func Test_parseWhen_3(t *testing.T) {

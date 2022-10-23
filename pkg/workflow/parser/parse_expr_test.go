@@ -23,7 +23,7 @@ func Test_parseExpr_1(t *testing.T) {
 		asttest.Literal(given[0]),
 	}
 
-	assert(t, given, exp)
+	doParseTest(t, given, exp)
 }
 
 func Test_parseExpr_2(t *testing.T) {
@@ -39,7 +39,7 @@ func Test_parseExpr_2(t *testing.T) {
 		asttest.Literal(given[0]),
 	}
 
-	assert(t, given, exp)
+	doParseTest(t, given, exp)
 }
 
 func Test_parseExpr_3(t *testing.T) {
@@ -55,7 +55,7 @@ func Test_parseExpr_3(t *testing.T) {
 		asttest.Literal(given[0]),
 	}
 
-	assert(t, given, exp)
+	doParseTest(t, given, exp)
 }
 
 func Test_parseExpr_4(t *testing.T) {
@@ -71,7 +71,7 @@ func Test_parseExpr_4(t *testing.T) {
 		asttest.Literal(given[0]),
 	}
 
-	assert(t, given, exp)
+	doParseTest(t, given, exp)
 }
 
 func Test_parseExpr_5(t *testing.T) {
@@ -93,7 +93,7 @@ func Test_parseExpr_5(t *testing.T) {
 		),
 	}
 
-	assert(t, given, exp)
+	doParseTest(t, given, exp)
 }
 
 func Test_parseExpr_6(t *testing.T) {
@@ -122,7 +122,7 @@ func Test_parseExpr_6(t *testing.T) {
 		asttest.BinaryOperation(a, given[3], asttest.Literal(given[4])),
 	}
 
-	assert(t, given, exp)
+	doParseTest(t, given, exp)
 }
 
 func Test_parseExpr_7(t *testing.T) {
@@ -151,7 +151,7 @@ func Test_parseExpr_7(t *testing.T) {
 		asttest.BinaryOperation(asttest.Literal(given[0]), given[1], a),
 	}
 
-	assert(t, given, exp)
+	doParseTest(t, given, exp)
 }
 
 func Test_parseExpr_8(t *testing.T) {
@@ -180,7 +180,7 @@ func Test_parseExpr_8(t *testing.T) {
 		asttest.BinaryOperation(a, given[3], asttest.Literal(given[4])),
 	}
 
-	assert(t, given, exp)
+	doParseTest(t, given, exp)
 }
 
 func Test_parseExpr_9(t *testing.T) {
@@ -218,5 +218,5 @@ func Test_parseExpr_9(t *testing.T) {
 		asttest.BinaryOperation(a, given[3], b),
 	}
 
-	assert(t, given, exp)
+	doParseTest(t, given, exp)
 }

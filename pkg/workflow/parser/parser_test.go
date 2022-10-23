@@ -35,7 +35,7 @@ func variable(tt token.TokenType, v string) ast.Variable {
 	return asttest.Variable(tok(tt, v))
 }
 
-func assert(t *testing.T, given []token.Token, exp []ast.Node) {
+func doParseTest(t *testing.T, given []token.Token, exp []ast.Node) {
 	r := inout.NewListReader(given)
 	w := inout.NewListWriter[ast.Node]()
 
@@ -45,7 +45,7 @@ func assert(t *testing.T, given []token.Token, exp []ast.Node) {
 	require.Equal(t, exp, w.List())
 }
 
-func assertError(t *testing.T, given []token.Token, exp error) {
+func doErrorTest(t *testing.T, given []token.Token, exp error) {
 	r := inout.NewListReader(given)
 	w := inout.NewListWriter[ast.Node]()
 

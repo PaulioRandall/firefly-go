@@ -32,7 +32,7 @@ func Test_parseIf_1(t *testing.T) {
 		),
 	}
 
-	assert(t, given, exp)
+	doParseTest(t, given, exp)
 }
 
 func Test_parseIf_2(t *testing.T) {
@@ -70,7 +70,7 @@ func Test_parseIf_2(t *testing.T) {
 		),
 	}
 
-	assert(t, given, exp)
+	doParseTest(t, given, exp)
 }
 
 func Test_parseIf_3(t *testing.T) {
@@ -88,5 +88,5 @@ func Test_parseIf_3(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	assertError(t, given, UnexpectedEOF)
+	doErrorTest(t, given, UnexpectedEOF)
 }

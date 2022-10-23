@@ -29,7 +29,7 @@ func Test_parseAssign_1(t *testing.T) {
 		),
 	}
 
-	assert(t, given, exp)
+	doParseTest(t, given, exp)
 }
 
 func Test_parseAssign_2(t *testing.T) {
@@ -55,7 +55,7 @@ func Test_parseAssign_2(t *testing.T) {
 		),
 	}
 
-	assert(t, given, exp)
+	doParseTest(t, given, exp)
 }
 
 func Test_parseAssign_3(t *testing.T) {
@@ -72,7 +72,7 @@ func Test_parseAssign_3(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	assertError(t, given, UnexpectedToken)
+	doErrorTest(t, given, UnexpectedToken)
 }
 
 /* TODO: Move to validator
@@ -89,7 +89,7 @@ func Test_parseAssign_4(t *testing.T) {
 		tok(token.Terminator, "\n"),
 	}
 
-	assertError(t, given, MissingExpr)
+	doErrorTest(t, given, MissingExpr)
 }
 
 func Test_parseAssign_5(t *testing.T) {
@@ -104,7 +104,7 @@ func Test_parseAssign_5(t *testing.T) {
 		tok(token.Terminator, "\n"),
 	}
 
-	assertError(t, given, MissingExpr)
+	doErrorTest(t, given, MissingExpr)
 }
 
 func Test_parseAssign_6(t *testing.T) {
@@ -119,7 +119,7 @@ func Test_parseAssign_6(t *testing.T) {
 		tok(token.Terminator, "\n"),
 	}
 
-	assertError(t, given, MissingVar)
+	doErrorTest(t, given, MissingVar)
 }
 */
 
@@ -137,7 +137,7 @@ func Test_parseAssign_7(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	assertError(t, given, UnexpectedToken)
+	doErrorTest(t, given, UnexpectedToken)
 }
 
 func Test_parseAssign_8(t *testing.T) {
@@ -169,5 +169,5 @@ func Test_parseAssign_8(t *testing.T) {
 		),
 	}
 
-	assert(t, given, exp)
+	doParseTest(t, given, exp)
 }
