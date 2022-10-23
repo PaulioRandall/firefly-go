@@ -28,15 +28,15 @@ func Test_2_bufReader(t *testing.T) {
 	r := newBR()
 	_, e := r.Peek()
 	debug.Println(e)
-	requireEOF(t, e)
-	requireError(t, e, ErrRead, "Expected ErrRead error")
+	requireError(t, EOF, e, "Expected EOF error")
+	requireError(t, ErrRead, e, "Expected ErrRead error")
 }
 
 func Test_3_bufReader(t *testing.T) {
 	r := newBR()
 	_, e := r.Read()
-	requireEOF(t, e)
-	requireError(t, e, ErrRead, "Expected ErrRead error")
+	requireError(t, EOF, e, "Expected EOF error")
+	requireError(t, ErrRead, e, "Expected ErrRead error")
 }
 
 func Test_4_bufReader(t *testing.T) {

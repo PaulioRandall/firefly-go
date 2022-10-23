@@ -17,7 +17,7 @@ func Test_1_runeReader_Peek(t *testing.T) {
 	r := newRR("")
 
 	_, e := r.Peek()
-	requireEOF(t, e)
+	requireError(t, EOF, e, "Expected EOF error")
 	require.Empty(t, r.Where())
 }
 
@@ -42,7 +42,7 @@ func Test_3_runeReader_Read(t *testing.T) {
 
 	_, e := r.Read()
 
-	requireEOF(t, e)
+	requireError(t, EOF, e, "Expected EOF error")
 	require.Empty(t, r.Where())
 }
 

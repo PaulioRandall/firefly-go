@@ -16,10 +16,6 @@ func tok(tt token.TokenType, v string) token.Token {
 	return tokentest.Tok(tt, v)
 }
 
-func requireEOF(t *testing.T, e error) {
-	require.True(t, err.Is(e, EOF), "Expected EOF error")
-}
-
 func requireError(t *testing.T, exp, act error, msg string) {
 	require.True(t, err.Is(act, exp), msg)
 }
