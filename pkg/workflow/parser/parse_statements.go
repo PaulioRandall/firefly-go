@@ -32,7 +32,7 @@ func expectStatement(a auditor) (n ast.Stmt) {
 		n = expectExpression(a)
 
 	default:
-		panic(UnexpectedToken)
+		panic(UnexpectedToken.Track(nil, "Expected statement"))
 	}
 
 	if n == nil {
@@ -49,5 +49,5 @@ func expectVariableStatement(a auditor, first token.Token) ast.Stmt {
 		return expectAssignment(a)
 	}
 
-	panic(UnexpectedToken)
+	panic(UnexpectedToken.Track(nil, "Expected statement beginning with a variable"))
 }

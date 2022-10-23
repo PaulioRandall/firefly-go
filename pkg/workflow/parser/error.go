@@ -5,11 +5,11 @@ import (
 )
 
 var (
-	UnexpectedEOF   = err.New("Unexpected end of file")
-	UnexpectedToken = err.New("Unexpected token")
+	UnexpectedEOF   = err.Trackable("Unexpected end of file")
+	UnexpectedToken = err.Trackable("Unexpected token")
 
-	MissingVar  = err.New("Missing variable")
-	MissingExpr = err.New("Missing expression")
-	MissingStmt = err.New("Missing statement")
-	MissingEnd  = err.New("Missing end")
+	MissingVar  = err.Trackable("Missing variable")
+	MissingExpr = err.Trackable("Missing expression")
+	MissingStmt = err.Trackable("Missing statement")
+	MissingEnd  = err.Trackable("Missing end")
 )

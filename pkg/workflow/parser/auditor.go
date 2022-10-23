@@ -2,8 +2,6 @@ package parser
 
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
-
-	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
 
 type auditor struct {
@@ -131,13 +129,9 @@ func (a *auditor) expectFor(want any, f func(token.TokenType) bool) token.Token 
 }
 
 func (a *auditor) unexpected(expected, got any) error {
-	return a.wrapErr(UnexpectedToken, "Expected %q but got %q", expected, got)
+	return UnexpectedToken.Trackf(nil, "Expected %q but got %q", expected, got)
 }
 
 func (a *auditor) unexpectedEOF(expected any) error {
-	return a.wrapErr(UnexpectedEOF, "Expected %q but got EOF", expected)
-}
-
-func (a *auditor) wrapErr(cause error, msg string, args ...any) error {
-	return err.WrapPosf(cause, a.r.Prev().To, msg, args...)
+	return UnexpectedEOF.Trackf(nil, "Expected %q but got EOF", expected)
 }
