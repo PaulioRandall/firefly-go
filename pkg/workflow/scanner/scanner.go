@@ -18,9 +18,11 @@ const (
 )
 
 var (
-	ErrUnknownSymbol      = err.New("Unknown symbol")
-	ErrUnterminatedString = err.New("Unterminated string")
-	ErrMissingFractional  = err.New("Missing fractional part of number")
+	ErrTokenScanFail      = err.Trackable("Failed to scan token")
+	ErrTokenWriteFail     = err.Trackable("Failed to write scanned token")
+	ErrUnknownSymbol      = err.Trackable("Unknown symbol")
+	ErrUnterminatedString = err.Trackable("Unterminated string")
+	ErrMissingFractional  = err.Trackable("Missing fractional part of number")
 	zeroToken             token.Token
 )
 
@@ -32,12 +34,12 @@ func Scan(r ReaderOfRunes, w WriterOfTokens) error {
 
 	for tb.More() {
 		if e := scanNext(&tb); e != nil {
-			return err.Wrap(e, "Failed to scan token")
+			return ErrTokenScanFail.Track(e, "Failed to scan token")
 		}
 
 		tk := tb.build()
 		if e := w.Write(tk); e != nil {
-			return err.Wrap(e, "Failed to write scanned token")
+			return ErrTokenWriteFail.Track(e, "Could not write scanned token")
 		}
 	}
 
@@ -157,7 +159,7 @@ func scanNumberFraction(tb *tokenBuilder) error {
 	}
 
 	if !hasFractional {
-		return err.Wrap(ErrMissingFractional, "Failed to scan fractional part of number")
+		return ErrMissingFractional.Track(nil, "Expected fractional digits")
 	}
 
 	return nil
@@ -169,7 +171,7 @@ func scanString(tb *tokenBuilder, first rune) error {
 	}
 
 	if e := tb.expect(StringDelim, "Unterminated string"); e != nil {
-		return err.Wrap(ErrUnterminatedString, "Failed to scan terminating string delimiter")
+		return ErrUnterminatedString.Track(nil, "Failed to scan terminating string delimiter")
 	}
 
 	tb.tt = token.String
@@ -178,11 +180,13 @@ func scanString(tb *tokenBuilder, first rune) error {
 
 func scanStringBody(tb *tokenBuilder) error {
 	escaped := false
+	terminated := false
 
 	_, e := acceptWhile(tb, func(ru rune) bool {
 		isDelim := isStringDelim(ru)
 
 		if !escaped && isDelim {
+			terminated = true
 			return false
 		}
 
@@ -194,8 +198,8 @@ func scanStringBody(tb *tokenBuilder) error {
 		return err.Wrap(e, "Failed to scan string body")
 	}
 
-	if escaped {
-		return ErrUnterminatedString
+	if !terminated {
+		return ErrUnterminatedString.Track(nil, "EOF before string terminated")
 	}
 
 	return nil
@@ -331,9 +335,9 @@ func scanOperator(tb *tokenBuilder, first, second rune) error {
 
 func unknownSymbol(tb *tokenBuilder, first, second rune) error {
 	if second == rune(0) {
-		return err.WrapPosf(ErrUnknownSymbol, tb.start, "Unknown symbol %q", first)
+		return ErrUnknownSymbol.TrackPosf(nil, tb.start, "Unknown symbol %q", first)
 	}
-	return err.WrapPosf(ErrUnknownSymbol, tb.start, "Unknown symbol %q", []rune{first, second})
+	return ErrUnknownSymbol.TrackPosf(nil, tb.start, "Unknown symbol %q", []rune{first, second})
 }
 
 func isNewline(ru rune) bool {
