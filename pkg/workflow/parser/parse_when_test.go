@@ -356,11 +356,60 @@ func Test_parseWhen_9(t *testing.T) {
 }
 
 func Test_parseWhen_10(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
 	// when a
 	//   is 1:
 	//   a == 2:
 	//   true:
 	// end
+	given := []token.Token{
+		gen(token.When, "when"),     // 0
+		gen(token.Identifier, "a"),  // 1
+		gen(token.Terminator, "\n"), //
+		gen(token.Is, "is"),         // 3
+		gen(token.Number, "1"),      // 4
+		gen(token.Colon, ":"),       // 5
+		gen(token.Terminator, "\n"), //
+		gen(token.Identifier, "a"),  // 7
+		gen(token.EQU, "=="),        // 8
+		gen(token.Number, "2"),      // 9
+		gen(token.Colon, ":"),       // 10
+		gen(token.Terminator, "\n"), //
+		gen(token.True, "true"),     // 12
+		gen(token.Colon, ":"),       // 13
+		gen(token.Terminator, "\n"), //
+		gen(token.End, "end"),       // 15
+		gen(token.Terminator, "\n"),
+	}
+
+	firstCase := is(
+		given[3],
+		lit(given[4]),
+	)
+
+	secondCase := binOp(
+		varExpr(given[7]),
+		given[8],
+		lit(given[9]),
+	)
+
+	thirdCase := lit(given[12])
+
+	cases := whenCases(
+		whenCase(firstCase, nil),
+		whenCase(secondCase, nil),
+		whenCase(thirdCase, nil),
+	)
+
+	exp := whenStmt(
+		given[0],
+		varExpr(given[1]),
+		cases,
+		given[15],
+	)
+
+	doParseTest(t, given, exp)
 }
 
 func Test_parseWhen_11(t *testing.T) {
