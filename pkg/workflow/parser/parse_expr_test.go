@@ -8,6 +8,16 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
 )
 
+func doBinExprTest(t *testing.T, given ...token.Token) {
+	exp := binOp(
+		lit(given[0]),
+		given[1],
+		lit(given[2]),
+	)
+
+	doParseTest(t, given, exp)
+}
+
 func Test_parseExpr_1(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
@@ -54,26 +64,6 @@ func Test_parseExpr_4(t *testing.T) {
 	}
 
 	doParseTest(t, given, lit(given[0]))
-}
-
-func Test_parseExpr_5(t *testing.T) {
-	gen := tokentest.NewTokenGenerator()
-
-	// 1 + 2
-	given := []token.Token{
-		gen(token.Number, "1"),
-		gen(token.Add, "+"),
-		gen(token.Number, "2"),
-		gen(token.Terminator, "\n"),
-	}
-
-	exp := binOp(
-		lit(given[0]),
-		given[1],
-		lit(given[2]),
-	)
-
-	doParseTest(t, given, exp)
 }
 
 func Test_parseExpr_6(t *testing.T) {
@@ -207,4 +197,136 @@ func Test_parseExpr_9(t *testing.T) {
 	)
 
 	doParseTest(t, given, exp)
+}
+
+func Test_parseExpr_10(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	doBinExprTest(t,
+		// 1 + 2
+		gen(token.Number, "1"),
+		gen(token.Add, "+"),
+		gen(token.Number, "2"),
+		gen(token.Terminator, "\n"),
+	)
+}
+
+func Test_parseExpr_11(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	doBinExprTest(t,
+		// 1 - 2
+		gen(token.Number, "1"),
+		gen(token.Sub, "-"),
+		gen(token.Number, "2"),
+		gen(token.Terminator, "\n"),
+	)
+}
+
+func Test_parseExpr_12(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	doBinExprTest(t,
+		// 1 * 2
+		gen(token.Number, "1"),
+		gen(token.Mul, "*"),
+		gen(token.Number, "2"),
+		gen(token.Terminator, "\n"),
+	)
+}
+
+func Test_parseExpr_13(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	doBinExprTest(t,
+		// 1 / 2
+		gen(token.Number, "1"),
+		gen(token.Div, "/"),
+		gen(token.Number, "2"),
+		gen(token.Terminator, "\n"),
+	)
+}
+
+func Test_parseExpr_14(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	doBinExprTest(t,
+		// 1 % 2
+		gen(token.Number, "1"),
+		gen(token.Mod, "%"),
+		gen(token.Number, "2"),
+		gen(token.Terminator, "\n"),
+	)
+}
+
+func Test_parseExpr_15(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	doBinExprTest(t,
+		// 1 < 2
+		gen(token.Number, "1"),
+		gen(token.LT, "<"),
+		gen(token.Number, "2"),
+		gen(token.Terminator, "\n"),
+	)
+}
+
+func Test_parseExpr_16(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	doBinExprTest(t,
+		// 1 > 2
+		gen(token.Number, "1"),
+		gen(token.GT, ">"),
+		gen(token.Number, "2"),
+		gen(token.Terminator, "\n"),
+	)
+}
+
+func Test_parseExpr_17(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	doBinExprTest(t,
+		// 1 <= 2
+		gen(token.Number, "1"),
+		gen(token.LTE, "<="),
+		gen(token.Number, "2"),
+		gen(token.Terminator, "\n"),
+	)
+}
+
+func Test_parseExpr_18(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	doBinExprTest(t,
+		// 1 >= 2
+		gen(token.Number, "1"),
+		gen(token.GTE, ">="),
+		gen(token.Number, "2"),
+		gen(token.Terminator, "\n"),
+	)
+}
+
+func Test_parseExpr_19(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	doBinExprTest(t,
+		// 1 == 2
+		gen(token.Number, "1"),
+		gen(token.EQU, "=="),
+		gen(token.Number, "2"),
+		gen(token.Terminator, "\n"),
+	)
+}
+
+func Test_parseExpr_20(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	doBinExprTest(t,
+		// 1 != 2
+		gen(token.Number, "1"),
+		gen(token.NEQ, "!="),
+		gen(token.Number, "2"),
+		gen(token.Terminator, "\n"),
+	)
 }
