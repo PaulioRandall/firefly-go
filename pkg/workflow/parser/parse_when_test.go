@@ -200,7 +200,7 @@ func Test_parseWhen_6(t *testing.T) {
 		gen(token.Colon, ":"),       // 5
 		gen(token.Terminator, "\n"), //
 		gen(token.End, "end"),       // 7
-		gen(token.Terminator, "\n"), //
+		gen(token.Terminator, "\n"),
 	}
 
 	firstCase := is(
@@ -223,20 +223,136 @@ func Test_parseWhen_6(t *testing.T) {
 }
 
 func Test_parseWhen_7(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
 	// when a
 	//   is 1:
 	//   is 2:
 	//   is 3:
 	// end
+	given := []token.Token{
+		gen(token.When, "when"),     // 0
+		gen(token.Identifier, "a"),  // 1
+		gen(token.Terminator, "\n"), //
+		gen(token.Is, "is"),         // 3
+		gen(token.Number, "1"),      // 4
+		gen(token.Colon, ":"),       // 5
+		gen(token.Terminator, "\n"), //
+		gen(token.Is, "is"),         // 7
+		gen(token.Number, "2"),      // 8
+		gen(token.Colon, ":"),       // 9
+		gen(token.Terminator, "\n"), //
+		gen(token.Is, "is"),         // 11
+		gen(token.Number, "3"),      // 12
+		gen(token.Colon, ":"),       // 13
+		gen(token.Terminator, "\n"), //
+		gen(token.End, "end"),       // 15
+		gen(token.Terminator, "\n"),
+	}
+
+	firstCase := is(
+		given[3],
+		lit(given[4]),
+	)
+
+	secondCase := is(
+		given[7],
+		lit(given[8]),
+	)
+
+	thirdCase := is(
+		given[11],
+		lit(given[12]),
+	)
+
+	cases := whenCases(
+		whenCase(firstCase, nil),
+		whenCase(secondCase, nil),
+		whenCase(thirdCase, nil),
+	)
+
+	exp := whenStmt(
+		given[0],
+		varExpr(given[1]),
+		cases,
+		given[15],
+	)
+
+	doParseTest(t, given, exp)
 }
 
 func Test_parseWhen_9(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
 	// when a
 	//   is 1:
 	//   a == 2:
 	//   is 3:
 	//   a == 4:
 	// end
+	given := []token.Token{
+		gen(token.When, "when"),     // 0
+		gen(token.Identifier, "a"),  // 1
+		gen(token.Terminator, "\n"), //
+		gen(token.Is, "is"),         // 3
+		gen(token.Number, "1"),      // 4
+		gen(token.Colon, ":"),       // 5
+		gen(token.Terminator, "\n"), //
+		gen(token.Identifier, "a"),  // 7
+		gen(token.EQU, "=="),        // 8
+		gen(token.Number, "2"),      // 9
+		gen(token.Colon, ":"),       // 10
+		gen(token.Terminator, "\n"), //
+		gen(token.Is, "is"),         // 12
+		gen(token.Number, "3"),      // 13
+		gen(token.Colon, ":"),       // 14
+		gen(token.Terminator, "\n"), //
+		gen(token.Identifier, "a"),  // 16
+		gen(token.EQU, "=="),        // 17
+		gen(token.Number, "4"),      // 18
+		gen(token.Colon, ":"),       // 19
+		gen(token.Terminator, "\n"), //
+		gen(token.End, "end"),       // 21
+		gen(token.Terminator, "\n"),
+	}
+
+	firstCase := is(
+		given[3],
+		lit(given[4]),
+	)
+
+	secondCase := binOp(
+		varExpr(given[7]),
+		given[8],
+		lit(given[9]),
+	)
+
+	thirdCase := is(
+		given[12],
+		lit(given[13]),
+	)
+
+	fourthCase := binOp(
+		varExpr(given[16]),
+		given[17],
+		lit(given[18]),
+	)
+
+	cases := whenCases(
+		whenCase(firstCase, nil),
+		whenCase(secondCase, nil),
+		whenCase(thirdCase, nil),
+		whenCase(fourthCase, nil),
+	)
+
+	exp := whenStmt(
+		given[0],
+		varExpr(given[1]),
+		cases,
+		given[21],
+	)
+
+	doParseTest(t, given, exp)
 }
 
 func Test_parseWhen_10(t *testing.T) {
