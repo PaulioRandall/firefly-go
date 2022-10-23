@@ -413,32 +413,81 @@ func Test_parseWhen_10(t *testing.T) {
 }
 
 func Test_parseWhen_11(t *testing.T) {
-	// when
+	gen := tokentest.NewTokenGenerator()
+
+	// when a
 	//   is 1
 	// end
+	given := []token.Token{
+		gen(token.When, "when"),     // 0
+		gen(token.Identifier, "a"),  // 1
+		gen(token.Terminator, "\n"), //
+		gen(token.Is, "is"),         // 3
+		gen(token.Number, "1"),      // 4
+		gen(token.Terminator, "\n"), //
+		gen(token.End, "end"),       // 6
+		gen(token.Terminator, "\n"),
+	}
 
-	// Error!
+	doErrorTest(t, given, UnexpectedToken)
 }
 
 func Test_parseWhen_12(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
 	// when
 	//   a == 1
 	// end
+	given := []token.Token{
+		gen(token.When, "when"),     // 0
+		gen(token.Identifier, "a"),  // 1
+		gen(token.Terminator, "\n"), //
+		gen(token.Identifier, "a"),  // 3
+		gen(token.EQU, "=="),        // 4
+		gen(token.Number, "1"),      // 5
+		gen(token.Terminator, "\n"), //
+		gen(token.End, "end"),       // 6
+		gen(token.Terminator, "\n"),
+	}
 
-	// Error!
+	doErrorTest(t, given, UnexpectedToken)
 }
 
 func Test_parseWhen_13(t *testing.T) {
-	// when
-	//   a == 1
+	gen := tokentest.NewTokenGenerator()
 
-	// Error!
+	// when
+	//   a == 1:
+	given := []token.Token{
+		gen(token.When, "when"),     // 0
+		gen(token.Identifier, "a"),  // 1
+		gen(token.Terminator, "\n"), //
+		gen(token.Identifier, "a"),  // 3
+		gen(token.EQU, "=="),        // 4
+		gen(token.Number, "1"),      // 5
+		gen(token.Colon, ":"),       // 6
+		gen(token.Terminator, "\n"),
+	}
+
+	doErrorTest(t, given, UnexpectedEOF)
 }
 
 func Test_parseWhen_14(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
 	// when a
 	//   is:
 	// end
+	given := []token.Token{
+		gen(token.When, "when"),     // 0
+		gen(token.Identifier, "a"),  // 1
+		gen(token.Terminator, "\n"), //
+		gen(token.Is, "is"),         // 3
+		gen(token.Colon, ":"),       // 4
+		gen(token.Terminator, "\n"), //
+		gen(token.End, "end"),       // 6
+		gen(token.Terminator, "\n"),
+	}
 
-	// Error!
+	doErrorTest(t, given, UnexpectedToken)
 }
