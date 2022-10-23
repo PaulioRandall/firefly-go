@@ -53,6 +53,10 @@ func binOp(left ast.Expr, op token.Token, right ast.Expr) ast.Expr {
 	return asttest.BinaryOperation(left, op, right)
 }
 
+func is(keyword token.Token, expr ast.Expr) ast.Expr {
+	return asttest.Is(keyword, expr)
+}
+
 func exprs(tks ...token.Token) []ast.Expr {
 	return asttest.Expressions(tks...)
 }

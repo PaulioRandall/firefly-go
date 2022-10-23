@@ -31,7 +31,7 @@ func acceptWhenCases(a auditor) []ast.WhenCase {
 
 func expectWhenCase(a auditor) ast.WhenCase {
 
-	condition := expectExpression(a)
+	condition := expectWhenCaseCondition(a)
 	a.expect(token.Colon)
 
 	var body ast.Stmt
@@ -44,5 +44,16 @@ func expectWhenCase(a auditor) ast.WhenCase {
 	return ast.WhenCase{
 		Condition: condition,
 		Statement: body,
+	}
+}
+
+func expectWhenCaseCondition(a auditor) ast.Expr {
+	if a.isNot(token.Is) {
+		return expectExpression(a)
+	}
+
+	return ast.Is{
+		Keyword: a.expect(token.Is),
+		Expr:    expectExpression(a),
 	}
 }

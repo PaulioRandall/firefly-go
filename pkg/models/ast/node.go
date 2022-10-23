@@ -171,3 +171,23 @@ func (n WhenCase) Where() (from, to pos.Pos) {
 	_, to = n.Statement.Where()
 	return from, to
 }
+
+// Is represents a when case which tests for equality between the When subject
+// and the result of an expression.
+type Is struct {
+	Keyword token.Token
+	Expr    Expr
+}
+
+func (n Is) node() {}
+func (n Is) stmt() {}
+func (n Is) proc() {}
+func (n Is) expr() {}
+func (n Is) Precedence() int {
+	return 0
+}
+func (n Is) Where() (from, to pos.Pos) {
+	from, _ = n.Keyword.Where()
+	_, to = n.Expr.Where()
+	return from, to
+}

@@ -63,6 +63,16 @@ func WhenCase(
 	}
 }
 
+func Is(
+	keyword token.Token,
+	expr ast.Expr,
+) ast.Is {
+	return ast.Is{
+		Keyword: keyword,
+		Expr:    expr,
+	}
+}
+
 func ExprSet(exprs ...ast.Expr) ast.ExprSet {
 	return ast.ExprSet{
 		Exprs: exprs,

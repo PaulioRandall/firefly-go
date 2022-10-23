@@ -36,10 +36,10 @@ func Test_parseWhen_2(t *testing.T) {
 	// when 1
 	// end
 	given := []token.Token{
-		gen(token.When, "when"),
-		gen(token.Number, "1"),
-		gen(token.Terminator, "\n"),
-		gen(token.End, "end"),
+		gen(token.When, "when"),     // 0
+		gen(token.Number, "1"),      // 1
+		gen(token.Terminator, "\n"), //
+		gen(token.End, "end"),       // 3
 		gen(token.Terminator, "\n"),
 	}
 
@@ -60,12 +60,12 @@ func Test_parseWhen_3(t *testing.T) {
 	//   true:
 	// end
 	given := []token.Token{
-		gen(token.When, "when"),
-		gen(token.Terminator, "\n"),
-		gen(token.True, "true"),
-		gen(token.Colon, ":"),
-		gen(token.Terminator, "\n"),
-		gen(token.End, "end"),
+		gen(token.When, "when"),     // 0
+		gen(token.Terminator, "\n"), //
+		gen(token.True, "true"),     // 2
+		gen(token.Colon, ":"),       // 3
+		gen(token.Terminator, "\n"), //
+		gen(token.End, "end"),       // 5
 		gen(token.Terminator, "\n"),
 	}
 
@@ -90,14 +90,14 @@ func Test_parseWhen_4(t *testing.T) {
 	//   1 == 2:
 	// end
 	given := []token.Token{
-		gen(token.When, "when"), // 0
-		gen(token.Terminator, "\n"),
-		gen(token.Number, "1"), // 2
-		gen(token.EQU, "=="),   // 3
-		gen(token.Number, "2"), // 4
-		gen(token.Colon, ":"),  // 5
-		gen(token.Terminator, "\n"),
-		gen(token.End, "end"), // 7
+		gen(token.When, "when"),     // 0
+		gen(token.Terminator, "\n"), //
+		gen(token.Number, "1"),      // 2
+		gen(token.EQU, "=="),        // 3
+		gen(token.Number, "2"),      // 4
+		gen(token.Colon, ":"),       // 5
+		gen(token.Terminator, "\n"), //
+		gen(token.End, "end"),       // 7
 		gen(token.Terminator, "\n"),
 	}
 
@@ -130,24 +130,24 @@ func Test_parseWhen_5(t *testing.T) {
 	//   a == 3:
 	// end
 	given := []token.Token{
-		gen(token.When, "when"), // 0
-		gen(token.Terminator, "\n"),
-		gen(token.Identifier, "a"), // 2
-		gen(token.EQU, "=="),       // 3
-		gen(token.Number, "1"),     // 4
-		gen(token.Colon, ":"),      // 5
-		gen(token.Terminator, "\n"),
-		gen(token.Identifier, "a"), // 7
-		gen(token.EQU, "=="),       // 8
-		gen(token.Number, "2"),     // 9
-		gen(token.Colon, ":"),      // 10
-		gen(token.Terminator, "\n"),
-		gen(token.Identifier, "a"), // 12
-		gen(token.EQU, "=="),       // 13
-		gen(token.Number, "3"),     // 14
-		gen(token.Colon, ":"),      // 15
-		gen(token.Terminator, "\n"),
-		gen(token.End, "end"), // 17
+		gen(token.When, "when"),     // 0
+		gen(token.Terminator, "\n"), //
+		gen(token.Identifier, "a"),  // 2
+		gen(token.EQU, "=="),        // 3
+		gen(token.Number, "1"),      // 4
+		gen(token.Colon, ":"),       // 5
+		gen(token.Terminator, "\n"), //
+		gen(token.Identifier, "a"),  // 7
+		gen(token.EQU, "=="),        // 8
+		gen(token.Number, "2"),      // 9
+		gen(token.Colon, ":"),       // 10
+		gen(token.Terminator, "\n"), //
+		gen(token.Identifier, "a"),  // 12
+		gen(token.EQU, "=="),        // 13
+		gen(token.Number, "3"),      // 14
+		gen(token.Colon, ":"),       // 15
+		gen(token.Terminator, "\n"), //
+		gen(token.End, "end"),       // 17
 		gen(token.Terminator, "\n"),
 	}
 
@@ -186,9 +186,40 @@ func Test_parseWhen_5(t *testing.T) {
 }
 
 func Test_parseWhen_6(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
 	// when a
 	//   is 1:
 	// end
+	given := []token.Token{
+		gen(token.When, "when"),     // 0
+		gen(token.Identifier, "a"),  // 1
+		gen(token.Terminator, "\n"), //
+		gen(token.Is, "is"),         // 3
+		gen(token.Number, "1"),      // 4
+		gen(token.Colon, ":"),       // 5
+		gen(token.Terminator, "\n"), //
+		gen(token.End, "end"),       // 7
+		gen(token.Terminator, "\n"), //
+	}
+
+	firstCase := is(
+		given[3],
+		lit(given[4]),
+	)
+
+	cases := whenCases(
+		whenCase(firstCase, nil),
+	)
+
+	exp := whenStmt(
+		given[0],
+		varExpr(given[1]),
+		cases,
+		given[7],
+	)
+
+	doParseTest(t, given, exp)
 }
 
 func Test_parseWhen_7(t *testing.T) {
