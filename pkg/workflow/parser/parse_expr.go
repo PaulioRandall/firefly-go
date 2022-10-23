@@ -21,9 +21,15 @@ func acceptExpressions(a auditor) []ast.Expr {
 }
 
 func acceptExpression(a auditor) ast.Expr {
-	if expr := acceptOperand(a); expr != nil {
-		return operation(a, expr, 0)
+	if a.is(token.ParenOpen) {
+		n := parseParenExpr(a)
+		return operation(a, n, 0)
 	}
+
+	if n := acceptOperand(a); n != nil {
+		return operation(a, n, 0)
+	}
+
 	return nil
 }
 
@@ -66,6 +72,10 @@ func expectExpressions(a auditor) []ast.Expr {
 }
 
 func expectExpression(a auditor) ast.Expr {
+	if a.is(token.ParenOpen) {
+		return parseParenExpr(a)
+	}
+
 	left := expectOperand(a)
 	return operation(a, left, 0)
 }
@@ -105,7 +115,13 @@ func operation(a auditor, left ast.Expr, leftOperatorPriorty int) ast.Expr {
 
 	op := a.Next()
 
-	right := expectOperand(a)
+	var right ast.Expr
+	if a.is(token.ParenOpen) {
+		right = parseParenExpr(a)
+	} else {
+		right = expectOperand(a)
+	}
+
 	right = operation(a, right, op.Precedence())
 
 	left = ast.BinaryOperation{
@@ -115,4 +131,11 @@ func operation(a auditor, left ast.Expr, leftOperatorPriorty int) ast.Expr {
 	}
 
 	return operation(a, left, leftOperatorPriorty)
+}
+
+func parseParenExpr(a auditor) ast.Expr {
+	a.expect(token.ParenOpen)
+	n := expectExpression(a)
+	a.expect(token.ParenClose)
+	return n
 }

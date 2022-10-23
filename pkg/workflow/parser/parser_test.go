@@ -109,7 +109,7 @@ func doParseTest(t *testing.T, given []token.Token, exp ...ast.Node) {
 	e := Parse(r, w)
 
 	require.Nil(t, e, "%s", debug.String(e))
-	require.Equal(t, exp, w.List())
+	require.Equal(t, exp, w.List(), debug.String(w.List()))
 }
 
 func doErrorTest(t *testing.T, given []token.Token, exp error) {
