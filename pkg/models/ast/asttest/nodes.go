@@ -53,6 +53,16 @@ func When(
 	}
 }
 
+func WhenCase(
+	condition ast.Expr,
+	stmt ast.Stmt,
+) ast.WhenCase {
+	return ast.WhenCase{
+		Condition: condition,
+		Statement: stmt,
+	}
+}
+
 func ExprSet(exprs ...ast.Expr) ast.ExprSet {
 	return ast.ExprSet{
 		Exprs: exprs,

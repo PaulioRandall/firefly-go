@@ -24,13 +24,25 @@ func acceptWhenCases(a auditor) []ast.WhenCase {
 
 	for isNotEndOfBlock(a) {
 		cases = append(cases, expectWhenCase(a))
-		expectTerminator(a)
 	}
 
 	return cases
 }
 
 func expectWhenCase(a auditor) ast.WhenCase {
-	// TODO
-	return ast.WhenCase{}
+
+	condition := expectExpression(a)
+	a.expect(token.Colon)
+
+	var body ast.Stmt
+	if a.is(token.Terminator) {
+		expectTerminator(a)
+	} else {
+		body = expectStatement(a)
+	}
+
+	return ast.WhenCase{
+		Condition: condition,
+		Statement: body,
+	}
 }

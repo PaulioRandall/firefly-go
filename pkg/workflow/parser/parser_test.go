@@ -70,6 +70,17 @@ func whenStmt(
 	return asttest.When(keyword, subject, cases, end)
 }
 
+func whenCase(
+	condition ast.Expr,
+	body ast.Stmt,
+) ast.WhenCase {
+	return asttest.WhenCase(condition, body)
+}
+
+func whenCases(cases ...ast.WhenCase) []ast.WhenCase {
+	return cases
+}
+
 func stmts(stmts ...ast.Stmt) []ast.Stmt {
 	return stmts
 }
