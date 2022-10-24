@@ -5,6 +5,25 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
+func acceptExprsUntil(a auditor, closer token.TokenType) []ast.Expr {
+	var nodes []ast.Expr
+
+	for a.isNot(closer) {
+		v := acceptExpression(a)
+		if v == nil {
+			break
+		}
+
+		nodes = append(nodes, v)
+
+		if !a.accept(token.Comma) {
+			break
+		}
+	}
+
+	return nodes
+}
+
 func acceptExpressions(a auditor) []ast.Expr {
 	var nodes []ast.Expr
 
@@ -24,6 +43,10 @@ func acceptExpression(a auditor) ast.Expr {
 	if a.is(token.ParenOpen) {
 		n := parseParenExpr(a)
 		return operation(a, n, 0)
+	}
+
+	if a.is(token.BracketOpen) {
+		return parseList(a)
 	}
 
 	if n := acceptOperand(a); n != nil {
@@ -74,6 +97,10 @@ func expectExpressions(a auditor) []ast.Expr {
 func expectExpression(a auditor) ast.Expr {
 	if a.is(token.ParenOpen) {
 		return parseParenExpr(a)
+	}
+
+	if a.is(token.BracketOpen) {
+		return parseList(a)
 	}
 
 	left := expectOperand(a)

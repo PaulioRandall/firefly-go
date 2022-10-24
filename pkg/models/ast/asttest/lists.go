@@ -19,7 +19,11 @@ func Expressions(tks ...token.Token) []ast.Expr {
 	var nodes []ast.Expr
 
 	for _, tk := range tks {
-		nodes = append(nodes, Literal(tk))
+		if token.IsLiteral(tk.TokenType) {
+			nodes = append(nodes, Literal(tk))
+		} else if tk.TokenType == token.Identifier {
+			nodes = append(nodes, Variable(tk))
+		}
 	}
 
 	return nodes

@@ -41,6 +41,10 @@ func lits(tks ...token.Token) []ast.Expr {
 	return nodes
 }
 
+func listExpr(opener token.Token, values []ast.Expr, closer token.Token) ast.List {
+	return asttest.List(opener, values, closer)
+}
+
 func varExpr(tk token.Token) ast.Variable {
 	return asttest.Variable(tk)
 }

@@ -17,11 +17,38 @@ func Variable(id token.Token) ast.Variable {
 	}
 }
 
+func List(opener token.Token, values []ast.Expr, closer token.Token) ast.List {
+	return ast.List{
+		Opener: opener,
+		Values: values,
+		Closer: closer,
+	}
+}
+
+func BinaryOperation(
+	left ast.Expr,
+	op token.Token,
+	right ast.Expr,
+) ast.BinaryOperation {
+	return ast.BinaryOperation{
+		Left:     left,
+		Operator: op,
+		Right:    right,
+	}
+}
+
 func Assign(left []ast.Variable, op token.Token, right ast.Stmt) ast.Assign {
 	return ast.Assign{
 		Left:     left,
 		Operator: op,
 		Right:    right,
+	}
+}
+
+// TODO: Remove?
+func ExprSet(exprs ...ast.Expr) ast.ExprSet {
+	return ast.ExprSet{
+		Exprs: exprs,
 	}
 }
 
@@ -70,23 +97,5 @@ func Is(
 	return ast.Is{
 		Keyword: keyword,
 		Expr:    expr,
-	}
-}
-
-func ExprSet(exprs ...ast.Expr) ast.ExprSet {
-	return ast.ExprSet{
-		Exprs: exprs,
-	}
-}
-
-func BinaryOperation(
-	left ast.Expr,
-	op token.Token,
-	right ast.Expr,
-) ast.BinaryOperation {
-	return ast.BinaryOperation{
-		Left:     left,
-		Operator: op,
-		Right:    right,
 	}
 }
