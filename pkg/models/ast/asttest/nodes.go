@@ -25,6 +25,21 @@ func List(opener token.Token, values []ast.Expr, closer token.Token) ast.List {
 	}
 }
 
+func Map(opener token.Token, entries []ast.MapEntry, closer token.Token) ast.Map {
+	return ast.Map{
+		Opener:  opener,
+		Entries: entries,
+		Closer:  closer,
+	}
+}
+
+func MapEntry(key, value ast.Expr) ast.MapEntry {
+	return ast.MapEntry{
+		Key:   key,
+		Value: value,
+	}
+}
+
 func BinaryOperation(
 	left ast.Expr,
 	op token.Token,

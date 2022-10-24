@@ -28,7 +28,10 @@ func expectStatement(a auditor) (n ast.Stmt) {
 	case a.is(token.When):
 		n = expectWhen(a)
 
-	case a.match(token.IsLiteral), a.is(token.ParenOpen), a.is(token.BracketOpen):
+	case a.is(token.BracketOpen), a.is(token.BraceOpen):
+		n = expectExpression(a)
+
+	case a.match(token.IsLiteral), a.is(token.ParenOpen):
 		expr := expectExpression(a)
 		n = operation(a, expr, 0)
 

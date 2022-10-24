@@ -5,6 +5,16 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
+func ExprFor(tk token.Token) ast.Expr {
+	if token.IsLiteral(tk.TokenType) {
+		return Literal(tk)
+	} else if tk.TokenType == token.Identifier {
+		return Variable(tk)
+	}
+
+	panic("asttest: unmanagedd token type")
+}
+
 func Variables(tks ...token.Token) []ast.Variable {
 	var nodes []ast.Variable
 
@@ -19,11 +29,7 @@ func Expressions(tks ...token.Token) []ast.Expr {
 	var nodes []ast.Expr
 
 	for _, tk := range tks {
-		if token.IsLiteral(tk.TokenType) {
-			nodes = append(nodes, Literal(tk))
-		} else if tk.TokenType == token.Identifier {
-			nodes = append(nodes, Variable(tk))
-		}
+		nodes = append(nodes, ExprFor(tk))
 	}
 
 	return nodes

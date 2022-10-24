@@ -113,6 +113,40 @@ func (n List) Where() (from, to pos.Pos) {
 	return from, to
 }
 
+// Map represents an associative array or unordered set of key value pairs.
+type Map struct {
+	Opener  token.Token
+	Entries []MapEntry
+	Closer  token.Token
+}
+
+func (n Map) node()           {}
+func (n Map) stmt()           {}
+func (n Map) proc()           {}
+func (n Map) expr()           {}
+func (n Map) Precedence() int { return 0 }
+func (n Map) Where() (from, to pos.Pos) {
+	from, _ = n.Opener.Where()
+	_, to = n.Closer.Where()
+	return from, to
+}
+
+type MapEntry struct {
+	Key   Expr
+	Value Expr
+}
+
+func (n MapEntry) node()           {}
+func (n MapEntry) stmt()           {}
+func (n MapEntry) proc()           {}
+func (n MapEntry) expr()           {}
+func (n MapEntry) Precedence() int { return 0 }
+func (n MapEntry) Where() (from, to pos.Pos) {
+	from, _ = n.Key.Where()
+	_, to = n.Value.Where()
+	return from, to
+}
+
 // Assign represents an assignment with left being the target variables and
 // right being the statement that determines the new or updated variable values
 type Assign struct {

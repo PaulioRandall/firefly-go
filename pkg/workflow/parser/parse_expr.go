@@ -40,13 +40,14 @@ func acceptExpressions(a auditor) []ast.Expr {
 }
 
 func acceptExpression(a auditor) ast.Expr {
-	if a.is(token.ParenOpen) {
+	switch {
+	case a.is(token.ParenOpen):
 		n := parseParenExpr(a)
 		return operation(a, n, 0)
-	}
-
-	if a.is(token.BracketOpen) {
+	case a.is(token.BracketOpen):
 		return parseList(a)
+	case a.is(token.BraceOpen):
+		return parseMap(a)
 	}
 
 	if n := acceptOperand(a); n != nil {
@@ -95,12 +96,13 @@ func expectExpressions(a auditor) []ast.Expr {
 }
 
 func expectExpression(a auditor) ast.Expr {
-	if a.is(token.ParenOpen) {
+	switch {
+	case a.is(token.ParenOpen):
 		return parseParenExpr(a)
-	}
-
-	if a.is(token.BracketOpen) {
+	case a.is(token.BracketOpen):
 		return parseList(a)
+	case a.is(token.BraceOpen):
+		return parseMap(a)
 	}
 
 	left := expectOperand(a)

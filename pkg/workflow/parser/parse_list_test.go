@@ -177,3 +177,22 @@ func Test_parseList_8(t *testing.T) {
 
 	doErrorTest(t, given, UnexpectedToken)
 }
+
+func Test_parseList_9(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	// []
+	given := []token.Token{
+		gen(token.BracketOpen, "["),  // 0
+		gen(token.BracketClose, "]"), // 1
+		gen(token.Terminator, "\n"),
+	}
+
+	exp := listExpr(
+		given[0],
+		nil,
+		given[1],
+	)
+
+	doParseTest(t, given, exp)
+}

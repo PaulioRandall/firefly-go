@@ -45,6 +45,18 @@ func listExpr(opener token.Token, values []ast.Expr, closer token.Token) ast.Lis
 	return asttest.List(opener, values, closer)
 }
 
+func mapExpr(opener token.Token, entries []ast.MapEntry, closer token.Token) ast.Map {
+	return asttest.Map(opener, entries, closer)
+}
+
+func mapEntries(entries ...ast.MapEntry) []ast.MapEntry {
+	return entries
+}
+
+func mapEntry(key token.Token, value token.Token) ast.MapEntry {
+	return asttest.MapEntry(asttest.ExprFor(key), asttest.ExprFor(value))
+}
+
 func varExpr(tk token.Token) ast.Variable {
 	return asttest.Variable(tk)
 }
