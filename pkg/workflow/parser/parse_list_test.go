@@ -119,3 +119,61 @@ func Test_parseList_4(t *testing.T) {
 
 	doParseTest(t, given, exp)
 }
+
+func Test_parseList_5(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	// [1
+	given := []token.Token{
+		gen(token.BracketOpen, "["), // 0
+		gen(token.Number, "1"),      // 1
+		gen(token.Terminator, "\n"),
+	}
+
+	doErrorTest(t, given, UnexpectedToken)
+}
+
+func Test_parseList_6(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	// [1, true
+	given := []token.Token{
+		gen(token.BracketOpen, "["), // 0
+		gen(token.Number, "1"),      // 1
+		gen(token.Comma, ","),       // 2
+		gen(token.True, "true"),     // 3
+		gen(token.Terminator, "\n"),
+	}
+
+	doErrorTest(t, given, UnexpectedToken)
+}
+
+func Test_parseList_7(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	// [1,,]
+	given := []token.Token{
+		gen(token.BracketOpen, "["),  // 0
+		gen(token.Number, "1"),       // 1
+		gen(token.Comma, ","),        // 2
+		gen(token.Comma, ","),        // 3
+		gen(token.BracketClose, "]"), // 4
+		gen(token.Terminator, "\n"),
+	}
+
+	doErrorTest(t, given, UnexpectedToken)
+}
+
+func Test_parseList_8(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	// [,]
+	given := []token.Token{
+		gen(token.BracketOpen, "["),  // 0
+		gen(token.Comma, ","),        // 1
+		gen(token.BracketClose, "]"), // 2
+		gen(token.Terminator, "\n"),
+	}
+
+	doErrorTest(t, given, UnexpectedToken)
+}
