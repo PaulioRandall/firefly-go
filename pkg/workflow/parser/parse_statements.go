@@ -18,6 +18,14 @@ func acceptStatements(a auditor) []ast.Stmt {
 }
 
 func expectStatement(a auditor) (n ast.Stmt) {
+
+	// TODO:
+	// - watch
+	// - for
+	// - spell
+	// - func
+	// - proc
+
 	switch {
 	case a.accept(token.Identifier):
 		n = expectVariableStatement(a, a.Prev())

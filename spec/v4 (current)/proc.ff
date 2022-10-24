@@ -1,6 +1,6 @@
 // Procedure
 
-divide := P(a, b) result, error
+def divide P(a, b) result, error
 	// ...
 end
 
