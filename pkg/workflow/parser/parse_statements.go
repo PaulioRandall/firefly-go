@@ -20,7 +20,6 @@ func acceptStatements(a auditor) []ast.Stmt {
 func expectStatement(a auditor) (n ast.Stmt) {
 
 	// TODO:
-	// - watch
 	// - for
 	// - spell
 	// - func
@@ -35,6 +34,9 @@ func expectStatement(a auditor) (n ast.Stmt) {
 
 	case a.is(token.When):
 		n = expectWhen(a)
+
+	case a.is(token.Watch):
+		n = parseWatch(a)
 
 	case a.is(token.BracketOpen), a.is(token.BraceOpen):
 		n = expectExpression(a)

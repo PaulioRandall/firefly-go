@@ -114,3 +114,17 @@ func Is(
 		Expr:    expr,
 	}
 }
+
+func Watch(
+	keyword token.Token,
+	variable ast.Variable,
+	body []ast.Stmt,
+	end token.Token,
+) ast.Watch {
+	return ast.Watch{
+		Keyword:  keyword,
+		Variable: variable,
+		Body:     body,
+		End:      end,
+	}
+}

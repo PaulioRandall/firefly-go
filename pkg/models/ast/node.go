@@ -231,15 +231,31 @@ type Is struct {
 	Expr    Expr
 }
 
-func (n Is) node() {}
-func (n Is) stmt() {}
-func (n Is) proc() {}
-func (n Is) expr() {}
-func (n Is) Precedence() int {
-	return 0
-}
+func (n Is) node()           {}
+func (n Is) stmt()           {}
+func (n Is) proc()           {}
+func (n Is) expr()           {}
+func (n Is) Precedence() int { return 0 }
 func (n Is) Where() (from, to pos.Pos) {
 	from, _ = n.Keyword.Where()
 	_, to = n.Expr.Where()
+	return from, to
+}
+
+// Watch represents a statement block that monitors a specific variable
+// exiting the block if the variable changes.
+type Watch struct {
+	Keyword  token.Token
+	Variable Variable
+	Body     []Stmt
+	End      token.Token
+}
+
+func (n Watch) node()           {}
+func (n Watch) stmt()           {}
+func (n Watch) Precedence() int { return 0 }
+func (n Watch) Where() (from, to pos.Pos) {
+	from, _ = n.Keyword.Where()
+	_, to = n.End.Where()
 	return from, to
 }

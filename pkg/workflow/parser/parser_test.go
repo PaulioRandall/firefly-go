@@ -105,6 +105,15 @@ func whenCases(cases ...ast.WhenCase) []ast.WhenCase {
 	return cases
 }
 
+func watchStmt(
+	keyword token.Token,
+	variable ast.Variable,
+	body []ast.Stmt,
+	end token.Token,
+) ast.Watch {
+	return asttest.Watch(keyword, variable, body, end)
+}
+
 func stmts(stmts ...ast.Stmt) []ast.Stmt {
 	return stmts
 }
