@@ -1,0 +1,15 @@
+
+do
+ a = 1
+ b = 2
+ @println(a, "+", b)
+end
+
+when answer
+	is false: do
+		@println("No")
+	end
+	is true: do
+		@println("Yes")
+	end
+end

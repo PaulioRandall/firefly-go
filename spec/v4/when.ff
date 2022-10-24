@@ -1,0 +1,26 @@
+
+when
+	v < 0: @println("Negative")
+	v > 0: @println("Positive")
+	// Do nothing if 'v' is 0
+end
+
+when n
+	is 0: @println("Zero")
+	is 1: @println("One")
+	is 2: @println("Two")
+	true: @println("Some other number") // Default case
+end
+
+when v
+	v == 0: @println("Is 0")
+	is 1:   @println("Is 1")
+	is 2:   @println("Is 2")
+	v > 2:  @println("Greater than 2")
+	true:   @println("Negative")
+end
+
+when
+	// This case should cause a compiler error
+	is 1: @println("Unreachable statement")
+end

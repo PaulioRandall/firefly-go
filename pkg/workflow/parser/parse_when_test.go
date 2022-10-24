@@ -491,3 +491,16 @@ func Test_parseWhen_14(t *testing.T) {
 
 	doErrorTest(t, given, UnexpectedToken)
 }
+
+func Test_parseWhen_15(t *testing.T) {
+	// when
+	//   true: a = 1
+	// end
+}
+
+func Test_parseWhen_16(t *testing.T) {
+	// when a
+	//   is 0: a = 1
+	//   true: 2 == 3
+	// end
+}
