@@ -10,7 +10,6 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/workflow/cleaner"
 	"github.com/PaulioRandall/firefly-go/pkg/workflow/parser"
 	"github.com/PaulioRandall/firefly-go/pkg/workflow/scanner"
-	"github.com/PaulioRandall/firefly-go/pkg/workflow/terminator"
 
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
@@ -38,10 +37,6 @@ func Parse(r ReaderOfRunes, w WriterOfNodes) error {
 		return parseError(e)
 	} else if tks == nil {
 		return nil
-	}
-
-	if tks, e = terminate(tks); e != nil {
-		return parseError(e)
 	}
 
 	if tks, e = align(tks); e != nil {
@@ -86,17 +81,6 @@ func align(tks []token.Token) ([]token.Token, error) {
 
 	if e := aligner.Align(r, w); e != nil {
 		return nil, err.Wrap(e, "Failed to align tokens")
-	}
-
-	return w.List(), nil
-}
-
-func terminate(tks []token.Token) ([]token.Token, error) {
-	r := inout.NewListReader(tks)
-	w := inout.NewListWriter[token.Token]()
-
-	if e := terminator.Terminate(r, w); e != nil {
-		return nil, err.Wrap(e, "Failed to convert newlines to terminators")
 	}
 
 	return w.List(), nil
