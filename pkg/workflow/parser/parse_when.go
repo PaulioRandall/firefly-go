@@ -11,7 +11,7 @@ func expectWhen(a auditor) ast.When {
 	n.Keyword = a.expect(token.When)
 	n.Subject = acceptExpression(a)
 
-	expectTerminator(a)
+	expectEndOfStmt(a)
 
 	n.Cases = acceptWhenCases(a)
 	n.End = expectEndOfBlock(a)
@@ -36,7 +36,7 @@ func expectWhenCase(a auditor) ast.WhenCase {
 
 	var body ast.Stmt
 	if a.is(token.Terminator) {
-		expectTerminator(a)
+		expectEndOfStmt(a)
 	} else {
 		body = expectStatement(a)
 	}

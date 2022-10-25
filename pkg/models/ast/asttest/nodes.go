@@ -81,6 +81,24 @@ func If(
 	}
 }
 
+func For(
+	keyword token.Token,
+	initialiser ast.Stmt,
+	condition ast.Expr,
+	advancement ast.Stmt,
+	body []ast.Stmt,
+	end token.Token,
+) ast.For {
+	return ast.For{
+		Keyword:     keyword,
+		Initialiser: initialiser,
+		Condition:   condition,
+		Advancement: advancement,
+		Body:        body,
+		End:         end,
+	}
+}
+
 func When(
 	keyword token.Token,
 	subject ast.Expr,

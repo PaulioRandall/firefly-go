@@ -17,10 +17,27 @@ func acceptStatements(a auditor) []ast.Stmt {
 	return nodes
 }
 
+func acceptInlineStatement(a auditor) ast.Stmt {
+	switch {
+	case a.accept(token.Identifier):
+		return expectVariableStatement(a, a.Prev())
+
+	case a.is(token.BracketOpen), a.is(token.BraceOpen):
+		return expectExpression(a)
+
+	case a.match(token.IsLiteral), a.is(token.ParenOpen):
+		expr := expectExpression(a)
+		return operation(a, expr, 0)
+
+	default:
+		return nil
+	}
+}
+
 func expectStatement(a auditor) (n ast.Stmt) {
 
 	// TODO:
-	// - for
+	// - for i, v in expr
 	// - spell
 	// - func
 	// - proc
@@ -31,6 +48,9 @@ func expectStatement(a auditor) (n ast.Stmt) {
 
 	case a.is(token.If):
 		n = parseIf(a)
+
+	case a.is(token.For):
+		n = parseFor(a)
 
 	case a.is(token.When):
 		n = expectWhen(a)
@@ -63,5 +83,5 @@ func expectVariableStatement(a auditor, first token.Token) ast.Stmt {
 		return expectAssignment(a)
 	}
 
-	panic(UnexpectedToken.Track(nil, "Expected statement beginning with a variable"))
+	return expectExpression(a)
 }

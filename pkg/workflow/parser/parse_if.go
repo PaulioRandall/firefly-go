@@ -11,7 +11,7 @@ func parseIf(a auditor) ast.If {
 	n.Keyword = a.expect(token.If)
 	n.Condition = expectExpression(a)
 
-	expectTerminator(a)
+	expectEndOfStmt(a)
 
 	n.Body = acceptStatements(a)
 	n.End = expectEndOfBlock(a)

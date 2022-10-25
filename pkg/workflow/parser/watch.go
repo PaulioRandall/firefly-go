@@ -11,7 +11,7 @@ func parseWatch(a auditor) ast.Watch {
 	n.Keyword = a.expect(token.Watch)
 	n.Variable = expectVariable(a)
 
-	expectTerminator(a)
+	expectEndOfStmt(a)
 
 	n.Body = acceptStatements(a)
 	n.End = expectEndOfBlock(a)

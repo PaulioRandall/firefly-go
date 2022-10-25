@@ -5,6 +5,8 @@ import (
 )
 
 var (
+	ErrForLoopControls = err.Trackable("Bad for loop initialiser, condition, or advancement")
+
 	UnexpectedEOF   = err.Trackable("Unexpected end of file")
 	UnexpectedToken = err.Trackable("Unexpected token")
 

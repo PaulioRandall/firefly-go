@@ -193,6 +193,24 @@ func (n If) Where() (from, to pos.Pos) {
 	return from, to
 }
 
+// For represents a looped block of statements
+type For struct {
+	Keyword     token.Token
+	Initialiser Stmt
+	Condition   Expr
+	Advancement Stmt
+	Body        []Stmt
+	End         token.Token
+}
+
+func (n For) node() {}
+func (n For) stmt() {}
+func (n For) Where() (from, to pos.Pos) {
+	from, _ = n.Keyword.Where()
+	_, to = n.End.Where()
+	return from, to
+}
+
 // When represents a match block or branch with multiple options
 type When struct {
 	Keyword token.Token

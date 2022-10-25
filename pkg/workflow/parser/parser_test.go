@@ -127,6 +127,17 @@ func ifStmt(
 	return asttest.If(keyword, condition, body, end)
 }
 
+func forStmt(
+	keyword token.Token,
+	initialiser ast.Stmt,
+	condition ast.Expr,
+	advancement ast.Stmt,
+	body []ast.Stmt,
+	end token.Token,
+) ast.For {
+	return asttest.For(keyword, initialiser, condition, advancement, body, end)
+}
+
 func doParseTest(t *testing.T, given []token.Token, exp ...ast.Node) {
 	r := inout.NewListReader(given)
 	w := inout.NewListWriter[ast.Node]()
