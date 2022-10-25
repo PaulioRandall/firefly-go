@@ -112,7 +112,7 @@ func (a *auditor) expect(want token.TokenType) token.Token {
 		return a.r.Read()
 	}
 
-	panic(a.unexpected(want, tk.TokenType))
+	panic(a.unexpectedToken(want, tk.TokenType))
 }
 
 func (a *auditor) expectFor(want any, f func(token.TokenType) bool) token.Token {
@@ -125,13 +125,30 @@ func (a *auditor) expectFor(want any, f func(token.TokenType) bool) token.Token 
 		return a.r.Read()
 	}
 
-	panic(a.unexpected(want, tk.TokenType))
+	panic(a.unexpectedToken(want, tk.TokenType))
 }
 
-func (a *auditor) unexpected(expected, got any) error {
-	return UnexpectedToken.Trackf("Expected %q but got %q", expected, got)
+// ******* NEW ********
+
+func (a *auditor) expect_new(want token.TokenType) (token.Token, error) {
+	var zero token.Token
+
+	if !a.r.More() {
+		return zero, a.unexpectedEOF(want)
+	}
+
+	tk := a.r.Peek()
+	if want == tk.TokenType {
+		return a.r.Read(), nil
+	}
+
+	return zero, a.unexpectedToken(want, tk.TokenType)
+}
+
+func (a *auditor) unexpectedToken(expected, got any) error {
+	return UnexpectedToken.Trackf("Expected token %q but got %q", expected, got)
 }
 
 func (a *auditor) unexpectedEOF(expected any) error {
-	return UnexpectedEOF.Trackf("Expected %q but got EOF", expected)
+	return UnexpectedEOF.Trackf("Expected token %q but got EOF", expected)
 }

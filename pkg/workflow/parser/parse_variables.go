@@ -27,11 +27,15 @@ func expectVariables(a auditor) []ast.Variable {
 }
 
 func expectVariable(a auditor) ast.Variable {
-	if a.isNot(token.Identifier) {
-		panic(MissingIdentifier.Wrapf(UnexpectedToken, "Expected identifier but got %s", a.Peek().String()))
+	n, e := a.expect_new(token.Identifier)
+
+	if e != nil {
+		panic(MissingIdentifier.Wrapf(
+			e, "Expected identifier but got %s", a.Peek().String(),
+		))
 	}
 
 	return ast.Variable{
-		Identifier: a.Read(),
+		Identifier: n,
 	}
 }

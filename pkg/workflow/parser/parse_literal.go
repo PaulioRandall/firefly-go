@@ -28,9 +28,8 @@ func acceptLiteral(a auditor) ast.Expr {
 }
 
 func expectLiteral(a auditor) ast.Expr {
-	n := acceptLiteral(a)
-	if n == nil {
-		panic(MissingLiteral.Trackf("Expected literal but got %s", a.Peek().String()))
+	if n := acceptLiteral(a); n != nil {
+		return n
 	}
-	return n
+	panic(MissingLiteral.Trackf("Expected literal but got %s", a.Peek().String()))
 }

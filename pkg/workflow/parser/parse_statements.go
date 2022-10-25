@@ -83,5 +83,6 @@ func expectVariableStatement(a auditor, first token.Token) ast.Stmt {
 		return expectAssignment(a)
 	}
 
+	a.Putback(first)
 	return expectExpression(a)
 }

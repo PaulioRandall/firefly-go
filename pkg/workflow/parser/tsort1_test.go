@@ -18,54 +18,6 @@ func doBinExprTest(t *testing.T, given ...token.Token) {
 	doParseTest(t, given, exp)
 }
 
-func Test_parseExpr_1(t *testing.T) {
-	gen := tokentest.NewTokenGenerator()
-
-	// 1
-	given := []token.Token{
-		gen(token.Number, "1"),
-		gen(token.Terminator, "\n"),
-	}
-
-	doParseTest(t, given, lit(given[0]))
-}
-
-func Test_parseExpr_2(t *testing.T) {
-	gen := tokentest.NewTokenGenerator()
-
-	// "abc"
-	given := []token.Token{
-		gen(token.String, `"abc"`),
-		gen(token.Terminator, "\n"),
-	}
-
-	doParseTest(t, given, lit(given[0]))
-}
-
-func Test_parseExpr_3(t *testing.T) {
-	gen := tokentest.NewTokenGenerator()
-
-	// true
-	given := []token.Token{
-		gen(token.True, "true"),
-		gen(token.Terminator, "\n"),
-	}
-
-	doParseTest(t, given, lit(given[0]))
-}
-
-func Test_parseExpr_4(t *testing.T) {
-	gen := tokentest.NewTokenGenerator()
-
-	// false
-	given := []token.Token{
-		gen(token.False, "false"),
-		gen(token.Terminator, "\n"),
-	}
-
-	doParseTest(t, given, lit(given[0]))
-}
-
 func Test_parseExpr_6(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 

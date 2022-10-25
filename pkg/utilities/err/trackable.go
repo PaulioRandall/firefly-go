@@ -4,11 +4,25 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/pos"
 )
 
-// trackableError is an error that can be identified via errors.Is function.
+// TrackableError is an error that can be identified via errors.Is function.
 //
 // This is so errors of varying generality can be tracked without needing to
 // create large numbers of specific error types or have the underlying cause or
 // other error member values interfere with equality.
+type TrackableError interface {
+	error
+
+	Track(string) error
+	Trackf(string, ...any) error
+	TrackPos(pos.Pos, string) error
+	TrackPosf(pos.Pos, string, ...any) error
+
+	Wrap(error, string) error
+	Wrapf(error, string, ...any) error
+	WrapPos(error, pos.Pos, string) error
+	WrapPosf(error, pos.Pos, string, ...any) error
+}
+
 type trackableError struct {
 	id    int
 	msg   string

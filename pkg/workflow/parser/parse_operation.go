@@ -30,7 +30,7 @@ func expectOperand(a auditor) ast.Expr {
 		return expr
 	}
 
-	panic(a.unexpected("operand", a.Peek()))
+	panic(a.unexpectedToken("operand", a.Peek()))
 }
 
 func operation(a auditor, left ast.Expr, leftOperatorPriorty int) ast.Expr {
