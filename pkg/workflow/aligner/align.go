@@ -16,7 +16,7 @@ var ErrAligning = err.Trackable("Aligning failed")
 func Align(r ReaderOfTokens, w WriterOfTokens) error {
 	e := inout.Stream(r, w, processNext)
 	if e != nil {
-		return ErrAligning.Track(e, "Aligner failed to align tokens")
+		return ErrAligning.Wrap(e, "Aligner failed to align tokens")
 	}
 	return nil
 }

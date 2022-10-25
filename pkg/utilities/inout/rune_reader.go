@@ -18,7 +18,7 @@ func NewReaderOfRunes(r Reader[rune]) *readerOfRunes {
 func (r *readerOfRunes) Peek() (rune, error) {
 	ru, e := r.Reader.Peek()
 	if e != nil {
-		return rune(0), ErrReadDelegate.TrackPos(e, r.pos, "Failed to peek rune")
+		return rune(0), ErrReadDelegate.WrapPos(e, r.pos, "Failed to peek rune")
 	}
 	return ru, nil
 }
@@ -26,7 +26,7 @@ func (r *readerOfRunes) Peek() (rune, error) {
 func (r *readerOfRunes) Read() (rune, error) {
 	ru, e := r.Reader.Read()
 	if e != nil {
-		return rune(0), ErrReadDelegate.TrackPos(e, r.pos, "Failed to read rune")
+		return rune(0), ErrReadDelegate.WrapPos(e, r.pos, "Failed to read rune")
 	}
 
 	r.pos.Increment(ru)

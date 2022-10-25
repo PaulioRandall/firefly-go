@@ -16,7 +16,7 @@ var ErrCleaning = err.Trackable("Token cleaning failed")
 func Clean(r ReaderOfTokens, w WriterOfTokens) error {
 	e := inout.Stream(r, w, processNext)
 	if e != nil {
-		return ErrCleaning.Track(e, "Cleaner failed to clean tokens")
+		return ErrCleaning.Wrap(e, "Cleaner failed to clean tokens")
 	}
 	return nil
 }

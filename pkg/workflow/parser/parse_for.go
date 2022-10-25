@@ -18,7 +18,7 @@ func parseForControls(a auditor) (ast.Stmt, ast.Expr, ast.Stmt) {
 
 	first := acceptInlineStatement(a)
 	if first == nil {
-		panic(ErrForLoopControls.Track(nil, "Expected initialiser or condition"))
+		panic(ErrForLoopControls.Track("Expected initialiser or condition"))
 	}
 
 	if !a.accept(token.Terminator) {
@@ -38,5 +38,5 @@ func forConditionAsExpr(condition ast.Stmt) ast.Expr {
 	if ex, ok := condition.(ast.Expr); ok {
 		return ex
 	}
-	panic(ErrForLoopControls.Track(nil, "For condition must be an expression"))
+	panic(ErrForLoopControls.Track("For condition must be an expression"))
 }

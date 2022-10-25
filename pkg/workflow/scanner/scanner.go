@@ -33,12 +33,12 @@ func Scan(r ReaderOfRunes, w WriterOfTokens) error {
 
 	for tb.More() {
 		if e := scanNext(&tb); e != nil {
-			return ErrScanning.Track(e, "Failed to scan token")
+			return ErrScanning.Wrap(e, "Failed to scan token")
 		}
 
 		tk := tb.build()
 		if e := w.Write(tk); e != nil {
-			return ErrScanning.Track(e, "Could not write scanned token")
+			return ErrScanning.Wrap(e, "Could not write scanned token")
 		}
 	}
 
@@ -158,7 +158,7 @@ func scanNumberFraction(tb *tokenBuilder) error {
 	}
 
 	if !hasFractional {
-		return ErrMissingFractional.Track(nil, "Expected fractional digits")
+		return ErrMissingFractional.Track("Expected fractional digits")
 	}
 
 	return nil
@@ -170,7 +170,7 @@ func scanString(tb *tokenBuilder, first rune) error {
 	}
 
 	if e := tb.expect(StringDelim, "Unterminated string"); e != nil {
-		return ErrUnterminatedString.Track(nil, "Failed to scan terminating string delimiter")
+		return ErrUnterminatedString.Track("Failed to scan terminating string delimiter")
 	}
 
 	tb.tt = token.String
@@ -198,7 +198,7 @@ func scanStringBody(tb *tokenBuilder) error {
 	}
 
 	if !terminated {
-		return ErrUnterminatedString.Track(nil, "EOF before string terminated")
+		return ErrUnterminatedString.Track("EOF before string terminated")
 	}
 
 	return nil
@@ -334,9 +334,9 @@ func scanOperator(tb *tokenBuilder, first, second rune) error {
 
 func unknownSymbol(tb *tokenBuilder, first, second rune) error {
 	if second == rune(0) {
-		return ErrUnknownSymbol.TrackPosf(nil, tb.start, "Unknown symbol %q", first)
+		return ErrUnknownSymbol.TrackPosf(tb.start, "Unknown symbol %q", first)
 	}
-	return ErrUnknownSymbol.TrackPosf(nil, tb.start, "Unknown symbol %q", []rune{first, second})
+	return ErrUnknownSymbol.TrackPosf(tb.start, "Unknown symbol %q", []rune{first, second})
 }
 
 func isNewline(ru rune) bool {

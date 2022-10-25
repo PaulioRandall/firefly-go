@@ -19,7 +19,7 @@ func (r *posReader[T]) Peek() T {
 
 	if e != nil {
 		_, to := r.Prev().Where()
-		panic(ErrReadDelegate.TrackPos(e, to, "Peeking failed"))
+		panic(ErrReadDelegate.WrapPos(e, to, "Peeking failed"))
 	}
 
 	return v
@@ -30,7 +30,7 @@ func (r *posReader[T]) Read() T {
 
 	if e != nil {
 		_, to := r.Prev().Where()
-		panic(ErrReadDelegate.TrackPos(e, to, "Reading failed"))
+		panic(ErrReadDelegate.WrapPos(e, to, "Reading failed"))
 	}
 
 	return v

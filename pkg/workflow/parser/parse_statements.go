@@ -66,7 +66,7 @@ func expectStatement(a auditor) (n ast.Stmt) {
 		n = operation(a, expr, 0)
 
 	default:
-		panic(UnexpectedToken.Track(nil, "Expected statement"))
+		panic(UnexpectedToken.Track("Expected statement"))
 	}
 
 	if n == nil {

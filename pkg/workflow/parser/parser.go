@@ -25,7 +25,7 @@ func Parse(r ReaderOfTokens, w WriterOfNodes) (e error) {
 
 	defer func() {
 		if v := recover(); v != nil {
-			e = ErrParsing.Track(v.(error), "Recovered from parse fail")
+			e = ErrParsing.Wrap(v.(error), "Recovered from parse fail")
 		}
 	}()
 
@@ -38,7 +38,7 @@ func parseRootStatements(a auditor, w WriterOfNodes) error {
 	for a.More() {
 		n := expectStatement(a)
 		if e := w.Write(n); e != nil {
-			return ErrParsing.Track(e, "Parser failed to parse statements in the root scope")
+			return ErrParsing.Wrap(e, "Parser failed to parse statements in the root scope")
 		}
 	}
 

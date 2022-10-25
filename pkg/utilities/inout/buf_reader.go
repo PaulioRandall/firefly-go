@@ -29,7 +29,7 @@ func (r *bufReader[T]) Peek() (T, error) {
 	var zero T
 
 	if e := r.buff(); e != nil {
-		return zero, ErrRead.Track(e, "Peeking failed")
+		return zero, ErrRead.Wrap(e, "Peeking failed")
 	}
 
 	r.prev, _ = r.buffer.First()
@@ -40,7 +40,7 @@ func (r *bufReader[T]) Read() (T, error) {
 	var zero T
 
 	if e := r.buff(); e != nil {
-		return zero, ErrRead.Track(e, "Reading failed")
+		return zero, ErrRead.Wrap(e, "Reading failed")
 	}
 
 	r.prev, _ = r.buffer.Take()
@@ -58,7 +58,7 @@ func (r *bufReader[T]) buff() error {
 
 	v, e := r.reader.Read()
 	if e != nil {
-		return ErrReadDelegate.Track(e, "Buffering failed")
+		return ErrReadDelegate.Wrap(e, "Buffering failed")
 	}
 
 	r.buffer.Add(v)

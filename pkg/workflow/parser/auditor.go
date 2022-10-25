@@ -129,9 +129,9 @@ func (a *auditor) expectFor(want any, f func(token.TokenType) bool) token.Token 
 }
 
 func (a *auditor) unexpected(expected, got any) error {
-	return UnexpectedToken.Trackf(nil, "Expected %q but got %q", expected, got)
+	return UnexpectedToken.Trackf("Expected %q but got %q", expected, got)
 }
 
 func (a *auditor) unexpectedEOF(expected any) error {
-	return UnexpectedEOF.Trackf(nil, "Expected %q but got EOF", expected)
+	return UnexpectedEOF.Trackf("Expected %q but got EOF", expected)
 }
