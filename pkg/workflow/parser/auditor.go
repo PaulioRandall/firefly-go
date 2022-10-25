@@ -20,7 +20,7 @@ func (a *auditor) Prev() token.Token {
 	return a.r.Prev()
 }
 
-func (a *auditor) Next() token.Token {
+func (a *auditor) Read() token.Token {
 	return a.r.Read()
 }
 

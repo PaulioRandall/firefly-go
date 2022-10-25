@@ -70,17 +70,6 @@ func acceptOperand(a auditor) ast.Expr {
 	}
 }
 
-func acceptLiteral(a auditor) ast.Expr {
-	tk, ok := a.acquireIf(token.IsLiteral)
-	if !ok {
-		return nil
-	}
-
-	return ast.Literal{
-		Token: tk,
-	}
-}
-
 func expectExpressions(a auditor) []ast.Expr {
 	var nodes []ast.Expr
 
@@ -121,18 +110,6 @@ func expectOperand(a auditor) ast.Expr {
 	panic(a.unexpected("operand", a.Peek()))
 }
 
-func expectLiteral(a auditor) ast.Expr {
-	return ast.Literal{
-		Token: a.expectFor("literal", token.IsLiteral),
-	}
-}
-
-func expectIdentifier(a auditor) ast.Expr {
-	return ast.Variable{
-		Identifier: a.expect(token.Identifier),
-	}
-}
-
 func operation(a auditor, left ast.Expr, leftOperatorPriorty int) ast.Expr {
 	if !a.notMatch(token.IsBinaryOperator) {
 		return left
@@ -142,7 +119,7 @@ func operation(a auditor, left ast.Expr, leftOperatorPriorty int) ast.Expr {
 		return left
 	}
 
-	op := a.Next()
+	op := a.Read()
 
 	var right ast.Expr
 	if a.is(token.ParenOpen) {

@@ -14,7 +14,7 @@ func expectEndOfBlock(a auditor) token.Token {
 
 func expectEndOfStmt(a auditor) {
 	if a.is(token.Terminator) || a.is(token.Newline) {
-		a.Next()
+		a.Read()
 	} else {
 		panic(a.unexpected("Terminator or newline", a.Peek()))
 	}
