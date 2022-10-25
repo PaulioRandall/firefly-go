@@ -148,11 +148,19 @@ func doParseTest(t *testing.T, given []token.Token, exp ...ast.Node) {
 	require.Equal(t, exp, w.List(), debug.String(w.List()))
 }
 
-func doErrorTest(t *testing.T, given []token.Token, exp error) {
+func doErrorTest(t *testing.T, given []token.Token, exps ...error) {
 	r := inout.NewListReader(given)
 	w := inout.NewListWriter[ast.Node]()
 
-	e := Parse(r, w)
+	act := Parse(r, w)
 
-	require.True(t, err.Is(e, exp), "Want error %q but got %s", exp, debug.String(e))
+	for _, exp := range exps {
+		requireIsError(t, exp, act)
+	}
+}
+
+func requireIsError(t *testing.T, exp, act error) {
+	exists := err.Is(act, exp)
+	require.True(t, exists,
+		"Want error %v but got %s", exp, debug.String(act))
 }

@@ -113,7 +113,7 @@ func Test_parseWatch_4(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, UnexpectedToken)
+	doErrorTest(t, given, MissingIdentifier, UnexpectedToken)
 }
 
 func Test_parseWatch_5(t *testing.T) {
@@ -142,5 +142,5 @@ func Test_parseWatch_6(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, UnexpectedToken)
+	doErrorTest(t, given, MissingIdentifier, UnexpectedToken)
 }
