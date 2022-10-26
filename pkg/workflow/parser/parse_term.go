@@ -17,17 +17,7 @@ func expectTerm(a auditor) (ast.Expr, error) {
 		return term, nil
 	}
 
-	if !a.More() {
-		return nil, MissingTerm.Wrap(
-			UnexpectedEOF.Trackf("Expected term but got EOF"),
-			"Unable to parse term",
-		)
-	}
-
-	return nil, MissingTerm.Wrap(
-		UnexpectedToken.Trackf("Expected term but got %s", a.Peek().String()),
-		"Unable to parse term",
-	)
+	return nil, unableToParse(a, MissingTerm, "term")
 }
 
 func acceptTerm(a auditor) (ast.Expr, bool) {
@@ -102,7 +92,8 @@ func expectVariable(a auditor) ast.Variable {
 	if n, ok := acceptVariable(a); ok {
 		return n
 	}
-	panic(badNextToken(a, "variable", "identifier"))
+
+	panic(unableToParse(a, MissingIdentifier, "identifier"))
 }
 
 // LITERAL := True | False | Number | String
@@ -110,5 +101,6 @@ func expectLiteral(a auditor) ast.Expr {
 	if n, ok := acceptLiteral(a); ok {
 		return n
 	}
-	panic(badNextToken(a, "literal", "literal"))
+
+	panic(unableToParse(a, MissingLiteral, "literal"))
 }

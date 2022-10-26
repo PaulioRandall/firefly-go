@@ -23,7 +23,7 @@ func expectOperand(a auditor) ast.Expr {
 		return n
 	}
 
-	panic(badNextToken(a, "operand", "operand"))
+	panic(unableToParse(a, MissingExpr, "operand"))
 }
 
 // OPERATION := EXPR OPERATOR EXPR
@@ -61,5 +61,5 @@ func expectOperator(a auditor) token.Token {
 		return a.Read()
 	}
 
-	panic(badNextToken(a, "operator", "Add | Sub | Mul | Div | Mod | LT | GT | LTE | GTE | EQU | NEQ"))
+	panic(unableToParse(a, MissingExpr, "any in [Add | Sub | Mul | Div | Mod | LT | GT | LTE | GTE | EQU | NEQ]"))
 }

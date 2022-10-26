@@ -11,7 +11,23 @@ var (
 	UnexpectedToken = err.Trackable("Unexpected token")
 
 	MissingVar  = err.Trackable("Missing variable")
-	MissingExpr = err.Trackable("Missing expression")
 	MissingStmt = err.Trackable("Missing statement")
 	MissingEnd  = err.Trackable("Missing end")
 )
+
+func badNextToken(a auditor, parsing string) error {
+	if !a.More() {
+		return UnexpectedEOF.Trackf("Expected %s but got EOF", parsing)
+	}
+
+	return UnexpectedToken.Trackf(
+		"Expected %s but got %s",
+		parsing,
+		a.Peek().String(),
+	)
+}
+
+func unableToParse(a auditor, te err.TrackableError, parsing string) error {
+	e := badNextToken(a, parsing)
+	return te.Wrapf(e, "Unable to parse %s", parsing)
+}

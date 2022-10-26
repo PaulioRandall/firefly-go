@@ -9,8 +9,8 @@ func expectFor(a auditor) ast.For {
 	n := ast.For{}
 	n.Keyword = a.expect(token.For)
 	n.Initialiser, n.Condition, n.Advancement = expectForControls(a)
-	n.Body = acceptStatements(a)
-	n.End = expectEndOfBlock(a)
+	n.Body = parseStmtBlock(a)
+	n.End = a.expect(token.End)
 	return n
 }
 

@@ -7,10 +7,10 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
 
-func acceptStatements(a auditor) []ast.Stmt {
+func parseStmtBlock(a auditor) []ast.Stmt {
 	var nodes []ast.Stmt
 
-	for isNotEndOfBlock(a) {
+	for a.isNot(token.End) {
 		nodes = append(nodes, expectStatement(a))
 	}
 
@@ -85,4 +85,10 @@ func expectVariableStatement(a auditor, first token.Token) ast.Stmt {
 
 	a.Putback(first)
 	return expectExpression(a)
+}
+
+func expectEndOfStmt(a auditor) {
+	if !a.accept(token.Terminator) && !a.accept(token.Newline) {
+		panic(a.unexpectedToken("Terminator or newline", a.Peek()))
+	}
 }

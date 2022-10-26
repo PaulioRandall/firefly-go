@@ -3,7 +3,11 @@ package parser
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
+
+	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
+
+var MissingExpr = err.Trackable("Missing expression")
 
 func acceptExprsUntil(a auditor, closer token.TokenType) []ast.Expr {
 	var nodes []ast.Expr
@@ -57,7 +61,7 @@ func expectExpression(a auditor) ast.Expr {
 		return operation(a, left, 0)
 	}
 
-	panic(badNextToken(a, "expression", "PAREN_EXPR | TERM | LIST | MAP | OPERATION"))
+	panic(unableToParse(a, MissingExpr, "any in [PAREN_EXPR | TERM | LIST | MAP | OPERATION]"))
 }
 
 // PAREN_EXPR := ParenOpen EXPR ParenClose

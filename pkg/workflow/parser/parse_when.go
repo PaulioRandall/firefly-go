@@ -13,16 +13,16 @@ func expectWhen(a auditor) ast.When {
 
 	expectEndOfStmt(a)
 
-	n.Cases = acceptWhenCases(a)
-	n.End = expectEndOfBlock(a)
+	n.Cases = parseWhenBlock(a)
+	n.End = a.expect(token.End)
 
 	return n
 }
 
-func acceptWhenCases(a auditor) []ast.WhenCase {
+func parseWhenBlock(a auditor) []ast.WhenCase {
 	var cases []ast.WhenCase
 
-	for isNotEndOfBlock(a) {
+	for a.isNot(token.End) {
 		cases = append(cases, expectWhenCase(a))
 	}
 

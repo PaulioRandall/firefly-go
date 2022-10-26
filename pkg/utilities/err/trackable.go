@@ -66,7 +66,7 @@ func Trackable(m string) *trackableError {
 // is pointless as the initial general message is static.
 func (e trackableError) Track(
 	msg string,
-) *trackableError {
+) error {
 	e.cause = New(msg)
 	return &e
 }
@@ -75,7 +75,7 @@ func (e trackableError) Track(
 func (e trackableError) Trackf(
 	msg string,
 	args ...any,
-) *trackableError {
+) error {
 	e.cause = Newf(msg, args...)
 	return &e
 }
@@ -84,7 +84,7 @@ func (e trackableError) Trackf(
 func (e trackableError) TrackPos(
 	from pos.Pos,
 	msg string,
-) *trackableError {
+) error {
 	e.cause = NewPos(from, msg)
 	return &e
 }
@@ -95,7 +95,7 @@ func (e trackableError) TrackPosf(
 	from pos.Pos,
 	msg string,
 	args ...any,
-) *trackableError {
+) error {
 	e.cause = NewPosf(from, msg, args...)
 	return &e
 }
@@ -109,7 +109,7 @@ func (e trackableError) TrackPosf(
 func (e trackableError) Wrap(
 	cause error,
 	msg string,
-) *trackableError {
+) error {
 	e.cause = Wrap(cause, msg)
 	return &e
 }
@@ -119,7 +119,7 @@ func (e trackableError) Wrapf(
 	cause error,
 	msg string,
 	args ...any,
-) *trackableError {
+) error {
 	e.cause = Wrapf(cause, msg, args...)
 	return &e
 }
@@ -129,7 +129,7 @@ func (e trackableError) WrapPos(
 	cause error,
 	from pos.Pos,
 	msg string,
-) *trackableError {
+) error {
 	e.cause = WrapPos(cause, from, msg)
 	return &e
 }
@@ -141,7 +141,7 @@ func (e trackableError) WrapPosf(
 	from pos.Pos,
 	msg string,
 	args ...any,
-) *trackableError {
+) error {
 	e.cause = WrapPosf(cause, from, msg, args...)
 	return &e
 }

@@ -13,8 +13,8 @@ func expectIf(a auditor) ast.If {
 
 	expectEndOfStmt(a)
 
-	n.Body = acceptStatements(a)
-	n.End = expectEndOfBlock(a)
+	n.Body = parseStmtBlock(a)
+	n.End = a.expect(token.End)
 
 	return n
 }

@@ -126,7 +126,7 @@ func Test_parseWatch_5(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, UnexpectedEOF)
+	doErrorTest(t, given, UnexpectedToken)
 }
 
 func Test_parseWatch_6(t *testing.T) {
