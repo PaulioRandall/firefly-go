@@ -5,16 +5,16 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
-func parseFor(a auditor) ast.For {
+func expectFor(a auditor) ast.For {
 	n := ast.For{}
 	n.Keyword = a.expect(token.For)
-	n.Initialiser, n.Condition, n.Advancement = parseForControls(a)
+	n.Initialiser, n.Condition, n.Advancement = expectForControls(a)
 	n.Body = acceptStatements(a)
 	n.End = expectEndOfBlock(a)
 	return n
 }
 
-func parseForControls(a auditor) (ast.Stmt, ast.Expr, ast.Stmt) {
+func expectForControls(a auditor) (ast.Stmt, ast.Expr, ast.Stmt) {
 
 	first := acceptInlineStatement(a)
 	if first == nil {

@@ -42,6 +42,25 @@ func (a *auditor) isNot(want token.TokenType) bool {
 	return true
 }
 
+func (a *auditor) isAny(wanted ...token.TokenType) bool {
+	if !a.r.More() {
+		return false
+	}
+
+	have := a.r.Peek().TokenType
+	for _, want := range wanted {
+		if want == have {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (a *auditor) isNotAny(wanted ...token.TokenType) bool {
+	return !a.isAny(wanted...)
+}
+
 func (a *auditor) match(f func(token.TokenType) bool) bool {
 	if a.r.More() {
 		return f(a.r.Peek().TokenType)

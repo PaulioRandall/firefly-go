@@ -13,7 +13,7 @@ func acceptOperand(a auditor) ast.Expr {
 	case !a.More():
 		return nil
 	case a.is(token.Identifier):
-		return parseVariable(a)
+		return expectVariable(a)
 	case a.match(token.IsLiteral):
 		return expectLiteral(a)
 	default:
@@ -47,7 +47,7 @@ func operation(a auditor, left ast.Expr, leftOperatorPriorty int) ast.Expr {
 
 	var right ast.Expr
 	if a.is(token.ParenOpen) {
-		right = parseParenExpr(a)
+		right = expectParenExpr(a)
 	} else {
 		right = expectOperand(a)
 	}

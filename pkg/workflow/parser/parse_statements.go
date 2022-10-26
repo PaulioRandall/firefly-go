@@ -47,16 +47,16 @@ func expectStatement(a auditor) (n ast.Stmt) {
 		n = expectVariableStatement(a, a.Prev())
 
 	case a.is(token.If):
-		n = parseIf(a)
+		n = expectIf(a)
 
 	case a.is(token.For):
-		n = parseFor(a)
+		n = expectFor(a)
 
 	case a.is(token.When):
 		n = expectWhen(a)
 
 	case a.is(token.Watch):
-		n = parseWatch(a)
+		n = expectWatch(a)
 
 	case a.is(token.BracketOpen), a.is(token.BraceOpen):
 		n = expectExpression(a)

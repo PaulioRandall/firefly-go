@@ -29,12 +29,12 @@ func acceptExprsUntil(a auditor, closer token.TokenType) []ast.Expr {
 func acceptExpression(a auditor) ast.Expr {
 	switch {
 	case a.is(token.ParenOpen):
-		n := parseParenExpr(a)
+		n := expectParenExpr(a)
 		return operation(a, n, 0)
 	case a.is(token.BracketOpen):
-		return parseList(a)
+		return expectList(a)
 	case a.is(token.BraceOpen):
-		return parseMap(a)
+		return expectMap(a)
 	}
 
 	if n := acceptOperand(a); n != nil {
@@ -62,11 +62,11 @@ func expectExpressions(a auditor) []ast.Expr {
 func expectExpression(a auditor) ast.Expr {
 	switch {
 	case a.is(token.ParenOpen):
-		return parseParenExpr(a)
+		return expectParenExpr(a)
 	case a.is(token.BracketOpen):
-		return parseList(a)
+		return expectList(a)
 	case a.is(token.BraceOpen):
-		return parseMap(a)
+		return expectMap(a)
 	}
 
 	left := expectOperand(a)
@@ -74,7 +74,7 @@ func expectExpression(a auditor) ast.Expr {
 }
 
 // PAREN_EXPR := ParenOpen EXPR ParenClose
-func parseParenExpr(a auditor) ast.Expr {
+func expectParenExpr(a auditor) ast.Expr {
 	a.expect(token.ParenOpen)
 	n := expectExpression(a)
 	a.expect(token.ParenClose)

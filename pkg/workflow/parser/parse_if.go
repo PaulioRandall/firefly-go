@@ -5,7 +5,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
-func parseIf(a auditor) ast.If {
+func expectIf(a auditor) ast.If {
 	n := ast.If{}
 
 	n.Keyword = a.expect(token.If)

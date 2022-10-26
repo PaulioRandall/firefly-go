@@ -5,15 +5,15 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
-func parseMap(a auditor) ast.Map {
+func expectMap(a auditor) ast.Map {
 	return ast.Map{
 		Opener:  a.expect(token.BraceOpen),
-		Entries: parseMapEntries(a),
+		Entries: expectMapEntries(a),
 		Closer:  a.expect(token.BraceClose),
 	}
 }
 
-func parseMapEntries(a auditor) []ast.MapEntry {
+func expectMapEntries(a auditor) []ast.MapEntry {
 	var entries []ast.MapEntry
 
 	for a.isNot(token.BraceClose) {
