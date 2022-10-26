@@ -9,7 +9,7 @@ func expectWhen(a auditor) ast.When {
 	n := ast.When{}
 
 	n.Keyword = a.expect(token.When)
-	n.Subject = acceptExpression(a)
+	n.Subject, _ = acceptExpression(a)
 
 	expectEndOfStmt(a)
 

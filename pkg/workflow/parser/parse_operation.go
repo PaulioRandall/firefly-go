@@ -5,22 +5,28 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
-// OPERATION := EXPR OPERATOR EXPR
-// OPERATOR  := Add | Sub | Mul | Div | Mod | LT | GT | LTE | GTE | EQU | NEQ
-
 // TERM := VAR | LITERAL
-func expectOperand(a auditor) ast.Expr {
-	if !a.More() {
-		panic(a.unexpectedEOF("operand"))
+func acceptOperand(a auditor) (ast.Expr, bool) {
+	if n, ok := acceptParenExpr(a); ok {
+		return n, true
 	}
 
-	if term, ok := acceptTerm(a); ok {
-		return term
+	if n, ok := acceptTerm(a); ok {
+		return n, true
 	}
 
-	panic(a.unexpectedToken("operand", a.Peek()))
+	return nil, false
 }
 
+func expectOperand(a auditor) ast.Expr {
+	if n, ok := acceptOperand(a); ok {
+		return n
+	}
+
+	panic(badNextToken(a, "operand", "operand"))
+}
+
+// OPERATION := EXPR OPERATOR EXPR
 func operation(a auditor, left ast.Expr, leftOperatorPriorty int) ast.Expr {
 	if !a.notMatch(token.IsBinaryOperator) {
 		return left
@@ -30,15 +36,9 @@ func operation(a auditor, left ast.Expr, leftOperatorPriorty int) ast.Expr {
 		return left
 	}
 
-	op := a.Read()
+	op := expectOperator(a)
 
-	var right ast.Expr
-	if a.is(token.ParenOpen) {
-		right = expectParenExpr(a)
-	} else {
-		right = expectOperand(a)
-	}
-
+	right := expectOperand(a)
 	right = operation(a, right, op.Precedence())
 
 	left = ast.BinaryOperation{
@@ -48,4 +48,18 @@ func operation(a auditor, left ast.Expr, leftOperatorPriorty int) ast.Expr {
 	}
 
 	return operation(a, left, leftOperatorPriorty)
+}
+
+// OPERATOR := Add | Sub | Mul | Div | Mod | LT | GT | LTE | GTE | EQU | NEQ
+func expectOperator(a auditor) token.Token {
+	if a.isAny(
+		token.Add, token.Sub, token.Mul, token.Div, token.Mod,
+		token.LT, token.GT,
+		token.LTE, token.GTE,
+		token.EQU, token.NEQ,
+	) {
+		return a.Read()
+	}
+
+	panic(badNextToken(a, "operator", "Add | Sub | Mul | Div | Mod | LT | GT | LTE | GTE | EQU | NEQ"))
 }

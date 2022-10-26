@@ -9,8 +9,8 @@ func acceptExprsUntil(a auditor, closer token.TokenType) []ast.Expr {
 	var nodes []ast.Expr
 
 	for a.isNot(closer) {
-		v := acceptExpression(a)
-		if v == nil {
+		v, ok := acceptExpression(a)
+		if !ok {
 			break
 		}
 
@@ -24,20 +24,7 @@ func acceptExprsUntil(a auditor, closer token.TokenType) []ast.Expr {
 	return nodes
 }
 
-func acceptExpression(a auditor) ast.Expr {
-	switch {
-	case a.is(token.ParenOpen):
-		n := expectParenExpr(a)
-		return operation(a, n, 0)
-	}
-
-	if term, ok := acceptTerm(a); ok {
-		return operation(a, term, 0)
-	}
-
-	return nil
-}
-
+// EXPRS := EXPR {Comma EXPR}
 func expectExpressions(a auditor) []ast.Expr {
 	var nodes []ast.Expr
 
@@ -52,21 +39,36 @@ func expectExpressions(a auditor) []ast.Expr {
 	return nodes
 }
 
-// EXPR := PAREN_EXPR | TERM | LIST | MAP  | OPERATION
-func expectExpression(a auditor) ast.Expr {
-	switch {
-	case a.is(token.ParenOpen):
-		return expectParenExpr(a)
+// EXPR := PAREN_EXPR | TERM | LIST | MAP | OPERATION
+func acceptExpression(a auditor) (ast.Expr, bool) {
+	if left, ok := acceptParenExpr(a); ok {
+		return operation(a, left, 0), true
 	}
 
-	left := expectOperand(a)
-	return operation(a, left, 0)
+	if left, ok := acceptTerm(a); ok {
+		return operation(a, left, 0), true
+	}
+
+	return nil, false
+}
+
+func expectExpression(a auditor) ast.Expr {
+	if left, ok := acceptExpression(a); ok {
+		return operation(a, left, 0)
+	}
+
+	panic(badNextToken(a, "expression", "PAREN_EXPR | TERM | LIST | MAP | OPERATION"))
 }
 
 // PAREN_EXPR := ParenOpen EXPR ParenClose
-func expectParenExpr(a auditor) ast.Expr {
-	a.expect(token.ParenOpen)
+func acceptParenExpr(a auditor) (ast.Expr, bool) {
+	if a.isNot(token.ParenOpen) {
+		return nil, false
+	}
+
+	a.Read()
 	n := expectExpression(a)
 	a.expect(token.ParenClose)
-	return n
+
+	return n, true
 }

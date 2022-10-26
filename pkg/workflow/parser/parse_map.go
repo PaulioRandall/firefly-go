@@ -5,7 +5,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
-// MAP := BraceOpen {MAP_ENTRY} BraceClose
+// MAP := BraceOpen MAP_ENTRIES BraceClose
 func acceptMap(a auditor) (ast.Map, bool) {
 	if a.isNot(token.BraceOpen) {
 		return ast.Map{}, false
@@ -20,7 +20,7 @@ func acceptMap(a auditor) (ast.Map, bool) {
 	return n, true
 }
 
-// MAP_ENTRY := EXPR Colon EXPR
+// MAP_ENTRIES := [MAP_ENTRY {Comma MAP_ENTRY}]
 func parseMapEntries(a auditor) []ast.MapEntry {
 	var entries []ast.MapEntry
 
