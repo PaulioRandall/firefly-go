@@ -8,27 +8,14 @@ import (
 // OPERATION := EXPR OPERATOR EXPR
 // OPERATOR  := Add | Sub | Mul | Div | Mod | LT | GT | LTE | GTE | EQU | NEQ
 
-func acceptOperand(a auditor) ast.Expr {
-	switch {
-	case !a.More():
-		return nil
-	case a.is(token.Identifier):
-		return expectVariable(a)
-	case a.match(token.IsLiteral):
-		return expectLiteral(a)
-	default:
-		return nil
-	}
-}
-
 // TERM := VAR | LITERAL
 func expectOperand(a auditor) ast.Expr {
 	if !a.More() {
 		panic(a.unexpectedEOF("operand"))
 	}
 
-	if expr := acceptOperand(a); expr != nil {
-		return expr
+	if term, ok := acceptTerm(a); ok {
+		return term
 	}
 
 	panic(a.unexpectedToken("operand", a.Peek()))

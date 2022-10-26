@@ -11,7 +11,7 @@ var MissingTerm = err.Trackable("Missing term")
 var MissingLiteral = err.Trackable("Missing literal")
 var MissingIdentifier = err.Trackable("Missing identifier")
 
-// TERM := VAR | LITERAL
+// TERM := VAR | LITERAL | LIST | MAP
 func expectTerm(a auditor) (ast.Expr, error) {
 	if term, ok := acceptTerm(a); ok {
 		return term, nil
@@ -42,6 +42,12 @@ func acceptTerm(a auditor) (ast.Expr, bool) {
 	if term, ok := acceptLiteral(a); ok {
 		return term, true
 	}
+
+	if term, ok := acceptList(a); ok {
+		return term, true
+	}
+
+	//expectMap(a)
 
 	return nil, false
 }
