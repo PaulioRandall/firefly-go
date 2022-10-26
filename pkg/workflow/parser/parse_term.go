@@ -12,36 +12,36 @@ var MissingLiteral = err.Trackable("Missing literal")
 var MissingIdentifier = err.Trackable("Missing identifier")
 
 // TERM := VAR | LITERAL | LIST | MAP
-func expectTerm(a auditor) (ast.Expr, error) {
-	if term, ok := acceptTerm(a); ok {
-		return term, nil
-	}
-
-	return nil, unableToParse(a, MissingTerm, "term")
-}
-
 func acceptTerm(a auditor) (ast.Expr, bool) {
 	if !a.More() {
 		return nil, false
 	}
 
-	if term, ok := acceptVariable(a); ok {
-		return term, true
+	if n, ok := acceptVariable(a); ok {
+		return n, true
 	}
 
-	if term, ok := acceptLiteral(a); ok {
-		return term, true
+	if n, ok := acceptLiteral(a); ok {
+		return n, true
 	}
 
-	if term, ok := acceptList(a); ok {
-		return term, true
+	if n, ok := acceptList(a); ok {
+		return n, true
 	}
 
-	if term, ok := acceptMap(a); ok {
-		return term, true
+	if n, ok := acceptMap(a); ok {
+		return n, true
 	}
 
 	return nil, false
+}
+
+func expectTerm(a auditor) (ast.Expr, error) {
+	if n, ok := acceptTerm(a); ok {
+		return n, nil
+	}
+
+	return nil, unableToParse(a, MissingTerm, "term")
 }
 
 // VAR := Identifier

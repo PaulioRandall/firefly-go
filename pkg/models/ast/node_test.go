@@ -29,14 +29,21 @@ func assertWhere(t *testing.T, exp, act Node) {
 
 func Test_enforceTypes(t *testing.T) {
 	_ = Stmt(If{})
+	_ = Stmt(For{})
 	_ = Stmt(When{})
+	_ = Stmt(WhenCase{})
+	_ = Stmt(Watch{})
 	_ = Stmt(Assign{})
 
 	_ = Proc(ExprSet{})
 
-	_ = Expr(Literal{})
-	_ = Expr(Variable{})
 	_ = Expr(BinaryOperation{})
+	_ = Expr(Is{})
+
+	_ = Term(Literal{})
+	_ = Term(Variable{})
+	_ = Term(List{})
+	_ = Term(Map{})
 }
 
 func Test_1_If(t *testing.T) {

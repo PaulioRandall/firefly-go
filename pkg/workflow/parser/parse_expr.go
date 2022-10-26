@@ -43,7 +43,7 @@ func expectExpressions(a auditor) []ast.Expr {
 	return nodes
 }
 
-// EXPR := PAREN_EXPR | TERM | LIST | MAP | OPERATION
+// EXPR := PAREN_EXPR | TERM | OPERATION
 func acceptExpression(a auditor) (ast.Expr, bool) {
 	if left, ok := acceptParenExpr(a); ok {
 		return operation(a, left, 0), true
