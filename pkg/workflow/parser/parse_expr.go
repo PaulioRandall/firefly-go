@@ -29,8 +29,6 @@ func acceptExpression(a auditor) ast.Expr {
 	case a.is(token.ParenOpen):
 		n := expectParenExpr(a)
 		return operation(a, n, 0)
-	case a.is(token.BraceOpen):
-		return expectMap(a)
 	}
 
 	if term, ok := acceptTerm(a); ok {
@@ -59,8 +57,6 @@ func expectExpression(a auditor) ast.Expr {
 	switch {
 	case a.is(token.ParenOpen):
 		return expectParenExpr(a)
-	case a.is(token.BraceOpen):
-		return expectMap(a)
 	}
 
 	left := expectOperand(a)

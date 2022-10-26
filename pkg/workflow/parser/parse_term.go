@@ -47,7 +47,9 @@ func acceptTerm(a auditor) (ast.Expr, bool) {
 		return term, true
 	}
 
-	//expectMap(a)
+	if term, ok := acceptMap(a); ok {
+		return term, true
+	}
 
 	return nil, false
 }
@@ -80,7 +82,7 @@ func acceptLiteral(a auditor) (ast.Expr, bool) {
 
 // ***** OLD ******
 
-// VARS := VAR { Comma VAR }
+// VARS := VAR {Comma VAR}
 func expectVariables(a auditor) []ast.Variable {
 	var nodes []ast.Variable
 

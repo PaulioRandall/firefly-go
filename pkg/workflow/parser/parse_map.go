@@ -5,27 +5,27 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
-func expectMap(a auditor) ast.Map {
-	return ast.Map{
-		Opener:  a.expect(token.BraceOpen),
-		Entries: expectMapEntries(a),
+// MAP := BraceOpen {MAP_ENTRY} BraceClose
+func acceptMap(a auditor) (ast.Map, bool) {
+	if a.isNot(token.BraceOpen) {
+		return ast.Map{}, false
+	}
+
+	n := ast.Map{
+		Opener:  a.Read(),
+		Entries: parseMapEntries(a),
 		Closer:  a.expect(token.BraceClose),
 	}
+
+	return n, true
 }
 
-func expectMapEntries(a auditor) []ast.MapEntry {
+// MAP_ENTRY := EXPR Colon EXPR
+func parseMapEntries(a auditor) []ast.MapEntry {
 	var entries []ast.MapEntry
 
 	for a.isNot(token.BraceClose) {
-		key := expectExpression(a)
-		a.expect(token.Colon)
-		value := expectExpression(a)
-
-		entry := ast.MapEntry{
-			Key:   key,
-			Value: value,
-		}
-
+		entry := parseMapEntry(a)
 		entries = append(entries, entry)
 
 		if !a.accept(token.Comma) {
@@ -34,4 +34,16 @@ func expectMapEntries(a auditor) []ast.MapEntry {
 	}
 
 	return entries
+}
+
+// MAP_ENTRY := EXPR Colon EXPR
+func parseMapEntry(a auditor) ast.MapEntry {
+	key := expectExpression(a)
+	a.expect(token.Colon)
+	value := expectExpression(a)
+
+	return ast.MapEntry{
+		Key:   key,
+		Value: value,
+	}
 }

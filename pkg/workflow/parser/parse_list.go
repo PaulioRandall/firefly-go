@@ -5,11 +5,10 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
+// LIST := BracketOpen [EXPRS] BracketClose
 func acceptList(a auditor) (ast.List, bool) {
-	var zero ast.List
-
-	if !a.is(token.BracketOpen) {
-		return zero, false
+	if a.isNot(token.BracketOpen) {
+		return ast.List{}, false
 	}
 
 	n := ast.List{
