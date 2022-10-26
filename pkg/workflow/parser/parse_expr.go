@@ -6,7 +6,6 @@ import (
 )
 
 // EXPR := TERM | OPERATION
-// TERM := VARIABLE | LITERAL
 
 func acceptExprsUntil(a auditor, closer token.TokenType) []ast.Expr {
 	var nodes []ast.Expr
@@ -22,21 +21,6 @@ func acceptExprsUntil(a auditor, closer token.TokenType) []ast.Expr {
 		if !a.accept(token.Comma) {
 			break
 		}
-	}
-
-	return nodes
-}
-
-func acceptExpressions(a auditor) []ast.Expr {
-	var nodes []ast.Expr
-
-	for a.More() {
-		v := acceptExpression(a)
-		if v == nil {
-			break
-		}
-
-		nodes = append(nodes, v)
 	}
 
 	return nodes
@@ -74,6 +58,7 @@ func expectExpressions(a auditor) []ast.Expr {
 	return nodes
 }
 
+// EXPR := PAREN_EXPR | LIST | MAP | TERM | OPERATION
 func expectExpression(a auditor) ast.Expr {
 	switch {
 	case a.is(token.ParenOpen):
@@ -88,6 +73,7 @@ func expectExpression(a auditor) ast.Expr {
 	return operation(a, left, 0)
 }
 
+// PAREN_EXPR := ParenOpen EXPR ParenClose
 func parseParenExpr(a auditor) ast.Expr {
 	a.expect(token.ParenOpen)
 	n := expectExpression(a)

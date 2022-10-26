@@ -5,6 +5,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
+// ASSIGN := VARS Assign EXPRS
 func expectAssignment(a auditor) ast.Assign {
 	return ast.Assign{
 		Left:     expectVariables(a),

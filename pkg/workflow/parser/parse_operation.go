@@ -13,7 +13,7 @@ func acceptOperand(a auditor) ast.Expr {
 	case !a.More():
 		return nil
 	case a.is(token.Identifier):
-		return expectVariable(a)
+		return parseVariable(a)
 	case a.match(token.IsLiteral):
 		return expectLiteral(a)
 	default:
@@ -21,6 +21,7 @@ func acceptOperand(a auditor) ast.Expr {
 	}
 }
 
+// TERM := VAR | LITERAL
 func expectOperand(a auditor) ast.Expr {
 	if !a.More() {
 		panic(a.unexpectedEOF("operand"))
