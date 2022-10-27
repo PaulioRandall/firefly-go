@@ -3,10 +3,12 @@ package parser
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
-
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
 
+var MissingStmt = err.Trackable("Missing statement")
+
+// STMT_BLOCK := {STATEMENT}
 func parseStmtBlock(a auditor) []ast.Stmt {
 	var nodes []ast.Stmt
 
@@ -17,21 +19,8 @@ func parseStmtBlock(a auditor) []ast.Stmt {
 	return nodes
 }
 
-// INLINE_STATEMENT := ASSIGNMENT | EXPR
+// INLINE_STATEMENT := [ASSIGNMENT | EXPR]
 func acceptInlineStatement(a auditor) (ast.Stmt, bool) {
-	if a.is(token.Identifier) {
-		return parseVariableStatement(a), true
-	}
-
-	if isNextLiteral(a) || isNextExprOpener(a) {
-		expr := expectExpression(a)
-		return operation(a, expr, 0), true
-	}
-
-	return nil, false
-}
-
-func expectStatement(a auditor) ast.Stmt {
 	var (
 		n  ast.Stmt
 		ok bool
@@ -43,53 +32,48 @@ func expectStatement(a auditor) ast.Stmt {
 	// - func
 	// - proc
 
-	if n, ok = acceptInlineStatement(a); ok {
-		expectEndOfStmt(a)
-		return n
+	if n, ok := acceptAssignment(a); ok {
+		return n, true
 	}
 
 	if n, ok = acceptExpression(a); ok {
-		expectEndOfStmt(a)
-		return n
+		return n, true
 	}
 
 	if n, ok := acceptFor(a); ok {
-		expectEndOfStmt(a)
-		return n
+		return n, true
 	}
 
 	switch {
 	case a.is(token.If):
-		n = expectIf(a)
+		return expectIf(a), true
 
 	case a.is(token.When):
-		n = expectWhen(a)
+		return expectWhen(a), true
 
 	case a.is(token.Watch):
-		n = expectWatch(a)
+		return expectWatch(a), true
 
 	default:
-		panic(UnexpectedToken.Track("Expected statement"))
+		return nil, false
 	}
-
-	if n == nil {
-		panic(err.New("Sanity check! Nil Node should never appear"))
-	}
-
-	expectEndOfStmt(a)
-	return n
 }
 
-func parseVariableStatement(a auditor) ast.Stmt {
-	first := a.expect(token.Identifier)
-
-	if a.is(token.Comma) || a.is(token.Assign) {
-		a.Putback(first)
-		return expectAssignment(a)
+// STATEMENT := [STATEMENT]
+func acceptStatement(a auditor) (ast.Stmt, bool) {
+	if n, ok := acceptInlineStatement(a); ok {
+		expectEndOfStmt(a)
+		return n, true
 	}
+	return nil, false
+}
 
-	a.Putback(first)
-	return expectExpression(a)
+// STATEMENT := INLINE_STATEMENT Terminator
+func expectStatement(a auditor) ast.Stmt {
+	if n, ok := acceptStatement(a); ok {
+		return n
+	}
+	panic(MissingStmt.Track("Expected statement"))
 }
 
 func expectEndOfStmt(a auditor) {

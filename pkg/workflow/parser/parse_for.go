@@ -22,8 +22,8 @@ func acceptFor(a auditor) (ast.For, bool) {
 	return n, true
 }
 
-// FOR_CONTROLS := EXPRESSION
-// FOR_CONTROLS := [STATEMENT [Terminator EXPRESSION [Terminator STATEMENT]]
+// FOR_CONTROLS := [EXPRESSION]
+// FOR_CONTROLS := [STATEMENT] Terminator [EXPRESSION] Terminator [STATEMENT]
 func parseForControls(a auditor) (
 	initialiser ast.Stmt,
 	condition ast.Expr,
@@ -31,33 +31,22 @@ func parseForControls(a auditor) (
 ) {
 	var ok bool
 
-	initialiser, ok = acceptInlineStatement(a)
-	if !a.accept(token.Terminator) {
+	if initialiser, ok = acceptInlineStatement(a); !ok {
+		initialiser = nil
 		expectEndOfStmt(a)
-
-		if ok {
-			condition = forConditionAsExpr(initialiser)
-			initialiser = nil
-		}
-
 		return
 	}
 
+	if condition, ok = initialiser.(ast.Expr); ok {
+		initialiser = nil
+		expectEndOfStmt(a)
+		return
+	}
+
+	a.expect(token.Terminator)
 	condition, _ = acceptExpression(a)
-	if !a.accept(token.Terminator) {
-		expectEndOfStmt(a)
-		return
-	}
-
-	advancement, _ = acceptInlineStatement(a)
-	expectEndOfStmt(a)
+	a.expect(token.Terminator)
+	advancement, _ = acceptStatement(a)
 
 	return
-}
-
-func forConditionAsExpr(condition ast.Stmt) ast.Expr {
-	if ex, ok := condition.(ast.Expr); ok {
-		return ex
-	}
-	panic(ErrForLoopControls.Track("For condition must be an expression"))
 }

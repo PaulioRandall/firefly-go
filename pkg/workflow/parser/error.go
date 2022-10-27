@@ -10,9 +10,8 @@ var (
 	UnexpectedEOF   = err.Trackable("Unexpected end of file")
 	UnexpectedToken = err.Trackable("Unexpected token")
 
-	MissingVar  = err.Trackable("Missing variable")
-	MissingStmt = err.Trackable("Missing statement")
-	MissingEnd  = err.Trackable("Missing end")
+	MissingVar = err.Trackable("Missing variable")
+	MissingEnd = err.Trackable("Missing end")
 )
 
 func badNextToken(a auditor, parsing string) error {

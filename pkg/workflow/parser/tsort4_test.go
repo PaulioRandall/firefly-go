@@ -82,5 +82,5 @@ func Test_parseIf_3(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, UnexpectedToken)
+	doErrorTest(t, given, MissingStmt)
 }
