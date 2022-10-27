@@ -44,14 +44,31 @@ func expectTerm(a auditor) (ast.Expr, error) {
 	return nil, unableToParse(a, MissingTerm, "term")
 }
 
-// VAR := Identifier
+// VARIABLES := [VARIABLE {Comma VARIABLE}]
+func acceptVariables(a auditor) []ast.Variable {
+	var nodes []ast.Variable
+
+	for more := true; more; more = a.accept(token.Comma) {
+		n, ok := acceptVariable(a)
+
+		if !ok {
+			break
+		}
+
+		nodes = append(nodes, n)
+	}
+
+	return nodes
+}
+
+// VARIABLE := Identifier
 func acceptVariable(a auditor) (ast.Variable, bool) {
-	if !a.is(token.Identifier) {
+	if !a.accept(token.Identifier) {
 		return ast.Variable{}, false
 	}
 
 	n := ast.Variable{
-		Identifier: a.Read(),
+		Identifier: a.Prev(),
 	}
 
 	return n, true
@@ -68,39 +85,4 @@ func acceptLiteral(a auditor) (ast.Expr, bool) {
 	}
 
 	return n, true
-}
-
-// ***** OLD ******
-
-// VARS := VAR {Comma VAR}
-func expectVariables(a auditor) []ast.Variable {
-	var nodes []ast.Variable
-
-	v := expectVariable(a)
-	nodes = append(nodes, v)
-
-	for a.accept(token.Comma) {
-		v := expectVariable(a)
-		nodes = append(nodes, v)
-	}
-
-	return nodes
-}
-
-// VAR := Identifier
-func expectVariable(a auditor) ast.Variable {
-	if n, ok := acceptVariable(a); ok {
-		return n
-	}
-
-	panic(unableToParse(a, MissingIdentifier, "identifier"))
-}
-
-// LITERAL := True | False | Number | String
-func expectLiteral(a auditor) ast.Expr {
-	if n, ok := acceptLiteral(a); ok {
-		return n
-	}
-
-	panic(unableToParse(a, MissingLiteral, "literal"))
 }

@@ -9,7 +9,7 @@ func expectWatch(a auditor) ast.Watch {
 	n := ast.Watch{}
 
 	n.Keyword = a.expect(token.Watch)
-	n.Variable = expectVariable(a)
+	n.Variable, _ = acceptVariable(a)
 
 	expectEndOfStmt(a)
 
