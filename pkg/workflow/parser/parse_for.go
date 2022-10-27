@@ -5,33 +5,54 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
-func expectFor(a auditor) ast.For {
-	n := ast.For{}
-	n.Keyword = a.expect(token.For)
-	n.Initialiser, n.Condition, n.Advancement = expectForControls(a)
+// FOR := For FOR_CONTROLS STMT_BLOCK End
+func acceptFor(a auditor) (ast.For, bool) {
+	if !a.accept(token.For) {
+		return ast.For{}, false
+	}
+
+	n := ast.For{
+		Keyword: a.Prev(),
+	}
+
+	n.Initialiser, n.Condition, n.Advancement = parseForControls(a)
 	n.Body = parseStmtBlock(a)
 	n.End = a.expect(token.End)
-	return n
+
+	return n, true
 }
 
-func expectForControls(a auditor) (ast.Stmt, ast.Expr, ast.Stmt) {
+// FOR_CONTROLS := EXPRESSION
+// FOR_CONTROLS := [STATEMENT [Terminator EXPRESSION [Terminator STATEMENT]]
+func parseForControls(a auditor) (
+	initialiser ast.Stmt,
+	condition ast.Expr,
+	advancement ast.Stmt,
+) {
+	var ok bool
 
-	first, ok := acceptInlineStatement(a)
-	if !ok {
-		panic(ErrForLoopControls.Track("Expected initialiser or condition"))
-	}
-
+	initialiser, ok = acceptInlineStatement(a)
 	if !a.accept(token.Terminator) {
 		expectEndOfStmt(a)
-		return nil, forConditionAsExpr(first), nil
+
+		if ok {
+			condition = forConditionAsExpr(initialiser)
+			initialiser = nil
+		}
+
+		return
 	}
 
-	initialiser := first
-	condition := expectExpression(a)
-	a.expect(token.Terminator)
-	advancement := expectStatement(a)
+	condition, _ = acceptExpression(a)
+	if !a.accept(token.Terminator) {
+		expectEndOfStmt(a)
+		return
+	}
 
-	return initialiser, condition, advancement
+	advancement, _ = acceptInlineStatement(a)
+	expectEndOfStmt(a)
+
+	return
 }
 
 func forConditionAsExpr(condition ast.Stmt) ast.Expr {

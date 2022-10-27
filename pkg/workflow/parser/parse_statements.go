@@ -53,12 +53,14 @@ func expectStatement(a auditor) ast.Stmt {
 		return n
 	}
 
+	if n, ok := acceptFor(a); ok {
+		expectEndOfStmt(a)
+		return n
+	}
+
 	switch {
 	case a.is(token.If):
 		n = expectIf(a)
-
-	case a.is(token.For):
-		n = expectFor(a)
 
 	case a.is(token.When):
 		n = expectWhen(a)
