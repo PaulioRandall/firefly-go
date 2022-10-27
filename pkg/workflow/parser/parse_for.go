@@ -16,8 +16,8 @@ func expectFor(a auditor) ast.For {
 
 func expectForControls(a auditor) (ast.Stmt, ast.Expr, ast.Stmt) {
 
-	first := acceptInlineStatement(a)
-	if first == nil {
+	first, ok := acceptInlineStatement(a)
+	if !ok {
 		panic(ErrForLoopControls.Track("Expected initialiser or condition"))
 	}
 

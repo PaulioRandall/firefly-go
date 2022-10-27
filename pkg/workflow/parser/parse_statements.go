@@ -17,24 +17,25 @@ func parseStmtBlock(a auditor) []ast.Stmt {
 	return nodes
 }
 
-func acceptInlineStatement(a auditor) ast.Stmt {
-	switch {
-	case a.accept(token.Identifier):
-		return expectVariableStatement(a, a.Prev())
-
-	case a.is(token.BracketOpen), a.is(token.BraceOpen):
-		return expectExpression(a)
-
-	case a.match(token.IsLiteral), a.is(token.ParenOpen):
-		expr := expectExpression(a)
-		return operation(a, expr, 0)
-
-	default:
-		return nil
+// INLINE_STATEMENT := ASSIGNMENT | EXPR
+func acceptInlineStatement(a auditor) (ast.Stmt, bool) {
+	if a.is(token.Identifier) {
+		return parseVariableStatement(a), true
 	}
+
+	if isNextLiteral(a) || isNextExprOpener(a) {
+		expr := expectExpression(a)
+		return operation(a, expr, 0), true
+	}
+
+	return nil, false
 }
 
-func expectStatement(a auditor) (n ast.Stmt) {
+func expectStatement(a auditor) ast.Stmt {
+	var (
+		n  ast.Stmt
+		ok bool
+	)
 
 	// TODO:
 	// - for i, v in expr
@@ -42,10 +43,17 @@ func expectStatement(a auditor) (n ast.Stmt) {
 	// - func
 	// - proc
 
-	switch {
-	case a.accept(token.Identifier):
-		n = expectVariableStatement(a, a.Prev())
+	if n, ok = acceptInlineStatement(a); ok {
+		expectEndOfStmt(a)
+		return n
+	}
 
+	if n, ok = acceptExpression(a); ok {
+		expectEndOfStmt(a)
+		return n
+	}
+
+	switch {
 	case a.is(token.If):
 		n = expectIf(a)
 
@@ -57,13 +65,6 @@ func expectStatement(a auditor) (n ast.Stmt) {
 
 	case a.is(token.Watch):
 		n = expectWatch(a)
-
-	case a.is(token.BracketOpen), a.is(token.BraceOpen):
-		n = expectExpression(a)
-
-	case a.match(token.IsLiteral), a.is(token.ParenOpen):
-		expr := expectExpression(a)
-		n = operation(a, expr, 0)
 
 	default:
 		panic(UnexpectedToken.Track("Expected statement"))
@@ -77,7 +78,9 @@ func expectStatement(a auditor) (n ast.Stmt) {
 	return n
 }
 
-func expectVariableStatement(a auditor, first token.Token) ast.Stmt {
+func parseVariableStatement(a auditor) ast.Stmt {
+	first := a.expect(token.Identifier)
+
 	if a.is(token.Comma) || a.is(token.Assign) {
 		a.Putback(first)
 		return expectAssignment(a)

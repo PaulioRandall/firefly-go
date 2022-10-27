@@ -29,7 +29,7 @@ func acceptExprsUntil(a auditor, closer token.TokenType) []ast.Expr {
 }
 
 // EXPRS := [EXPR {Comma EXPR}]
-func acceptSeriesOfExpr(a auditor) ast.SeriesOfExpr {
+func parseSeriesOfExpr(a auditor) ast.SeriesOfExpr {
 	var nodes []ast.Expr
 
 	for more := true; more; more = a.accept(token.Comma) {
@@ -93,4 +93,12 @@ func acceptParenExpr(a auditor) (ast.Expr, bool) {
 	a.expect(token.ParenClose)
 
 	return n, true
+}
+
+func isNextExprOpener(a auditor) bool {
+	return a.isAny(token.ParenOpen, token.BracketOpen, token.BraceOpen)
+}
+
+func isNextLiteral(a auditor) bool {
+	return a.match(token.IsLiteral)
 }

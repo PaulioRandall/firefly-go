@@ -11,7 +11,7 @@ var MissingTerm = err.Trackable("Missing term")
 var MissingLiteral = err.Trackable("Missing literal")
 var MissingIdentifier = err.Trackable("Missing identifier")
 
-// TERM := VAR | LITERAL | LIST | MAP
+// TERM := VARIABLE | LITERAL | LIST | MAP
 func acceptTerm(a auditor) (ast.Expr, bool) {
 	if !a.More() {
 		return nil, false
@@ -37,7 +37,7 @@ func acceptTerm(a auditor) (ast.Expr, bool) {
 }
 
 // VARIABLES := [VARIABLE {Comma VARIABLE}]
-func acceptSeriesOfVar(a auditor) ast.SeriesOfVar {
+func parseSeriesOfVar(a auditor) ast.SeriesOfVar {
 	var nodes []ast.Variable
 
 	for more := true; more; more = a.accept(token.Comma) {

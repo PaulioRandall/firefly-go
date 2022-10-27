@@ -5,12 +5,12 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
-// ASSIGN := VARS Assign EXPRS
+// ASSIGNMENT := VARIABLES Assign EXPRESSIONS
 func expectAssignment(a auditor) ast.Assign {
 	return ast.Assign{
-		Left:     acceptSeriesOfVar(a),
+		Left:     parseSeriesOfVar(a),
 		Operator: a.expect(token.Assign),
-		Right:    acceptSeriesOfExpr(a),
+		Right:    parseSeriesOfExpr(a),
 	}
 
 	/*
