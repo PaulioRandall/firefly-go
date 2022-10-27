@@ -8,11 +8,9 @@ import (
 // ASSIGN := VARS Assign EXPRS
 func expectAssignment(a auditor) ast.Assign {
 	return ast.Assign{
-		Left:     acceptVariables(a),
+		Left:     acceptSeriesOfVar(a),
 		Operator: a.expect(token.Assign),
-		Right: ast.SeriesOfExpr{
-			Exprs: acceptExpressions(a),
-		},
+		Right:    acceptSeriesOfExpr(a),
 	}
 
 	/*

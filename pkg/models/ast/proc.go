@@ -12,8 +12,23 @@ type Proc interface {
 	proc()
 }
 
+type SeriesOfVar struct {
+	Nodes []Variable
+}
+
+func (n SeriesOfVar) node() {}
+func (n SeriesOfVar) stmt() {}
+func (n SeriesOfVar) proc() {}
+
+func (n SeriesOfVar) Where() (from, to pos.Pos) {
+	lastIdx := len(n.Nodes) - 1
+	from, _ = n.Nodes[0].Where()
+	_, to = n.Nodes[lastIdx].Where()
+	return from, to
+}
+
 type SeriesOfExpr struct {
-	Exprs []Expr
+	Nodes []Expr
 }
 
 func (n SeriesOfExpr) node() {}
@@ -21,8 +36,8 @@ func (n SeriesOfExpr) stmt() {}
 func (n SeriesOfExpr) proc() {}
 
 func (n SeriesOfExpr) Where() (from, to pos.Pos) {
-	lastIdx := len(n.Exprs) - 1
-	from, _ = n.Exprs[0].Where()
-	_, to = n.Exprs[lastIdx].Where()
+	lastIdx := len(n.Nodes) - 1
+	from, _ = n.Nodes[0].Where()
+	_, to = n.Nodes[lastIdx].Where()
 	return from, to
 }

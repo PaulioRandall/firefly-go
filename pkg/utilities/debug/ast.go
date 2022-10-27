@@ -52,6 +52,8 @@ func astProc(n ast.Stmt) string {
 	switch t := n.(type) {
 	case ast.Expr:
 		return astExpr(t)
+	case ast.SeriesOfVar:
+		return astSeriesOfVar(t)
 	case ast.SeriesOfExpr:
 		return astSeriesOfExpr(t)
 	}
@@ -83,14 +85,18 @@ func astAssign(n ast.Assign) string {
 
 	writeLine(sb, "Assign:")
 	writeIndentLine(sb, "Operator: ", n.Operator.String())
-	writeIndentLine(sb, "Left: ", astNodes[ast.Variable](n.Left))
+	writeIndentLine(sb, "Left: ", astNode(n.Left))
 	writeIndent(sb, "Right: ", astNode(n.Right))
 
 	return sb.String()
 }
 
+func astSeriesOfVar(n ast.SeriesOfVar) string {
+	return astNodes(n.Nodes)
+}
+
 func astSeriesOfExpr(n ast.SeriesOfExpr) string {
-	return astNodes(n.Exprs)
+	return astNodes(n.Nodes)
 }
 
 func astIf(n ast.If) string {

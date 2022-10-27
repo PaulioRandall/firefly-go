@@ -52,7 +52,7 @@ func BinaryOperation(
 	}
 }
 
-func Assign(left []ast.Variable, op token.Token, right ast.Stmt) ast.Assign {
+func Assign(left ast.SeriesOfVar, op token.Token, right ast.Proc) ast.Assign {
 	return ast.Assign{
 		Left:     left,
 		Operator: op,
@@ -60,9 +60,15 @@ func Assign(left []ast.Variable, op token.Token, right ast.Stmt) ast.Assign {
 	}
 }
 
-func SeriesOfExpr(exprs ...ast.Expr) ast.SeriesOfExpr {
+func SeriesOfVar(nodes ...ast.Variable) ast.SeriesOfVar {
+	return ast.SeriesOfVar{
+		Nodes: nodes,
+	}
+}
+
+func SeriesOfExpr(nodes ...ast.Expr) ast.SeriesOfExpr {
 	return ast.SeriesOfExpr{
-		Exprs: exprs,
+		Nodes: nodes,
 	}
 }
 

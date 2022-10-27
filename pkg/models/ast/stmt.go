@@ -14,7 +14,7 @@ type Stmt interface {
 // Assign represents an assignment with left being the target variables and
 // right being the statement that determines the new or updated variable values
 type Assign struct {
-	Left     []Variable
+	Left     SeriesOfVar
 	Operator token.Token
 	Right    Stmt
 }
@@ -23,7 +23,7 @@ func (n Assign) node() {}
 func (n Assign) stmt() {}
 
 func (n Assign) Where() (from, to pos.Pos) {
-	from, _ = n.Left[0].Where()
+	from, _ = n.Left.Where()
 	_, to = n.Right.Where()
 	return from, to
 }

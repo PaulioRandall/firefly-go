@@ -37,7 +37,7 @@ func acceptTerm(a auditor) (ast.Expr, bool) {
 }
 
 // VARIABLES := [VARIABLE {Comma VARIABLE}]
-func acceptVariables(a auditor) []ast.Variable {
+func acceptSeriesOfVar(a auditor) ast.SeriesOfVar {
 	var nodes []ast.Variable
 
 	for more := true; more; more = a.accept(token.Comma) {
@@ -50,7 +50,9 @@ func acceptVariables(a auditor) []ast.Variable {
 		nodes = append(nodes, n)
 	}
 
-	return nodes
+	return ast.SeriesOfVar{
+		Nodes: nodes,
+	}
 }
 
 // VARIABLE := Identifier

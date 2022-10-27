@@ -79,7 +79,7 @@ func exprs(tks ...token.Token) []ast.Expr {
 
 func assStmt(left []ast.Variable, op token.Token, right []ast.Expr) ast.Assign {
 	return asttest.Assign(
-		left,
+		asttest.SeriesOfVar(left...),
 		op,
 		asttest.SeriesOfExpr(right...),
 	)
