@@ -35,7 +35,7 @@ func Test_enforceTypes(t *testing.T) {
 	_ = Stmt(Watch{})
 	_ = Stmt(Assign{})
 
-	_ = Proc(ExprSet{})
+	_ = Proc(SeriesOfExpr{})
 
 	_ = Expr(BinaryOperation{})
 	_ = Expr(Is{})

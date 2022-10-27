@@ -12,15 +12,15 @@ type Proc interface {
 	proc()
 }
 
-type ExprSet struct {
+type SeriesOfExpr struct {
 	Exprs []Expr
 }
 
-func (n ExprSet) node() {}
-func (n ExprSet) stmt() {}
-func (n ExprSet) proc() {}
+func (n SeriesOfExpr) node() {}
+func (n SeriesOfExpr) stmt() {}
+func (n SeriesOfExpr) proc() {}
 
-func (n ExprSet) Where() (from, to pos.Pos) {
+func (n SeriesOfExpr) Where() (from, to pos.Pos) {
 	lastIdx := len(n.Exprs) - 1
 	from, _ = n.Exprs[0].Where()
 	_, to = n.Exprs[lastIdx].Where()

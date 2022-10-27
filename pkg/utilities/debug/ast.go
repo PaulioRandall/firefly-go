@@ -52,8 +52,8 @@ func astProc(n ast.Stmt) string {
 	switch t := n.(type) {
 	case ast.Expr:
 		return astExpr(t)
-	case ast.ExprSet:
-		return astExprSet(t)
+	case ast.SeriesOfExpr:
+		return astSeriesOfExpr(t)
 	}
 
 	return "Unknown AST Stmt"
@@ -89,7 +89,7 @@ func astAssign(n ast.Assign) string {
 	return sb.String()
 }
 
-func astExprSet(n ast.ExprSet) string {
+func astSeriesOfExpr(n ast.SeriesOfExpr) string {
 	return astNodes(n.Exprs)
 }
 

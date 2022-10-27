@@ -81,7 +81,7 @@ func assStmt(left []ast.Variable, op token.Token, right []ast.Expr) ast.Assign {
 	return asttest.Assign(
 		left,
 		op,
-		asttest.ExprSet(right...),
+		asttest.SeriesOfExpr(right...),
 	)
 }
 

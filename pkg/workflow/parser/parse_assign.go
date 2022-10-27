@@ -10,7 +10,7 @@ func expectAssignment(a auditor) ast.Assign {
 	return ast.Assign{
 		Left:     acceptVariables(a),
 		Operator: a.expect(token.Assign),
-		Right: ast.ExprSet{
+		Right: ast.SeriesOfExpr{
 			Exprs: acceptExpressions(a),
 		},
 	}

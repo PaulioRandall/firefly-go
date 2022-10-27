@@ -36,14 +36,6 @@ func acceptTerm(a auditor) (ast.Expr, bool) {
 	return nil, false
 }
 
-func expectTerm(a auditor) (ast.Expr, error) {
-	if n, ok := acceptTerm(a); ok {
-		return n, nil
-	}
-
-	return nil, unableToParse(a, MissingTerm, "term")
-}
-
 // VARIABLES := [VARIABLE {Comma VARIABLE}]
 func acceptVariables(a auditor) []ast.Variable {
 	var nodes []ast.Variable

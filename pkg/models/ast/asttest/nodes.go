@@ -60,9 +60,8 @@ func Assign(left []ast.Variable, op token.Token, right ast.Stmt) ast.Assign {
 	}
 }
 
-// TODO: Remove?
-func ExprSet(exprs ...ast.Expr) ast.ExprSet {
-	return ast.ExprSet{
+func SeriesOfExpr(exprs ...ast.Expr) ast.SeriesOfExpr {
+	return ast.SeriesOfExpr{
 		Exprs: exprs,
 	}
 }
