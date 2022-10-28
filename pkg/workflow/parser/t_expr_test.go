@@ -18,7 +18,7 @@ func doBinExprTest(t *testing.T, given ...token.Token) {
 	doParseTest(t, given, exp)
 }
 
-func Test_parse_expr_1(t *testing.T) {
+func Test_expr_1(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	doBinExprTest(t,
@@ -30,7 +30,7 @@ func Test_parse_expr_1(t *testing.T) {
 	)
 }
 
-func Test_parse_expr_2(t *testing.T) {
+func Test_expr_2(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	doBinExprTest(t,
@@ -42,7 +42,7 @@ func Test_parse_expr_2(t *testing.T) {
 	)
 }
 
-func Test_parse_expr_3(t *testing.T) {
+func Test_expr_3(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	doBinExprTest(t,
@@ -54,7 +54,7 @@ func Test_parse_expr_3(t *testing.T) {
 	)
 }
 
-func Test_parse_expr_4(t *testing.T) {
+func Test_expr_4(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	doBinExprTest(t,
@@ -66,7 +66,7 @@ func Test_parse_expr_4(t *testing.T) {
 	)
 }
 
-func Test_parse_expr_5(t *testing.T) {
+func Test_expr_5(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	doBinExprTest(t,
@@ -78,7 +78,7 @@ func Test_parse_expr_5(t *testing.T) {
 	)
 }
 
-func Test_parse_expr_6(t *testing.T) {
+func Test_expr_6(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	doBinExprTest(t,
@@ -90,7 +90,7 @@ func Test_parse_expr_6(t *testing.T) {
 	)
 }
 
-func Test_parse_expr_7(t *testing.T) {
+func Test_expr_7(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	doBinExprTest(t,
@@ -102,7 +102,7 @@ func Test_parse_expr_7(t *testing.T) {
 	)
 }
 
-func Test_parse_expr_8(t *testing.T) {
+func Test_expr_8(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	doBinExprTest(t,
@@ -114,7 +114,7 @@ func Test_parse_expr_8(t *testing.T) {
 	)
 }
 
-func Test_parse_expr_9(t *testing.T) {
+func Test_expr_9(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	doBinExprTest(t,
@@ -126,7 +126,7 @@ func Test_parse_expr_9(t *testing.T) {
 	)
 }
 
-func Test_parse_expr_10(t *testing.T) {
+func Test_expr_10(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	doBinExprTest(t,
@@ -138,7 +138,7 @@ func Test_parse_expr_10(t *testing.T) {
 	)
 }
 
-func Test_parse_expr_11(t *testing.T) {
+func Test_expr_11(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	doBinExprTest(t,
@@ -150,7 +150,7 @@ func Test_parse_expr_11(t *testing.T) {
 	)
 }
 
-func Test_parse_expr_12(t *testing.T) {
+func Test_expr_12(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// 1 + 2 + 3
@@ -181,7 +181,7 @@ func Test_parse_expr_12(t *testing.T) {
 	doParseTest(t, given, exp)
 }
 
-func Test_parse_expr_13(t *testing.T) {
+func Test_expr_13(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// 1 + 2 * 3
@@ -212,7 +212,7 @@ func Test_parse_expr_13(t *testing.T) {
 	doParseTest(t, given, exp)
 }
 
-func Test_parse_expr_14(t *testing.T) {
+func Test_expr_14(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// 1 * 2 + 3
@@ -243,7 +243,7 @@ func Test_parse_expr_14(t *testing.T) {
 	doParseTest(t, given, exp)
 }
 
-func Test_parse_expr_15(t *testing.T) {
+func Test_expr_15(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// 1 * 2 + 3 * 4
@@ -283,7 +283,7 @@ func Test_parse_expr_15(t *testing.T) {
 	doParseTest(t, given, exp)
 }
 
-func Test_parse_expr_16(t *testing.T) {
+func Test_expr_16(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// (1 + 2)
@@ -306,7 +306,7 @@ func Test_parse_expr_16(t *testing.T) {
 	doParseTest(t, given, exp)
 }
 
-func Test_parse_expr_17(t *testing.T) {
+func Test_expr_17(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// (1 + 2) * 3
@@ -338,7 +338,7 @@ func Test_parse_expr_17(t *testing.T) {
 	doParseTest(t, given, exp)
 }
 
-func Test_parse_expr_18(t *testing.T) {
+func Test_expr_18(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// 1 * (2 + 3)
@@ -370,7 +370,7 @@ func Test_parse_expr_18(t *testing.T) {
 	doParseTest(t, given, exp)
 }
 
-func Test_parse_expr_19(t *testing.T) {
+func Test_expr_19(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// (1 + 2) * (3 + 4)
@@ -413,7 +413,7 @@ func Test_parse_expr_19(t *testing.T) {
 	doParseTest(t, given, exp)
 }
 
-func Test_parse_expr_20(t *testing.T) {
+func Test_expr_20(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// (1 * (2 + 3) / 4)
@@ -456,7 +456,7 @@ func Test_parse_expr_20(t *testing.T) {
 	doParseTest(t, given, exp)
 }
 
-func Test_parse_expr_21(t *testing.T) {
+func Test_expr_21(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// 1 * (2 + (3 - 4))
@@ -499,7 +499,7 @@ func Test_parse_expr_21(t *testing.T) {
 	doParseTest(t, given, exp)
 }
 
-func Test_parse_expr_22(t *testing.T) {
+func Test_expr_22(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// (((1 + 2)))
@@ -526,7 +526,7 @@ func Test_parse_expr_22(t *testing.T) {
 	doParseTest(t, given, exp)
 }
 
-func Test_parse_expr_23(t *testing.T) {
+func Test_expr_23(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// (1)
@@ -543,7 +543,7 @@ func Test_parse_expr_23(t *testing.T) {
 	doParseTest(t, given, exp)
 }
 
-func Test_parse_expr_25(t *testing.T) {
+func Test_expr_25(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// Missing second operand in operation
@@ -562,7 +562,7 @@ func Test_parse_expr_25(t *testing.T) {
 	)
 }
 
-func Test_parse_expr_26(t *testing.T) {
+func Test_expr_26(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// Forgot to close paren
@@ -581,7 +581,7 @@ func Test_parse_expr_26(t *testing.T) {
 	)
 }
 
-func Test_parse_expr_27(t *testing.T) {
+func Test_expr_27(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// Parenthesized expression missing the expression

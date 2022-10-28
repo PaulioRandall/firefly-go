@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	ErrBadAssignment = err.Trackable("Failed to parse assignment")
+	ErrBadAssign = err.Trackable("Failed to parse assignment")
 )
 
 // ASSIGNMENT := VARIABLES Assign EXPRESSIONS
@@ -22,7 +22,7 @@ func acceptAssignment(a auditor) (ast.Assign, bool) {
 
 func expectAssignment(a auditor) ast.Assign {
 	defer wrapPanic(func(e error) error {
-		return ErrBadAssignment.Wrap(e, "Expected assignment or bad assignment syntax")
+		return ErrBadAssign.Wrap(e, "Expected assignment or encountered bad assignment")
 	})
 
 	return ast.Assign{
@@ -30,15 +30,6 @@ func expectAssignment(a auditor) ast.Assign {
 		Operator: a.expect(token.Assign),
 		Right:    parseSeriesOfExpr(a),
 	}
-
-	/*
-		// TODO: Move specific parameter checks to the validator
-		if len(n.Left) > len(n.Right) {
-			panic(MissingExpr)
-		} else if len(n.Left) < len(n.Right) {
-			panic(MissingVar)
-		}
-	*/
 }
 
 func isAssignment(a auditor) bool {

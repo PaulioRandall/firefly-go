@@ -8,7 +8,8 @@ import (
 )
 
 var (
-	ErrMissingStmt = err.Trackable("Missing statement")
+	ErrMissingStmt       = err.Trackable("Missing statement")
+	ErrMissingTerminator = err.Trackable("Missing terminator")
 
 	ErrBadStmt = err.Trackable("Failed to parse statement")
 )
@@ -95,6 +96,10 @@ func expectStatement(a auditor) ast.Stmt {
 }
 
 func expectEndOfStmt(a auditor) {
+	defer wrapPanic(func(e error) error {
+		return ErrMissingTerminator.Wrap(e, "Missing terminator at end of statement")
+	})
+
 	if !a.accept(token.Terminator) && !a.accept(token.Newline) {
 		panic(a.unexpectedToken("Terminator or newline", a.Peek()))
 	}
