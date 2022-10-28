@@ -84,6 +84,8 @@ func Test_assign_4(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// a b = 0, 1
+	//
+	// Missing comma, not an assignment error
 	given := []token.Token{
 		gen(token.Identifier, "a"),
 		gen(token.Identifier, "b"),
@@ -106,6 +108,8 @@ func Test_assign_5(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// a, b 0, 1
+	//
+	// Missing assignment operator
 	given := []token.Token{
 		gen(token.Identifier, "a"),
 		gen(token.Comma, ","),
@@ -127,7 +131,9 @@ func Test_assign_5(t *testing.T) {
 func Test_assign_6(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
-	// a, b 0, 1
+	// a, b = 0 1
+	//
+	// Missing comma so looked for terminator, not an assignment error
 	given := []token.Token{
 		gen(token.Identifier, "a"),
 		gen(token.Comma, ","),

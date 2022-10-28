@@ -130,6 +130,8 @@ func Test_for_3(t *testing.T) {
 func Test_for_4(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
+	// for true end
+	//
 	// Missing terminator after condition
 	given := []token.Token{
 		gen(token.For, "for"),   // 0
@@ -151,7 +153,9 @@ func Test_for_4(t *testing.T) {
 func Test_for_5(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
-	// Missing terminator after at end of block
+	// for true
+	//
+	// Missing end of block
 	given := []token.Token{
 		gen(token.For, "for"),   // 0
 		gen(token.True, "true"), // 1
@@ -172,7 +176,10 @@ func Test_for_5(t *testing.T) {
 func Test_for_6(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
-	// Missing terminator after at end of block
+	// for i = 0; i < 5 i = i+1
+	// end
+	//
+	// Missing terminator after condition
 	given := []token.Token{
 		gen(token.For, "for"), // 0
 
@@ -209,6 +216,9 @@ func Test_for_6(t *testing.T) {
 func Test_for_7(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
+	// for ;
+	// end
+	//
 	// Missing terminator in for loop controls
 	given := []token.Token{
 		gen(token.For, "for"),      // 0

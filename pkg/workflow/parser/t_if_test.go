@@ -8,7 +8,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
 )
 
-func Test_parseIf_1(t *testing.T) {
+func Test_if_1(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// if true
@@ -31,7 +31,7 @@ func Test_parseIf_1(t *testing.T) {
 	doParseTest(t, given, exp)
 }
 
-func Test_parseIf_2(t *testing.T) {
+func Test_if_2(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// if true
@@ -67,11 +67,13 @@ func Test_parseIf_2(t *testing.T) {
 	doParseTest(t, given, exp)
 }
 
-func Test_parseIf_3(t *testing.T) {
+func Test_if_3(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// if true
 	//   a = 0
+	//
+	// Missing 'end' of statement block
 	given := []token.Token{
 		gen(token.If, "if"),
 		gen(token.True, "true"),
@@ -80,11 +82,58 @@ func Test_parseIf_3(t *testing.T) {
 		gen(token.Assign, "="),
 		gen(token.Number, "0"),
 		gen(token.Terminator, "\n"),
+		gen(token.Terminator, "\n"),
 	}
 
 	doErrorTest(t, given,
-		//ErrUnexpectedToken,
-		//ErrMissingTerminator,
+		ErrUnexpectedToken,
+		ErrMissingEndOfBlock,
+		ErrBadIfStmt,
+		ErrBadStmt,
+		ErrParsing,
+	)
+}
+
+func Test_if_4(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	// if true
+	// end
+	//
+	// Missing terminator
+	given := []token.Token{
+		gen(token.If, "if"),
+		gen(token.True, "true"),
+		gen(token.End, "end"),
+		gen(token.Terminator, "\n"),
+	}
+
+	doErrorTest(t, given,
+		ErrUnexpectedToken,
+		ErrMissingTerminator,
+		ErrBadIfStmt,
+		ErrBadStmt,
+		ErrParsing,
+	)
+}
+
+func Test_if_5(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	// if
+	// end
+	//
+	// Missing condition expression
+	given := []token.Token{
+		gen(token.If, "if"),
+		gen(token.Terminator, "\n"),
+		gen(token.End, "end"),
+		gen(token.Terminator, "\n"),
+	}
+
+	doErrorTest(t, given,
+		ErrUnexpectedToken,
+		ErrMissingExpr,
 		ErrBadIfStmt,
 		ErrBadStmt,
 		ErrParsing,
