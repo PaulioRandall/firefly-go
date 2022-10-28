@@ -10,6 +10,7 @@ import (
 var (
 	ErrMissingStmt       = err.Trackable("Missing statement")
 	ErrMissingTerminator = err.Trackable("Missing terminator")
+	ErrMissingEndOfBlock = err.Trackable("Missing end of statement block")
 
 	ErrBadStmt = err.Trackable("Failed to parse statement")
 )
@@ -18,11 +19,25 @@ var (
 func parseStmtBlock(a auditor) []ast.Stmt {
 	var nodes []ast.Stmt
 
-	for a.isNot(token.End) {
-		nodes = append(nodes, expectStatement(a))
+	for {
+		stmt, ok := acceptStatement(a)
+
+		if !ok {
+			break
+		}
+
+		nodes = append(nodes, stmt)
 	}
 
 	return nodes
+}
+
+func parseEndOfBlock(a auditor) token.Token {
+	defer wrapPanic(func(e error) error {
+		return ErrMissingEndOfBlock.Wrap(e, "Expected 'end' of block")
+	})
+
+	return a.expect(token.End)
 }
 
 // INLINE_STATEMENT := [ASSIGNMENT | EXPR]
@@ -103,4 +118,16 @@ func expectEndOfStmt(a auditor) {
 	if !a.accept(token.Terminator) && !a.accept(token.Newline) {
 		panic(a.unexpectedToken("Terminator or newline", a.Peek()))
 	}
+}
+
+func parseTerminator(a auditor) token.Token {
+	defer wrapPanic(func(e error) error {
+		return ErrMissingTerminator.Wrap(e, "Missing terminator at end of statement")
+	})
+
+	if !a.accept(token.Terminator) {
+		panic(a.unexpectedToken("Terminator", a.Peek()))
+	}
+
+	return a.Prev()
 }

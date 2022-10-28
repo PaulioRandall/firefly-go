@@ -8,7 +8,8 @@ import (
 )
 
 var (
-	ErrBadForLoop = err.Trackable("Failed to parse for loop")
+	ErrBadForLoop        = err.Trackable("Failed to parse for loop")
+	ErrBadForLoopControl = err.Trackable("Failed to parse for loop controls")
 )
 
 // FOR := For FOR_CONTROLS STMT_BLOCK End
@@ -27,21 +28,29 @@ func acceptFor(a auditor) (ast.For, bool) {
 
 	n.Initialiser, n.Condition, n.Advancement = parseForControls(a)
 	n.Body = parseStmtBlock(a)
-	n.End = a.expect(token.End)
+	n.End = parseEndOfBlock(a)
 
 	return n, true
 }
 
 // FOR_CONTROLS := [EXPRESSION]
-// FOR_CONTROLS := [STATEMENT] Terminator [EXPRESSION] Terminator [STATEMENT]
 func parseForControls(a auditor) (
 	initialiser ast.Stmt,
 	condition ast.Expr,
 	advancement ast.Stmt,
 ) {
+	defer wrapPanic(func(e error) error {
+		return ErrBadForLoopControl.Wrap(e, "Bad for loop control syntax")
+	})
+
 	var ok bool
 
-	if initialiser, ok = acceptInlineStatement(a); !ok {
+	initialiser, ok = acceptInlineStatement(a)
+	if a.accept(token.Terminator) {
+		return parseNumericForControls(a, initialiser)
+	}
+
+	if !ok {
 		initialiser = nil
 		expectEndOfStmt(a)
 		return
@@ -50,13 +59,24 @@ func parseForControls(a auditor) (
 	if condition, ok = initialiser.(ast.Expr); ok {
 		initialiser = nil
 		expectEndOfStmt(a)
-		return
 	}
 
-	a.expect(token.Terminator)
-	condition, _ = acceptExpression(a)
-	a.expect(token.Terminator)
-	advancement, _ = acceptStatement(a)
-
 	return
+}
+
+// FOR_CONTROLS := [STATEMENT] Terminator [EXPRESSION] Terminator [STATEMENT]
+func parseNumericForControls(a auditor, initialiser ast.Stmt) (
+	ast.Stmt,
+	ast.Expr,
+	ast.Stmt,
+) {
+	condition, _ := acceptExpression(a)
+	parseTerminator(a)
+	advancement, _ := acceptStatement(a)
+
+	if advancement == nil {
+		expectEndOfStmt(a)
+	}
+
+	return initialiser, condition, advancement
 }

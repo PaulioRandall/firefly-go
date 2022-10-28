@@ -31,7 +31,7 @@ func expectIf(a auditor) ast.If {
 	expectEndOfStmt(a)
 
 	n.Body = parseStmtBlock(a)
-	n.End = a.expect(token.End)
+	n.End = parseEndOfBlock(a)
 
 	return n
 }
