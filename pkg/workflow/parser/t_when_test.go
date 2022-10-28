@@ -15,9 +15,9 @@ func Test_when_1(t *testing.T) {
 	// end
 	given := []token.Token{
 		gen(token.When, "when"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 		gen(token.End, "end"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	exp := whenStmt(
@@ -36,11 +36,11 @@ func Test_when_2(t *testing.T) {
 	// when 1
 	// end
 	given := []token.Token{
-		gen(token.When, "when"),     // 0
-		gen(token.Number, "1"),      // 1
-		gen(token.Terminator, "\n"), //
-		gen(token.End, "end"),       // 3
-		gen(token.Terminator, "\n"),
+		gen(token.When, "when"),  // 0
+		gen(token.Number, "1"),   // 1
+		gen(token.Newline, "\n"), //
+		gen(token.End, "end"),    // 3
+		gen(token.Newline, "\n"),
 	}
 
 	exp := whenStmt(
@@ -60,13 +60,13 @@ func Test_when_3(t *testing.T) {
 	//   true:
 	// end
 	given := []token.Token{
-		gen(token.When, "when"),     // 0
-		gen(token.Terminator, "\n"), //
-		gen(token.True, "true"),     // 2
-		gen(token.Colon, ":"),       // 3
-		gen(token.Terminator, "\n"), //
-		gen(token.End, "end"),       // 5
-		gen(token.Terminator, "\n"),
+		gen(token.When, "when"),  // 0
+		gen(token.Newline, "\n"), //
+		gen(token.True, "true"),  // 2
+		gen(token.Colon, ":"),    // 3
+		gen(token.Newline, "\n"), //
+		gen(token.End, "end"),    // 5
+		gen(token.Newline, "\n"),
 	}
 
 	cases := whenCases(
@@ -90,15 +90,15 @@ func Test_when_4(t *testing.T) {
 	//   1 == 2:
 	// end
 	given := []token.Token{
-		gen(token.When, "when"),     // 0
-		gen(token.Terminator, "\n"), //
-		gen(token.Number, "1"),      // 2
-		gen(token.EQU, "=="),        // 3
-		gen(token.Number, "2"),      // 4
-		gen(token.Colon, ":"),       // 5
-		gen(token.Terminator, "\n"), //
-		gen(token.End, "end"),       // 7
-		gen(token.Terminator, "\n"),
+		gen(token.When, "when"),  // 0
+		gen(token.Newline, "\n"), //
+		gen(token.Number, "1"),   // 2
+		gen(token.EQU, "=="),     // 3
+		gen(token.Number, "2"),   // 4
+		gen(token.Colon, ":"),    // 5
+		gen(token.Newline, "\n"), //
+		gen(token.End, "end"),    // 7
+		gen(token.Newline, "\n"),
 	}
 
 	firstCase := binOp(
@@ -130,25 +130,25 @@ func Test_when_5(t *testing.T) {
 	//   a == 3:
 	// end
 	given := []token.Token{
-		gen(token.When, "when"),     // 0
-		gen(token.Terminator, "\n"), //
-		gen(token.Identifier, "a"),  // 2
-		gen(token.EQU, "=="),        // 3
-		gen(token.Number, "1"),      // 4
-		gen(token.Colon, ":"),       // 5
-		gen(token.Terminator, "\n"), //
-		gen(token.Identifier, "a"),  // 7
-		gen(token.EQU, "=="),        // 8
-		gen(token.Number, "2"),      // 9
-		gen(token.Colon, ":"),       // 10
-		gen(token.Terminator, "\n"), //
-		gen(token.Identifier, "a"),  // 12
-		gen(token.EQU, "=="),        // 13
-		gen(token.Number, "3"),      // 14
-		gen(token.Colon, ":"),       // 15
-		gen(token.Terminator, "\n"), //
-		gen(token.End, "end"),       // 17
-		gen(token.Terminator, "\n"),
+		gen(token.When, "when"),    // 0
+		gen(token.Newline, "\n"),   //
+		gen(token.Identifier, "a"), // 2
+		gen(token.EQU, "=="),       // 3
+		gen(token.Number, "1"),     // 4
+		gen(token.Colon, ":"),      // 5
+		gen(token.Newline, "\n"),   //
+		gen(token.Identifier, "a"), // 7
+		gen(token.EQU, "=="),       // 8
+		gen(token.Number, "2"),     // 9
+		gen(token.Colon, ":"),      // 10
+		gen(token.Newline, "\n"),   //
+		gen(token.Identifier, "a"), // 12
+		gen(token.EQU, "=="),       // 13
+		gen(token.Number, "3"),     // 14
+		gen(token.Colon, ":"),      // 15
+		gen(token.Newline, "\n"),   //
+		gen(token.End, "end"),      // 17
+		gen(token.Newline, "\n"),
 	}
 
 	firstCase := binOp(
@@ -192,15 +192,15 @@ func Test_when_6(t *testing.T) {
 	//   is 1:
 	// end
 	given := []token.Token{
-		gen(token.When, "when"),     // 0
-		gen(token.Identifier, "a"),  // 1
-		gen(token.Terminator, "\n"), //
-		gen(token.Is, "is"),         // 3
-		gen(token.Number, "1"),      // 4
-		gen(token.Colon, ":"),       // 5
-		gen(token.Terminator, "\n"), //
-		gen(token.End, "end"),       // 7
-		gen(token.Terminator, "\n"),
+		gen(token.When, "when"),    // 0
+		gen(token.Identifier, "a"), // 1
+		gen(token.Newline, "\n"),   //
+		gen(token.Is, "is"),        // 3
+		gen(token.Number, "1"),     // 4
+		gen(token.Colon, ":"),      // 5
+		gen(token.Newline, "\n"),   //
+		gen(token.End, "end"),      // 7
+		gen(token.Newline, "\n"),
 	}
 
 	firstCase := is(
@@ -231,23 +231,23 @@ func Test_when_7(t *testing.T) {
 	//   is 3:
 	// end
 	given := []token.Token{
-		gen(token.When, "when"),     // 0
-		gen(token.Identifier, "a"),  // 1
-		gen(token.Terminator, "\n"), //
-		gen(token.Is, "is"),         // 3
-		gen(token.Number, "1"),      // 4
-		gen(token.Colon, ":"),       // 5
-		gen(token.Terminator, "\n"), //
-		gen(token.Is, "is"),         // 7
-		gen(token.Number, "2"),      // 8
-		gen(token.Colon, ":"),       // 9
-		gen(token.Terminator, "\n"), //
-		gen(token.Is, "is"),         // 11
-		gen(token.Number, "3"),      // 12
-		gen(token.Colon, ":"),       // 13
-		gen(token.Terminator, "\n"), //
-		gen(token.End, "end"),       // 15
-		gen(token.Terminator, "\n"),
+		gen(token.When, "when"),    // 0
+		gen(token.Identifier, "a"), // 1
+		gen(token.Newline, "\n"),   //
+		gen(token.Is, "is"),        // 3
+		gen(token.Number, "1"),     // 4
+		gen(token.Colon, ":"),      // 5
+		gen(token.Newline, "\n"),   //
+		gen(token.Is, "is"),        // 7
+		gen(token.Number, "2"),     // 8
+		gen(token.Colon, ":"),      // 9
+		gen(token.Newline, "\n"),   //
+		gen(token.Is, "is"),        // 11
+		gen(token.Number, "3"),     // 12
+		gen(token.Colon, ":"),      // 13
+		gen(token.Newline, "\n"),   //
+		gen(token.End, "end"),      // 15
+		gen(token.Newline, "\n"),
 	}
 
 	firstCase := is(
@@ -291,29 +291,29 @@ func Test_when_9(t *testing.T) {
 	//   a == 4:
 	// end
 	given := []token.Token{
-		gen(token.When, "when"),     // 0
-		gen(token.Identifier, "a"),  // 1
-		gen(token.Terminator, "\n"), //
-		gen(token.Is, "is"),         // 3
-		gen(token.Number, "1"),      // 4
-		gen(token.Colon, ":"),       // 5
-		gen(token.Terminator, "\n"), //
-		gen(token.Identifier, "a"),  // 7
-		gen(token.EQU, "=="),        // 8
-		gen(token.Number, "2"),      // 9
-		gen(token.Colon, ":"),       // 10
-		gen(token.Terminator, "\n"), //
-		gen(token.Is, "is"),         // 12
-		gen(token.Number, "3"),      // 13
-		gen(token.Colon, ":"),       // 14
-		gen(token.Terminator, "\n"), //
-		gen(token.Identifier, "a"),  // 16
-		gen(token.EQU, "=="),        // 17
-		gen(token.Number, "4"),      // 18
-		gen(token.Colon, ":"),       // 19
-		gen(token.Terminator, "\n"), //
-		gen(token.End, "end"),       // 21
-		gen(token.Terminator, "\n"),
+		gen(token.When, "when"),    // 0
+		gen(token.Identifier, "a"), // 1
+		gen(token.Newline, "\n"),   //
+		gen(token.Is, "is"),        // 3
+		gen(token.Number, "1"),     // 4
+		gen(token.Colon, ":"),      // 5
+		gen(token.Newline, "\n"),   //
+		gen(token.Identifier, "a"), // 7
+		gen(token.EQU, "=="),       // 8
+		gen(token.Number, "2"),     // 9
+		gen(token.Colon, ":"),      // 10
+		gen(token.Newline, "\n"),   //
+		gen(token.Is, "is"),        // 12
+		gen(token.Number, "3"),     // 13
+		gen(token.Colon, ":"),      // 14
+		gen(token.Newline, "\n"),   //
+		gen(token.Identifier, "a"), // 16
+		gen(token.EQU, "=="),       // 17
+		gen(token.Number, "4"),     // 18
+		gen(token.Colon, ":"),      // 19
+		gen(token.Newline, "\n"),   //
+		gen(token.End, "end"),      // 21
+		gen(token.Newline, "\n"),
 	}
 
 	firstCase := is(
@@ -364,23 +364,23 @@ func Test_when_10(t *testing.T) {
 	//   true:
 	// end
 	given := []token.Token{
-		gen(token.When, "when"),     // 0
-		gen(token.Identifier, "a"),  // 1
-		gen(token.Terminator, "\n"), //
-		gen(token.Is, "is"),         // 3
-		gen(token.Number, "1"),      // 4
-		gen(token.Colon, ":"),       // 5
-		gen(token.Terminator, "\n"), //
-		gen(token.Identifier, "a"),  // 7
-		gen(token.EQU, "=="),        // 8
-		gen(token.Number, "2"),      // 9
-		gen(token.Colon, ":"),       // 10
-		gen(token.Terminator, "\n"), //
-		gen(token.True, "true"),     // 12
-		gen(token.Colon, ":"),       // 13
-		gen(token.Terminator, "\n"), //
-		gen(token.End, "end"),       // 15
-		gen(token.Terminator, "\n"),
+		gen(token.When, "when"),    // 0
+		gen(token.Identifier, "a"), // 1
+		gen(token.Newline, "\n"),   //
+		gen(token.Is, "is"),        // 3
+		gen(token.Number, "1"),     // 4
+		gen(token.Colon, ":"),      // 5
+		gen(token.Newline, "\n"),   //
+		gen(token.Identifier, "a"), // 7
+		gen(token.EQU, "=="),       // 8
+		gen(token.Number, "2"),     // 9
+		gen(token.Colon, ":"),      // 10
+		gen(token.Newline, "\n"),   //
+		gen(token.True, "true"),    // 12
+		gen(token.Colon, ":"),      // 13
+		gen(token.Newline, "\n"),   //
+		gen(token.End, "end"),      // 15
+		gen(token.Newline, "\n"),
 	}
 
 	firstCase := is(
@@ -421,14 +421,14 @@ func Test_when_11(t *testing.T) {
 	//
 	// Missing colon
 	given := []token.Token{
-		gen(token.When, "when"),     // 0
-		gen(token.Identifier, "a"),  // 1
-		gen(token.Terminator, "\n"), //
-		gen(token.Is, "is"),         // 3
-		gen(token.Number, "1"),      // 4
-		gen(token.Terminator, "\n"), //
-		gen(token.End, "end"),       // 6
-		gen(token.Terminator, "\n"),
+		gen(token.When, "when"),    // 0
+		gen(token.Identifier, "a"), // 1
+		gen(token.Newline, "\n"),   //
+		gen(token.Is, "is"),        // 3
+		gen(token.Number, "1"),     // 4
+		gen(token.Newline, "\n"),   //
+		gen(token.End, "end"),      // 6
+		gen(token.Newline, "\n"),
 	}
 
 	doErrorTest(t, given,
@@ -449,15 +449,15 @@ func Test_when_12(t *testing.T) {
 	//
 	// Missing colon
 	given := []token.Token{
-		gen(token.When, "when"),     // 0
-		gen(token.Identifier, "a"),  // 1
-		gen(token.Terminator, "\n"), //
-		gen(token.Identifier, "a"),  // 3
-		gen(token.EQU, "=="),        // 4
-		gen(token.Number, "1"),      // 5
-		gen(token.Terminator, "\n"), //
-		gen(token.End, "end"),       // 6
-		gen(token.Terminator, "\n"),
+		gen(token.When, "when"),    // 0
+		gen(token.Identifier, "a"), // 1
+		gen(token.Newline, "\n"),   //
+		gen(token.Identifier, "a"), // 3
+		gen(token.EQU, "=="),       // 4
+		gen(token.Number, "1"),     // 5
+		gen(token.Newline, "\n"),   //
+		gen(token.End, "end"),      // 6
+		gen(token.Newline, "\n"),
 	}
 
 	doErrorTest(t, given,
@@ -475,15 +475,15 @@ func Test_when_13(t *testing.T) {
 	// when
 	//   a == 1:
 	given := []token.Token{
-		gen(token.When, "when"),     // 0
-		gen(token.Identifier, "a"),  // 1
-		gen(token.Terminator, "\n"), //
-		gen(token.Identifier, "a"),  // 3
-		gen(token.EQU, "=="),        // 4
-		gen(token.Number, "1"),      // 5
-		gen(token.Colon, ":"),       // 6
-		gen(token.Terminator, "\n"),
-		gen(token.Terminator, "\n"),
+		gen(token.When, "when"),    // 0
+		gen(token.Identifier, "a"), // 1
+		gen(token.Newline, "\n"),   //
+		gen(token.Identifier, "a"), // 3
+		gen(token.EQU, "=="),       // 4
+		gen(token.Number, "1"),     // 5
+		gen(token.Colon, ":"),      // 6
+		gen(token.Newline, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	doErrorTest(t, given,
@@ -502,14 +502,14 @@ func Test_when_14(t *testing.T) {
 	//   is:
 	// end
 	given := []token.Token{
-		gen(token.When, "when"),     // 0
-		gen(token.Identifier, "a"),  // 1
-		gen(token.Terminator, "\n"), //
-		gen(token.Is, "is"),         // 3
-		gen(token.Colon, ":"),       // 4
-		gen(token.Terminator, "\n"), //
-		gen(token.End, "end"),       // 6
-		gen(token.Terminator, "\n"),
+		gen(token.When, "when"),    // 0
+		gen(token.Identifier, "a"), // 1
+		gen(token.Newline, "\n"),   //
+		gen(token.Is, "is"),        // 3
+		gen(token.Colon, ":"),      // 4
+		gen(token.Newline, "\n"),   //
+		gen(token.End, "end"),      // 6
+		gen(token.Newline, "\n"),
 	}
 
 	doErrorTest(t, given,
@@ -528,14 +528,14 @@ func Test_when_15(t *testing.T) {
 	//   true: 1
 	// end
 	given := []token.Token{
-		gen(token.When, "when"),     // 0
-		gen(token.Terminator, "\n"), //
-		gen(token.True, "true"),     // 2
-		gen(token.Colon, ":"),       // 3
-		gen(token.Number, "1"),      // 4
-		gen(token.Terminator, "\n"), //
-		gen(token.End, "end"),       // 6
-		gen(token.Terminator, "\n"),
+		gen(token.When, "when"),  // 0
+		gen(token.Newline, "\n"), //
+		gen(token.True, "true"),  // 2
+		gen(token.Colon, ":"),    // 3
+		gen(token.Number, "1"),   // 4
+		gen(token.Newline, "\n"), //
+		gen(token.End, "end"),    // 6
+		gen(token.Newline, "\n"),
 	}
 
 	firstCase := lit(given[2])
@@ -567,23 +567,23 @@ func Test_when_16(t *testing.T) {
 		gen(token.Identifier, "a"), // 1
 		gen(token.Newline, "\n"),   //
 
-		gen(token.Is, "is"),         // 3
-		gen(token.Number, "0"),      // 4
-		gen(token.Colon, ":"),       // 5
-		gen(token.Identifier, "a"),  // 6
-		gen(token.Assign, "="),      // 7
-		gen(token.Number, "1"),      // 8
-		gen(token.Terminator, "\n"), //
+		gen(token.Is, "is"),        // 3
+		gen(token.Number, "0"),     // 4
+		gen(token.Colon, ":"),      // 5
+		gen(token.Identifier, "a"), // 6
+		gen(token.Assign, "="),     // 7
+		gen(token.Number, "1"),     // 8
+		gen(token.Newline, "\n"),   //
 
-		gen(token.True, "true"),     // 10
-		gen(token.Colon, ":"),       // 11
-		gen(token.Number, "2"),      // 12
-		gen(token.EQU, "=="),        // 13
-		gen(token.Number, "3"),      // 14
-		gen(token.Terminator, "\n"), //
+		gen(token.True, "true"),  // 10
+		gen(token.Colon, ":"),    // 11
+		gen(token.Number, "2"),   // 12
+		gen(token.EQU, "=="),     // 13
+		gen(token.Number, "3"),   // 14
+		gen(token.Newline, "\n"), //
 
 		gen(token.End, "end"), // 16
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	subject := varExpr(given[1])

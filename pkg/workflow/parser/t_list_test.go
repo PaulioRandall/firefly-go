@@ -16,7 +16,7 @@ func Test_list_1(t *testing.T) {
 		gen(token.BracketOpen, "["),  // 0
 		gen(token.Number, "1"),       // 1
 		gen(token.BracketClose, "]"), // 2
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	values := exprs(
@@ -42,7 +42,7 @@ func Test_list_2(t *testing.T) {
 		gen(token.Comma, ","),        // 2
 		gen(token.Number, "2"),       // 3
 		gen(token.BracketClose, "]"), // 4
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	values := exprs(
@@ -73,7 +73,7 @@ func Test_list_3(t *testing.T) {
 		gen(token.Comma, ","),        // 6
 		gen(token.Identifier, "x"),   // 7
 		gen(token.BracketClose, "]"), // 8
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	values := exprs(
@@ -103,7 +103,7 @@ func Test_list_4(t *testing.T) {
 		gen(token.True, "true"),      // 3
 		gen(token.Comma, ","),        // 4
 		gen(token.BracketClose, "]"), // 5
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	values := exprs(
@@ -127,7 +127,7 @@ func Test_list_5(t *testing.T) {
 	given := []token.Token{
 		gen(token.BracketOpen, "["),  // 0
 		gen(token.BracketClose, "]"), // 1
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	exp := listExpr(
@@ -146,7 +146,7 @@ func Test_list_6(t *testing.T) {
 	given := []token.Token{
 		gen(token.BracketOpen, "["), // 0
 		gen(token.Number, "1"),      // 1
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	doErrorTest(t, given,
@@ -169,7 +169,7 @@ func Test_list_7(t *testing.T) {
 		gen(token.Number, "1"),      // 1
 		gen(token.Comma, ","),       // 2
 		gen(token.True, "true"),     // 3
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	doErrorTest(t, given,
@@ -193,7 +193,7 @@ func Test_list_8(t *testing.T) {
 		gen(token.Comma, ","),        // 2
 		gen(token.Comma, ","),        // 3
 		gen(token.BracketClose, "]"), // 4
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	doErrorTest(t, given,
@@ -214,7 +214,7 @@ func Test_list_9(t *testing.T) {
 		gen(token.BracketOpen, "["),  // 0
 		gen(token.Comma, ","),        // 1
 		gen(token.BracketClose, "]"), // 2
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	doErrorTest(t, given,

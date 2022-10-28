@@ -16,9 +16,9 @@ func Test_if_1(t *testing.T) {
 	given := []token.Token{
 		gen(token.If, "if"),
 		gen(token.True, "true"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 		gen(token.End, "end"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	exp := ifStmt(
@@ -40,13 +40,13 @@ func Test_if_2(t *testing.T) {
 	given := []token.Token{
 		gen(token.If, "if"),
 		gen(token.True, "true"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 		gen(token.Identifier, "a"),
 		gen(token.Assign, "="), // 4
 		gen(token.Number, "0"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 		gen(token.End, "end"),
-		gen(token.Terminator, "\n"), // 8
+		gen(token.Newline, "\n"), // 8
 	}
 
 	body := stmts(
@@ -77,12 +77,12 @@ func Test_if_3(t *testing.T) {
 	given := []token.Token{
 		gen(token.If, "if"),
 		gen(token.True, "true"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 		gen(token.Identifier, "a"),
 		gen(token.Assign, "="),
 		gen(token.Number, "0"),
-		gen(token.Terminator, "\n"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	doErrorTest(t, given,
@@ -105,7 +105,7 @@ func Test_if_4(t *testing.T) {
 		gen(token.If, "if"),
 		gen(token.True, "true"),
 		gen(token.End, "end"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	doErrorTest(t, given,
@@ -126,9 +126,9 @@ func Test_if_5(t *testing.T) {
 	// Missing condition expression
 	given := []token.Token{
 		gen(token.If, "if"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 		gen(token.End, "end"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	doErrorTest(t, given,

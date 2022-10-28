@@ -57,9 +57,7 @@ func expectWhenCase(a auditor) ast.WhenCase {
 	a.expect(token.Colon)
 
 	var body ast.Stmt
-	if a.is(token.Terminator) {
-		expectEndOfStmt(a)
-	} else {
+	if !a.accept(token.Newline) {
 		body = expectStatement(a)
 	}
 

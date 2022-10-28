@@ -112,11 +112,11 @@ func expectStatement(a auditor) ast.Stmt {
 
 func expectEndOfStmt(a auditor) {
 	defer wrapPanic(func(e error) error {
-		return ErrMissingTerminator.Wrap(e, "Missing terminator at end of statement")
+		return ErrMissingTerminator.Wrap(e, "Missing newline")
 	})
 
-	if !a.accept(token.Terminator) && !a.accept(token.Newline) {
-		panic(a.unexpectedToken("Terminator or newline", a.Peek()))
+	if !a.accept(token.Newline) {
+		panic(a.unexpectedToken("Newline", a.Peek()))
 	}
 }
 

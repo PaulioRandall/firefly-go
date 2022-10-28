@@ -26,7 +26,7 @@ func Test_expr_1(t *testing.T) {
 		gen(token.Number, "1"),
 		gen(token.Add, "+"),
 		gen(token.Number, "2"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	)
 }
 
@@ -38,7 +38,7 @@ func Test_expr_2(t *testing.T) {
 		gen(token.Number, "1"),
 		gen(token.Sub, "-"),
 		gen(token.Number, "2"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	)
 }
 
@@ -50,7 +50,7 @@ func Test_expr_3(t *testing.T) {
 		gen(token.Number, "1"),
 		gen(token.Mul, "*"),
 		gen(token.Number, "2"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	)
 }
 
@@ -62,7 +62,7 @@ func Test_expr_4(t *testing.T) {
 		gen(token.Number, "1"),
 		gen(token.Div, "/"),
 		gen(token.Number, "2"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	)
 }
 
@@ -74,7 +74,7 @@ func Test_expr_5(t *testing.T) {
 		gen(token.Number, "1"),
 		gen(token.Mod, "%"),
 		gen(token.Number, "2"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	)
 }
 
@@ -86,7 +86,7 @@ func Test_expr_6(t *testing.T) {
 		gen(token.Number, "1"),
 		gen(token.LT, "<"),
 		gen(token.Number, "2"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	)
 }
 
@@ -98,7 +98,7 @@ func Test_expr_7(t *testing.T) {
 		gen(token.Number, "1"),
 		gen(token.GT, ">"),
 		gen(token.Number, "2"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	)
 }
 
@@ -110,7 +110,7 @@ func Test_expr_8(t *testing.T) {
 		gen(token.Number, "1"),
 		gen(token.LTE, "<="),
 		gen(token.Number, "2"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	)
 }
 
@@ -122,7 +122,7 @@ func Test_expr_9(t *testing.T) {
 		gen(token.Number, "1"),
 		gen(token.GTE, ">="),
 		gen(token.Number, "2"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	)
 }
 
@@ -134,7 +134,7 @@ func Test_expr_10(t *testing.T) {
 		gen(token.Number, "1"),
 		gen(token.EQU, "=="),
 		gen(token.Number, "2"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	)
 }
 
@@ -146,7 +146,7 @@ func Test_expr_11(t *testing.T) {
 		gen(token.Number, "1"),
 		gen(token.NEQ, "!="),
 		gen(token.Number, "2"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	)
 }
 
@@ -161,7 +161,7 @@ func Test_expr_12(t *testing.T) {
 		gen(token.Number, "2"),
 		gen(token.Add, "+"),
 		gen(token.Number, "3"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	// 1 + 2
@@ -192,7 +192,7 @@ func Test_expr_13(t *testing.T) {
 		gen(token.Number, "2"),
 		gen(token.Mul, "*"),
 		gen(token.Number, "3"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	// 2 * 3
@@ -223,7 +223,7 @@ func Test_expr_14(t *testing.T) {
 		gen(token.Number, "2"),
 		gen(token.Add, "+"),
 		gen(token.Number, "3"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	// 1 * 2
@@ -256,7 +256,7 @@ func Test_expr_15(t *testing.T) {
 		gen(token.Number, "3"),
 		gen(token.Mul, "*"),
 		gen(token.Number, "4"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	// 1 * 2
@@ -293,7 +293,7 @@ func Test_expr_16(t *testing.T) {
 		gen(token.Add, "+"),
 		gen(token.Number, "2"),
 		gen(token.ParenClose, ")"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	// 1 + 2
@@ -318,7 +318,7 @@ func Test_expr_17(t *testing.T) {
 		gen(token.ParenClose, ")"), // 4
 		gen(token.Mul, "*"),        // 5
 		gen(token.Number, "3"),     // 6
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	// (1 + 2)
@@ -350,7 +350,7 @@ func Test_expr_18(t *testing.T) {
 		gen(token.Add, "+"),        // 4
 		gen(token.Number, "3"),     // 5
 		gen(token.ParenClose, ")"), // 6
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	// (2 + 3)
@@ -386,7 +386,7 @@ func Test_expr_19(t *testing.T) {
 		gen(token.Add, "+"),        // 8
 		gen(token.Number, "4"),     // 9
 		gen(token.ParenClose, ")"), // 10
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	// (1 + 2)
@@ -429,7 +429,7 @@ func Test_expr_20(t *testing.T) {
 		gen(token.Div, "/"),        // 8
 		gen(token.Number, "4"),     // 9
 		gen(token.ParenClose, ")"), // 10
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	// (2 + 3)
@@ -472,7 +472,7 @@ func Test_expr_21(t *testing.T) {
 		gen(token.Number, "4"),     // 8
 		gen(token.ParenClose, ")"), // 9
 		gen(token.ParenClose, ")"), // 10
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	// (3 - 4)
@@ -513,7 +513,7 @@ func Test_expr_22(t *testing.T) {
 		gen(token.ParenClose, ")"), // 6
 		gen(token.ParenClose, ")"), // 7
 		gen(token.ParenClose, ")"), // 8
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	// (((1 + 2))))
@@ -534,7 +534,7 @@ func Test_expr_23(t *testing.T) {
 		gen(token.ParenOpen, "("),  // 0
 		gen(token.Number, "1"),     // 1
 		gen(token.ParenClose, ")"), // 2
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	// (1)
@@ -550,7 +550,7 @@ func Test_expr_25(t *testing.T) {
 	given := []token.Token{
 		gen(token.Number, "1"), // 0
 		gen(token.Add, "+"),    // 1
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	doErrorTest(t, given,
@@ -569,7 +569,7 @@ func Test_expr_26(t *testing.T) {
 	given := []token.Token{
 		gen(token.ParenOpen, "("), // 0
 		gen(token.Number, "1"),    // 1
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	doErrorTest(t, given,
@@ -588,7 +588,7 @@ func Test_expr_27(t *testing.T) {
 	given := []token.Token{
 		gen(token.ParenOpen, "("),  // 0
 		gen(token.ParenClose, ")"), // 1
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	doErrorTest(t, given,

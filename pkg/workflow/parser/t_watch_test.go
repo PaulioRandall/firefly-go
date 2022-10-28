@@ -14,11 +14,11 @@ func Test_watch_1(t *testing.T) {
 	// watch e
 	// end
 	given := []token.Token{
-		gen(token.Watch, "watch"),   // 0
-		gen(token.Identifier, "e"),  // 1
-		gen(token.Terminator, "\n"), // 2
-		gen(token.End, "end"),       // 3
-		gen(token.Terminator, "\n"),
+		gen(token.Watch, "watch"),  // 0
+		gen(token.Identifier, "e"), // 1
+		gen(token.Newline, "\n"),   // 2
+		gen(token.End, "end"),      // 3
+		gen(token.Newline, "\n"),
 	}
 
 	exp := watchStmt(
@@ -38,13 +38,13 @@ func Test_watch_2(t *testing.T) {
 	//   true
 	// end
 	given := []token.Token{
-		gen(token.Watch, "watch"),   // 0
-		gen(token.Identifier, "e"),  // 1
-		gen(token.Terminator, "\n"), // 2
-		gen(token.True, "true"),     // 3
-		gen(token.Terminator, "\n"), // 4
-		gen(token.End, "end"),       // 5
-		gen(token.Terminator, "\n"),
+		gen(token.Watch, "watch"),  // 0
+		gen(token.Identifier, "e"), // 1
+		gen(token.Newline, "\n"),   // 2
+		gen(token.True, "true"),    // 3
+		gen(token.Newline, "\n"),   // 4
+		gen(token.End, "end"),      // 5
+		gen(token.Newline, "\n"),
 	}
 
 	body := stmts(
@@ -71,15 +71,15 @@ func Test_watch_3(t *testing.T) {
 	given := []token.Token{
 		gen(token.Watch, "watch"),    // 0
 		gen(token.Identifier, "e"),   // 1
-		gen(token.Terminator, "\n"),  // 2
+		gen(token.Newline, "\n"),     // 2
 		gen(token.True, "true"),      // 3
-		gen(token.Terminator, "\n"),  // 4
+		gen(token.Newline, "\n"),     // 4
 		gen(token.Identifier, "e"),   // 5
 		gen(token.Assign, "="),       // 6
 		gen(token.String, `"error"`), // 7
-		gen(token.Terminator, "\n"),  // 8
+		gen(token.Newline, "\n"),     // 8
 		gen(token.End, "end"),        // 9
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	body := stmts(
@@ -108,10 +108,10 @@ func Test_watch_4(t *testing.T) {
 	//
 	// Missing 'end' of block
 	given := []token.Token{
-		gen(token.Watch, "watch"),   // 0
-		gen(token.Identifier, "e"),  // 1
-		gen(token.Terminator, "\n"), // 2
-		gen(token.Terminator, "\n"),
+		gen(token.Watch, "watch"),  // 0
+		gen(token.Identifier, "e"), // 1
+		gen(token.Newline, "\n"),   // 2
+		gen(token.Newline, "\n"),
 	}
 
 	doErrorTest(t, given,
@@ -133,7 +133,7 @@ func Test_watch_5(t *testing.T) {
 		gen(token.Watch, "watch"),  // 0
 		gen(token.Identifier, "e"), // 1
 		gen(token.End, "end"),      // 2
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	doErrorTest(t, given,
@@ -153,11 +153,11 @@ func Test_watch_6(t *testing.T) {
 	//
 	// Subject must be a variable
 	given := []token.Token{
-		gen(token.Watch, "watch"),   // 0
-		gen(token.Number, "1"),      // 1
-		gen(token.Terminator, "\n"), // 2
-		gen(token.End, "end"),       // 3
-		gen(token.Terminator, "\n"),
+		gen(token.Watch, "watch"), // 0
+		gen(token.Number, "1"),    // 1
+		gen(token.Newline, "\n"),  // 2
+		gen(token.End, "end"),     // 3
+		gen(token.Newline, "\n"),
 	}
 
 	doErrorTest(t, given,

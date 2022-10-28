@@ -16,7 +16,7 @@ func Test_assign_1(t *testing.T) {
 		gen(token.Identifier, "a"),
 		gen(token.Assign, "="),
 		gen(token.Number, "0"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	exp := assStmt(
@@ -40,7 +40,7 @@ func Test_assign_2(t *testing.T) {
 		gen(token.Number, "0"),
 		gen(token.Comma, ","),
 		gen(token.Number, "1"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	exp := assStmt(
@@ -68,7 +68,7 @@ func Test_assign_3(t *testing.T) {
 		gen(token.Number, "0"),
 		gen(token.Comma, ","),
 		gen(token.String, `""`), // 10
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	exp := assStmt(
@@ -93,7 +93,7 @@ func Test_assign_4(t *testing.T) {
 		gen(token.Number, "0"),
 		gen(token.Comma, ","),
 		gen(token.Number, "1"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	doErrorTest(t, given,
@@ -117,7 +117,7 @@ func Test_assign_5(t *testing.T) {
 		gen(token.Number, "0"),
 		gen(token.Comma, ","),
 		gen(token.Number, "1"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	doErrorTest(t, given,
@@ -141,7 +141,7 @@ func Test_assign_6(t *testing.T) {
 		gen(token.Assign, "="),
 		gen(token.Number, "0"),
 		gen(token.Number, "1"),
-		gen(token.Terminator, "\n"),
+		gen(token.Newline, "\n"),
 	}
 
 	doErrorTest(t, given,
