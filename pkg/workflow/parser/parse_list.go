@@ -8,6 +8,8 @@ import (
 )
 
 var (
+	ErrMissingBracketClose = err.Trackable("Missing closing bracket")
+
 	ErrBadList = err.Trackable("Failed to parse list")
 )
 
@@ -24,8 +26,16 @@ func acceptList(a auditor) (ast.List, bool) {
 	n := ast.List{
 		Opener: a.Read(),
 		Values: acceptExprsUntil(a, token.BracketClose),
-		Closer: a.expect(token.BracketClose),
+		Closer: parseBracketClose(a),
 	}
 
 	return n, true
+}
+
+func parseBracketClose(a auditor) token.Token {
+	defer wrapPanic(func(e error) error {
+		return ErrMissingBracketClose.Wrap(e, "Bad list syntax")
+	})
+
+	return a.expect(token.BracketClose)
 }
