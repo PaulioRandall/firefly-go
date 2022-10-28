@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	ErrBadWatch = err.Trackable("Failed to parse watch statement")
+	ErrBadWatchStmt = err.Trackable("Failed to parse watch statement")
 )
 
 func acceptWatch(a auditor) (ast.Watch, bool) {
@@ -20,18 +20,18 @@ func acceptWatch(a auditor) (ast.Watch, bool) {
 
 func expectWatch(a auditor) ast.Watch {
 	defer wrapPanic(func(e error) error {
-		return ErrBadWatch.Wrap(e, "Bad watch statement syntax")
+		return ErrBadWatchStmt.Wrap(e, "Bad watch statement")
 	})
 
 	n := ast.Watch{}
 
 	n.Keyword = a.expect(token.Watch)
-	n.Variable, _ = acceptVariable(a)
+	n.Variable = expectVariable(a)
 
 	expectEndOfStmt(a)
 
 	n.Body = parseStmtBlock(a)
-	n.End = a.expect(token.End)
+	n.End = parseEndOfBlock(a)
 
 	return n
 }

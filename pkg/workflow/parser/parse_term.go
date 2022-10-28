@@ -3,6 +3,12 @@ package parser
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
+
+	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
+)
+
+var (
+	ErrMissingVariable = err.Trackable("Failed to parse variable")
 )
 
 // TERM := VARIABLE | LITERAL | LIST | MAP
@@ -60,6 +66,14 @@ func acceptVariable(a auditor) (ast.Variable, bool) {
 	}
 
 	return n, true
+}
+
+func expectVariable(a auditor) ast.Variable {
+	if n, ok := acceptVariable(a); ok {
+		return n
+	}
+
+	panic(unableToParse(a, ErrMissingVariable, "variable"))
 }
 
 // LITERAL := True | False | Number | String
