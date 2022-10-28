@@ -11,6 +11,13 @@ var (
 	ErrBadWatch = err.Trackable("Failed to parse watch statement")
 )
 
+func acceptWatch(a auditor) (ast.Watch, bool) {
+	if a.isNot(token.Watch) {
+		return ast.Watch{}, false
+	}
+	return expectWatch(a), true
+}
+
 func expectWatch(a auditor) ast.Watch {
 	defer wrapPanic(func(e error) error {
 		return ErrBadWatch.Wrap(e, "Bad watch statement syntax")

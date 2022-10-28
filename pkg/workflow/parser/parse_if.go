@@ -11,6 +11,13 @@ var (
 	ErrBadIfStmt = err.Trackable("Failed to parse if statement")
 )
 
+func acceptIf(a auditor) (ast.If, bool) {
+	if a.isNot(token.If) {
+		return ast.If{}, false
+	}
+	return expectIf(a), true
+}
+
 func expectIf(a auditor) ast.If {
 	defer wrapPanic(func(e error) error {
 		return ErrBadIfStmt.Wrap(e, "Bad if statement syntax")

@@ -9,7 +9,8 @@ import (
 
 var (
 	ErrMissingStmt = err.Trackable("Missing statement")
-	ErrBadStmt     = err.Trackable("Failed to parse statement")
+
+	ErrBadStmt = err.Trackable("Failed to parse statement")
 )
 
 // STMT_BLOCK := {STATEMENT}
@@ -48,23 +49,23 @@ func acceptInlineStatement(a auditor) (ast.Stmt, bool) {
 		return n, true
 	}
 
+	if n, ok := acceptIf(a); ok {
+		return n, true
+	}
+
 	if n, ok := acceptFor(a); ok {
 		return n, true
 	}
 
-	switch {
-	case a.is(token.If):
-		return expectIf(a), true
-
-	case a.is(token.When):
-		return expectWhen(a), true
-
-	case a.is(token.Watch):
-		return expectWatch(a), true
-
-	default:
-		return nil, false
+	if n, ok := acceptWhen(a); ok {
+		return n, true
 	}
+
+	if n, ok := acceptWatch(a); ok {
+		return n, true
+	}
+
+	return nil, false
 }
 
 // STATEMENT := [STATEMENT]

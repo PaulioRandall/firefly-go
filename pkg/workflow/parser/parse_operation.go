@@ -10,8 +10,9 @@ import (
 var (
 	ErrMissingOperand  = err.Trackable("Missing operand")
 	ErrMissingOperator = err.Trackable("Missing operator")
-	ErrBadOperation    = err.Trackable("Failed to parse operation")
-	ErrBadOperand      = err.Trackable("Failed to parse operand")
+
+	ErrBadOperation = err.Trackable("Failed to parse operation")
+	ErrBadOperand   = err.Trackable("Failed to parse operand")
 )
 
 // TERM := VAR | LITERAL

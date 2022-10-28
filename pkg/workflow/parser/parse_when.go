@@ -13,6 +13,13 @@ var (
 	ErrBadWhenCaseCondition = err.Trackable("Failed to parse when case condition")
 )
 
+func acceptWhen(a auditor) (ast.When, bool) {
+	if a.isNot(token.When) {
+		return ast.When{}, false
+	}
+	return expectWhen(a), true
+}
+
 func expectWhen(a auditor) ast.When {
 	defer wrapPanic(func(e error) error {
 		return ErrBadWhen.Wrap(e, "Bad when statement syntax")

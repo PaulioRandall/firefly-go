@@ -5,13 +5,8 @@ import (
 )
 
 var (
-	ErrForLoopControls = err.Trackable("Bad for loop initialiser, condition, or advancement")
-
 	UnexpectedEOF   = err.Trackable("Unexpected end of file")
 	UnexpectedToken = err.Trackable("Unexpected token")
-
-	MissingVar = err.Trackable("Missing variable")
-	MissingEnd = err.Trackable("Missing end")
 )
 
 func wrapPanic(thunk func(error) error) {

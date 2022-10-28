@@ -9,7 +9,8 @@ import (
 
 var (
 	ErrMissingExpr = err.Trackable("Missing expression")
-	ErrBadExpr     = err.Trackable("Failed to parse expression")
+
+	ErrBadExpr = err.Trackable("Failed to parse expression")
 )
 
 func acceptExprsUntil(a auditor, closer token.TokenType) []ast.Expr {
