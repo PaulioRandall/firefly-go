@@ -104,6 +104,24 @@ func For(
 	}
 }
 
+func ForEach(
+	keyword token.Token,
+	index ast.Variable,
+	item ast.Variable,
+	list ast.Expr,
+	body []ast.Stmt,
+	end token.Token,
+) ast.ForEach {
+	return ast.ForEach{
+		Keyword: keyword,
+		Index:   index,
+		Item:    item,
+		List:    list,
+		Body:    body,
+		End:     end,
+	}
+}
+
 func When(
 	keyword token.Token,
 	subject ast.Expr,

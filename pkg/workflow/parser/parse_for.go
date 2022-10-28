@@ -8,9 +8,28 @@ import (
 )
 
 var (
+	ErrBadLoop           = err.Trackable("Failed to parse loop")
 	ErrBadForLoop        = err.Trackable("Failed to parse for loop")
+	ErrBadForEachLoop    = err.Trackable("Failed to parse for each loop")
 	ErrBadForLoopControl = err.Trackable("Failed to parse for loop controls")
 )
+
+// LOOP := FOR | FOR_EACH
+func acceptLoop(a auditor) (ast.Stmt, bool) {
+	defer wrapPanic(func(e error) error {
+		return ErrBadLoop.Wrap(e, "Bad loop")
+	})
+
+	if n, ok := acceptFor(a); ok {
+		return n, true
+	}
+
+	if n, ok := acceptForEach(a); ok {
+		return n, true
+	}
+
+	return nil, false
+}
 
 // FOR := For FOR_CONTROLS STMT_BLOCK End
 func acceptFor(a auditor) (ast.For, bool) {
@@ -34,6 +53,7 @@ func acceptFor(a auditor) (ast.For, bool) {
 }
 
 // FOR_CONTROLS := [EXPRESSION]
+// FOR_CONTROLS := [STATEMENT] Terminator [EXPRESSION] Terminator [STATEMENT]
 func parseForControls(a auditor) (
 	initialiser ast.Stmt,
 	condition ast.Expr,
@@ -47,7 +67,7 @@ func parseForControls(a auditor) (
 
 	initialiser, ok = acceptInlineStatement(a)
 	if a.accept(token.Terminator) {
-		return parseNumericForControls(a, initialiser)
+		return parseIteratingForControls(a, initialiser)
 	}
 
 	if !ok {
@@ -64,8 +84,7 @@ func parseForControls(a auditor) (
 	return
 }
 
-// FOR_CONTROLS := [STATEMENT] Terminator [EXPRESSION] Terminator [STATEMENT]
-func parseNumericForControls(a auditor, initialiser ast.Stmt) (
+func parseIteratingForControls(a auditor, initialiser ast.Stmt) (
 	ast.Stmt,
 	ast.Expr,
 	ast.Stmt,
@@ -80,3 +99,11 @@ func parseNumericForControls(a auditor, initialiser ast.Stmt) (
 
 	return initialiser, condition, advancement
 }
+
+// FOR_EACH := For FOR_EACH_CONTROLS STMT_BLOCK End
+func acceptForEach(a auditor) (ast.ForEach, bool) {
+	// TODO: Write tests first
+	return ast.ForEach{}, false
+}
+
+// FOR_EACH_CONTROLS := Variable Comma Variable In EXPRESSION

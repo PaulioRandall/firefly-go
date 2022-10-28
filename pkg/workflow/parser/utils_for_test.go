@@ -138,6 +138,17 @@ func forStmt(
 	return asttest.For(keyword, initialiser, condition, advancement, body, end)
 }
 
+func ForEach(
+	keyword token.Token,
+	index ast.Variable,
+	item ast.Variable,
+	list ast.Expr,
+	body []ast.Stmt,
+	end token.Token,
+) ast.ForEach {
+	return asttest.ForEach(keyword, index, item, list, body, end)
+}
+
 func doParseTest(t *testing.T, given []token.Token, exp ...ast.Node) {
 	r := inout.NewListReader(given)
 	w := inout.NewListWriter[ast.Node]()
