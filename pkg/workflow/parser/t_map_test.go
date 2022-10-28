@@ -8,7 +8,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
 )
 
-func Test_parseMap_1(t *testing.T) {
+func Test_map_1(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// {}
@@ -27,7 +27,7 @@ func Test_parseMap_1(t *testing.T) {
 	doParseTest(t, given, exp)
 }
 
-func Test_parseMap_2(t *testing.T) {
+func Test_map_2(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// {"one": 1}
@@ -53,7 +53,7 @@ func Test_parseMap_2(t *testing.T) {
 	doParseTest(t, given, exp)
 }
 
-func Test_parseMap_3(t *testing.T) {
+func Test_map_3(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// {"one": 1, "two": 2}
@@ -84,7 +84,7 @@ func Test_parseMap_3(t *testing.T) {
 	doParseTest(t, given, exp)
 }
 
-func Test_parseMap_4(t *testing.T) {
+func Test_map_4(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// {1: "one", 2: "two"}
@@ -115,7 +115,7 @@ func Test_parseMap_4(t *testing.T) {
 	doParseTest(t, given, exp)
 }
 
-func Test_parseMap_5(t *testing.T) {
+func Test_map_5(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// {1: "one", 2: true, 3: 3, 4: x}
@@ -156,7 +156,7 @@ func Test_parseMap_5(t *testing.T) {
 	doParseTest(t, given, exp)
 }
 
-func Test_parseMap_6(t *testing.T) {
+func Test_map_6(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// {"one": 1,}
@@ -183,10 +183,12 @@ func Test_parseMap_6(t *testing.T) {
 	doParseTest(t, given, exp)
 }
 
-func Test_parseMap_7(t *testing.T) {
+func Test_map_7(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// {"one" 1}
+	//
+	// Missing colon in map entry
 	given := []token.Token{
 		gen(token.BraceOpen, "{"),  // 0
 		gen(token.String, `"one"`), // 1
@@ -195,13 +197,22 @@ func Test_parseMap_7(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, ErrUnexpectedToken)
+	doErrorTest(t, given,
+		ErrUnexpectedToken,
+		ErrBadMapEntry,
+		ErrBadMap,
+		ErrBadExpr,
+		ErrBadStmt,
+		ErrParsing,
+	)
 }
 
-func Test_parseMap_8(t *testing.T) {
+func Test_map_8(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// {"one": 1,,}
+	//
+	// Duplicate comma
 	given := []token.Token{
 		gen(token.BraceOpen, "{"),  // 0
 		gen(token.String, `"one"`), // 1
@@ -213,13 +224,22 @@ func Test_parseMap_8(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, ErrUnexpectedToken)
+	doErrorTest(t, given,
+		ErrUnexpectedToken,
+		ErrBadMapEntry,
+		ErrBadMap,
+		ErrBadExpr,
+		ErrBadStmt,
+		ErrParsing,
+	)
 }
 
-func Test_parseMap_9(t *testing.T) {
+func Test_map_9(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// {: 1}
+	//
+	// Missing key
 	given := []token.Token{
 		gen(token.BraceOpen, "{"),  // 0
 		gen(token.Colon, ":"),      // 2
@@ -228,13 +248,22 @@ func Test_parseMap_9(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, ErrUnexpectedToken)
+	doErrorTest(t, given,
+		ErrUnexpectedToken,
+		ErrBadMapEntry,
+		ErrBadMap,
+		ErrBadExpr,
+		ErrBadStmt,
+		ErrParsing,
+	)
 }
 
-func Test_parseMap_10(t *testing.T) {
+func Test_map_10(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// {"one":}
+	//
+	// Missing value
 	given := []token.Token{
 		gen(token.BraceOpen, "{"),  // 0
 		gen(token.String, `"one"`), // 1
@@ -243,28 +272,47 @@ func Test_parseMap_10(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, ErrUnexpectedToken)
+	doErrorTest(t, given,
+		ErrUnexpectedToken,
+		ErrBadMapEntry,
+		ErrBadMap,
+		ErrBadExpr,
+		ErrBadStmt,
+		ErrParsing,
+	)
 }
 
-func Test_parseMap_11(t *testing.T) {
+func Test_map_11(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// {"one": 1
+	//
+	// Missing closing brace
 	given := []token.Token{
 		gen(token.BraceOpen, "{"),  // 0
 		gen(token.String, `"one"`), // 1
 		gen(token.Colon, ":"),      // 2
 		gen(token.Number, "1"),     // 3
 		gen(token.Terminator, "\n"),
+		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, ErrUnexpectedToken)
+	doErrorTest(t, given,
+		ErrUnexpectedToken,
+		ErrMissingBraceClose,
+		ErrBadMap,
+		ErrBadExpr,
+		ErrBadStmt,
+		ErrParsing,
+	)
 }
 
-func Test_parseMap_12(t *testing.T) {
+func Test_map_12(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// {,}
+	//
+	// Missing map entry
 	given := []token.Token{
 		gen(token.BraceOpen, "{"),  // 0
 		gen(token.Comma, ","),      // 1
@@ -272,13 +320,22 @@ func Test_parseMap_12(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, ErrUnexpectedToken)
+	doErrorTest(t, given,
+		ErrUnexpectedToken,
+		ErrBadMapEntry,
+		ErrBadMap,
+		ErrBadExpr,
+		ErrBadStmt,
+		ErrParsing,
+	)
 }
 
-func Test_parseMap_13(t *testing.T) {
+func Test_map_13(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// {"one" :: 1}
+	//
+	// Duplicate colon
 	given := []token.Token{
 		gen(token.BraceOpen, "{"),  // 0
 		gen(token.String, `"one"`), // 1
@@ -289,5 +346,12 @@ func Test_parseMap_13(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, ErrUnexpectedToken)
+	doErrorTest(t, given,
+		ErrUnexpectedToken,
+		ErrBadMapEntry,
+		ErrBadMap,
+		ErrBadExpr,
+		ErrBadStmt,
+		ErrParsing,
+	)
 }

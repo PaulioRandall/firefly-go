@@ -8,6 +8,8 @@ import (
 )
 
 var (
+	ErrMissingBraceClose = err.Trackable("Missing closing brace")
+
 	ErrBadMap      = err.Trackable("Failed to parse map")
 	ErrBadMapEntry = err.Trackable("Failed to parse map entry")
 )
@@ -25,7 +27,7 @@ func acceptMap(a auditor) (ast.Map, bool) {
 	n := ast.Map{
 		Opener:  a.Read(),
 		Entries: parseMapEntries(a),
-		Closer:  a.expect(token.BraceClose),
+		Closer:  parseBraceClose(a),
 	}
 
 	return n, true
@@ -61,4 +63,12 @@ func parseMapEntry(a auditor) ast.MapEntry {
 		Key:   key,
 		Value: value,
 	}
+}
+
+func parseBraceClose(a auditor) token.Token {
+	defer wrapPanic(func(e error) error {
+		return ErrMissingBraceClose.Wrap(e, "Expected closing brace")
+	})
+
+	return a.expect(token.BraceClose)
 }

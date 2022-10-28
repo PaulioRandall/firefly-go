@@ -34,7 +34,7 @@ func acceptList(a auditor) (ast.List, bool) {
 
 func parseBracketClose(a auditor) token.Token {
 	defer wrapPanic(func(e error) error {
-		return ErrMissingBracketClose.Wrap(e, "Bad list syntax")
+		return ErrMissingBracketClose.Wrap(e, "Expected closing bracket")
 	})
 
 	return a.expect(token.BracketClose)
