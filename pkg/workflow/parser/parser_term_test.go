@@ -8,7 +8,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
 )
 
-func Test_Parse_variable_1(t *testing.T) {
+func Test_Parse_term_1(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// x
@@ -20,7 +20,7 @@ func Test_Parse_variable_1(t *testing.T) {
 	doParseTest(t, given, varExpr(given[0]))
 }
 
-func Test_Parse_literal_1(t *testing.T) {
+func Test_Parse_term_2(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// 1
@@ -32,7 +32,7 @@ func Test_Parse_literal_1(t *testing.T) {
 	doParseTest(t, given, lit(given[0]))
 }
 
-func Test_Parse_literal_2(t *testing.T) {
+func Test_Parse_term_3(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// "abc"
@@ -44,7 +44,7 @@ func Test_Parse_literal_2(t *testing.T) {
 	doParseTest(t, given, lit(given[0]))
 }
 
-func Test_Parse_literal_3(t *testing.T) {
+func Test_Parse_term_4(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// true
@@ -56,7 +56,7 @@ func Test_Parse_literal_3(t *testing.T) {
 	doParseTest(t, given, lit(given[0]))
 }
 
-func Test_Parse_literal_4(t *testing.T) {
+func Test_Parse_term_5(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
 	// false

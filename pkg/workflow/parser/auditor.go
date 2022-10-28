@@ -165,9 +165,9 @@ func (a *auditor) expect_new(want token.TokenType) (token.Token, error) {
 }
 
 func (a *auditor) unexpectedToken(expected, got any) error {
-	return UnexpectedToken.Trackf("Expected token %q but got %q", expected, got)
+	return ErrUnexpectedToken.Trackf("Expected token %q but got %q", expected, got)
 }
 
 func (a *auditor) unexpectedEOF(expected any) error {
-	return UnexpectedEOF.Trackf("Expected token %q but got EOF", expected)
+	return ErrUnexpectedEOF.Trackf("Expected token %q but got EOF", expected)
 }

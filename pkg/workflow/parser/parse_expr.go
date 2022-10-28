@@ -8,9 +8,11 @@ import (
 )
 
 var (
-	ErrMissingExpr = err.Trackable("Missing expression")
+	ErrMissingExpr       = err.Trackable("Missing expression")
+	ErrMissingParenClose = err.Trackable("Missing closing parenthesis")
 
-	ErrBadExpr = err.Trackable("Failed to parse expression")
+	ErrBadExpr      = err.Trackable("Failed to parse expression")
+	ErrBadParenExpr = err.Trackable("Failed to parse parenthesized expression")
 )
 
 func acceptExprsUntil(a auditor, closer token.TokenType) []ast.Expr {
@@ -67,6 +69,10 @@ func expectExpressions(a auditor) []ast.Expr {
 
 // EXPR := PAREN_EXPR | TERM | OPERATION
 func acceptExpression(a auditor) (ast.Expr, bool) {
+	defer wrapPanic(func(e error) error {
+		return ErrBadExpr.Wrap(e, "Bad expression syntax")
+	})
+
 	if left, ok := acceptParenExpr(a); ok {
 		return operation(a, left, 0), true
 	}
@@ -92,14 +98,22 @@ func expectExpression(a auditor) ast.Expr {
 
 // PAREN_EXPR := ParenOpen EXPR ParenClose
 func acceptParenExpr(a auditor) (ast.Expr, bool) {
+	defer wrapPanic(func(e error) error {
+		return ErrBadParenExpr.Wrap(e, "Bad parenthesized expression")
+	})
+
 	if a.isNot(token.ParenOpen) {
 		return nil, false
 	}
 
 	a.Read()
 	n := expectExpression(a)
-	a.expect(token.ParenClose)
 
+	if a.isNot(token.ParenClose) {
+		panic(ErrMissingParenClose.Track("Parenthesized expression was left open"))
+	}
+
+	a.Read()
 	return n, true
 }
 

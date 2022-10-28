@@ -5,8 +5,8 @@ import (
 )
 
 var (
-	UnexpectedEOF   = err.Trackable("Unexpected end of file")
-	UnexpectedToken = err.Trackable("Unexpected token")
+	ErrUnexpectedEOF   = err.Trackable("Unexpected end of file")
+	ErrUnexpectedToken = err.Trackable("Unexpected token")
 )
 
 func wrapPanic(thunk func(error) error) {
@@ -17,10 +17,10 @@ func wrapPanic(thunk func(error) error) {
 
 func badNextToken(a auditor, parsing string) error {
 	if !a.More() {
-		return UnexpectedEOF.Trackf("Expected %s but got EOF", parsing)
+		return ErrUnexpectedEOF.Trackf("Expected %s but got EOF", parsing)
 	}
 
-	return UnexpectedToken.Trackf(
+	return ErrUnexpectedToken.Trackf(
 		"Expected %s but got %s",
 		parsing,
 		a.Peek().String(),

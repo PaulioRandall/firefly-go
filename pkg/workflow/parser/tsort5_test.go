@@ -130,7 +130,7 @@ func Test_parseList_5(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, UnexpectedToken)
+	doErrorTest(t, given, ErrUnexpectedToken)
 }
 
 func Test_parseList_6(t *testing.T) {
@@ -145,7 +145,7 @@ func Test_parseList_6(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, UnexpectedToken)
+	doErrorTest(t, given, ErrUnexpectedToken)
 }
 
 func Test_parseList_7(t *testing.T) {
@@ -161,7 +161,7 @@ func Test_parseList_7(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, UnexpectedToken)
+	doErrorTest(t, given, ErrUnexpectedToken)
 }
 
 func Test_parseList_8(t *testing.T) {
@@ -175,7 +175,7 @@ func Test_parseList_8(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, UnexpectedToken)
+	doErrorTest(t, given, ErrUnexpectedToken)
 }
 
 func Test_parseList_9(t *testing.T) {

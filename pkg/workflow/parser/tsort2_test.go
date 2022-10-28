@@ -66,7 +66,7 @@ func Test_parseAssign_3(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, UnexpectedToken)
+	doErrorTest(t, given, ErrUnexpectedToken)
 }
 
 /* TODO: Move to validator
@@ -131,7 +131,7 @@ func Test_parseAssign_7(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, UnexpectedToken)
+	doErrorTest(t, given, ErrUnexpectedToken)
 }
 
 func Test_parseAssign_8(t *testing.T) {

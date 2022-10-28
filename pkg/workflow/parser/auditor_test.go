@@ -120,7 +120,7 @@ func Test_10_auditor(t *testing.T) {
 		e := recover()
 		require.NotNil(t, e)
 
-		isUnexpectedEOF := err.Is(e.(error), UnexpectedEOF)
+		isUnexpectedEOF := err.Is(e.(error), ErrUnexpectedEOF)
 		require.True(t, isUnexpectedEOF)
 	}()
 
@@ -146,8 +146,8 @@ func Test_12_auditor(t *testing.T) {
 		e := recover()
 		require.NotNil(t, e)
 
-		isUnexpectedToken := err.Is(e.(error), UnexpectedToken)
-		require.True(t, isUnexpectedToken)
+		isErrUnexpectedToken := err.Is(e.(error), ErrUnexpectedToken)
+		require.True(t, isErrUnexpectedToken)
 	}()
 
 	_ = a.expect(token.EQU)

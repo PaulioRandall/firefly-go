@@ -429,7 +429,7 @@ func Test_parseWhen_11(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, UnexpectedToken)
+	doErrorTest(t, given, ErrUnexpectedToken)
 }
 
 func Test_parseWhen_12(t *testing.T) {
@@ -450,7 +450,7 @@ func Test_parseWhen_12(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, UnexpectedToken)
+	doErrorTest(t, given, ErrUnexpectedToken)
 }
 
 func Test_parseWhen_13(t *testing.T) {
@@ -469,7 +469,7 @@ func Test_parseWhen_13(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, UnexpectedEOF)
+	doErrorTest(t, given, ErrUnexpectedEOF)
 }
 
 func Test_parseWhen_14(t *testing.T) {
@@ -489,7 +489,7 @@ func Test_parseWhen_14(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, UnexpectedToken)
+	doErrorTest(t, given, ErrUnexpectedToken)
 }
 
 func Test_parseWhen_15(t *testing.T) {

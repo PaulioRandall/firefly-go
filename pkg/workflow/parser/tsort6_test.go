@@ -195,7 +195,7 @@ func Test_parseMap_7(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, UnexpectedToken)
+	doErrorTest(t, given, ErrUnexpectedToken)
 }
 
 func Test_parseMap_8(t *testing.T) {
@@ -213,7 +213,7 @@ func Test_parseMap_8(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, UnexpectedToken)
+	doErrorTest(t, given, ErrUnexpectedToken)
 }
 
 func Test_parseMap_9(t *testing.T) {
@@ -228,7 +228,7 @@ func Test_parseMap_9(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, UnexpectedToken)
+	doErrorTest(t, given, ErrUnexpectedToken)
 }
 
 func Test_parseMap_10(t *testing.T) {
@@ -243,7 +243,7 @@ func Test_parseMap_10(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, UnexpectedToken)
+	doErrorTest(t, given, ErrUnexpectedToken)
 }
 
 func Test_parseMap_11(t *testing.T) {
@@ -258,7 +258,7 @@ func Test_parseMap_11(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, UnexpectedToken)
+	doErrorTest(t, given, ErrUnexpectedToken)
 }
 
 func Test_parseMap_12(t *testing.T) {
@@ -272,7 +272,7 @@ func Test_parseMap_12(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, UnexpectedToken)
+	doErrorTest(t, given, ErrUnexpectedToken)
 }
 
 func Test_parseMap_13(t *testing.T) {
@@ -289,5 +289,5 @@ func Test_parseMap_13(t *testing.T) {
 		gen(token.Terminator, "\n"),
 	}
 
-	doErrorTest(t, given, UnexpectedToken)
+	doErrorTest(t, given, ErrUnexpectedToken)
 }
