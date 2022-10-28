@@ -3,13 +3,7 @@ package parser
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
-
-	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
-
-var MissingTerm = err.Trackable("Missing term")
-var MissingLiteral = err.Trackable("Missing literal")
-var MissingIdentifier = err.Trackable("Missing identifier")
 
 // TERM := VARIABLE | LITERAL | LIST | MAP
 func acceptTerm(a auditor) (ast.Expr, bool) {

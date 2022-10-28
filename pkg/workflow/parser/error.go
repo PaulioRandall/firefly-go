@@ -14,6 +14,12 @@ var (
 	MissingEnd = err.Trackable("Missing end")
 )
 
+func wrapPanic(thunk func(error) error) {
+	if e := recover(); e != nil {
+		panic(thunk(e.(error)))
+	}
+}
+
 func badNextToken(a auditor, parsing string) error {
 	if !a.More() {
 		return UnexpectedEOF.Trackf("Expected %s but got EOF", parsing)

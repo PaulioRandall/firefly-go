@@ -3,10 +3,14 @@ package parser
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
+
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
 
-var MissingStmt = err.Trackable("Missing statement")
+var (
+	ErrMissingStmt = err.Trackable("Missing statement")
+	ErrBadStmt     = err.Trackable("Failed to parse statement")
+)
 
 // STMT_BLOCK := {STATEMENT}
 func parseStmtBlock(a auditor) []ast.Stmt {
@@ -21,6 +25,10 @@ func parseStmtBlock(a auditor) []ast.Stmt {
 
 // INLINE_STATEMENT := [ASSIGNMENT | EXPR]
 func acceptInlineStatement(a auditor) (ast.Stmt, bool) {
+	defer wrapPanic(func(e error) error {
+		return ErrBadStmt.Wrap(e, "Bad inline statement")
+	})
+
 	var (
 		n  ast.Stmt
 		ok bool
@@ -61,6 +69,10 @@ func acceptInlineStatement(a auditor) (ast.Stmt, bool) {
 
 // STATEMENT := [STATEMENT]
 func acceptStatement(a auditor) (ast.Stmt, bool) {
+	defer wrapPanic(func(e error) error {
+		return ErrBadStmt.Wrap(e, "Bad statement")
+	})
+
 	if n, ok := acceptInlineStatement(a); ok {
 		expectEndOfStmt(a)
 		return n, true
@@ -70,10 +82,15 @@ func acceptStatement(a auditor) (ast.Stmt, bool) {
 
 // STATEMENT := INLINE_STATEMENT Terminator
 func expectStatement(a auditor) ast.Stmt {
+	defer wrapPanic(func(e error) error {
+		return ErrBadStmt.Wrap(e, "Bad statement")
+	})
+
 	if n, ok := acceptStatement(a); ok {
 		return n
 	}
-	panic(MissingStmt.Track("Expected statement"))
+
+	panic(ErrMissingStmt.Track("Expected statement"))
 }
 
 func expectEndOfStmt(a auditor) {

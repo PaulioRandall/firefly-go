@@ -3,10 +3,23 @@ package parser
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
+
+	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
+)
+
+var (
+	ErrMissingOperand  = err.Trackable("Missing operand")
+	ErrMissingOperator = err.Trackable("Missing operator")
+	ErrBadOperation    = err.Trackable("Failed to parse operation")
+	ErrBadOperand      = err.Trackable("Failed to parse operand")
 )
 
 // TERM := VAR | LITERAL
 func acceptOperand(a auditor) (ast.Expr, bool) {
+	defer wrapPanic(func(e error) error {
+		return ErrBadOperand.Wrap(e, "Bad operand syntax")
+	})
+
 	if n, ok := acceptParenExpr(a); ok {
 		return n, true
 	}
@@ -23,11 +36,15 @@ func expectOperand(a auditor) ast.Expr {
 		return n
 	}
 
-	panic(unableToParse(a, MissingExpr, "operand"))
+	panic(unableToParse(a, ErrMissingOperand, "operand"))
 }
 
 // OPERATION := EXPR OPERATOR EXPR
 func operation(a auditor, left ast.Expr, leftOperatorPriorty int) ast.Expr {
+	defer wrapPanic(func(e error) error {
+		return ErrBadOperation.Wrap(e, "Bad operation syntax")
+	})
+
 	if !a.notMatch(token.IsBinaryOperator) {
 		return left
 	}
@@ -61,5 +78,5 @@ func expectOperator(a auditor) token.Token {
 		return a.Read()
 	}
 
-	panic(unableToParse(a, MissingExpr, "any in [Add | Sub | Mul | Div | Mod | LT | GT | LTE | GTE | EQU | NEQ]"))
+	panic(unableToParse(a, ErrMissingOperator, "any in [Add | Sub | Mul | Div | Mod | LT | GT | LTE | GTE | EQU | NEQ]"))
 }

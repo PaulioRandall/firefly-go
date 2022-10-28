@@ -3,10 +3,21 @@ package parser
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
+
+	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
+)
+
+var (
+	ErrBadMap      = err.Trackable("Failed to parse map")
+	ErrBadMapEntry = err.Trackable("Failed to parse map entry")
 )
 
 // MAP := BraceOpen MAP_ENTRIES BraceClose
 func acceptMap(a auditor) (ast.Map, bool) {
+	defer wrapPanic(func(e error) error {
+		return ErrBadMap.Wrap(e, "Bad map syntax")
+	})
+
 	if a.isNot(token.BraceOpen) {
 		return ast.Map{}, false
 	}
@@ -38,6 +49,10 @@ func parseMapEntries(a auditor) []ast.MapEntry {
 
 // MAP_ENTRY := EXPR Colon EXPR
 func parseMapEntry(a auditor) ast.MapEntry {
+	defer wrapPanic(func(e error) error {
+		return ErrBadMapEntry.Wrap(e, "Bad map entry")
+	})
+
 	key := expectExpression(a)
 	a.expect(token.Colon)
 	value := expectExpression(a)

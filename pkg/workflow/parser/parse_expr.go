@@ -7,7 +7,10 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
 
-var MissingExpr = err.Trackable("Missing expression")
+var (
+	ErrMissingExpr = err.Trackable("Missing expression")
+	ErrBadExpr     = err.Trackable("Failed to parse expression")
+)
 
 func acceptExprsUntil(a auditor, closer token.TokenType) []ast.Expr {
 	var nodes []ast.Expr
@@ -75,11 +78,15 @@ func acceptExpression(a auditor) (ast.Expr, bool) {
 }
 
 func expectExpression(a auditor) ast.Expr {
+	defer wrapPanic(func(e error) error {
+		return ErrBadExpr.Wrap(e, "Bad expression syntax")
+	})
+
 	if left, ok := acceptExpression(a); ok {
 		return operation(a, left, 0)
 	}
 
-	panic(unableToParse(a, MissingExpr, "any in [PAREN_EXPR | TERM | LIST | MAP | OPERATION]"))
+	panic(unableToParse(a, ErrMissingExpr, "any in [PAREN_EXPR | TERM | LIST | MAP | OPERATION]"))
 }
 
 // PAREN_EXPR := ParenOpen EXPR ParenClose

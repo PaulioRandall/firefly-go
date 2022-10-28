@@ -3,19 +3,13 @@ package parser
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
+
+	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
 
-func isAssignment(a auditor) bool {
-	if !a.accept(token.Identifier) {
-		return false
-	}
-
-	ident := a.Prev()
-	is := a.isAny(token.Comma, token.Assign)
-
-	a.Putback(ident)
-	return is
-}
+var (
+	ErrBadAssignment = err.Trackable("Failed to parse assignment")
+)
 
 // ASSIGNMENT := VARIABLES Assign EXPRESSIONS
 func acceptAssignment(a auditor) (ast.Assign, bool) {
@@ -23,16 +17,14 @@ func acceptAssignment(a auditor) (ast.Assign, bool) {
 		return ast.Assign{}, false
 	}
 
-	n := ast.Assign{
-		Left:     parseSeriesOfVar(a),
-		Operator: a.expect(token.Assign),
-		Right:    parseSeriesOfExpr(a),
-	}
-
-	return n, true
+	return expectAssignment(a), true
 }
 
 func expectAssignment(a auditor) ast.Assign {
+	defer wrapPanic(func(e error) error {
+		return ErrBadAssignment.Wrap(e, "Expected assignment or bad assignment syntax")
+	})
+
 	return ast.Assign{
 		Left:     parseSeriesOfVar(a),
 		Operator: a.expect(token.Assign),
@@ -47,4 +39,16 @@ func expectAssignment(a auditor) ast.Assign {
 			panic(MissingVar)
 		}
 	*/
+}
+
+func isAssignment(a auditor) bool {
+	if !a.accept(token.Identifier) {
+		return false
+	}
+
+	ident := a.Prev()
+	is := a.isAny(token.Comma, token.Assign)
+
+	a.Putback(ident)
+	return is
 }

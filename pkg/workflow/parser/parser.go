@@ -14,7 +14,10 @@ type WriterOfNodes = inout.Writer[ast.Node]
 
 type PosReaderOfTokens = inout.PosReader[token.Token]
 
-var ErrParsing = err.Trackable("Parsing failed")
+var (
+	ErrParsing = err.Trackable("Failed to parse scroll")
+	ErrWriting = err.Trackable("Failed to write output")
+)
 
 func Parse(r ReaderOfTokens, w WriterOfNodes) (e error) {
 	br := inout.NewBufReader[token.Token](r)
@@ -33,12 +36,16 @@ func Parse(r ReaderOfTokens, w WriterOfNodes) (e error) {
 }
 
 func parseRootStatements(a auditor, w WriterOfNodes) error {
+	defer wrapPanic(func(e error) error {
+		return ErrParsing.Wrap(e, "Failed to parse root statements")
+	})
+
 	a.accept(token.Terminator)
 
 	for a.More() {
 		n := expectStatement(a)
 		if e := w.Write(n); e != nil {
-			return ErrParsing.Wrap(e, "Parser failed to parse statements in the root scope")
+			panic(ErrWriting.Wrap(e, "Couldn't write AST node to output"))
 		}
 	}
 
