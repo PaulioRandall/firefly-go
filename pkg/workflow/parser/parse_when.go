@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	ErrBadWhen              = err.Trackable("Failed to parse when statement")
+	ErrBadWhenStmt          = err.Trackable("Failed to parse when statement")
 	ErrBadWhenCase          = err.Trackable("Failed to parse when case")
 	ErrBadWhenCaseCondition = err.Trackable("Failed to parse when case condition")
 )
@@ -22,7 +22,7 @@ func acceptWhen(a auditor) (ast.When, bool) {
 
 func expectWhen(a auditor) ast.When {
 	defer wrapPanic(func(e error) error {
-		return ErrBadWhen.Wrap(e, "Bad when statement syntax")
+		return ErrBadWhenStmt.Wrap(e, "Bad when statement syntax")
 	})
 
 	n := ast.When{}
@@ -33,7 +33,7 @@ func expectWhen(a auditor) ast.When {
 	expectEndOfStmt(a)
 
 	n.Cases = parseWhenBlock(a)
-	n.End = a.expect(token.End)
+	n.End = parseEndOfBlock(a)
 
 	return n
 }
