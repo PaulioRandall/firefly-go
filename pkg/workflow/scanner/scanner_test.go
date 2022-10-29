@@ -104,10 +104,6 @@ func Test_14(t *testing.T) {
 	assertToken(t, "=", token.Assign)
 }
 
-func Test_15(t *testing.T) {
-	assertToken(t, ":=", token.Define)
-}
-
 func Test_16(t *testing.T) {
 	assertToken(t, ":", token.Colon)
 }
@@ -348,6 +344,10 @@ func Test_109(t *testing.T) {
 	assertError(t, "0.a", ErrMissingFractional)
 }
 
+func Test_110(t *testing.T) {
+	assertToken(t, "def", token.Def)
+}
+
 func Test_200(t *testing.T) {
 	given := "x = 1"
 
@@ -409,10 +409,10 @@ func Test_201(t *testing.T) {
 	mustStartWith(token.Comment, "// A procedure")
 	thenEndWith(token.Newline, "\n")
 
-	line(`f := P(a, b) c, d`)
-	mustStartWith(token.Identifier, "f")
+	line(`def f P(a, b) c, d`)
+	mustStartWith(token.Def, "def")
 	then(token.Space, " ")
-	then(token.Define, ":=")
+	then(token.Identifier, "f")
 	then(token.Space, " ")
 	then(token.Proc, "P")
 	then(token.ParenOpen, "(")

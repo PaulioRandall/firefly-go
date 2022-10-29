@@ -10,7 +10,6 @@ const (
 	Identifier
 
 	Assign // =
-	Define // :=
 	Comma  // ,
 	Colon  // :
 	Spell  // @
@@ -21,6 +20,7 @@ const (
 	_redundant_end
 
 	_keywords_begin
+	Def
 	If
 	For
 	In
@@ -73,6 +73,7 @@ var nameMap = map[TokenType]string{
 	Comment:      "Comment",
 	Number:       "Number",
 	String:       "String",
+	Def:          "Define",
 	If:           "If",
 	For:          "For",
 	In:           "In",
@@ -85,7 +86,6 @@ var nameMap = map[TokenType]string{
 	True:         "True",
 	False:        "False",
 	Assign:       "Assign",
-	Define:       "Define",
 	Comma:        "Comma",
 	Colon:        "Colon",
 	Spell:        "Spell",

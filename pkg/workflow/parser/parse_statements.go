@@ -51,17 +51,7 @@ func acceptInlineStatement(a auditor) (ast.Stmt, bool) {
 		ok bool
 	)
 
-	// TODO:
-	// - for i, v in expr
-	// - spell
-	// - func
-	// - proc
-
 	if n, ok := acceptAssignment(a); ok {
-		return n, true
-	}
-
-	if n, ok = acceptExpression(a); ok {
 		return n, true
 	}
 
@@ -78,6 +68,14 @@ func acceptInlineStatement(a auditor) (ast.Stmt, bool) {
 	}
 
 	if n, ok := acceptWatch(a); ok {
+		return n, true
+	}
+
+	if n, ok := acceptDef(a); ok {
+		return n, true
+	}
+
+	if n, ok = acceptExpression(a); ok {
 		return n, true
 	}
 

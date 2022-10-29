@@ -210,6 +210,8 @@ func scanWord(tb *tokenBuilder, first rune) error {
 	}
 
 	switch tb.String() {
+	case "def":
+		tb.tt = token.Def
 	case "if":
 		tb.tt = token.If
 	case "for":
@@ -292,9 +294,6 @@ func scanOperator(tb *tokenBuilder, first, second rune) error {
 
 	case first == '=':
 		return one(tb, token.Assign)
-
-	case first == ':' && second == '=':
-		return two(tb, token.Define)
 
 	case first == ':':
 		return one(tb, token.Colon)
