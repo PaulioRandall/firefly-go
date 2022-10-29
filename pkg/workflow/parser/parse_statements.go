@@ -69,7 +69,7 @@ func acceptInlineStatement(a auditor) (ast.Stmt, bool) {
 		return n, true
 	}
 
-	if n, ok := acceptFor(a); ok {
+	if n, ok := acceptLoop(a); ok {
 		return n, true
 	}
 

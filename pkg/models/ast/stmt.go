@@ -66,12 +66,11 @@ func (n For) Where() (from, to pos.Pos) {
 
 // For represents a looped block of statements
 type ForEach struct {
-	Keyword token.Token
-	Index   Variable
-	Item    Variable
-	List    Expr
-	Body    []Stmt
-	End     token.Token
+	Keyword  token.Token
+	Vars     SeriesOfVar
+	Iterable Expr
+	Body     []Stmt
+	End      token.Token
 }
 
 func (n ForEach) node() {}

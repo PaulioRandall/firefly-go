@@ -77,6 +77,14 @@ func exprs(tks ...token.Token) []ast.Expr {
 	return asttest.Expressions(tks...)
 }
 
+func seriesOfVar(tks ...token.Token) ast.SeriesOfVar {
+	return asttest.SeriesOfVar(vars(tks...)...)
+}
+
+func seriesOfExpr(tks ...token.Token) ast.SeriesOfExpr {
+	return asttest.SeriesOfExpr(exprs(tks...)...)
+}
+
 func assStmt(left []ast.Variable, op token.Token, right []ast.Expr) ast.Assign {
 	return asttest.Assign(
 		asttest.SeriesOfVar(left...),
@@ -138,15 +146,14 @@ func forStmt(
 	return asttest.For(keyword, initialiser, condition, advancement, body, end)
 }
 
-func ForEach(
+func forEachStmt(
 	keyword token.Token,
-	index ast.Variable,
-	item ast.Variable,
-	list ast.Expr,
+	vars ast.SeriesOfVar,
+	iterable ast.Expr,
 	body []ast.Stmt,
 	end token.Token,
 ) ast.ForEach {
-	return asttest.ForEach(keyword, index, item, list, body, end)
+	return asttest.ForEach(keyword, vars, iterable, body, end)
 }
 
 func doParseTest(t *testing.T, given []token.Token, exp ...ast.Node) {

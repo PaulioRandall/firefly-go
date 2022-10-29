@@ -106,19 +106,17 @@ func For(
 
 func ForEach(
 	keyword token.Token,
-	index ast.Variable,
-	item ast.Variable,
-	list ast.Expr,
+	vars ast.SeriesOfVar,
+	iterable ast.Expr,
 	body []ast.Stmt,
 	end token.Token,
 ) ast.ForEach {
 	return ast.ForEach{
-		Keyword: keyword,
-		Index:   index,
-		Item:    item,
-		List:    list,
-		Body:    body,
-		End:     end,
+		Keyword:  keyword,
+		Vars:     vars,
+		Iterable: iterable,
+		Body:     body,
+		End:      end,
 	}
 }
 

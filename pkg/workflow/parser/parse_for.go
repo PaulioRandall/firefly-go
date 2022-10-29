@@ -4,14 +4,15 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 
+	"github.com/PaulioRandall/firefly-go/pkg/utilities/container"
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
 
 var (
 	ErrBadLoop           = err.Trackable("Failed to parse loop")
 	ErrBadForLoop        = err.Trackable("Failed to parse for loop")
-	ErrBadForEachLoop    = err.Trackable("Failed to parse for each loop")
 	ErrBadForLoopControl = err.Trackable("Failed to parse for loop controls")
+	ErrBadForEachLoop    = err.Trackable("Failed to parse for each loop")
 )
 
 // LOOP := FOR | FOR_EACH
@@ -20,11 +21,11 @@ func acceptLoop(a auditor) (ast.Stmt, bool) {
 		return ErrBadLoop.Wrap(e, "Bad loop")
 	})
 
-	if n, ok := acceptFor(a); ok {
+	if n, ok := acceptForEach(a); ok {
 		return n, true
 	}
 
-	if n, ok := acceptForEach(a); ok {
+	if n, ok := acceptFor(a); ok {
 		return n, true
 	}
 
@@ -100,10 +101,64 @@ func parseIteratingForControls(a auditor, initialiser ast.Stmt) (
 	return initialiser, condition, advancement
 }
 
-// FOR_EACH := For FOR_EACH_CONTROLS STMT_BLOCK End
+// FOR_EACH          := For FOR_EACH_CONTROLS STMT_BLOCK End
+// FOR_EACH_CONTROLS := VARIABLES In EXPRESSION
 func acceptForEach(a auditor) (ast.ForEach, bool) {
-	// TODO: Write tests first
-	return ast.ForEach{}, false
+	defer wrapPanic(func(e error) error {
+		return ErrBadForEachLoop.Wrap(e, "Bad for each loop syntax")
+	})
+
+	if !isForEach(a) {
+		return ast.ForEach{}, false
+	}
+
+	n := ast.ForEach{
+		Keyword: a.expect(token.For),
+	}
+
+	n.Vars = parseSeriesOfVar(a)
+	a.expect(token.In)
+	n.Iterable = expectExpression(a)
+
+	expectEndOfStmt(a)
+
+	n.Body = parseStmtBlock(a)
+	n.End = parseEndOfBlock(a)
+
+	return n, true
 }
 
-// FOR_EACH_CONTROLS := Variable Comma Variable In EXPRESSION
+func isForEach(a auditor) bool {
+	tks := container.LinkedStack[token.Token]{}
+	defer func() {
+		for tk, ok := tks.Pop(); ok; tk, ok = tks.Pop() {
+			a.Putback(tk)
+		}
+	}()
+
+	if !a.accept(token.For) {
+		return false
+	}
+	tks.Push(a.Prev())
+
+	if !a.accept(token.Identifier) {
+		return false
+	}
+	tks.Push(a.Prev())
+
+	for {
+		if a.is(token.In) {
+			return true
+		}
+
+		if !a.accept(token.Comma) {
+			return false
+		}
+		tks.Push(a.Prev())
+
+		if !a.accept(token.Identifier) {
+			return false
+		}
+		tks.Push(a.Prev())
+	}
+}
