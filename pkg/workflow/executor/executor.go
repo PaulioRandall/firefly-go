@@ -3,7 +3,7 @@ package executor
 import (
 	"log"
 
-	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
+	"github.com/PaulioRandall/firefly-go/pkg/workflow/executor/ast"
 )
 
 func Execute(state *exeState, nodes []ast.Node) {
@@ -23,7 +23,7 @@ func Execute(state *exeState, nodes []ast.Node) {
 	}()
 
 	for _, n := range nodes {
-		executeNode(state, n)
+		exeNode(state, n)
 
 		if state.hasError() {
 			break
