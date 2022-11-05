@@ -3,7 +3,7 @@ package executor
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 
-	"github.com/PaulioRandall/firefly-go/pkg/workflow/executor/ast"
+	ast "github.com/PaulioRandall/firefly-go/pkg/models/ast2"
 )
 
 var (

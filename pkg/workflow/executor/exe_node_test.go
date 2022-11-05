@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/PaulioRandall/firefly-go/pkg/workflow/executor/ast"
+	ast "github.com/PaulioRandall/firefly-go/pkg/models/ast2"
 )
 
 func mockVariables(names ...string) []ast.Variable {

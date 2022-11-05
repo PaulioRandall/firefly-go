@@ -1,4 +1,4 @@
-package ast
+package ast2
 
 // Node represents an Abstract Syntax Tree (AST) or executable statement.
 //
