@@ -16,6 +16,10 @@ func parseStatementBlock(r BufReaderOfTokens) []ast.Stmt {
 		stmts = append(stmts, n)
 	}
 
+	if r.Prev().TokenType != token.End {
+		panic(ErrParsing.Track("Unterminated statement block"))
+	}
+
 	return stmts
 }
 

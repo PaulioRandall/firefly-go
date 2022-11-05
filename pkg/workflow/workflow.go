@@ -3,12 +3,12 @@ package workflow
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 
-	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
+	ast "github.com/PaulioRandall/firefly-go/pkg/models/ast2"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 
-	"github.com/PaulioRandall/firefly-go/pkg/workflow/aligner"
 	"github.com/PaulioRandall/firefly-go/pkg/workflow/cleaner"
-	"github.com/PaulioRandall/firefly-go/pkg/workflow/parser"
+	"github.com/PaulioRandall/firefly-go/pkg/workflow/executor"
+	parser "github.com/PaulioRandall/firefly-go/pkg/workflow/parser2"
 	"github.com/PaulioRandall/firefly-go/pkg/workflow/scanner"
 
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
@@ -17,10 +17,11 @@ import (
 type ReaderOfRunes = inout.Reader[rune]
 type WriterOfNodes = inout.Writer[ast.Node]
 
-func Parse(r ReaderOfRunes, w WriterOfNodes) error {
+func Run(r ReaderOfRunes) (int, error) {
 
 	var (
 		tks        []token.Token
+		nodes      []ast.Node
 		e          error
 		parseError = func(e error) error {
 			return err.Wrap(e, "Workflow failed to parse scroll")
@@ -28,22 +29,26 @@ func Parse(r ReaderOfRunes, w WriterOfNodes) error {
 	)
 
 	if tks, e = scan(r); e != nil {
-		return parseError(e)
+		return 1, parseError(e)
 	} else if tks == nil {
-		return nil
+		return 0, nil
 	}
 
 	if tks, e = clean(tks); e != nil {
-		return parseError(e)
+		return 1, parseError(e)
 	} else if tks == nil {
-		return nil
+		return 0, nil
 	}
 
-	if tks, e = align(tks); e != nil {
-		return parseError(e)
+	if nodes, e = parse(tks); e != nil {
+		return 1, parseError(e)
+	} else if nodes == nil {
+		return 0, nil
 	}
 
-	return parse(tks, w)
+	state := executor.NewState()
+	executor.Execute(state, nodes)
+	return state.GetExitCode(), state.GetError()
 }
 
 func scan(r ReaderOfRunes) ([]token.Token, error) {
@@ -75,23 +80,17 @@ func clean(tks []token.Token) ([]token.Token, error) {
 	return w.List(), nil
 }
 
-func align(tks []token.Token) ([]token.Token, error) {
+func parse(tks []token.Token) ([]ast.Node, error) {
 	r := inout.NewListReader(tks)
-	w := inout.NewListWriter[token.Token]()
+	w := inout.NewListWriter[ast.Node]()
 
-	if e := aligner.Align(r, w); e != nil {
-		return nil, err.Wrap(e, "Failed to align tokens")
+	if e := parser.Parse(r, w); e != nil {
+		return nil, err.Wrap(e, "Failed to parse AST")
+	}
+
+	if w.Empty() {
+		return nil, nil
 	}
 
 	return w.List(), nil
-}
-
-func parse(tks []token.Token, w WriterOfNodes) error {
-	r := inout.NewListReader(tks)
-
-	if e := parser.Parse(r, w); e != nil {
-		return err.Wrap(e, "Failed to parse AST")
-	}
-
-	return nil
 }

@@ -16,7 +16,7 @@ func isLiteral(r BufReaderOfTokens) bool {
 		tt == token.False
 }
 
-// LITERAL := NUMBER | STRING | True | False
+// LITERAL := NUMBER | STRING | BOOl
 func parseLiteral(r BufReaderOfTokens) ast.Literal {
 	switch peekType(r) {
 	case token.Number:

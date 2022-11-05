@@ -2,6 +2,7 @@ package executor
 
 type exeState struct {
 	variables map[string]any
+	exitCode  int
 	e         error
 }
 
@@ -11,8 +12,20 @@ func NewState() *exeState {
 	}
 }
 
+func (state *exeState) setExitCode(exitCode int) {
+	state.exitCode = exitCode
+}
+
+func (state *exeState) GetExitCode() int {
+	return state.exitCode
+}
+
 func (state *exeState) setError(e error) {
 	state.e = e
+}
+
+func (state *exeState) GetError() error {
+	return state.e
 }
 
 func (state *exeState) hasError() bool {
