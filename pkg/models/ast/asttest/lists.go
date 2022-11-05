@@ -6,13 +6,22 @@ import (
 )
 
 func ExprFor(tk token.Token) ast.Expr {
-	if token.IsLiteral(tk.TokenType) {
+	if isLiteral(tk.TokenType) {
 		return Literal(tk)
 	} else if tk.TokenType == token.Identifier {
 		return Variable(tk)
 	}
 
 	panic("asttest: unmanagedd token type")
+}
+
+func isLiteral(tt token.TokenType) bool {
+	switch tt {
+	case token.Number, token.String, token.True, token.False:
+		return true
+	default:
+		return false
+	}
 }
 
 func Variables(tks ...token.Token) []ast.Variable {

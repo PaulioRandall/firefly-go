@@ -14,7 +14,7 @@ func main() {
 }
 
 func runWorkflow() {
-	file := getFile()
+	file := getFileArg()
 	if file == "" {
 		fmt.Println("Expected argument: path to scroll")
 		return
@@ -30,7 +30,7 @@ func runWorkflow() {
 	fmt.Println("Exit: ", exitCode)
 }
 
-func getFile() string {
+func getFileArg() string {
 	if len(os.Args) < 2 {
 		return ""
 	}

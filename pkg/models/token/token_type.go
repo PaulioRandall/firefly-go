@@ -14,12 +14,9 @@ const (
 	Colon  // :
 	Spell  // @
 
-	_redundant_begin
 	Space
 	Comment
-	_redundant_end
 
-	_keywords_begin
 	Def
 	If
 	For
@@ -30,13 +27,11 @@ const (
 	Func
 	Proc
 	End
-	_literal_begin
+
 	True
 	False
-	_keywords_end
 	Number
 	String
-	_literal_end
 
 	_arith_begin
 	Add // +
@@ -66,40 +61,43 @@ const (
 )
 
 var nameMap = map[TokenType]string{
-	Newline:      "Newline",
-	Terminator:   "Terminator",
-	Identifier:   "Identifier",
-	Space:        "Space",
-	Comment:      "Comment",
-	Number:       "Number",
-	String:       "String",
-	Def:          "Define",
-	If:           "If",
-	For:          "For",
-	In:           "In",
-	Watch:        "Watch",
-	When:         "When",
-	Is:           "Is",
-	Func:         "Function",
-	Proc:         "Procedure",
-	End:          "End",
-	True:         "True",
-	False:        "False",
-	Assign:       "Assign",
-	Comma:        "Comma",
-	Colon:        "Colon",
-	Spell:        "Spell",
-	Add:          "Add",
-	Sub:          "Subtract",
-	Mul:          "Multiply",
-	Div:          "Divide",
-	Mod:          "Remainder",
-	LT:           "Less Than",
-	GT:           "More Than",
-	LTE:          "Less Than Equal",
-	GTE:          "More Than Equal",
-	EQU:          "Equal",
-	NEQ:          "Not Equal",
+	Newline:    "Newline",
+	Terminator: "Terminator",
+	Identifier: "Identifier",
+	Space:      "Space",
+	Comment:    "Comment",
+	Number:     "Number",
+	String:     "String",
+	Def:        "Define",
+	If:         "If",
+	For:        "For",
+	In:         "In",
+	Watch:      "Watch",
+	When:       "When",
+	Is:         "Is",
+	Func:       "Function",
+	Proc:       "Procedure",
+	End:        "End",
+	True:       "True",
+	False:      "False",
+	Assign:     "Assign",
+	Comma:      "Comma",
+	Colon:      "Colon",
+	Spell:      "Spell",
+
+	Add: "Add",
+	Sub: "Subtract",
+	Mul: "Multiply",
+	Div: "Divide",
+	Mod: "Remainder",
+
+	LT:  "Less Than",
+	GT:  "More Than",
+	LTE: "Less Than Equal",
+	GTE: "More Than Equal",
+	EQU: "Equal",
+	NEQ: "Not Equal",
+
 	ParenOpen:    "Paren Open",
 	ParenClose:   "Paren Close",
 	BraceOpen:    "Brace Open",
@@ -125,18 +123,6 @@ func (tt TokenType) Precedence() int {
 	default:
 		return 0
 	}
-}
-
-func IsLiteral(tt TokenType) bool {
-	return tt > _literal_begin && tt < _literal_end
-}
-
-func IsRedundant(tt TokenType) bool {
-	return tt > _redundant_begin && tt < _redundant_end
-}
-
-func IsKeyword(tt TokenType) bool {
-	return tt > _keywords_begin && tt < _keywords_end
 }
 
 func IsBinaryOperator(tt TokenType) bool {
