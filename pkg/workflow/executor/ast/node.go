@@ -32,3 +32,10 @@ type Literal struct {
 
 func (n Literal) node() {}
 func (n Literal) expr() {}
+
+type If struct {
+	Condition Expr
+	Body      []Node
+}
+
+func (n If) node() {}

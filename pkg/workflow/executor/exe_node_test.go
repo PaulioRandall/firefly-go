@@ -105,3 +105,59 @@ func Test_4_exeAssign(t *testing.T) {
 
 	require.Equal(t, expState, actState)
 }
+
+func Test_5_exeIf(t *testing.T) {
+	given := ast.If{
+		Condition: ast.Literal{Value: true},
+		Body:      nil,
+	}
+
+	expState := NewState()
+
+	actState := NewState()
+	exeNode(actState, given)
+
+	require.Equal(t, expState, actState)
+}
+
+func Test_6_exeIf(t *testing.T) {
+	given := ast.If{
+		Condition: ast.Literal{Value: true},
+		Body: []ast.Node{
+			ast.Assign{
+				Dst: mockVariables("x"),
+				Src: mockLiterals(float64(1)),
+			},
+		},
+	}
+
+	expState := &exeState{
+		variables: map[string]any{
+			"x": float64(1),
+		},
+	}
+
+	actState := NewState()
+	exeNode(actState, given)
+
+	require.Equal(t, expState, actState)
+}
+
+func Test_7_exeIf(t *testing.T) {
+	given := ast.If{
+		Condition: ast.Literal{Value: false},
+		Body: []ast.Node{
+			ast.Assign{
+				Dst: mockVariables("x"),
+				Src: mockLiterals(float64(1)),
+			},
+		},
+	}
+
+	expState := NewState()
+
+	actState := NewState()
+	exeNode(actState, given)
+
+	require.Equal(t, expState, actState)
+}

@@ -11,10 +11,18 @@ var (
 	ErrUnknownExprNode = err.Trackable("Unknown Expr Node")
 )
 
+func exeNodes(state *exeState, nodes []ast.Node) {
+	for _, n := range nodes {
+		exeNode(state, n)
+	}
+}
+
 func exeNode(state *exeState, n ast.Node) {
 	switch v := n.(type) {
 	case ast.Assign:
 		exeAssign(state, v)
+	case ast.If:
+		exeIf(state, v)
 	default:
 		panic(unknownNode(nil))
 	}
@@ -38,6 +46,12 @@ func exeAssign(state *exeState, n ast.Assign) {
 
 	for i, dst := range n.Dst {
 		state.setVariable(dst.Name, result[i])
+	}
+}
+
+func exeIf(state *exeState, n ast.If) {
+	if exeExpr(state, n.Condition).(bool) {
+		exeNodes(state, n.Body)
 	}
 }
 

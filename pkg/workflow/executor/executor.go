@@ -22,11 +22,5 @@ func Execute(state *exeState, nodes []ast.Node) {
 		state.setError(e)
 	}()
 
-	for _, n := range nodes {
-		exeNode(state, n)
-
-		if state.hasError() {
-			break
-		}
-	}
+	exeNodes(state, nodes)
 }
