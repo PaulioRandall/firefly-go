@@ -6,7 +6,7 @@ import (
 	ast "github.com/PaulioRandall/firefly-go/pkg/models/ast2"
 )
 
-func Execute(state *exeState, nodes []ast.Node) {
+func Execute(nodes []ast.Node) (exitCode int, e error) {
 
 	defer func() {
 		v := recover()
@@ -14,13 +14,13 @@ func Execute(state *exeState, nodes []ast.Node) {
 			return
 		}
 
-		e, ok := v.(error)
-		if !ok {
+		var ok bool
+		if e, ok = v.(error); !ok {
 			log.Fatalf("Recovered from panic that was not an error: %v", v)
 		}
-
-		state.setError(e)
 	}()
 
+	state := NewState()
 	exeNodes(state, nodes)
+	return state.getExitCode(), state.getError()
 }

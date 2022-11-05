@@ -15,7 +15,6 @@ import (
 )
 
 type ReaderOfRunes = inout.Reader[rune]
-type WriterOfNodes = inout.Writer[ast.Node]
 
 func Run(r ReaderOfRunes) (int, error) {
 
@@ -46,9 +45,7 @@ func Run(r ReaderOfRunes) (int, error) {
 		return 0, nil
 	}
 
-	state := executor.NewState()
-	executor.Execute(state, nodes)
-	return state.GetExitCode(), state.GetError()
+	return executor.Execute(nodes)
 }
 
 func scan(r ReaderOfRunes) ([]token.Token, error) {

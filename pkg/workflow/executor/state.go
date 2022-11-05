@@ -16,7 +16,7 @@ func (state *exeState) setExitCode(exitCode int) {
 	state.exitCode = exitCode
 }
 
-func (state *exeState) GetExitCode() int {
+func (state *exeState) getExitCode() int {
 	return state.exitCode
 }
 
@@ -24,7 +24,7 @@ func (state *exeState) setError(e error) {
 	state.e = e
 }
 
-func (state *exeState) GetError() error {
+func (state *exeState) getError() error {
 	return state.e
 }
 
