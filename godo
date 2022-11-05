@@ -20,6 +20,7 @@ printUsage() {
   println "\t" "./godo fmt   " "\t" "fmt"
   println "\t" "./godo test  " "\t" "fmt -> build -> test -> vet"
   println "\t" "./godo run   " "\t" "fmt -> build -> test -> vet -> run"
+  println "\t" "./godo dev   " "\t" "fmt -> build -> test -> vet -> run (dev scroll)"
 }
 
 println() {
@@ -124,6 +125,20 @@ if [[ "$1" == "run" ]]; then
 
   shift 1
   goExe $@
+
+  println
+  exit 0
+fi
+
+if [[ "$1" == "dev" ]]; then
+  clean
+  setup
+  goBuild
+  goFmt
+  goTest
+  goVet
+
+  goExe "./cmd/dev.ff"
 
   println
   exit 0

@@ -31,6 +31,7 @@ func processNext(prev, curr, next token.Token) (token.Token, error) {
 	case curr.TokenType != token.Newline:
 		return curr, nil
 
+		// curr == Newline from here on
 	case isEmptyLine(prev.TokenType):
 		return zero, nil
 

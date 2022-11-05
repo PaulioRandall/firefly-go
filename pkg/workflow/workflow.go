@@ -16,6 +16,10 @@ import (
 
 type ReaderOfRunes = inout.Reader[rune]
 
+func RunFile(file string) (int, error) {
+	return 0, nil
+}
+
 func Run(r ReaderOfRunes) (int, error) {
 
 	var (
