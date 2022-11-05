@@ -1,6 +1,8 @@
 package workflow
 
 import (
+	"io/ioutil"
+
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 
 	ast "github.com/PaulioRandall/firefly-go/pkg/models/ast2"
@@ -14,13 +16,19 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
 
-type ReaderOfRunes = inout.Reader[rune]
-
 func RunFile(file string) (int, error) {
-	return 0, nil
+	scroll, e := ioutil.ReadFile(file)
+	if e != nil {
+		return -1, e
+	}
+
+	runes := []rune(string(scroll))
+	r := inout.NewListReader(runes)
+	rr := inout.NewReaderOfRunes(r)
+	return Run(rr)
 }
 
-func Run(r ReaderOfRunes) (int, error) {
+func Run(r inout.ReaderOfRunes) (int, error) {
 
 	var (
 		tks        []token.Token
@@ -52,7 +60,7 @@ func Run(r ReaderOfRunes) (int, error) {
 	return executor.Execute(nodes)
 }
 
-func scan(r ReaderOfRunes) ([]token.Token, error) {
+func scan(r inout.ReaderOfRunes) ([]token.Token, error) {
 	w := inout.NewListWriter[token.Token]()
 
 	if e := scanner.Scan(r, w); e != nil {

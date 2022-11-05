@@ -22,5 +22,12 @@ func Execute(nodes []ast.Node) (exitCode int, e error) {
 
 	state := NewState()
 	exeNodes(state, nodes)
-	return state.getExitCode(), state.getError()
+
+	state.Println()
+
+	if state.hasError() {
+		return 1, state.getError()
+	}
+
+	return 0, nil
 }

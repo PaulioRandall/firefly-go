@@ -27,7 +27,7 @@ func runWorkflow() {
 		return
 	}
 
-	fmt.Println("Exit with code: ", exitCode)
+	fmt.Println("Exit: ", exitCode)
 }
 
 func getFile() string {

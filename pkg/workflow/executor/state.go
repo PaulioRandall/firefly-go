@@ -1,8 +1,11 @@
 package executor
 
+import (
+	"fmt"
+)
+
 type exeState struct {
 	variables map[string]any
-	exitCode  int
 	e         error
 }
 
@@ -10,14 +13,6 @@ func NewState() *exeState {
 	return &exeState{
 		variables: map[string]any{},
 	}
-}
-
-func (state *exeState) setExitCode(exitCode int) {
-	state.exitCode = exitCode
-}
-
-func (state *exeState) getExitCode() int {
-	return state.exitCode
 }
 
 func (state *exeState) setError(e error) {
@@ -41,4 +36,11 @@ func (state *exeState) getVariable(name string) (any, bool) {
 
 func (state *exeState) setVariable(name string, value any) {
 	state.variables[name] = value
+}
+
+func (state *exeState) Println() {
+	fmt.Println("** State **")
+	for k, v := range state.variables {
+		fmt.Println("\t"+k+": ", v)
+	}
 }
