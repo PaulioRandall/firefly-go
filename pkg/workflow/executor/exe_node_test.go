@@ -123,7 +123,7 @@ func Test_5_exeIf(t *testing.T) {
 func Test_6_exeIf(t *testing.T) {
 	given := ast.If{
 		Condition: ast.Literal{Value: true},
-		Body: []ast.Node{
+		Body: []ast.Stmt{
 			ast.Assign{
 				Dst: mockVariables("x"),
 				Src: mockLiterals(float64(1)),
@@ -146,7 +146,7 @@ func Test_6_exeIf(t *testing.T) {
 func Test_7_exeIf(t *testing.T) {
 	given := ast.If{
 		Condition: ast.Literal{Value: false},
-		Body: []ast.Node{
+		Body: []ast.Stmt{
 			ast.Assign{
 				Dst: mockVariables("x"),
 				Src: mockLiterals(float64(1)),

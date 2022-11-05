@@ -8,6 +8,7 @@ import (
 
 var (
 	ErrUnknownNode     = err.Trackable("Unknown Node")
+	ErrUnknownStmtNode = err.Trackable("Unknown Stmt Node")
 	ErrUnknownExprNode = err.Trackable("Unknown Expr Node")
 )
 
@@ -19,12 +20,27 @@ func exeNodes(state *exeState, nodes []ast.Node) {
 
 func exeNode(state *exeState, n ast.Node) {
 	switch v := n.(type) {
+	case ast.Stmt:
+		exeStmt(state, v)
+	default:
+		panic(unknownNode(nil))
+	}
+}
+
+func exeStmts(state *exeState, nodes []ast.Stmt) {
+	for _, n := range nodes {
+		exeNode(state, n)
+	}
+}
+
+func exeStmt(state *exeState, n ast.Stmt) {
+	switch v := n.(type) {
 	case ast.Assign:
 		exeAssign(state, v)
 	case ast.If:
 		exeIf(state, v)
 	default:
-		panic(unknownNode(nil))
+		panic(unknownStmtNode())
 	}
 }
 
@@ -51,12 +67,17 @@ func exeAssign(state *exeState, n ast.Assign) {
 
 func exeIf(state *exeState, n ast.If) {
 	if exeExpr(state, n.Condition).(bool) {
-		exeNodes(state, n.Body)
+		exeStmts(state, n.Body)
 	}
 }
 
 func unknownNode(e error) error {
 	return ErrUnknownNode.Wrap(e, "Node type does not match any known executable type")
+}
+
+func unknownStmtNode() error {
+	e := ErrUnknownStmtNode.Track("Stmt type does not match any known executable type")
+	return unknownNode(e)
 }
 
 func unknownExprNode() error {

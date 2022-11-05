@@ -9,7 +9,13 @@ type Node interface {
 	node()
 }
 
+type Stmt interface {
+	Node
+	stmt()
+}
+
 type Expr interface {
+	Node
 	expr()
 }
 
@@ -19,12 +25,22 @@ type Assign struct {
 }
 
 func (n Assign) node() {}
+func (n Assign) stmt() {}
+
+type If struct {
+	Condition Expr
+	Body      []Stmt
+}
+
+func (n If) node() {}
+func (n If) stmt() {}
 
 type Variable struct {
 	Name string
 }
 
 func (n Variable) node() {}
+func (n Variable) expr() {}
 
 type Literal struct {
 	Value any
@@ -32,10 +48,3 @@ type Literal struct {
 
 func (n Literal) node() {}
 func (n Literal) expr() {}
-
-type If struct {
-	Condition Expr
-	Body      []Node
-}
-
-func (n If) node() {}

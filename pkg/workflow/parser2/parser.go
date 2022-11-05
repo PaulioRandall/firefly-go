@@ -35,14 +35,30 @@ func Parse(r ReaderOfTokens, w WriterOfNodes) (e error) {
 
 // <- {TERM_STATEMENT}
 func parse(r BufReaderOfTokens, w WriterOfNodes) {
-	for r.More() {
-		acceptEmptyStatements(r)
+	acceptEmptyStatements(r)
 
+	for r.More() {
 		n := parseTermStatement(r)
 		if e := w.Write(n); e != nil {
 			panic(ErrWriting.Wrap(e, "Couldn't write AST node to output"))
 		}
+
+		acceptEmptyStatements(r)
 	}
+}
+
+// STATEMENT_BLOCK := {STATEMENT} End
+func parseStatementBlock(r BufReaderOfTokens) []ast.Stmt {
+	var stmts []ast.Stmt
+
+	acceptEmptyStatements(r)
+	for !acceptType(r, token.End) {
+		acceptEmptyStatements(r)
+		n := parseTermStatement(r)
+		stmts = append(stmts, n)
+	}
+
+	return stmts
 }
 
 // EMPTY_STATEMENTS := {TERM}
@@ -52,19 +68,22 @@ func acceptEmptyStatements(r BufReaderOfTokens) {
 }
 
 // TERM_STATEMENT := STATEMENT TERM
-func parseTermStatement(r BufReaderOfTokens) ast.Node {
+func parseTermStatement(r BufReaderOfTokens) ast.Stmt {
 	n := parseStatement(r)
 	expectEndOfStmt(r)
 	return n
 }
 
 // STATEMENT := ASSIGNMENT
-func parseStatement(r BufReaderOfTokens) ast.Node {
-	if isAssignment(r) {
+func parseStatement(r BufReaderOfTokens) ast.Stmt {
+	switch {
+	case isAssignment(r):
 		return parseAssignment(r)
+	case isIfStatement(r):
+		return parseIfStatement(r)
+	default:
+		panic(ErrParsing.Track("Expected statement"))
 	}
-
-	panic(ErrParsing.Track("Expected statement"))
 }
 
 // == Identifier Comma
@@ -82,7 +101,7 @@ func isAssignment(r BufReaderOfTokens) bool {
 }
 
 // ASSIGNMENT := VARIABLES Assign EXPRESSIONS
-func parseAssignment(r BufReaderOfTokens) ast.Node {
+func parseAssignment(r BufReaderOfTokens) ast.Assign {
 	n := ast.Assign{}
 
 	n.Dst = parseVariables(r)
@@ -211,6 +230,23 @@ func parseBool(r BufReaderOfTokens) ast.Literal {
 	}
 }
 
+// == If
+func isIfStatement(r BufReaderOfTokens) bool {
+	return peekType(r) == token.If
+}
+
+// IF := If EXPRESSION TERM STATEMENT_BLOCK
+func parseIfStatement(r BufReaderOfTokens) ast.If {
+	n := ast.If{}
+
+	expectType(r, token.If)
+	n.Condition = parseExpression(r)
+	expectEndOfStmt(r)
+	n.Body = parseStatementBlock(r)
+
+	return n
+}
+
 func peekType(r BufReaderOfTokens) token.TokenType {
 	tk, e := r.Peek()
 	if e != nil {
@@ -228,7 +264,7 @@ func readToken(r BufReaderOfTokens) token.Token {
 }
 
 func acceptType(r BufReaderOfTokens, want token.TokenType) bool {
-	if peekType(r) == want {
+	if r.More() && peekType(r) == want {
 		readToken(r)
 		return true
 	}
@@ -236,7 +272,7 @@ func acceptType(r BufReaderOfTokens, want token.TokenType) bool {
 }
 
 func expectType(r BufReaderOfTokens, want token.TokenType) token.Token {
-	if acceptType(r, want) {
+	if r.More() && acceptType(r, want) {
 		return r.Prev()
 	}
 	panic(ErrParsing.Trackf("Expected %q", want))

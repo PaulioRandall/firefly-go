@@ -14,10 +14,6 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
 )
 
-type literalType interface {
-	float64 | string | bool
-}
-
 func mockVariables(names ...string) []ast.Variable {
 	n := make([]ast.Variable, len(names))
 
@@ -30,7 +26,7 @@ func mockVariables(names ...string) []ast.Variable {
 	return n
 }
 
-func mockLiterals[T literalType](values ...T) []ast.Expr {
+func mockLiterals(values ...any) []ast.Expr {
 	n := make([]ast.Expr, len(values))
 
 	for i, v := range values {
@@ -93,21 +89,152 @@ func Test_2(t *testing.T) {
 func Test_3(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 
-	// x, y = true, false
+	// x = true
 	given := []token.Token{
 		gen(token.Identifier, "x"),
-		gen(token.Comma, ","),
-		gen(token.Identifier, "y"),
 		gen(token.Assign, "="),
 		gen(token.True, "true"),
-		gen(token.Comma, ","),
-		gen(token.False, "false"),
 		gen(token.Newline, "\n"),
 	}
 
 	exp := ast.Assign{
-		Dst: mockVariables("x", "y"),
-		Src: mockLiterals(true, false),
+		Dst: mockVariables("x"),
+		Src: mockLiterals(true),
+	}
+
+	doParseTest(t, given, exp)
+}
+
+func Test_4(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	// x, y, z = true, 1, "abc"
+	given := []token.Token{
+		gen(token.Identifier, "x"),
+		gen(token.Comma, ","),
+		gen(token.Identifier, "y"),
+		gen(token.Comma, ","),
+		gen(token.Identifier, "z"),
+		gen(token.Assign, "="),
+		gen(token.True, "true"),
+		gen(token.Comma, ","),
+		gen(token.Number, "1"),
+		gen(token.Comma, ","),
+		gen(token.String, `"abc"`),
+		gen(token.Newline, "\n"),
+	}
+
+	exp := ast.Assign{
+		Dst: mockVariables("x", "y", "z"),
+		Src: mockLiterals(true, float64(1), "abc"),
+	}
+
+	doParseTest(t, given, exp)
+}
+
+func Test_5(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	// if true
+	// end
+	given := []token.Token{
+		gen(token.If, "if"),
+		gen(token.True, "true"),
+		gen(token.Newline, "\n"),
+		gen(token.End, "end"),
+		gen(token.Newline, "\n"),
+	}
+
+	exp := ast.If{
+		Condition: ast.Literal{Value: true},
+		Body:      nil,
+	}
+
+	doParseTest(t, given, exp)
+}
+
+func Test_6(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	// if true
+	//
+	//
+	// end
+	given := []token.Token{
+		gen(token.If, "if"),
+		gen(token.True, "true"),
+		gen(token.Newline, "\n"),
+		gen(token.Newline, "\n"),
+		gen(token.Newline, "\n"),
+		gen(token.End, "end"),
+		gen(token.Newline, "\n"),
+	}
+
+	exp := ast.If{
+		Condition: ast.Literal{Value: true},
+		Body:      nil,
+	}
+
+	doParseTest(t, given, exp)
+}
+
+func Test_7(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	// if true
+	//   x = 1
+	// end
+	given := []token.Token{
+		gen(token.If, "if"),
+		gen(token.True, "true"),
+		gen(token.Newline, "\n"),
+		gen(token.Identifier, "x"),
+		gen(token.Assign, "="),
+		gen(token.Number, "1"),
+		gen(token.Newline, "\n"),
+		gen(token.End, "end"),
+		gen(token.Newline, "\n"),
+	}
+
+	exp := ast.If{
+		Condition: ast.Literal{Value: true},
+		Body: []ast.Stmt{
+			ast.Assign{
+				Dst: mockVariables("x"),
+				Src: mockLiterals(float64(1)),
+			},
+		},
+	}
+
+	doParseTest(t, given, exp)
+}
+
+func Test_8(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	// if false
+	//   x = 1
+	// end
+	given := []token.Token{
+		gen(token.If, "if"),
+		gen(token.False, "false"),
+		gen(token.Newline, "\n"),
+		gen(token.Identifier, "x"),
+		gen(token.Assign, "="),
+		gen(token.Number, "1"),
+		gen(token.Newline, "\n"),
+		gen(token.End, "end"),
+		gen(token.Newline, "\n"),
+	}
+
+	exp := ast.If{
+		Condition: ast.Literal{Value: false},
+		Body: []ast.Stmt{
+			ast.Assign{
+				Dst: mockVariables("x"),
+				Src: mockLiterals(float64(1)),
+			},
+		},
 	}
 
 	doParseTest(t, given, exp)
