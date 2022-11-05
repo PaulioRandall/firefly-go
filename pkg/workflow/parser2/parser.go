@@ -47,14 +47,14 @@ func parse(r BufReaderOfTokens, w WriterOfNodes) {
 
 // EMPTY_STATEMENTS := {TERM}
 func acceptEmptyStatements(r BufReaderOfTokens) {
-	for acceptTerm(r) {
+	for acceptEndOfStmt(r) {
 	}
 }
 
 // TERM_STATEMENT := STATEMENT TERM
 func parseTermStatement(r BufReaderOfTokens) ast.Node {
 	n := parseStatement(r)
-	expectTerm(r)
+	expectEndOfStmt(r)
 	return n
 }
 
@@ -143,7 +143,12 @@ func isExpression(r BufReaderOfTokens) bool {
 
 // EXPRESSION := LITERAL
 func parseExpression(r BufReaderOfTokens) ast.Expr {
-	return parseLiteral(r)
+	switch {
+	case isLiteral(r):
+		return parseLiteral(r)
+	default:
+		panic(ErrParsing.Track("Expected expression"))
+	}
 }
 
 // == Number | String | True | False
@@ -162,6 +167,8 @@ func parseLiteral(r BufReaderOfTokens) ast.Literal {
 		return parseNumber(r)
 	case token.String:
 		return parseString(r)
+	case token.True, token.False:
+		return parseBool(r)
 	default:
 		panic(ErrParsing.Track("Expected literal"))
 	}
@@ -187,6 +194,20 @@ func parseString(r BufReaderOfTokens) ast.Literal {
 	str = str[1 : len(str)-1] // Slice off delimiters
 	return ast.Literal{
 		Value: str,
+	}
+}
+
+// BOOL := Bool
+func parseBool(r BufReaderOfTokens) ast.Literal {
+	s := readToken(r).Value // expectType(r, token.Bool)
+	b, e := strconv.ParseBool(s)
+
+	if e != nil {
+		panic(ErrParsing.Track("Unable to parse bool"))
+	}
+
+	return ast.Literal{
+		Value: b,
 	}
 }
 
@@ -222,13 +243,13 @@ func expectType(r BufReaderOfTokens, want token.TokenType) token.Token {
 }
 
 // := [TERM]
-func acceptTerm(r BufReaderOfTokens) bool {
+func acceptEndOfStmt(r BufReaderOfTokens) bool {
 	return acceptType(r, token.Terminator) || acceptType(r, token.Newline)
 }
 
 // TERM := Terminator | Newline
-func expectTerm(r BufReaderOfTokens) {
-	if acceptTerm(r) {
+func expectEndOfStmt(r BufReaderOfTokens) {
+	if acceptEndOfStmt(r) {
 		return
 	}
 

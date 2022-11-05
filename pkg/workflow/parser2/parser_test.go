@@ -89,3 +89,26 @@ func Test_2(t *testing.T) {
 
 	doParseTest(t, given, exp)
 }
+
+func Test_3(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	// x, y = true, false
+	given := []token.Token{
+		gen(token.Identifier, "x"),
+		gen(token.Comma, ","),
+		gen(token.Identifier, "y"),
+		gen(token.Assign, "="),
+		gen(token.True, "true"),
+		gen(token.Comma, ","),
+		gen(token.False, "false"),
+		gen(token.Newline, "\n"),
+	}
+
+	exp := ast.Assign{
+		Dst: mockVariables("x", "y"),
+		Src: mockLiterals(true, false),
+	}
+
+	doParseTest(t, given, exp)
+}
