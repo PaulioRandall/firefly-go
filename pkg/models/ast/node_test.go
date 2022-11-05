@@ -50,7 +50,7 @@ func Test_1_If(t *testing.T) {
 	gen := tokentest.NewTokenGenerator()
 	given := []token.Token{
 		gen(token.If, "if"),         // 2, 0, 2
-		gen(token.True, "true"),     // 6, 0, 6
+		gen(token.Bool, "true"),     // 6, 0, 6
 		gen(token.Terminator, "\n"), // 7, 1, 0
 		gen(token.End, "end"),       // 10, 1, 3
 		gen(token.Terminator, "\n"),

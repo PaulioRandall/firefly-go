@@ -16,7 +16,7 @@ func Test_for_1(t *testing.T) {
 	// end
 	given := []token.Token{
 		gen(token.For, "for"),    // 0
-		gen(token.True, "true"),  // 1
+		gen(token.Bool, "true"),  // 1
 		gen(token.Newline, "\n"), // 2
 
 		gen(token.End, "end"), // 3
@@ -135,7 +135,7 @@ func Test_for_4(t *testing.T) {
 	// Missing terminator after condition
 	given := []token.Token{
 		gen(token.For, "for"),   // 0
-		gen(token.True, "true"), // 1
+		gen(token.Bool, "true"), // 1
 
 		gen(token.End, "end"), // 2
 		gen(token.Newline, "\n"),
@@ -158,7 +158,7 @@ func Test_for_5(t *testing.T) {
 	// Missing end of block
 	given := []token.Token{
 		gen(token.For, "for"),   // 0
-		gen(token.True, "true"), // 1
+		gen(token.Bool, "true"), // 1
 		gen(token.Newline, "\n"),
 
 		gen(token.Newline, "\n"),

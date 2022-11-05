@@ -93,7 +93,7 @@ func Test_3(t *testing.T) {
 	given := []token.Token{
 		gen(token.Identifier, "x"),
 		gen(token.Assign, "="),
-		gen(token.True, "true"),
+		gen(token.Bool, "true"),
 		gen(token.Newline, "\n"),
 	}
 
@@ -116,7 +116,7 @@ func Test_4(t *testing.T) {
 		gen(token.Comma, ","),
 		gen(token.Identifier, "z"),
 		gen(token.Assign, "="),
-		gen(token.True, "true"),
+		gen(token.Bool, "true"),
 		gen(token.Comma, ","),
 		gen(token.Number, "1"),
 		gen(token.Comma, ","),
@@ -139,7 +139,7 @@ func Test_5(t *testing.T) {
 	// end
 	given := []token.Token{
 		gen(token.If, "if"),
-		gen(token.True, "true"),
+		gen(token.Bool, "true"),
 		gen(token.Newline, "\n"),
 		gen(token.End, "end"),
 		gen(token.Newline, "\n"),
@@ -162,7 +162,7 @@ func Test_6(t *testing.T) {
 	// end
 	given := []token.Token{
 		gen(token.If, "if"),
-		gen(token.True, "true"),
+		gen(token.Bool, "true"),
 		gen(token.Newline, "\n"),
 		gen(token.Newline, "\n"),
 		gen(token.Newline, "\n"),
@@ -186,7 +186,7 @@ func Test_7(t *testing.T) {
 	// end
 	given := []token.Token{
 		gen(token.If, "if"),
-		gen(token.True, "true"),
+		gen(token.Bool, "true"),
 		gen(token.Newline, "\n"),
 		gen(token.Identifier, "x"),
 		gen(token.Assign, "="),
@@ -217,7 +217,7 @@ func Test_8(t *testing.T) {
 	// end
 	given := []token.Token{
 		gen(token.If, "if"),
-		gen(token.False, "false"),
+		gen(token.Bool, "false"),
 		gen(token.Newline, "\n"),
 		gen(token.Identifier, "x"),
 		gen(token.Assign, "="),

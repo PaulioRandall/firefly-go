@@ -67,7 +67,7 @@ func Test_list_3(t *testing.T) {
 		gen(token.BracketOpen, "["),  // 0
 		gen(token.Number, "1"),       // 1
 		gen(token.Comma, ","),        // 2
-		gen(token.True, "true"),      // 3
+		gen(token.Bool, "true"),      // 3
 		gen(token.Comma, ","),        // 4
 		gen(token.String, `"abc"`),   // 5
 		gen(token.Comma, ","),        // 6
@@ -100,7 +100,7 @@ func Test_list_4(t *testing.T) {
 		gen(token.BracketOpen, "["),  // 0
 		gen(token.Number, "1"),       // 1
 		gen(token.Comma, ","),        // 2
-		gen(token.True, "true"),      // 3
+		gen(token.Bool, "true"),      // 3
 		gen(token.Comma, ","),        // 4
 		gen(token.BracketClose, "]"), // 5
 		gen(token.Newline, "\n"),
@@ -168,7 +168,7 @@ func Test_list_7(t *testing.T) {
 		gen(token.BracketOpen, "["), // 0
 		gen(token.Number, "1"),      // 1
 		gen(token.Comma, ","),       // 2
-		gen(token.True, "true"),     // 3
+		gen(token.Bool, "true"),     // 3
 		gen(token.Newline, "\n"),
 	}
 

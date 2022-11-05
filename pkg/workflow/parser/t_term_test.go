@@ -49,7 +49,7 @@ func Test_term_4(t *testing.T) {
 
 	// true
 	given := []token.Token{
-		gen(token.True, "true"),
+		gen(token.Bool, "true"),
 		gen(token.Newline, "\n"),
 	}
 
@@ -61,7 +61,7 @@ func Test_term_5(t *testing.T) {
 
 	// false
 	given := []token.Token{
-		gen(token.False, "false"),
+		gen(token.Bool, "false"),
 		gen(token.Newline, "\n"),
 	}
 

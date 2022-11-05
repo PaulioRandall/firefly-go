@@ -15,7 +15,7 @@ func Test_if_1(t *testing.T) {
 	// end
 	given := []token.Token{
 		gen(token.If, "if"),
-		gen(token.True, "true"),
+		gen(token.Bool, "true"),
 		gen(token.Newline, "\n"),
 		gen(token.End, "end"),
 		gen(token.Newline, "\n"),
@@ -39,7 +39,7 @@ func Test_if_2(t *testing.T) {
 	// end
 	given := []token.Token{
 		gen(token.If, "if"),
-		gen(token.True, "true"),
+		gen(token.Bool, "true"),
 		gen(token.Newline, "\n"),
 		gen(token.Identifier, "a"),
 		gen(token.Assign, "="), // 4
@@ -76,7 +76,7 @@ func Test_if_3(t *testing.T) {
 	// Missing 'end' of statement block
 	given := []token.Token{
 		gen(token.If, "if"),
-		gen(token.True, "true"),
+		gen(token.Bool, "true"),
 		gen(token.Newline, "\n"),
 		gen(token.Identifier, "a"),
 		gen(token.Assign, "="),
@@ -103,7 +103,7 @@ func Test_if_4(t *testing.T) {
 	// Missing terminator
 	given := []token.Token{
 		gen(token.If, "if"),
-		gen(token.True, "true"),
+		gen(token.Bool, "true"),
 		gen(token.End, "end"),
 		gen(token.Newline, "\n"),
 	}

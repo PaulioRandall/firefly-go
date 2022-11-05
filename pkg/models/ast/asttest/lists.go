@@ -17,7 +17,7 @@ func ExprFor(tk token.Token) ast.Expr {
 
 func isLiteral(tt token.TokenType) bool {
 	switch tt {
-	case token.Number, token.String, token.True, token.False:
+	case token.Number, token.String, token.Bool:
 		return true
 	default:
 		return false

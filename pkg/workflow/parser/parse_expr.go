@@ -122,5 +122,5 @@ func isNextExprOpener(a auditor) bool {
 }
 
 func isNextLiteral(a auditor) bool {
-	return a.isAny(token.Number, token.String, token.True, token.False)
+	return a.isAny(token.Number, token.String, token.Bool)
 }

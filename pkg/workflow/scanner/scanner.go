@@ -230,10 +230,8 @@ func scanWord(tb *tokenBuilder, first rune) error {
 		tb.tt = token.Proc
 	case "end":
 		tb.tt = token.End
-	case "true":
-		tb.tt = token.True
-	case "false":
-		tb.tt = token.False
+	case "true", "false":
+		tb.tt = token.Bool
 	default:
 		tb.tt = token.Identifier
 	}

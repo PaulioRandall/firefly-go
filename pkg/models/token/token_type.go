@@ -17,6 +17,10 @@ const (
 	Space
 	Comment
 
+	Bool
+	Number
+	String
+
 	Def
 	If
 	For
@@ -27,11 +31,6 @@ const (
 	Func
 	Proc
 	End
-
-	True
-	False
-	Number
-	String
 
 	_arith_begin
 	Add // +
@@ -66,24 +65,26 @@ var nameMap = map[TokenType]string{
 	Identifier: "Identifier",
 	Space:      "Space",
 	Comment:    "Comment",
-	Number:     "Number",
-	String:     "String",
-	Def:        "Define",
-	If:         "If",
-	For:        "For",
-	In:         "In",
-	Watch:      "Watch",
-	When:       "When",
-	Is:         "Is",
-	Func:       "Function",
-	Proc:       "Procedure",
-	End:        "End",
-	True:       "True",
-	False:      "False",
-	Assign:     "Assign",
-	Comma:      "Comma",
-	Colon:      "Colon",
-	Spell:      "Spell",
+
+	Bool:   "Bool",
+	Number: "Number",
+	String: "String",
+
+	Def:   "Define",
+	If:    "If",
+	For:   "For",
+	In:    "In",
+	Watch: "Watch",
+	When:  "When",
+	Is:    "Is",
+	Func:  "Function",
+	Proc:  "Procedure",
+	End:   "End",
+
+	Assign: "Assign",
+	Comma:  "Comma",
+	Colon:  "Colon",
+	Spell:  "Spell",
 
 	Add: "Add",
 	Sub: "Subtract",

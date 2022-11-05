@@ -78,7 +78,7 @@ func expectVariable(a auditor) ast.Variable {
 
 // LITERAL := True | False | Number | String
 func acceptLiteral(a auditor) (ast.Expr, bool) {
-	if a.isNotAny(token.True, token.False, token.Number, token.String) {
+	if a.isNotAny(token.Bool, token.Number, token.String) {
 		return nil, false
 	}
 

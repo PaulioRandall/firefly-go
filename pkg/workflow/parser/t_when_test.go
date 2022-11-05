@@ -62,7 +62,7 @@ func Test_when_3(t *testing.T) {
 	given := []token.Token{
 		gen(token.When, "when"),  // 0
 		gen(token.Newline, "\n"), //
-		gen(token.True, "true"),  // 2
+		gen(token.Bool, "true"),  // 2
 		gen(token.Colon, ":"),    // 3
 		gen(token.Newline, "\n"), //
 		gen(token.End, "end"),    // 5
@@ -376,7 +376,7 @@ func Test_when_10(t *testing.T) {
 		gen(token.Number, "2"),     // 9
 		gen(token.Colon, ":"),      // 10
 		gen(token.Newline, "\n"),   //
-		gen(token.True, "true"),    // 12
+		gen(token.Bool, "true"),    // 12
 		gen(token.Colon, ":"),      // 13
 		gen(token.Newline, "\n"),   //
 		gen(token.End, "end"),      // 15
@@ -530,7 +530,7 @@ func Test_when_15(t *testing.T) {
 	given := []token.Token{
 		gen(token.When, "when"),  // 0
 		gen(token.Newline, "\n"), //
-		gen(token.True, "true"),  // 2
+		gen(token.Bool, "true"),  // 2
 		gen(token.Colon, ":"),    // 3
 		gen(token.Number, "1"),   // 4
 		gen(token.Newline, "\n"), //
@@ -575,7 +575,7 @@ func Test_when_16(t *testing.T) {
 		gen(token.Number, "1"),     // 8
 		gen(token.Newline, "\n"),   //
 
-		gen(token.True, "true"),  // 10
+		gen(token.Bool, "true"),  // 10
 		gen(token.Colon, ":"),    // 11
 		gen(token.Number, "2"),   // 12
 		gen(token.EQU, "=="),     // 13

@@ -41,7 +41,7 @@ func Test_watch_2(t *testing.T) {
 		gen(token.Watch, "watch"),  // 0
 		gen(token.Identifier, "e"), // 1
 		gen(token.Newline, "\n"),   // 2
-		gen(token.True, "true"),    // 3
+		gen(token.Bool, "true"),    // 3
 		gen(token.Newline, "\n"),   // 4
 		gen(token.End, "end"),      // 5
 		gen(token.Newline, "\n"),
@@ -72,7 +72,7 @@ func Test_watch_3(t *testing.T) {
 		gen(token.Watch, "watch"),    // 0
 		gen(token.Identifier, "e"),   // 1
 		gen(token.Newline, "\n"),     // 2
-		gen(token.True, "true"),      // 3
+		gen(token.Bool, "true"),      // 3
 		gen(token.Newline, "\n"),     // 4
 		gen(token.Identifier, "e"),   // 5
 		gen(token.Assign, "="),       // 6

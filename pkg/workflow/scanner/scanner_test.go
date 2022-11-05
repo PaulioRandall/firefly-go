@@ -285,11 +285,11 @@ func Test_78(t *testing.T) {
 }
 
 func Test_79(t *testing.T) {
-	assertToken(t, "true", token.True)
+	assertToken(t, "true", token.Bool)
 }
 
 func Test_80(t *testing.T) {
-	assertToken(t, "false", token.False)
+	assertToken(t, "false", token.Bool)
 }
 
 func Test_81(t *testing.T) {
@@ -385,7 +385,7 @@ func Test_201(t *testing.T) {
 	then(token.Space, " ")
 	then(token.Assign, "=")
 	then(token.Space, " ")
-	then(token.True, "true")
+	then(token.Bool, "true")
 	thenEndWith(token.Newline, "\n")
 
 	line(`y, z = 123.456, "string"`)
@@ -467,7 +467,7 @@ func Test_201(t *testing.T) {
 
 	line(`		true: @println("meh")`)
 	mustStartWith(token.Space, "\t\t")
-	then(token.True, "true")
+	then(token.Bool, "true")
 	then(token.Colon, ":")
 	then(token.Space, " ")
 	then(token.Spell, "@")

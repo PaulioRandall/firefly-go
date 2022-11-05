@@ -127,7 +127,7 @@ func Test_map_5(t *testing.T) {
 		gen(token.Comma, ","),      // 4
 		gen(token.Number, "2"),     // 5
 		gen(token.Colon, ":"),      // 6
-		gen(token.True, "true"),    // 7
+		gen(token.Bool, "true"),    // 7
 		gen(token.Comma, ","),      // 8
 		gen(token.Number, "3"),     // 9
 		gen(token.Colon, ":"),      // 10

@@ -63,7 +63,7 @@ func Test_assign_3(t *testing.T) {
 		gen(token.Comma, ","),
 		gen(token.Identifier, "c"),
 		gen(token.Assign, "="), // 5
-		gen(token.False, "false"),
+		gen(token.Bool, "false"),
 		gen(token.Comma, ","),
 		gen(token.Number, "0"),
 		gen(token.Comma, ","),
