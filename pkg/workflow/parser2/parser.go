@@ -1,6 +1,7 @@
 // Package parser parses a series of tokens into series of abstract syntax trees
 package parser2
 
+/*
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
@@ -11,8 +12,6 @@ import (
 
 type ReaderOfTokens = inout.Reader[token.Token]
 type WriterOfNodes = inout.Writer[ast.Node]
-
-type PosReaderOfTokens = inout.PosReader[token.Token]
 
 var (
 	ErrParsing = err.Trackable("Failed to parse scroll")
@@ -51,3 +50,4 @@ func parseRootStatements(a auditor, w WriterOfNodes) error {
 
 	return nil
 }
+*/

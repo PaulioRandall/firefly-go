@@ -8,7 +8,21 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
+	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
+
+	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
 )
+
+func tok(tt token.TokenType, v string) token.Token {
+	return tokentest.Tok(tt, v)
+}
+
+func newAud(given ...token.Token) auditor {
+	lr := inout.NewListReader[token.Token](given)
+	br := inout.NewBufReader[token.Token](lr)
+	pr := inout.NewPosReader[token.Token](br)
+	return auditor{r: pr}
+}
 
 func Test_1_auditor(t *testing.T) {
 	a := newAud(

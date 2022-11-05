@@ -1,5 +1,6 @@
 package parser2
 
+/*
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
@@ -35,3 +36,4 @@ func expectIf(a auditor) ast.If {
 
 	return n
 }
+*/

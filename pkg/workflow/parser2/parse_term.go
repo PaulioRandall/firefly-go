@@ -1,5 +1,6 @@
 package parser2
 
+/*
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
@@ -80,3 +81,4 @@ func acceptLiteral(a auditor) (ast.Expr, bool) {
 
 	return n, true
 }
+*/

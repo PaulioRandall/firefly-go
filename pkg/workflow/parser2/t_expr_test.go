@@ -1,5 +1,6 @@
 package parser2
 
+/*
 import (
 	"testing"
 
@@ -599,3 +600,4 @@ func Test_expr_27(t *testing.T) {
 		ErrParsing,
 	)
 }
+*/

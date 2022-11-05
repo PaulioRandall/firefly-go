@@ -1,5 +1,6 @@
 package parser2
 
+/*
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
@@ -81,3 +82,4 @@ func expectOperator(a auditor) token.Token {
 
 	panic(unableToParse(a, ErrMissingOperator, "any in [Add | Sub | Mul | Div | Mod | LT | GT | LTE | GTE | EQU | NEQ]"))
 }
+*/

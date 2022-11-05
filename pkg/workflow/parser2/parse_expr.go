@@ -1,5 +1,6 @@
 package parser2
 
+/*
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/ast"
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
@@ -124,3 +125,4 @@ func isNextExprOpener(a auditor) bool {
 func isNextLiteral(a auditor) bool {
 	return a.match(token.IsLiteral)
 }
+*/

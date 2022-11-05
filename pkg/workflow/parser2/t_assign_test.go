@@ -1,5 +1,6 @@
 package parser2
 
+/*
 import (
 	"testing"
 
@@ -151,3 +152,4 @@ func Test_assign_6(t *testing.T) {
 		ErrParsing,
 	)
 }
+*/

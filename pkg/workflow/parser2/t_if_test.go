@@ -1,5 +1,6 @@
 package parser2
 
+/*
 import (
 	"testing"
 
@@ -139,3 +140,4 @@ func Test_if_5(t *testing.T) {
 		ErrParsing,
 	)
 }
+*/

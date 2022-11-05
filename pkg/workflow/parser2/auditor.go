@@ -2,7 +2,11 @@ package parser2
 
 import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
+
+	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 )
+
+type PosReaderOfTokens = inout.PosReader[token.Token]
 
 type auditor struct {
 	r PosReaderOfTokens
