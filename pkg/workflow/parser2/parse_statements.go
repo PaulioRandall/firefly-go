@@ -59,22 +59,6 @@ func acceptInlineStatement(a auditor) (ast.Stmt, bool) {
 		return n, true
 	}
 
-	if n, ok := acceptLoop(a); ok {
-		return n, true
-	}
-
-	if n, ok := acceptWhen(a); ok {
-		return n, true
-	}
-
-	if n, ok := acceptWatch(a); ok {
-		return n, true
-	}
-
-	if n, ok := acceptDef(a); ok {
-		return n, true
-	}
-
 	if n, ok = acceptExpression(a); ok {
 		return n, true
 	}

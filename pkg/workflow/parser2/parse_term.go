@@ -25,14 +25,6 @@ func acceptTerm(a auditor) (ast.Expr, bool) {
 		return n, true
 	}
 
-	if n, ok := acceptList(a); ok {
-		return n, true
-	}
-
-	if n, ok := acceptMap(a); ok {
-		return n, true
-	}
-
 	return nil, false
 }
 
