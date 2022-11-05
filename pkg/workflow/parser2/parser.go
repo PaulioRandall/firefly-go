@@ -33,7 +33,7 @@ func Parse(r ReaderOfTokens, w WriterOfNodes) (e error) {
 	return nil
 }
 
-// := {TERM_STATEMENT}
+// <- {TERM_STATEMENT}
 func parse(r BufReaderOfTokens, w WriterOfNodes) {
 	for r.More() {
 		acceptEmptyStatements(r)
@@ -45,9 +45,9 @@ func parse(r BufReaderOfTokens, w WriterOfNodes) {
 	}
 }
 
-// := {TERM}
+// EMPTY_STATEMENTS := {TERM}
 func acceptEmptyStatements(r BufReaderOfTokens) {
-	for acceptType(r, token.Terminator) || acceptType(r, token.Newline) {
+	for acceptTerm(r) {
 	}
 }
 
@@ -67,8 +67,8 @@ func parseStatement(r BufReaderOfTokens) ast.Node {
 	panic(ErrParsing.Track("Expected statement"))
 }
 
-// := Identifier Comma
-// := Identifier Assign
+// == Identifier Comma
+// == Identifier Assign
 func isAssignment(r BufReaderOfTokens) bool {
 	if peekType(r) != token.Identifier {
 		return false
@@ -108,7 +108,7 @@ func parseVariables(r BufReaderOfTokens) []ast.Variable {
 	return result
 }
 
-// := identifier
+// == identifier
 func isVariable(r BufReaderOfTokens) bool {
 	return peekType(r) == token.Identifier
 }
@@ -136,7 +136,7 @@ func parseExpressions(r BufReaderOfTokens) []ast.Expr {
 	return result
 }
 
-// := LITERAL
+// == LITERAL
 func isExpression(r BufReaderOfTokens) bool {
 	return isLiteral(r)
 }
@@ -146,7 +146,7 @@ func parseExpression(r BufReaderOfTokens) ast.Expr {
 	return parseLiteral(r)
 }
 
-// := Number | String | True | False
+// == Number | String | True | False
 func isLiteral(r BufReaderOfTokens) bool {
 	tt := peekType(r)
 	return tt == token.Number ||
@@ -155,7 +155,7 @@ func isLiteral(r BufReaderOfTokens) bool {
 		tt == token.False
 }
 
-// LITERAL := NUMBER | String | True | False
+// LITERAL := NUMBER | STRING | True | False
 func parseLiteral(r BufReaderOfTokens) ast.Literal {
 	switch peekType(r) {
 	case token.Number:
@@ -221,9 +221,14 @@ func expectType(r BufReaderOfTokens, want token.TokenType) token.Token {
 	panic(ErrParsing.Trackf("Expected %q", want))
 }
 
+// := [TERM]
+func acceptTerm(r BufReaderOfTokens) bool {
+	return acceptType(r, token.Terminator) || acceptType(r, token.Newline)
+}
+
 // TERM := Terminator | Newline
 func expectTerm(r BufReaderOfTokens) {
-	if acceptType(r, token.Terminator) || acceptType(r, token.Newline) {
+	if acceptTerm(r) {
 		return
 	}
 
