@@ -43,10 +43,10 @@ func Test_1_exeAssign(t *testing.T) {
 	exp := newState()
 	exp.setVariable("x", float64(1))
 
-	actState := newState()
-	exeNode(actState, given)
+	act := newState()
+	exeAssign(act, given)
 
-	require.Equal(t, exp, actState)
+	require.Equal(t, exp, act)
 }
 
 func Test_2_exeAssign(t *testing.T) {
@@ -60,10 +60,10 @@ func Test_2_exeAssign(t *testing.T) {
 	exp := newState()
 	exp.setVariable("x", "abc")
 
-	actState := newState()
-	exeNode(actState, given)
+	act := newState()
+	exeAssign(act, given)
 
-	require.Equal(t, exp, actState)
+	require.Equal(t, exp, act)
 }
 
 func Test_3_exeAssign(t *testing.T) {
@@ -77,10 +77,10 @@ func Test_3_exeAssign(t *testing.T) {
 	exp := newState()
 	exp.setVariable("x", true)
 
-	actState := newState()
-	exeNode(actState, given)
+	act := newState()
+	exeAssign(act, given)
 
-	require.Equal(t, exp, actState)
+	require.Equal(t, exp, act)
 }
 
 func Test_4_exeAssign(t *testing.T) {
@@ -96,10 +96,10 @@ func Test_4_exeAssign(t *testing.T) {
 	exp.setVariable("y", "abc")
 	exp.setVariable("z", true)
 
-	actState := newState()
-	exeNode(actState, given)
+	act := newState()
+	exeAssign(act, given)
 
-	require.Equal(t, exp, actState)
+	require.Equal(t, exp, act)
 }
 
 func Test_5_exeIf(t *testing.T) {
@@ -113,10 +113,10 @@ func Test_5_exeIf(t *testing.T) {
 
 	exp := newState()
 
-	actState := newState()
-	exeNode(actState, given)
+	act := newState()
+	exeIf(act, given)
 
-	require.Equal(t, exp, actState)
+	require.Equal(t, exp, act)
 }
 
 func Test_6_exeIf(t *testing.T) {
@@ -137,10 +137,10 @@ func Test_6_exeIf(t *testing.T) {
 	exp := newState()
 	exp.setVariable("x", true)
 
-	actState := newState()
-	exeNode(actState, given)
+	act := newState()
+	exeIf(act, given)
 
-	require.Equal(t, exp, actState)
+	require.Equal(t, exp, act)
 }
 
 func Test_7_exeIf(t *testing.T) {
@@ -160,10 +160,10 @@ func Test_7_exeIf(t *testing.T) {
 
 	exp := newState()
 
-	actState := newState()
-	exeNode(actState, given)
+	act := newState()
+	exeIf(act, given)
 
-	require.Equal(t, exp, actState)
+	require.Equal(t, exp, act)
 }
 
 func Test_8_exeIf(t *testing.T) {
@@ -188,10 +188,10 @@ func Test_8_exeIf(t *testing.T) {
 	exp := newState()
 	exp.setVariable("x", true)
 
-	actState := newState()
-	exeNode(actState, given)
+	act := newState()
+	exeIf(act, given)
 
-	require.Equal(t, exp, actState)
+	require.Equal(t, exp, act)
 }
 
 func Test_9_exeIf(t *testing.T) {
@@ -215,10 +215,10 @@ func Test_9_exeIf(t *testing.T) {
 
 	exp := newState()
 
-	actState := newState()
-	exeNode(actState, given)
+	act := newState()
+	exeIf(act, given)
 
-	require.Equal(t, exp, actState)
+	require.Equal(t, exp, act)
 }
 
 func Test_10_exeIf(t *testing.T) {
@@ -243,10 +243,10 @@ func Test_10_exeIf(t *testing.T) {
 	exp := newState()
 	exp.setVariable("x", true)
 
-	actState := newState()
-	exeNode(actState, given)
+	act := newState()
+	exeIf(act, given)
 
-	require.Equal(t, exp, actState)
+	require.Equal(t, exp, act)
 }
 
 func Test_11_exeIf(t *testing.T) {
@@ -270,8 +270,8 @@ func Test_11_exeIf(t *testing.T) {
 
 	exp := newState()
 
-	actState := newState()
-	exeNode(actState, given)
+	act := newState()
+	exeIf(act, given)
 
-	require.Equal(t, exp, actState)
+	require.Equal(t, exp, act)
 }
