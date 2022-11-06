@@ -81,7 +81,7 @@ func Test_8(t *testing.T) {
 }
 
 func Test_9(t *testing.T) {
-	assertToken(t, ">", token.Mt)
+	assertToken(t, ">", token.Gt)
 }
 
 func Test_10(t *testing.T) {
@@ -89,7 +89,7 @@ func Test_10(t *testing.T) {
 }
 
 func Test_11(t *testing.T) {
-	assertToken(t, ">=", token.Mte)
+	assertToken(t, ">=", token.Gte)
 }
 
 func Test_12(t *testing.T) {

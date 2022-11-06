@@ -106,9 +106,9 @@ func isArithmeticOperator(r BufReaderOfTokens) bool {
 func isComparisonOperator(r BufReaderOfTokens) bool {
 	return isAnyOfType(r,
 		token.Lt,
-		token.Mt,
+		token.Gt,
 		token.Lte,
-		token.Mte,
+		token.Gte,
 		token.Equ,
 		token.Neq,
 	)

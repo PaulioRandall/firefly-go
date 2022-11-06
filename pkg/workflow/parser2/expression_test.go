@@ -119,7 +119,7 @@ func Test_parseExpression_8(t *testing.T) {
 }
 
 func Test_parseExpression_9(t *testing.T) {
-	doSimpleBinaryOperationTest(t, token.Mt, ">")
+	doSimpleBinaryOperationTest(t, token.Gt, ">")
 }
 
 func Test_parseExpression_10(t *testing.T) {
@@ -127,7 +127,7 @@ func Test_parseExpression_10(t *testing.T) {
 }
 
 func Test_parseExpression_11(t *testing.T) {
-	doSimpleBinaryOperationTest(t, token.Mte, ">=")
+	doSimpleBinaryOperationTest(t, token.Gte, ">=")
 }
 
 func Test_parseExpression_12(t *testing.T) {

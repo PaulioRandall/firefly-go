@@ -44,9 +44,9 @@ const (
 	Mod // %
 
 	Lt  // <
-	Mt  // >
+	Gt  // >
 	Lte // <=
-	Mte // >=
+	Gte // >=
 	Equ // ==
 	Neq // !=
 
@@ -115,9 +115,9 @@ var Metadata = map[TokenType]TypeMetadata{
 
 	// Comparison operators
 	Lt:  typeMeta(Lt, "Less than", "<"),
-	Mt:  typeMeta(Mt, "More than", ">"),
+	Gt:  typeMeta(Gt, "More than", ">"),
 	Lte: typeMeta(Lte, "Less than or equal", "<="),
-	Mte: typeMeta(Mte, "More than or equal", ">="),
+	Gte: typeMeta(Gte, "More than or equal", ">="),
 	Equ: typeMeta(Equ, "Equal", "=="),
 	Neq: typeMeta(Neq, "Not equal", "!="),
 
@@ -152,7 +152,7 @@ func (tt TokenType) Precedence() int {
 		return 6
 	case Add, Sub:
 		return 5
-	case Lt, Mt, Lte, Mte:
+	case Lt, Gt, Lte, Gte:
 		return 4
 	case Equ, Neq:
 		return 3
