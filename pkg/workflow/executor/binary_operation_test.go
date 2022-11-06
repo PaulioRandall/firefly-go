@@ -188,4 +188,85 @@ func Test_exeBinaryOperation_27(t *testing.T) {
 	doBinaryOperationTest(t, left, "%", right, float64(3))
 }
 
-// TODO: Complex expressions
+func Test_exeBinaryOperation_28(t *testing.T) {
+	left := ast.BinaryOperation{
+		Left:     mockNumber(2),
+		Operator: "*",
+		Right:    mockNumber(2),
+	}
+
+	right := ast.BinaryOperation{
+		Left:     mockNumber(3),
+		Operator: "*",
+		Right:    mockNumber(3),
+	}
+
+	exp := (2 * 2) + (3 * 3)
+	doBinaryOperationTest(t, left, "+", right, float64(exp))
+}
+
+func Test_exeBinaryOperation_29(t *testing.T) {
+
+	// 1 == 2 || 2 > 3 && 4 <= 5
+
+	left := ast.BinaryOperation{
+		Left:     mockNumber(1),
+		Operator: "==",
+		Right:    mockNumber(2),
+	}
+
+	b := ast.BinaryOperation{
+		Left:     mockNumber(2),
+		Operator: ">",
+		Right:    mockNumber(3),
+	}
+
+	c := ast.BinaryOperation{
+		Left:     mockNumber(4),
+		Operator: "<=",
+		Right:    mockNumber(5),
+	}
+
+	right := ast.BinaryOperation{
+		Left:     b,
+		Operator: "&&",
+		Right:    c,
+	}
+
+	exp := (1 == 2) || ((2 > 3) && (4 <= 5))
+	doBinaryOperationTest(t, left, "||", right, exp)
+}
+
+func Test_exeBinaryOperation_30(t *testing.T) {
+
+	// 1 + 2 / 3 - 4 * 5 % 6
+	//   ^   ^   ^   ^   ^
+	//   b   a   e   c   d
+	exp := (1 + (float64(2) / 3)) - ((4 * 5) % 6)
+
+	a := ast.BinaryOperation{
+		Left:     mockNumber(2),
+		Operator: "/",
+		Right:    mockNumber(3),
+	}
+
+	left := ast.BinaryOperation{
+		Left:     mockNumber(1),
+		Operator: "+",
+		Right:    a,
+	}
+
+	b := ast.BinaryOperation{
+		Left:     mockNumber(4),
+		Operator: "*",
+		Right:    mockNumber(5),
+	}
+
+	right := ast.BinaryOperation{
+		Left:     b,
+		Operator: "%",
+		Right:    mockNumber(6),
+	}
+
+	doBinaryOperationTest(t, left, "-", right, float64(exp))
+}

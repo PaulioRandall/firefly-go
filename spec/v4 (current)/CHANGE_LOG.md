@@ -5,7 +5,7 @@
 
 #### Function & procedure definitions
 
-Functions and procedures will not be defined using a new keyword `def` and the
+Functions and procedures will be defined using a new keyword `def` and the
 definition operator `:=` will be removed.
 
 v3:

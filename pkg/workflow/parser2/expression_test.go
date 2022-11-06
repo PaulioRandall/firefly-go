@@ -146,4 +146,132 @@ func Test_parseExpression_15(t *testing.T) {
 	doSimpleBinaryOperationTest(t, token.Or, "||")
 }
 
-// TODO: Complex expressions
+func Test_parseExpression_16(t *testing.T) {
+
+	// 1 + 2 + 3
+	gen := tokentest.NewTokenGenerator()
+	given := []token.Token{
+		gen(token.Number, "1"),
+		gen(token.Add, "+"),
+		gen(token.Number, "2"),
+		gen(token.Add, "+"),
+		gen(token.Number, "3"),
+	}
+
+	exp := ast.BinaryOperation{
+		Left: ast.BinaryOperation{
+			Left:     mockNumber(1),
+			Operator: "+",
+			Right:    mockNumber(2),
+		},
+		Operator: "+",
+		Right:    mockNumber(3),
+	}
+
+	doExpressionTest(t, given, exp)
+}
+
+func Test_parseExpression_17(t *testing.T) {
+
+	// 1 + 2 * 3
+	gen := tokentest.NewTokenGenerator()
+	given := []token.Token{
+		gen(token.Number, "1"),
+		gen(token.Add, "+"),
+		gen(token.Number, "2"),
+		gen(token.Mul, "*"),
+		gen(token.Number, "3"),
+	}
+
+	exp := ast.BinaryOperation{
+		Left:     mockNumber(1),
+		Operator: "+",
+		Right: ast.BinaryOperation{
+			Left:     mockNumber(2),
+			Operator: "*",
+			Right:    mockNumber(3),
+		},
+	}
+
+	doExpressionTest(t, given, exp)
+}
+
+func Test_parseExpression_18(t *testing.T) {
+
+	// 1 + 2 * 3
+	gen := tokentest.NewTokenGenerator()
+	given := []token.Token{
+		gen(token.Number, "1"),
+		gen(token.Add, "+"),
+		gen(token.Number, "2"),
+		gen(token.Mul, "*"),
+		gen(token.Number, "3"),
+	}
+
+	exp := ast.BinaryOperation{
+		Left:     mockNumber(1),
+		Operator: "+",
+		Right: ast.BinaryOperation{
+			Left:     mockNumber(2),
+			Operator: "*",
+			Right:    mockNumber(3),
+		},
+	}
+
+	doExpressionTest(t, given, exp)
+}
+
+func Test_parseExpression_19(t *testing.T) {
+
+	// 1 == 2 || 2 > 3 && 4 <= 5
+	gen := tokentest.NewTokenGenerator()
+	given := []token.Token{
+		gen(token.Number, "1"),
+		gen(token.Equ, "=="),
+		gen(token.Number, "2"),
+
+		gen(token.Or, "||"),
+
+		gen(token.Number, "2"),
+		gen(token.Gt, ">"),
+		gen(token.Number, "3"),
+
+		gen(token.And, "&&"),
+
+		gen(token.Number, "4"),
+		gen(token.Lte, "<="),
+		gen(token.Number, "5"),
+	}
+
+	a := ast.BinaryOperation{
+		Left:     mockNumber(1),
+		Operator: "==",
+		Right:    mockNumber(2),
+	}
+
+	b := ast.BinaryOperation{
+		Left:     mockNumber(2),
+		Operator: ">",
+		Right:    mockNumber(3),
+	}
+
+	c := ast.BinaryOperation{
+		Left:     mockNumber(4),
+		Operator: "<=",
+		Right:    mockNumber(5),
+	}
+
+	d := ast.BinaryOperation{
+		Left:     b,
+		Operator: "&&",
+		Right:    c,
+	}
+
+	exp := ast.BinaryOperation{
+		Left:     a,
+		Operator: "||",
+		Right:    d,
+	}
+
+	doExpressionTest(t, given, exp)
+}
