@@ -49,3 +49,27 @@ func Test_exeBinaryOperation_4(t *testing.T) {
 	right := litNumber(1)
 	doBinaryOperationTest(t, left, "!=", right, false)
 }
+
+func Test_exeBinaryOperation_5(t *testing.T) {
+	left := litNumber(1)
+	right := litNumber(2)
+	doBinaryOperationTest(t, left, "<", right, true)
+}
+
+func Test_exeBinaryOperation_6(t *testing.T) {
+	left := litNumber(2)
+	right := litNumber(1)
+	doBinaryOperationTest(t, left, "<", right, false)
+}
+
+func Test_exeBinaryOperation_7(t *testing.T) {
+	left := litNumber(2)
+	right := litNumber(1)
+	doBinaryOperationTest(t, left, ">", right, true)
+}
+
+func Test_exeBinaryOperation_8(t *testing.T) {
+	left := litNumber(1)
+	right := litNumber(2)
+	doBinaryOperationTest(t, left, ">", right, false)
+}

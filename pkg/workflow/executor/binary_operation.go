@@ -18,7 +18,15 @@ func exeBinaryOperation(state *exeState, n ast.BinaryOperation) any {
 		return left == right
 	case "!=":
 		return left != right
+	case "<":
+		return left.(float64) < right.(float64)
+	case ">":
+		return left.(float64) > right.(float64)
+	case "<=":
+		return left.(float64) <= right.(float64)
+	case ">=":
+		return left.(float64) >= right.(float64)
+	default:
+		panic(ErrUnknownNode.Track("Unknown binary operator"))
 	}
-
-	return nil
 }
