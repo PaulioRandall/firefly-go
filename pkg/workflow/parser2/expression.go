@@ -21,9 +21,9 @@ func parseExpressions(r BufReaderOfTokens) []ast.Expr {
 	return result
 }
 
-// == LITERAL
+// EXPRESSION == LITERAL
 func isExpression(r BufReaderOfTokens) bool {
-	return isLiteral(r)
+	return isTerm(r)
 }
 
 // EXPRESSION := OPERATION
@@ -36,14 +36,16 @@ func parseExpression(r BufReaderOfTokens) ast.Expr {
 	}
 }
 
-// == VARIABLE | LITERAL
+// TERM == VARIABLE | LITERAL
 func isTerm(r BufReaderOfTokens) bool {
 	return isVariable(r) || isLiteral(r)
 }
 
-// TERM := LITERAL
+// TERM := VARIABLE | LITERAL
 func parseTerm(r BufReaderOfTokens) ast.Term {
 	switch {
+	case isVariable(r):
+		return parseVariable(r)
 	case isLiteral(r):
 		return parseLiteral(r)
 	default:
@@ -52,7 +54,11 @@ func parseTerm(r BufReaderOfTokens) ast.Term {
 }
 
 // OPERATION := EXPRESSION {OPERATOR EXPRESSION}
-func parseOperation(r BufReaderOfTokens, left ast.Expr, priorPrecedence int) ast.Expr {
+func parseOperation(
+	r BufReaderOfTokens,
+	left ast.Expr,
+	priorPrecedence int,
+) ast.Expr {
 
 	if left == nil {
 		left = parseTerm(r)
@@ -78,24 +84,30 @@ func parseOperation(r BufReaderOfTokens, left ast.Expr, priorPrecedence int) ast
 	return parseOperation(r, left, priorPrecedence)
 }
 
+// BINARY_OPERATOR == ARITHMETIC_OPERATOR | COMPARISON_OPERATOR
 func isBinaryOperator(r BufReaderOfTokens) bool {
 	return isArithmeticOperator(r) || isComparisonOperator(r)
 }
 
+// ARITHMETIC_OPERATOR == Add | Sub | Mul | Div | Mod
 func isArithmeticOperator(r BufReaderOfTokens) bool {
-	switch peekType(r) {
-	case token.Add, token.Sub, token.Mul, token.Div, token.Mod:
-		return true
-	default:
-		return false
-	}
+	return isAnyOfType(r,
+		token.Add,
+		token.Sub,
+		token.Mul,
+		token.Div,
+		token.Mod,
+	)
 }
 
+// COMPARISON_OPERATOR == LT | GT | LTE | GTE | EQU | NEQ
 func isComparisonOperator(r BufReaderOfTokens) bool {
-	switch peekType(r) {
-	case token.LT, token.GT, token.LTE, token.GTE, token.EQU, token.NEQ:
-		return true
-	default:
-		return false
-	}
+	return isAnyOfType(r,
+		token.LT,
+		token.GT,
+		token.LTE,
+		token.GTE,
+		token.EQU,
+		token.NEQ,
+	)
 }

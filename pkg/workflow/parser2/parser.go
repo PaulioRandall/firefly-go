@@ -61,8 +61,29 @@ func readToken(r BufReaderOfTokens) token.Token {
 	return tk
 }
 
+func isType(r BufReaderOfTokens, want token.TokenType) bool {
+	return r.More() && peekType(r) == want
+}
+
+func isAnyOfType(r BufReaderOfTokens, anyOf ...token.TokenType) bool {
+	for _, want := range anyOf {
+		if isType(r, want) {
+			return true
+		}
+	}
+	return false
+}
+
 func acceptType(r BufReaderOfTokens, want token.TokenType) bool {
-	if r.More() && peekType(r) == want {
+	if isType(r, want) {
+		readToken(r)
+		return true
+	}
+	return false
+}
+
+func acceptAnyOfType(r BufReaderOfTokens, anyOf ...token.TokenType) bool {
+	if isAnyOfType(r, anyOf...) {
 		readToken(r)
 		return true
 	}
@@ -70,8 +91,15 @@ func acceptType(r BufReaderOfTokens, want token.TokenType) bool {
 }
 
 func expectType(r BufReaderOfTokens, want token.TokenType) token.Token {
-	if r.More() && acceptType(r, want) {
+	if acceptType(r, want) {
 		return r.Prev()
 	}
 	panic(ErrParsing.Trackf("Expected %q", want))
+}
+
+func expectAnyOfType(r BufReaderOfTokens, anyOf ...token.TokenType) token.Token {
+	if acceptAnyOfType(r, anyOf...) {
+		return r.Prev()
+	}
+	panic(ErrParsing.Trackf("Expected any of %q", anyOf))
 }
