@@ -7,7 +7,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
-// == Number | String | True | False
+// LITERAL == Number | String | True | False
 func isLiteral(r BufReaderOfTokens) bool {
 	tt := peekType(r)
 	return tt == token.Number ||

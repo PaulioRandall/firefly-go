@@ -275,3 +275,136 @@ func Test_parseExpression_19(t *testing.T) {
 
 	doExpressionTest(t, given, exp)
 }
+
+func Test_parseExpression_20(t *testing.T) {
+
+	// (1)
+	gen := tokentest.NewTokenGenerator()
+	given := []token.Token{
+		gen(token.ParenOpen, "("),
+		gen(token.Number, "1"),
+		gen(token.ParenClose, ")"),
+	}
+
+	exp := mockNumber(1)
+
+	doExpressionTest(t, given, exp)
+}
+
+func Test_parseExpression_21(t *testing.T) {
+
+	// (1 + 2)
+	gen := tokentest.NewTokenGenerator()
+	given := []token.Token{
+		gen(token.ParenOpen, "("),
+		gen(token.Number, "1"),
+		gen(token.Add, "+"),
+		gen(token.Number, "2"),
+		gen(token.ParenClose, ")"),
+	}
+
+	exp := ast.BinaryOperation{
+		Left:     mockNumber(1),
+		Operator: "+",
+		Right:    mockNumber(2),
+	}
+
+	doExpressionTest(t, given, exp)
+}
+
+func Test_parseExpression_22(t *testing.T) {
+
+	// (1) + 2
+	gen := tokentest.NewTokenGenerator()
+	given := []token.Token{
+		gen(token.ParenOpen, "("),
+		gen(token.Number, "1"),
+		gen(token.ParenClose, ")"),
+		gen(token.Add, "+"),
+		gen(token.Number, "2"),
+	}
+
+	exp := ast.BinaryOperation{
+		Left:     mockNumber(1),
+		Operator: "+",
+		Right:    mockNumber(2),
+	}
+
+	doExpressionTest(t, given, exp)
+}
+
+func Test_parseExpression_23(t *testing.T) {
+
+	// (1 + 2) * (3 + 4)
+	gen := tokentest.NewTokenGenerator()
+	given := []token.Token{
+		gen(token.ParenOpen, "("),
+		gen(token.Number, "1"),
+		gen(token.Add, "+"),
+		gen(token.Number, "2"),
+		gen(token.ParenClose, ")"),
+
+		gen(token.Mul, "*"),
+
+		gen(token.ParenOpen, "("),
+		gen(token.Number, "3"),
+		gen(token.Add, "+"),
+		gen(token.Number, "4"),
+		gen(token.ParenClose, ")"),
+	}
+
+	a := ast.BinaryOperation{
+		Left:     mockNumber(1),
+		Operator: "+",
+		Right:    mockNumber(2),
+	}
+
+	b := ast.BinaryOperation{
+		Left:     mockNumber(3),
+		Operator: "+",
+		Right:    mockNumber(4),
+	}
+
+	exp := ast.BinaryOperation{
+		Left:     a,
+		Operator: "*",
+		Right:    b,
+	}
+
+	doExpressionTest(t, given, exp)
+}
+
+func Test_parseExpression_24(t *testing.T) {
+
+	// (( ((0)) + ((0)) ))
+	gen := tokentest.NewTokenGenerator()
+	given := []token.Token{
+		gen(token.ParenOpen, "("),
+		gen(token.ParenOpen, "("),
+
+		gen(token.ParenOpen, "("),
+		gen(token.ParenOpen, "("),
+		gen(token.Number, "0"),
+		gen(token.ParenClose, ")"),
+		gen(token.ParenClose, ")"),
+
+		gen(token.Add, "+"),
+
+		gen(token.ParenOpen, "("),
+		gen(token.ParenOpen, "("),
+		gen(token.Number, "0"),
+		gen(token.ParenClose, ")"),
+		gen(token.ParenClose, ")"),
+
+		gen(token.ParenClose, ")"),
+		gen(token.ParenClose, ")"),
+	}
+
+	exp := ast.BinaryOperation{
+		Left:     mockNumber(0),
+		Operator: "+",
+		Right:    mockNumber(0),
+	}
+
+	doExpressionTest(t, given, exp)
+}

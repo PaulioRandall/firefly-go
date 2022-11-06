@@ -21,7 +21,7 @@ func parseVariables(r BufReaderOfTokens) []ast.Variable {
 	return result
 }
 
-// Variable == Ident
+// VARIABLE == Ident
 func isVariable(r BufReaderOfTokens) bool {
 	return peekType(r) == token.Ident
 }

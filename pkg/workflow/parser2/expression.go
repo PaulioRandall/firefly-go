@@ -36,18 +36,28 @@ func parseExpression(r BufReaderOfTokens) ast.Expr {
 	}
 }
 
-// TERM == VARIABLE | LITERAL
-func isTerm(r BufReaderOfTokens) bool {
-	return isVariable(r) || isLiteral(r)
+// PAREN_EXPRESSION := ParenOpen EXPRESSION ParenClose
+func parseParenExpression(r BufReaderOfTokens) ast.Expr {
+	expectType(r, token.ParenOpen)
+	n := parseExpression(r)
+	expectType(r, token.ParenClose)
+	return n
 }
 
-// TERM := VARIABLE | LITERAL
-func parseTerm(r BufReaderOfTokens) ast.Term {
+// TERM == VARIABLE | LITERAL | ParenOpen
+func isTerm(r BufReaderOfTokens) bool {
+	return isVariable(r) || isLiteral(r) || isType(r, token.ParenOpen)
+}
+
+// TERM := VARIABLE | LITERAL | PAREN_EXPRESSION
+func parseTerm(r BufReaderOfTokens) ast.Expr {
 	switch {
 	case isVariable(r):
 		return parseVariable(r)
 	case isLiteral(r):
 		return parseLiteral(r)
+	case isType(r, token.ParenOpen):
+		return parseParenExpression(r)
 	default:
 		panic(ErrParsing.Track("Expected term"))
 	}

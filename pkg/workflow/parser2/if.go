@@ -5,7 +5,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
-// == If
+// IF == If
 func isIfStatement(r BufReaderOfTokens) bool {
 	return peekType(r) == token.If
 }

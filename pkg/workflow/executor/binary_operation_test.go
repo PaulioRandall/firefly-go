@@ -189,6 +189,9 @@ func Test_exeBinaryOperation_27(t *testing.T) {
 }
 
 func Test_exeBinaryOperation_28(t *testing.T) {
+
+	// (2 * 2) + (3 * 3)
+
 	left := ast.BinaryOperation{
 		Left:     mockNumber(2),
 		Operator: "*",
@@ -207,7 +210,7 @@ func Test_exeBinaryOperation_28(t *testing.T) {
 
 func Test_exeBinaryOperation_29(t *testing.T) {
 
-	// 1 == 2 || 2 > 3 && 4 <= 5
+	// (1 == 2) || ((2 > 3) && (4 <= 5))
 
 	left := ast.BinaryOperation{
 		Left:     mockNumber(1),
@@ -239,34 +242,33 @@ func Test_exeBinaryOperation_29(t *testing.T) {
 
 func Test_exeBinaryOperation_30(t *testing.T) {
 
-	// 1 + 2 / 3 - 4 * 5 % 6
-	//   ^   ^   ^   ^   ^
-	//   b   a   e   c   d
-	exp := (1 + (float64(2) / 3)) - ((4 * 5) % 6)
+	// (1 + (2 / 3)) - ((4 * 5) % 6)
 
-	a := ast.BinaryOperation{
+	div := ast.BinaryOperation{
 		Left:     mockNumber(2),
 		Operator: "/",
 		Right:    mockNumber(3),
 	}
 
-	left := ast.BinaryOperation{
+	add := ast.BinaryOperation{
 		Left:     mockNumber(1),
 		Operator: "+",
-		Right:    a,
+		Right:    div,
 	}
 
-	b := ast.BinaryOperation{
+	mul := ast.BinaryOperation{
 		Left:     mockNumber(4),
 		Operator: "*",
 		Right:    mockNumber(5),
 	}
 
-	right := ast.BinaryOperation{
-		Left:     b,
+	mod := ast.BinaryOperation{
+		Left:     mul,
 		Operator: "%",
 		Right:    mockNumber(6),
 	}
 
-	doBinaryOperationTest(t, left, "-", right, float64(exp))
+	exp := (1 + (float64(2) / 3)) - ((4 * 5) % 6)
+
+	doBinaryOperationTest(t, add, "-", mod, float64(exp))
 }
