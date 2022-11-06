@@ -77,27 +77,27 @@ func Test_7(t *testing.T) {
 }
 
 func Test_8(t *testing.T) {
-	assertToken(t, "<", token.LT)
+	assertToken(t, "<", token.Lt)
 }
 
 func Test_9(t *testing.T) {
-	assertToken(t, ">", token.GT)
+	assertToken(t, ">", token.Mt)
 }
 
 func Test_10(t *testing.T) {
-	assertToken(t, "<=", token.LTE)
+	assertToken(t, "<=", token.Lte)
 }
 
 func Test_11(t *testing.T) {
-	assertToken(t, ">=", token.GTE)
+	assertToken(t, ">=", token.Mte)
 }
 
 func Test_12(t *testing.T) {
-	assertToken(t, "==", token.EQU)
+	assertToken(t, "==", token.Equ)
 }
 
 func Test_13(t *testing.T) {
-	assertToken(t, "!=", token.NEQ)
+	assertToken(t, "!=", token.Neq)
 }
 
 func Test_14(t *testing.T) {
@@ -461,7 +461,7 @@ func Test_201(t *testing.T) {
 	mustStartWith(token.Space, "\t\t")
 	then(token.Ident, "a")
 	then(token.Space, " ")
-	then(token.EQU, "==")
+	then(token.Equ, "==")
 	then(token.Space, " ")
 	then(token.Ident, "b")
 	then(token.Colon, ":")

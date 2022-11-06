@@ -248,7 +248,7 @@ func Test_9(t *testing.T) {
 	given := []token.Token{
 		gen(token.If, "if"),
 		gen(token.Number, "1"),
-		gen(token.EQU, "=="),
+		gen(token.Equ, "=="),
 		gen(token.Number, "1"),
 		gen(token.Newline, "\n"),
 		gen(token.End, "end"),
@@ -275,7 +275,7 @@ func Test_10(t *testing.T) {
 	given := []token.Token{
 		gen(token.If, "if"),
 		gen(token.Number, "1"),
-		gen(token.EQU, "!="),
+		gen(token.Equ, "!="),
 		gen(token.Number, "1"),
 		gen(token.Newline, "\n"),
 		gen(token.End, "end"),

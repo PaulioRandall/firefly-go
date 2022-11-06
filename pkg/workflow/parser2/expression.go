@@ -105,12 +105,12 @@ func isArithmeticOperator(r BufReaderOfTokens) bool {
 // COMPARISON_OPERATOR == LT | GT | LTE | GTE | EQU | NEQ
 func isComparisonOperator(r BufReaderOfTokens) bool {
 	return isAnyOfType(r,
-		token.LT,
-		token.GT,
-		token.LTE,
-		token.GTE,
-		token.EQU,
-		token.NEQ,
+		token.Lt,
+		token.Mt,
+		token.Lte,
+		token.Mte,
+		token.Equ,
+		token.Neq,
 	)
 }
 

@@ -115,27 +115,27 @@ func Test_parseExpression_7(t *testing.T) {
 }
 
 func Test_parseExpression_8(t *testing.T) {
-	doSimpleBinaryOperationTest(t, token.LT, "<")
+	doSimpleBinaryOperationTest(t, token.Lt, "<")
 }
 
 func Test_parseExpression_9(t *testing.T) {
-	doSimpleBinaryOperationTest(t, token.GT, ">")
+	doSimpleBinaryOperationTest(t, token.Mt, ">")
 }
 
 func Test_parseExpression_10(t *testing.T) {
-	doSimpleBinaryOperationTest(t, token.LTE, "<=")
+	doSimpleBinaryOperationTest(t, token.Lte, "<=")
 }
 
 func Test_parseExpression_11(t *testing.T) {
-	doSimpleBinaryOperationTest(t, token.GTE, ">=")
+	doSimpleBinaryOperationTest(t, token.Mte, ">=")
 }
 
 func Test_parseExpression_12(t *testing.T) {
-	doSimpleBinaryOperationTest(t, token.EQU, "==")
+	doSimpleBinaryOperationTest(t, token.Equ, "==")
 }
 
 func Test_parseExpression_13(t *testing.T) {
-	doSimpleBinaryOperationTest(t, token.NEQ, "!=")
+	doSimpleBinaryOperationTest(t, token.Neq, "!=")
 }
 
 func Test_parseExpression_14(t *testing.T) {

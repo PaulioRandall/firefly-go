@@ -273,22 +273,22 @@ func scanOperator(tb *tokenBuilder, first, second rune) error {
 		return one(tb, token.Mod)
 
 	case first == '<' && second == '=':
-		return two(tb, token.LTE)
+		return two(tb, token.Lte)
 
 	case first == '>' && second == '=':
-		return two(tb, token.GTE)
+		return two(tb, token.Mte)
 
 	case first == '<':
-		return one(tb, token.LT)
+		return one(tb, token.Lt)
 
 	case first == '>':
-		return one(tb, token.GT)
+		return one(tb, token.Mt)
 
 	case first == '=' && second == '=':
-		return two(tb, token.EQU)
+		return two(tb, token.Equ)
 
 	case first == '!' && second == '=':
-		return two(tb, token.NEQ)
+		return two(tb, token.Neq)
 
 	case first == '=':
 		return one(tb, token.Assign)

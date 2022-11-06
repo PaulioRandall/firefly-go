@@ -43,12 +43,12 @@ const (
 	Div // /
 	Mod // %
 
-	LT  // <
-	GT  // >
-	LTE // <=
-	GTE // >=
-	EQU // ==
-	NEQ // !=
+	Lt  // <
+	Mt  // >
+	Lte // <=
+	Mte // >=
+	Equ // ==
+	Neq // !=
 
 	And // &&
 	Or  // ||
@@ -108,30 +108,30 @@ var Metadata = map[TokenType]TypeMetadata{
 
 	// Arithmetic operators
 	Add: typeMeta(Add, "Add", "+"),
-	Sub: typeMeta(Sub, "Sub", "-"),
-	Mul: typeMeta(Mul, "Mul", "*"),
-	Div: typeMeta(Div, "Div", "/"),
-	Mod: typeMeta(Mod, "Mod", "%"),
+	Sub: typeMeta(Sub, "Subtract", "-"),
+	Mul: typeMeta(Mul, "Multiply", "*"),
+	Div: typeMeta(Div, "Divide", "/"),
+	Mod: typeMeta(Mod, "Remainder", "%"),
 
 	// Comparison operators
-	LT:  typeMeta(LT, "LT", "<"),
-	GT:  typeMeta(GT, "GT", ">"),
-	LTE: typeMeta(LTE, "LTE", "<="),
-	GTE: typeMeta(GTE, "GTE", ">="),
-	EQU: typeMeta(EQU, "EQU", "=="),
-	NEQ: typeMeta(NEQ, "NEQ", "!="),
+	Lt:  typeMeta(Lt, "Less than", "<"),
+	Mt:  typeMeta(Mt, "More than", ">"),
+	Lte: typeMeta(Lte, "Less than or equal", "<="),
+	Mte: typeMeta(Mte, "More than or equal", ">="),
+	Equ: typeMeta(Equ, "Equal", "=="),
+	Neq: typeMeta(Neq, "Not equal", "!="),
 
 	// Boolean operators
 	And: typeMeta(And, "And", "&&"),
 	Or:  typeMeta(Or, "Or", "||"),
 
 	// Parentheses
-	ParenOpen:    typeMeta(ParenOpen, "Paren Open", "("),
-	ParenClose:   typeMeta(ParenClose, "Paren Close", ")"),
-	BraceOpen:    typeMeta(BraceOpen, "Brace Open", "{"),
-	BraceClose:   typeMeta(BraceClose, "Brace Close", "}"),
-	BracketOpen:  typeMeta(BracketOpen, "Bracket Open", "["),
-	BracketClose: typeMeta(BracketClose, "Bracket Close", "]"),
+	ParenOpen:    typeMeta(ParenOpen, "Paren open", "("),
+	ParenClose:   typeMeta(ParenClose, "Paren close", ")"),
+	BraceOpen:    typeMeta(BraceOpen, "Brace open", "{"),
+	BraceClose:   typeMeta(BraceClose, "Brace close", "}"),
+	BracketOpen:  typeMeta(BracketOpen, "Bracket open", "["),
+	BracketClose: typeMeta(BracketClose, "Bracket close", "]"),
 }
 
 func (tt TokenType) String() string {
@@ -152,9 +152,9 @@ func (tt TokenType) Precedence() int {
 		return 6
 	case Add, Sub:
 		return 5
-	case LT, GT, LTE, GTE:
+	case Lt, Mt, Lte, Mte:
 		return 4
-	case EQU, NEQ:
+	case Equ, Neq:
 		return 3
 	case And:
 		return 2

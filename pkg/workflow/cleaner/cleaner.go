@@ -60,7 +60,7 @@ func isEmptyLine(tt token.TokenType) bool {
 func isBinaryOperator(tt token.TokenType) bool {
 	switch tt {
 	case token.Add, token.Sub, token.Mul, token.Div, token.Mod:
-	case token.LT, token.GT, token.LTE, token.GTE, token.EQU, token.NEQ:
+	case token.Lt, token.Mt, token.Lte, token.Mte, token.Equ, token.Neq:
 	case token.And, token.Or:
 	default:
 		return false
