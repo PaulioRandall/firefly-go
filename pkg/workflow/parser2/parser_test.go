@@ -239,3 +239,57 @@ func Test_8(t *testing.T) {
 
 	doParseTest(t, given, exp)
 }
+
+func Test_9(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	// if 1 == 1
+	// end
+	given := []token.Token{
+		gen(token.If, "if"),
+		gen(token.Number, "1"),
+		gen(token.EQU, "=="),
+		gen(token.Number, "1"),
+		gen(token.Newline, "\n"),
+		gen(token.End, "end"),
+		gen(token.Newline, "\n"),
+	}
+
+	exp := ast.If{
+		Condition: ast.BinaryOperation{
+			Left:     ast.Literal{Value: float64(1)},
+			Operator: "==",
+			Right:    ast.Literal{Value: float64(1)},
+		},
+		Body: nil,
+	}
+
+	doParseTest(t, given, exp)
+}
+
+func Test_10(t *testing.T) {
+	gen := tokentest.NewTokenGenerator()
+
+	// if 1 != 1
+	// end
+	given := []token.Token{
+		gen(token.If, "if"),
+		gen(token.Number, "1"),
+		gen(token.EQU, "!="),
+		gen(token.Number, "1"),
+		gen(token.Newline, "\n"),
+		gen(token.End, "end"),
+		gen(token.Newline, "\n"),
+	}
+
+	exp := ast.If{
+		Condition: ast.BinaryOperation{
+			Left:     ast.Literal{Value: float64(1)},
+			Operator: "!=",
+			Right:    ast.Literal{Value: float64(1)},
+		},
+		Body: nil,
+	}
+
+	doParseTest(t, given, exp)
+}

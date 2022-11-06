@@ -19,6 +19,11 @@ type Expr interface {
 	expr()
 }
 
+type Term interface {
+	Expr
+	term()
+}
+
 type Assign struct {
 	Dst []Variable
 	Src []Expr
@@ -41,6 +46,7 @@ type Variable struct {
 
 func (n Variable) node() {}
 func (n Variable) expr() {}
+func (n Variable) term() {}
 
 type Literal struct {
 	Value any
@@ -48,3 +54,13 @@ type Literal struct {
 
 func (n Literal) node() {}
 func (n Literal) expr() {}
+func (n Literal) term() {}
+
+type BinaryOperation struct {
+	Left     Expr
+	Operator string
+	Right    Expr
+}
+
+func (n BinaryOperation) node() {}
+func (n BinaryOperation) expr() {}

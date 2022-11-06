@@ -48,6 +48,8 @@ func exeExpr(state *exeState, n ast.Expr) any {
 	switch v := n.(type) {
 	case ast.Literal:
 		return v.Value
+	case ast.BinaryOperation:
+		return exeBinaryOperation(state, v)
 	default:
 		panic(unknownExprNode())
 	}
@@ -69,6 +71,21 @@ func exeIf(state *exeState, n ast.If) {
 	if exeExpr(state, n.Condition).(bool) {
 		exeStmts(state, n.Body)
 	}
+}
+
+func exeBinaryOperation(state *exeState, n ast.BinaryOperation) any {
+
+	left := exeExpr(state, n.Left)
+	right := exeExpr(state, n.Right)
+
+	switch n.Operator {
+	case "==":
+		return left == right
+	case "!=":
+		return left != right
+	}
+
+	return nil
 }
 
 func unknownNode(e error) error {

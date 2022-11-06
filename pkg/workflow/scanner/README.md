@@ -40,6 +40,7 @@ String       := '"' {StringLetter | StringEscape} '"'
 ## Keywords
 
 ```
+Def   := "def"
 If    := "if"
 For   := "for"
 In    := "in"
@@ -49,8 +50,7 @@ Is    := "is"
 E     := "E"
 F     := "F"
 End   := "end"
-True  := "true"
-False := "false"
+Bool  := "true" | "false"
 ```
 
 ## Operators & other symbols
@@ -58,21 +58,23 @@ False := "false"
 ```
 Terminator   := ";"
 Assign       := "="
-Define       := ":="
 Comma        := ","
 Colon        := ":"
 Spell        := "@"
+
 Add          := "+"
 Sub          := "-"
 Mul          := "*"
 Div          := "/"
 Mod          := "%"
+
 LT           := "<"
 GT           := ">"
 LTE          := "<="
 GTE          := ">="
 EQU          := "=="
 NEQ          := "!="
+
 ParenOpen    := "("
 ParenClose   := ")"
 BraceOpen    := "{"
