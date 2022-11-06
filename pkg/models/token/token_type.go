@@ -1,22 +1,22 @@
 package token
 
 type TokenType int
+type TypeMetadata struct {
+	Type   TokenType
+	Name   string
+	Symbol string
+}
 
 const (
 	Unknown TokenType = iota
 
 	Newline    // '\n'
 	Terminator // ;
-	Identifier
-
-	Assign // =
-	Comma  // ,
-	Colon  // :
-	Spell  // @
 
 	Space
 	Comment
 
+	Identifier
 	Bool
 	Number
 	String
@@ -32,89 +32,119 @@ const (
 	Proc
 	End
 
-	_arith_begin
+	Assign // =
+	Comma  // ,
+	Colon  // :
+	Spell  // @
+
 	Add // +
 	Sub // -
 	Mul // *
 	Div // /
 	Mod // %
-	_arith_end
 
-	_cmp_begin
 	LT  // <
 	GT  // >
 	LTE // <=
 	GTE // >=
+
 	EQU // ==
 	NEQ // !=
-	_cmp_end
 
 	And // &&
 	Or  // ||
 
-	_paren_begin
-	ParenOpen    // (
-	ParenClose   // )
-	BraceOpen    // {
-	BraceClose   // }
+	ParenOpen  // (
+	ParenClose // )
+
+	BraceOpen  // {
+	BraceClose // }
+
 	BracketOpen  // [
 	BracketClose // ]
-	_paren_end
 )
 
-var nameMap = map[TokenType]string{
-	Newline:    "Newline",
-	Terminator: "Terminator",
-	Identifier: "Identifier",
-	Space:      "Space",
-	Comment:    "Comment",
+func typeMeta(typ TokenType, name, symbol string) TypeMetadata {
+	return TypeMetadata{
+		Type:   typ,
+		Name:   name,
+		Symbol: symbol,
+	}
+}
 
-	Bool:   "Bool",
-	Number: "Number",
-	String: "String",
+var Metadata = map[TokenType]TypeMetadata{
+	Unknown: typeMeta(Unknown, "Unknown (zero value)", ""),
 
-	Def:   "Define",
-	If:    "If",
-	For:   "For",
-	In:    "In",
-	Watch: "Watch",
-	When:  "When",
-	Is:    "Is",
-	Func:  "Function",
-	Proc:  "Procedure",
-	End:   "End",
+	// Terminators
+	Newline:    typeMeta(Newline, "Newline", "\n"),
+	Terminator: typeMeta(Terminator, "Terminator", ";"),
 
-	Assign: "Assign",
-	Comma:  "Comma",
-	Colon:  "Colon",
-	Spell:  "Spell",
+	// Redundant
+	Space:   typeMeta(Space, "Space", ""),
+	Comment: typeMeta(Comment, "Comment", ""),
 
-	Add: "Add",
-	Sub: "Subtract",
-	Mul: "Multiply",
-	Div: "Divide",
-	Mod: "Remainder",
+	// Terms
+	Identifier: typeMeta(Identifier, "Identifier", ""),
+	Bool:       typeMeta(Bool, "Bool", ""),
+	Number:     typeMeta(Number, "Number", ""),
+	String:     typeMeta(String, "String", ""),
 
-	LT:  "Less Than",
-	GT:  "More Than",
-	LTE: "Less Than Equal",
-	GTE: "More Than Equal",
-	EQU: "Equal",
-	NEQ: "Not Equal",
+	// Keywords
+	Def:   typeMeta(Def, "Define", "def"),
+	If:    typeMeta(If, "If", "if"),
+	For:   typeMeta(For, "For", "for"),
+	In:    typeMeta(In, "In", "in"),
+	Watch: typeMeta(Watch, "Watch", "watch"),
+	When:  typeMeta(When, "When", "when"),
+	Is:    typeMeta(Is, "Is", "is"),
+	Func:  typeMeta(Func, "Function", "F"),
+	Proc:  typeMeta(Proc, "Procedure", "P"),
+	End:   typeMeta(End, "End", "end"),
 
-	And: "And",
-	Or:  "Or",
+	// Operators
+	Assign: typeMeta(Assign, "Assignment", "="),
+	Comma:  typeMeta(Comma, "Comma", ","),
+	Colon:  typeMeta(Colon, "Colon", ":"),
+	Spell:  typeMeta(Spell, "Spell", "@"),
 
-	ParenOpen:    "Paren Open",
-	ParenClose:   "Paren Close",
-	BraceOpen:    "Brace Open",
-	BraceClose:   "Brace Close",
-	BracketOpen:  "Bracket Open",
-	BracketClose: "Bracket Close",
+	// Arithmetic operators
+	Add: typeMeta(Add, "Add", "+"),
+	Sub: typeMeta(Sub, "Sub", "-"),
+	Mul: typeMeta(Mul, "Mul", "*"),
+	Div: typeMeta(Div, "Div", "/"),
+	Mod: typeMeta(Mod, "Mod", "%"),
+
+	// Comparison operators
+	LT:  typeMeta(LT, "LT", "<"),
+	GT:  typeMeta(GT, "GT", ">"),
+	LTE: typeMeta(LTE, "LTE", "<="),
+	GTE: typeMeta(GTE, "GTE", ">="),
+	EQU: typeMeta(EQU, "EQU", "=="),
+	NEQ: typeMeta(NEQ, "NEQ", "!="),
+
+	// Boolean operators
+	And: typeMeta(And, "And", "&&"),
+	Or:  typeMeta(Or, "Or", "||"),
+
+	// Parentheses
+	ParenOpen:    typeMeta(ParenOpen, "Paren Open", "("),
+	ParenClose:   typeMeta(ParenClose, "Paren Close", ")"),
+	BraceOpen:    typeMeta(BraceOpen, "Brace Open", "{"),
+	BraceClose:   typeMeta(BraceClose, "Brace Close", "}"),
+	BracketOpen:  typeMeta(BracketOpen, "Bracket Open", "["),
+	BracketClose: typeMeta(BracketClose, "Bracket Close", "]"),
 }
 
 func (tt TokenType) String() string {
-	return nameMap[tt]
+	return Metadata[tt].Name
+}
+
+func (tt TokenType) Name() string {
+	return Metadata[tt].Name
+}
+
+func (tt TokenType) Symbol() string {
+	return Metadata[tt].Symbol
 }
 
 func (tt TokenType) Precedence() int {
@@ -134,21 +164,4 @@ func (tt TokenType) Precedence() int {
 	default:
 		return 0
 	}
-}
-
-func IsBinaryOperator(tt TokenType) bool {
-	return (tt > _arith_begin && tt < _arith_end) ||
-		(tt > _cmp_begin && tt < _cmp_end)
-}
-
-func filter(f func(TokenType, string) bool) map[TokenType]string {
-	res := map[TokenType]string{}
-
-	for tt, symbol := range nameMap {
-		if f(tt, symbol) {
-			res[tt] = symbol
-		}
-	}
-
-	return res
 }
