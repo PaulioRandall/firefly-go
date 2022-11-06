@@ -14,7 +14,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
 )
 
-func doAssignmentTest(t *testing.T, given []token.Token, exp ast.Node) {
+func doAssignmentTest(t *testing.T, given []token.Token, exp ast.Assign) {
 	defer func() {
 		if e := recover(); e != nil {
 			require.Fail(t, debug.String(e))
@@ -48,9 +48,9 @@ func Test_parseAssignment_1(t *testing.T) {
 }
 
 func Test_parseAssignment_2(t *testing.T) {
-	gen := tokentest.NewTokenGenerator()
 
 	// x = "s"
+	gen := tokentest.NewTokenGenerator()
 	given := []token.Token{
 		gen(token.Ident, "x"),
 		gen(token.Assign, "="),
@@ -67,9 +67,9 @@ func Test_parseAssignment_2(t *testing.T) {
 }
 
 func Test_parseAssignment_3(t *testing.T) {
-	gen := tokentest.NewTokenGenerator()
 
 	// x = true
+	gen := tokentest.NewTokenGenerator()
 	given := []token.Token{
 		gen(token.Ident, "x"),
 		gen(token.Assign, "="),
@@ -86,9 +86,9 @@ func Test_parseAssignment_3(t *testing.T) {
 }
 
 func Test_parseAssignment_4(t *testing.T) {
-	gen := tokentest.NewTokenGenerator()
 
 	// x, y, z = true, 1, "abc"
+	gen := tokentest.NewTokenGenerator()
 	given := []token.Token{
 		gen(token.Ident, "x"),
 		gen(token.Comma, ","),

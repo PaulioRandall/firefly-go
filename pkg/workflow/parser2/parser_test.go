@@ -10,9 +10,19 @@ import (
 
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/debug"
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
-
-	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
 )
+
+func mockBool(v bool) ast.Literal {
+	return ast.Literal{Value: v}
+}
+
+func mockNumber(v float64) ast.Literal {
+	return ast.Literal{Value: v}
+}
+
+func mockString(v string) ast.Literal {
+	return ast.Literal{Value: v}
+}
 
 func mockVariables(names ...string) []ast.Variable {
 	n := make([]ast.Variable, len(names))
@@ -46,165 +56,4 @@ func doParseTest(t *testing.T, given []token.Token, exp ...ast.Node) {
 
 	require.Nil(t, e, "%s", debug.String(e))
 	require.Equal(t, exp, w.List(), debug.String(w.List()))
-}
-func Test_5(t *testing.T) {
-	gen := tokentest.NewTokenGenerator()
-
-	// if true
-	// end
-	given := []token.Token{
-		gen(token.If, "if"),
-		gen(token.Bool, "true"),
-		gen(token.Newline, "\n"),
-		gen(token.End, "end"),
-		gen(token.Newline, "\n"),
-	}
-
-	exp := ast.If{
-		Condition: ast.Literal{Value: true},
-		Body:      nil,
-	}
-
-	doParseTest(t, given, exp)
-}
-
-func Test_6(t *testing.T) {
-	gen := tokentest.NewTokenGenerator()
-
-	// if true
-	//
-	//
-	// end
-	given := []token.Token{
-		gen(token.If, "if"),
-		gen(token.Bool, "true"),
-		gen(token.Newline, "\n"),
-		gen(token.Newline, "\n"),
-		gen(token.Newline, "\n"),
-		gen(token.End, "end"),
-		gen(token.Newline, "\n"),
-	}
-
-	exp := ast.If{
-		Condition: ast.Literal{Value: true},
-		Body:      nil,
-	}
-
-	doParseTest(t, given, exp)
-}
-
-func Test_7(t *testing.T) {
-	gen := tokentest.NewTokenGenerator()
-
-	// if true
-	//   x = 1
-	// end
-	given := []token.Token{
-		gen(token.If, "if"),
-		gen(token.Bool, "true"),
-		gen(token.Newline, "\n"),
-		gen(token.Ident, "x"),
-		gen(token.Assign, "="),
-		gen(token.Number, "1"),
-		gen(token.Newline, "\n"),
-		gen(token.End, "end"),
-		gen(token.Newline, "\n"),
-	}
-
-	exp := ast.If{
-		Condition: ast.Literal{Value: true},
-		Body: []ast.Stmt{
-			ast.Assign{
-				Dst: mockVariables("x"),
-				Src: mockLiterals(float64(1)),
-			},
-		},
-	}
-
-	doParseTest(t, given, exp)
-}
-
-func Test_8(t *testing.T) {
-	gen := tokentest.NewTokenGenerator()
-
-	// if false
-	//   x = 1
-	// end
-	given := []token.Token{
-		gen(token.If, "if"),
-		gen(token.Bool, "false"),
-		gen(token.Newline, "\n"),
-		gen(token.Ident, "x"),
-		gen(token.Assign, "="),
-		gen(token.Number, "1"),
-		gen(token.Newline, "\n"),
-		gen(token.End, "end"),
-		gen(token.Newline, "\n"),
-	}
-
-	exp := ast.If{
-		Condition: ast.Literal{Value: false},
-		Body: []ast.Stmt{
-			ast.Assign{
-				Dst: mockVariables("x"),
-				Src: mockLiterals(float64(1)),
-			},
-		},
-	}
-
-	doParseTest(t, given, exp)
-}
-
-func Test_9(t *testing.T) {
-	gen := tokentest.NewTokenGenerator()
-
-	// if 1 == 1
-	// end
-	given := []token.Token{
-		gen(token.If, "if"),
-		gen(token.Number, "1"),
-		gen(token.Equ, "=="),
-		gen(token.Number, "1"),
-		gen(token.Newline, "\n"),
-		gen(token.End, "end"),
-		gen(token.Newline, "\n"),
-	}
-
-	exp := ast.If{
-		Condition: ast.BinaryOperation{
-			Left:     ast.Literal{Value: float64(1)},
-			Operator: "==",
-			Right:    ast.Literal{Value: float64(1)},
-		},
-		Body: nil,
-	}
-
-	doParseTest(t, given, exp)
-}
-
-func Test_10(t *testing.T) {
-	gen := tokentest.NewTokenGenerator()
-
-	// if 1 != 1
-	// end
-	given := []token.Token{
-		gen(token.If, "if"),
-		gen(token.Number, "1"),
-		gen(token.Equ, "!="),
-		gen(token.Number, "1"),
-		gen(token.Newline, "\n"),
-		gen(token.End, "end"),
-		gen(token.Newline, "\n"),
-	}
-
-	exp := ast.If{
-		Condition: ast.BinaryOperation{
-			Left:     ast.Literal{Value: float64(1)},
-			Operator: "!=",
-			Right:    ast.Literal{Value: float64(1)},
-		},
-		Body: nil,
-	}
-
-	doParseTest(t, given, exp)
 }

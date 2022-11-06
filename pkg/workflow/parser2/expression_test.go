@@ -65,9 +65,9 @@ func doSimpleBinaryOperationTest(
 }
 
 func Test_parseExpression_1(t *testing.T) {
-	gen := tokentest.NewTokenGenerator()
 
 	// true
+	gen := tokentest.NewTokenGenerator()
 	given := []token.Token{
 		gen(token.Bool, "true"),
 	}
@@ -80,9 +80,9 @@ func Test_parseExpression_1(t *testing.T) {
 }
 
 func Test_parseExpression_2(t *testing.T) {
-	gen := tokentest.NewTokenGenerator()
 
 	// x
+	gen := tokentest.NewTokenGenerator()
 	given := []token.Token{
 		gen(token.Ident, "x"),
 	}
