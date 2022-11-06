@@ -12,6 +12,7 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/workflow/executor"
 	parser "github.com/PaulioRandall/firefly-go/pkg/workflow/parser2"
 	"github.com/PaulioRandall/firefly-go/pkg/workflow/scanner"
+	"github.com/PaulioRandall/firefly-go/pkg/workflow/validator"
 
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 )
@@ -31,30 +32,34 @@ func RunFile(file string) (int, error) {
 func Run(r inout.ReaderOfRunes) (int, error) {
 
 	var (
-		tks        []token.Token
-		nodes      []ast.Node
-		e          error
-		parseError = func(e error) error {
-			return err.Wrap(e, "Workflow failed to parse scroll")
+		tks      []token.Token
+		nodes    []ast.Node
+		e        error
+		runError = func(e error) error {
+			return err.Wrap(e, "Workflow failed to scan, parse, or run the scroll")
 		}
 	)
 
 	if tks, e = scan(r); e != nil {
-		return 1, parseError(e)
+		return 1, runError(e)
 	} else if tks == nil {
 		return 0, nil
 	}
 
 	if tks, e = clean(tks); e != nil {
-		return 1, parseError(e)
+		return 1, runError(e)
 	} else if tks == nil {
 		return 0, nil
 	}
 
 	if nodes, e = parse(tks); e != nil {
-		return 1, parseError(e)
+		return 1, runError(e)
 	} else if nodes == nil {
 		return 0, nil
+	}
+
+	if nodes, e = validate(nodes); e != nil {
+		return 1, runError(e)
 	}
 
 	return executor.Execute(nodes)
@@ -99,6 +104,17 @@ func parse(tks []token.Token) ([]ast.Node, error) {
 
 	if w.Empty() {
 		return nil, nil
+	}
+
+	return w.List(), nil
+}
+
+func validate(nodes []ast.Node) ([]ast.Node, error) {
+	r := inout.NewListReader(nodes)
+	w := inout.NewListWriter[ast.Node]()
+
+	if e := validator.Validate(r, w); e != nil {
+		return nil, err.Wrap(e, "Failed to validate AST")
 	}
 
 	return w.List(), nil
