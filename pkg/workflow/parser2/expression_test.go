@@ -84,7 +84,7 @@ func Test_parseExpression_2(t *testing.T) {
 
 	// x
 	given := []token.Token{
-		gen(token.Identifier, "x"),
+		gen(token.Ident, "x"),
 	}
 
 	exp := ast.Variable{

@@ -16,7 +16,7 @@ const (
 	Space
 	Comment
 
-	Identifier
+	Ident
 	Bool
 	Number
 	String
@@ -47,7 +47,6 @@ const (
 	GT  // >
 	LTE // <=
 	GTE // >=
-
 	EQU // ==
 	NEQ // !=
 
@@ -84,10 +83,10 @@ var Metadata = map[TokenType]TypeMetadata{
 	Comment: typeMeta(Comment, "Comment", ""),
 
 	// Terms
-	Identifier: typeMeta(Identifier, "Identifier", ""),
-	Bool:       typeMeta(Bool, "Bool", ""),
-	Number:     typeMeta(Number, "Number", ""),
-	String:     typeMeta(String, "String", ""),
+	Ident:  typeMeta(Ident, "Identifier", ""),
+	Bool:   typeMeta(Bool, "Bool", ""),
+	Number: typeMeta(Number, "Number", ""),
+	String: typeMeta(String, "String", ""),
 
 	// Keywords
 	Def:   typeMeta(Def, "Define", "def"),

@@ -5,10 +5,10 @@ import (
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 )
 
-// == Identifier Comma
-// == Identifier Assign
+// ASSIGNMENT == Ident Comma
+// ASSIGNMENT == Ident Assign
 func isAssignment(r BufReaderOfTokens) bool {
-	if peekType(r) != token.Identifier {
+	if peekType(r) != token.Ident {
 		return false
 	}
 

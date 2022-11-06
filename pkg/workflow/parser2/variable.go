@@ -21,14 +21,14 @@ func parseVariables(r BufReaderOfTokens) []ast.Variable {
 	return result
 }
 
-// == identifier
+// Variable == Ident
 func isVariable(r BufReaderOfTokens) bool {
-	return peekType(r) == token.Identifier
+	return peekType(r) == token.Ident
 }
 
-// VARIABLE := Identifier
+// VARIABLE := Ident
 func parseVariable(r BufReaderOfTokens) ast.Variable {
 	return ast.Variable{
-		Name: expectType(r, token.Identifier).Value,
+		Name: expectType(r, token.Ident).Value,
 	}
 }

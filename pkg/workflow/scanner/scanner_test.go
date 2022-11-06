@@ -225,27 +225,27 @@ func Test_56(t *testing.T) {
 }
 
 func Test_60(t *testing.T) {
-	assertToken(t, "abc", token.Identifier)
+	assertToken(t, "abc", token.Ident)
 }
 
 func Test_61(t *testing.T) {
-	assertToken(t, "abc_xyz", token.Identifier)
+	assertToken(t, "abc_xyz", token.Ident)
 }
 
 func Test_62(t *testing.T) {
-	assertToken(t, "forest", token.Identifier)
+	assertToken(t, "forest", token.Ident)
 }
 
 func Test_63(t *testing.T) {
-	assertToken(t, "For", token.Identifier)
+	assertToken(t, "For", token.Ident)
 }
 
 func Test_64(t *testing.T) {
-	assertToken(t, "FOR", token.Identifier)
+	assertToken(t, "FOR", token.Ident)
 }
 
 func Test_65(t *testing.T) {
-	assertToken(t, "e", token.Identifier)
+	assertToken(t, "e", token.Ident)
 }
 
 func Test_70(t *testing.T) {
@@ -361,7 +361,7 @@ func Test_200(t *testing.T) {
 
 	gen := tokentest.NewTokenGenerator()
 	exp := []token.Token{
-		gen(token.Identifier, "x"),
+		gen(token.Ident, "x"),
 		gen(token.Space, " "),
 		gen(token.Assign, "="),
 		gen(token.Space, " "),
@@ -389,7 +389,7 @@ func Test_201(t *testing.T) {
 	mustBeEmptyWith := then
 
 	line(`x = true`)
-	mustStartWith(token.Identifier, "x")
+	mustStartWith(token.Ident, "x")
 	then(token.Space, " ")
 	then(token.Assign, "=")
 	then(token.Space, " ")
@@ -397,10 +397,10 @@ func Test_201(t *testing.T) {
 	thenEndWith(token.Newline, "\n")
 
 	line(`y, z = 123.456, "string"`)
-	mustStartWith(token.Identifier, "y")
+	mustStartWith(token.Ident, "y")
 	then(token.Comma, ",")
 	then(token.Space, " ")
-	then(token.Identifier, "z")
+	then(token.Ident, "z")
 	then(token.Space, " ")
 	then(token.Assign, "=")
 	then(token.Space, " ")
@@ -420,27 +420,27 @@ func Test_201(t *testing.T) {
 	line(`def f P(a, b) c, d`)
 	mustStartWith(token.Def, "def")
 	then(token.Space, " ")
-	then(token.Identifier, "f")
+	then(token.Ident, "f")
 	then(token.Space, " ")
 	then(token.Proc, "P")
 	then(token.ParenOpen, "(")
-	then(token.Identifier, "a")
+	then(token.Ident, "a")
 	then(token.Comma, ",")
 	then(token.Space, " ")
-	then(token.Identifier, "b")
+	then(token.Ident, "b")
 	then(token.ParenClose, ")")
 	then(token.Space, " ")
-	then(token.Identifier, "c")
+	then(token.Ident, "c")
 	then(token.Comma, ",")
 	then(token.Space, " ")
-	then(token.Identifier, "d")
+	then(token.Ident, "d")
 	thenEndWith(token.Newline, "\n")
 
 	line(`	when a`)
 	mustStartWith(token.Space, "\t")
 	then(token.When, "when")
 	then(token.Space, " ")
-	then(token.Identifier, "a")
+	then(token.Ident, "a")
 	thenEndWith(token.Newline, "\n")
 
 	line(`		is 1: @println("one")`)
@@ -451,7 +451,7 @@ func Test_201(t *testing.T) {
 	then(token.Colon, ":")
 	then(token.Space, " ")
 	then(token.Spell, "@")
-	then(token.Identifier, "println")
+	then(token.Ident, "println")
 	then(token.ParenOpen, "(")
 	then(token.String, `"one"`)
 	then(token.ParenClose, ")")
@@ -459,15 +459,15 @@ func Test_201(t *testing.T) {
 
 	line(`		a == b: @println("a == b")`)
 	mustStartWith(token.Space, "\t\t")
-	then(token.Identifier, "a")
+	then(token.Ident, "a")
 	then(token.Space, " ")
 	then(token.EQU, "==")
 	then(token.Space, " ")
-	then(token.Identifier, "b")
+	then(token.Ident, "b")
 	then(token.Colon, ":")
 	then(token.Space, " ")
 	then(token.Spell, "@")
-	then(token.Identifier, "println")
+	then(token.Ident, "println")
 	then(token.ParenOpen, "(")
 	then(token.String, `"a == b"`)
 	then(token.ParenClose, ")")
@@ -479,7 +479,7 @@ func Test_201(t *testing.T) {
 	then(token.Colon, ":")
 	then(token.Space, " ")
 	then(token.Spell, "@")
-	then(token.Identifier, "println")
+	then(token.Ident, "println")
 	then(token.ParenOpen, "(")
 	then(token.String, `"meh"`)
 	then(token.ParenClose, ")")

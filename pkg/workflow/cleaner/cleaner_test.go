@@ -56,11 +56,11 @@ func Test_3_Clean(t *testing.T) {
 
 func Test_4_Clean(t *testing.T) {
 	given := []token.Token{
-		tok(token.Identifier, "abc"),
+		tok(token.Ident, "abc"),
 	}
 
 	exp := []token.Token{
-		tok(token.Identifier, "abc"),
+		tok(token.Ident, "abc"),
 	}
 
 	assert(t, given, exp)
@@ -68,7 +68,7 @@ func Test_4_Clean(t *testing.T) {
 
 func Test_5_Clean(t *testing.T) {
 	given := []token.Token{
-		tok(token.Identifier, "abc"),
+		tok(token.Ident, "abc"),
 		tok(token.Space, " "),
 		tok(token.Assign, "="),
 		tok(token.Space, " "),
@@ -79,7 +79,7 @@ func Test_5_Clean(t *testing.T) {
 	}
 
 	exp := []token.Token{
-		tok(token.Identifier, "abc"),
+		tok(token.Ident, "abc"),
 		tok(token.Assign, "="),
 		tok(token.Number, "0"),
 		tok(token.Newline, "\n"),

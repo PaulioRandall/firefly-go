@@ -8,7 +8,7 @@ import (
 func ExprFor(tk token.Token) ast.Expr {
 	if isLiteral(tk.TokenType) {
 		return Literal(tk)
-	} else if tk.TokenType == token.Identifier {
+	} else if tk.TokenType == token.Ident {
 		return Variable(tk)
 	}
 

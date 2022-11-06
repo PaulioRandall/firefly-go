@@ -233,7 +233,7 @@ func scanWord(tb *tokenBuilder, first rune) error {
 	case "true", "false":
 		tb.tt = token.Bool
 	default:
-		tb.tt = token.Identifier
+		tb.tt = token.Ident
 	}
 
 	return nil
