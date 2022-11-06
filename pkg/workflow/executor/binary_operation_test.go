@@ -121,3 +121,35 @@ func Test_exeBinaryOperation_16(t *testing.T) {
 	right := mockBool(false)
 	doBinaryOperationTest(t, left, "||", right, false)
 }
+
+func Test_exeBinaryOperation_17(t *testing.T) {
+	left := mockNumber(1)
+	right := mockNumber(1)
+	doBinaryOperationTest(t, left, "+", right, float64(2))
+}
+
+func Test_exeBinaryOperation_18(t *testing.T) {
+	left := mockNumber(1)
+	right := mockNumber(1)
+	doBinaryOperationTest(t, left, "-", right, float64(0))
+}
+
+func Test_exeBinaryOperation_19(t *testing.T) {
+	left := mockNumber(2)
+	right := mockNumber(2)
+	doBinaryOperationTest(t, left, "*", right, float64(4))
+}
+
+func Test_exeBinaryOperation_20(t *testing.T) {
+	left := mockNumber(12)
+	right := mockNumber(3)
+	doBinaryOperationTest(t, left, "/", right, float64(4))
+}
+
+func Test_exeBinaryOperation_21(t *testing.T) {
+	left := mockNumber(7)
+	right := mockNumber(4)
+	doBinaryOperationTest(t, left, "%", right, float64(3))
+}
+
+// TODO: Complex expressions
