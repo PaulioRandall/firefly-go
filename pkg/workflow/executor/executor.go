@@ -20,7 +20,7 @@ func Execute(nodes []ast.Node) (exitCode int, e error) {
 		}
 	}()
 
-	state := NewState()
+	state := newState()
 	exeNodes(state, nodes)
 
 	state.Println()

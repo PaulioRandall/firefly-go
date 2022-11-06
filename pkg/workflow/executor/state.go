@@ -9,7 +9,7 @@ type exeState struct {
 	e         error
 }
 
-func NewState() *exeState {
+func newState() *exeState {
 	return &exeState{
 		variables: map[string]any{},
 	}

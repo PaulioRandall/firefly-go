@@ -8,8 +8,6 @@ import (
 	ast "github.com/PaulioRandall/firefly-go/pkg/models/ast2"
 )
 
-var emptyState = NewState()
-
 func mockVariables(names ...string) []ast.Variable {
 	n := make([]ast.Variable, len(names))
 
@@ -42,14 +40,10 @@ func Test_1_exeAssign(t *testing.T) {
 		Src: mockLiterals(float64(1)),
 	}
 
-	// x: 1
-	exp := &exeState{
-		variables: map[string]any{
-			"x": float64(1),
-		},
-	}
+	exp := newState()
+	exp.setVariable("x", float64(1))
 
-	actState := NewState()
+	actState := newState()
 	exeNode(actState, given)
 
 	require.Equal(t, exp, actState)
@@ -63,14 +57,10 @@ func Test_2_exeAssign(t *testing.T) {
 		Src: mockLiterals("abc"),
 	}
 
-	// x: "abc"
-	exp := &exeState{
-		variables: map[string]any{
-			"x": "abc",
-		},
-	}
+	exp := newState()
+	exp.setVariable("x", "abc")
 
-	actState := NewState()
+	actState := newState()
 	exeNode(actState, given)
 
 	require.Equal(t, exp, actState)
@@ -84,14 +74,10 @@ func Test_3_exeAssign(t *testing.T) {
 		Src: mockLiterals(true),
 	}
 
-	// x: true
-	exp := &exeState{
-		variables: map[string]any{
-			"x": true,
-		},
-	}
+	exp := newState()
+	exp.setVariable("x", true)
 
-	actState := NewState()
+	actState := newState()
 	exeNode(actState, given)
 
 	require.Equal(t, exp, actState)
@@ -105,18 +91,12 @@ func Test_4_exeAssign(t *testing.T) {
 		Src: mockLiterals(float64(1), "abc", true),
 	}
 
-	// x: 1
-	// y: "abc"
-	// z: true
-	exp := &exeState{
-		variables: map[string]any{
-			"x": float64(1),
-			"y": "abc",
-			"z": true,
-		},
-	}
+	exp := newState()
+	exp.setVariable("x", float64(1))
+	exp.setVariable("y", "abc")
+	exp.setVariable("z", true)
 
-	actState := NewState()
+	actState := newState()
 	exeNode(actState, given)
 
 	require.Equal(t, exp, actState)
@@ -131,9 +111,9 @@ func Test_5_exeIf(t *testing.T) {
 		Body:      nil,
 	}
 
-	exp := emptyState
+	exp := newState()
 
-	actState := NewState()
+	actState := newState()
 	exeNode(actState, given)
 
 	require.Equal(t, exp, actState)
@@ -154,14 +134,10 @@ func Test_6_exeIf(t *testing.T) {
 		},
 	}
 
-	// x: true
-	exp := &exeState{
-		variables: map[string]any{
-			"x": true,
-		},
-	}
+	exp := newState()
+	exp.setVariable("x", true)
 
-	actState := NewState()
+	actState := newState()
 	exeNode(actState, given)
 
 	require.Equal(t, exp, actState)
@@ -182,9 +158,9 @@ func Test_7_exeIf(t *testing.T) {
 		},
 	}
 
-	exp := emptyState
+	exp := newState()
 
-	actState := NewState()
+	actState := newState()
 	exeNode(actState, given)
 
 	require.Equal(t, exp, actState)
@@ -209,14 +185,10 @@ func Test_8_exeIf(t *testing.T) {
 		},
 	}
 
-	// x: true
-	exp := &exeState{
-		variables: map[string]any{
-			"x": true,
-		},
-	}
+	exp := newState()
+	exp.setVariable("x", true)
 
-	actState := NewState()
+	actState := newState()
 	exeNode(actState, given)
 
 	require.Equal(t, exp, actState)
@@ -241,9 +213,9 @@ func Test_9_exeIf(t *testing.T) {
 		},
 	}
 
-	exp := emptyState
+	exp := newState()
 
-	actState := NewState()
+	actState := newState()
 	exeNode(actState, given)
 
 	require.Equal(t, exp, actState)
@@ -268,14 +240,10 @@ func Test_10_exeIf(t *testing.T) {
 		},
 	}
 
-	// x: true
-	exp := &exeState{
-		variables: map[string]any{
-			"x": true,
-		},
-	}
+	exp := newState()
+	exp.setVariable("x", true)
 
-	actState := NewState()
+	actState := newState()
 	exeNode(actState, given)
 
 	require.Equal(t, exp, actState)
@@ -300,9 +268,9 @@ func Test_11_exeIf(t *testing.T) {
 		},
 	}
 
-	exp := emptyState
+	exp := newState()
 
-	actState := NewState()
+	actState := newState()
 	exeNode(actState, given)
 
 	require.Equal(t, exp, actState)
