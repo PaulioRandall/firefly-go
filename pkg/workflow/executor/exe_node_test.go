@@ -4,6 +4,18 @@ import (
 	ast "github.com/PaulioRandall/firefly-go/pkg/models/ast2"
 )
 
+func mockBool(v bool) ast.Literal {
+	return ast.Literal{Value: v}
+}
+
+func mockNumber(v float64) ast.Literal {
+	return ast.Literal{Value: v}
+}
+
+func mockString(v string) ast.Literal {
+	return ast.Literal{Value: v}
+}
+
 func mockVariables(names ...string) []ast.Variable {
 	n := make([]ast.Variable, len(names))
 

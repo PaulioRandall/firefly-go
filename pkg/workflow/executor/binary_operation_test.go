@@ -27,49 +27,97 @@ func doBinaryOperationTest(
 }
 
 func Test_exeBinaryOperation_1(t *testing.T) {
-	left := litNumber(1)
-	right := litNumber(1)
+	left := mockNumber(1)
+	right := mockNumber(1)
 	doBinaryOperationTest(t, left, "==", right, true)
 }
 
 func Test_exeBinaryOperation_2(t *testing.T) {
-	left := litNumber(1)
-	right := litNumber(2)
+	left := mockNumber(1)
+	right := mockNumber(2)
 	doBinaryOperationTest(t, left, "==", right, false)
 }
 
 func Test_exeBinaryOperation_3(t *testing.T) {
-	left := litNumber(1)
-	right := litNumber(2)
+	left := mockNumber(1)
+	right := mockNumber(2)
 	doBinaryOperationTest(t, left, "!=", right, true)
 }
 
 func Test_exeBinaryOperation_4(t *testing.T) {
-	left := litNumber(1)
-	right := litNumber(1)
+	left := mockNumber(1)
+	right := mockNumber(1)
 	doBinaryOperationTest(t, left, "!=", right, false)
 }
 
 func Test_exeBinaryOperation_5(t *testing.T) {
-	left := litNumber(1)
-	right := litNumber(2)
+	left := mockNumber(1)
+	right := mockNumber(2)
 	doBinaryOperationTest(t, left, "<", right, true)
 }
 
 func Test_exeBinaryOperation_6(t *testing.T) {
-	left := litNumber(2)
-	right := litNumber(1)
+	left := mockNumber(2)
+	right := mockNumber(1)
 	doBinaryOperationTest(t, left, "<", right, false)
 }
 
 func Test_exeBinaryOperation_7(t *testing.T) {
-	left := litNumber(2)
-	right := litNumber(1)
+	left := mockNumber(2)
+	right := mockNumber(1)
 	doBinaryOperationTest(t, left, ">", right, true)
 }
 
 func Test_exeBinaryOperation_8(t *testing.T) {
-	left := litNumber(1)
-	right := litNumber(2)
+	left := mockNumber(1)
+	right := mockNumber(2)
 	doBinaryOperationTest(t, left, ">", right, false)
+}
+
+func Test_exeBinaryOperation_9(t *testing.T) {
+	left := mockBool(true)
+	right := mockBool(true)
+	doBinaryOperationTest(t, left, "&&", right, true)
+}
+
+func Test_exeBinaryOperation_10(t *testing.T) {
+	left := mockBool(true)
+	right := mockBool(false)
+	doBinaryOperationTest(t, left, "&&", right, false)
+}
+
+func Test_exeBinaryOperation_11(t *testing.T) {
+	left := mockBool(false)
+	right := mockBool(true)
+	doBinaryOperationTest(t, left, "&&", right, false)
+}
+
+func Test_exeBinaryOperation_12(t *testing.T) {
+	left := mockBool(false)
+	right := mockBool(false)
+	doBinaryOperationTest(t, left, "&&", right, false)
+}
+
+func Test_exeBinaryOperation_13(t *testing.T) {
+	left := mockBool(true)
+	right := mockBool(true)
+	doBinaryOperationTest(t, left, "||", right, true)
+}
+
+func Test_exeBinaryOperation_14(t *testing.T) {
+	left := mockBool(true)
+	right := mockBool(false)
+	doBinaryOperationTest(t, left, "||", right, true)
+}
+
+func Test_exeBinaryOperation_15(t *testing.T) {
+	left := mockBool(false)
+	right := mockBool(true)
+	doBinaryOperationTest(t, left, "||", right, true)
+}
+
+func Test_exeBinaryOperation_16(t *testing.T) {
+	left := mockBool(false)
+	right := mockBool(false)
+	doBinaryOperationTest(t, left, "||", right, false)
 }

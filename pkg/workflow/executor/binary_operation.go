@@ -4,10 +4,6 @@ import (
 	ast "github.com/PaulioRandall/firefly-go/pkg/models/ast2"
 )
 
-func litNumber(v float64) ast.Literal {
-	return ast.Literal{Value: v}
-}
-
 func exeBinaryOperation(state *exeState, n ast.BinaryOperation) any {
 
 	left := exeExpr(state, n.Left)
@@ -26,6 +22,10 @@ func exeBinaryOperation(state *exeState, n ast.BinaryOperation) any {
 		return left.(float64) <= right.(float64)
 	case ">=":
 		return left.(float64) >= right.(float64)
+	case "&&":
+		return left.(bool) && right.(bool)
+	case "||":
+		return left.(bool) || right.(bool)
 	default:
 		panic(ErrUnknownNode.Track("Unknown binary operator"))
 	}
