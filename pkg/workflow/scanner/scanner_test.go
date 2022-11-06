@@ -304,6 +304,14 @@ func Test_83(t *testing.T) {
 	assertToken(t, "// abc", token.Comment)
 }
 
+func Test_84(t *testing.T) {
+	assertToken(t, "&&", token.And)
+}
+
+func Test_85(t *testing.T) {
+	assertToken(t, "||", token.Or)
+}
+
 func Test_100(t *testing.T) {
 	assertError(t, "~", ErrUnknownSymbol)
 }

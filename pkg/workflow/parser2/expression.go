@@ -86,7 +86,9 @@ func parseOperation(
 
 // BINARY_OPERATOR == ARITHMETIC_OPERATOR | COMPARISON_OPERATOR
 func isBinaryOperator(r BufReaderOfTokens) bool {
-	return isArithmeticOperator(r) || isComparisonOperator(r)
+	return isArithmeticOperator(r) ||
+		isComparisonOperator(r) ||
+		isBooleanOperator(r)
 }
 
 // ARITHMETIC_OPERATOR == Add | Sub | Mul | Div | Mod
@@ -109,5 +111,13 @@ func isComparisonOperator(r BufReaderOfTokens) bool {
 		token.GTE,
 		token.EQU,
 		token.NEQ,
+	)
+}
+
+// BOOLEAN_OPERATOR == And | Or
+func isBooleanOperator(r BufReaderOfTokens) bool {
+	return isAnyOfType(r,
+		token.And,
+		token.Or,
 	)
 }

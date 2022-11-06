@@ -35,7 +35,7 @@ func processNext(prev, curr, next token.Token) (token.Token, error) {
 	case isEmptyLine(prev.TokenType):
 		return zero, nil
 
-	case isArithmetic(prev.TokenType):
+	case isBinaryOperator(prev.TokenType):
 		return zero, nil
 
 	case isOpener(prev.TokenType):
@@ -57,13 +57,16 @@ func isEmptyLine(tt token.TokenType) bool {
 	return tt == token.Unknown || tt == token.Newline
 }
 
-func isArithmetic(tt token.TokenType) bool {
+func isBinaryOperator(tt token.TokenType) bool {
 	switch tt {
 	case token.Add, token.Sub, token.Mul, token.Div, token.Mod:
-		return true
+	case token.LT, token.GT, token.LTE, token.GTE, token.EQU, token.NEQ:
+	case token.And, token.Or:
 	default:
 		return false
 	}
+
+	return true
 }
 
 func isOpener(tt token.TokenType) bool {

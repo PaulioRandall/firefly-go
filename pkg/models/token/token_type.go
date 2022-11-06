@@ -49,6 +49,9 @@ const (
 	NEQ // !=
 	_cmp_end
 
+	And // &&
+	Or  // ||
+
 	_paren_begin
 	ParenOpen    // (
 	ParenClose   // )
@@ -99,6 +102,9 @@ var nameMap = map[TokenType]string{
 	EQU: "Equal",
 	NEQ: "Not Equal",
 
+	And: "And",
+	Or:  "Or",
+
 	ParenOpen:    "Paren Open",
 	ParenClose:   "Paren Close",
 	BraceOpen:    "Brace Open",
@@ -114,12 +120,16 @@ func (tt TokenType) String() string {
 func (tt TokenType) Precedence() int {
 	switch tt {
 	case Mul, Div, Mod:
-		return 4
+		return 6
 	case Add, Sub:
-		return 3
+		return 5
 	case LT, GT, LTE, GTE:
-		return 2
+		return 4
 	case EQU, NEQ:
+		return 3
+	case And:
+		return 2
+	case Or:
 		return 1
 	default:
 		return 0

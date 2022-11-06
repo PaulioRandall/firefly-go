@@ -293,6 +293,12 @@ func scanOperator(tb *tokenBuilder, first, second rune) error {
 	case first == '=':
 		return one(tb, token.Assign)
 
+	case first == '&' && second == '&':
+		return two(tb, token.And)
+
+	case first == '|' && second == '|':
+		return two(tb, token.Or)
+
 	case first == ':':
 		return one(tb, token.Colon)
 

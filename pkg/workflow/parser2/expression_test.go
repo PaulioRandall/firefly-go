@@ -43,15 +43,15 @@ func doSimpleBinaryOperationTest(
 
 	gen := tokentest.NewTokenGenerator()
 	given := []token.Token{
-		gen(token.Number, "1"),
+		gen(token.Number, "1"), // Actual literals don't matter
 		gen(operator, operatorSymbol),
-		gen(token.Number, "1"),
+		gen(token.Bool, "true"), // Actual literals don't matter
 	}
 
 	exp := ast.BinaryOperation{
 		Left:     ast.Literal{Value: float64(1)},
 		Operator: operatorSymbol,
-		Right:    ast.Literal{Value: float64(1)},
+		Right:    ast.Literal{Value: true},
 	}
 
 	r := inout.NewListReader(given)
@@ -60,7 +60,7 @@ func doSimpleBinaryOperationTest(
 
 	require.Equal(t,
 		exp, act,
-		"Expected ast.BinaryOperation: 1 %s 1", operatorSymbol,
+		"Expected ast.BinaryOperation: 1 %s true", operatorSymbol,
 	)
 }
 
@@ -136,4 +136,12 @@ func Test_parseExpression_12(t *testing.T) {
 
 func Test_parseExpression_13(t *testing.T) {
 	doSimpleBinaryOperationTest(t, token.NEQ, "!=")
+}
+
+func Test_parseExpression_14(t *testing.T) {
+	doSimpleBinaryOperationTest(t, token.And, "&&")
+}
+
+func Test_parseExpression_15(t *testing.T) {
+	doSimpleBinaryOperationTest(t, token.Or, "||")
 }
