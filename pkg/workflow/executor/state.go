@@ -27,11 +27,11 @@ func (state *exeState) hasError() bool {
 	return state.e != nil
 }
 
-func (state *exeState) getVariable(name string) (any, bool) {
+func (state *exeState) getVariable(name string) any {
 	if v, ok := state.variables[name]; ok {
-		return v, true
+		return v
 	}
-	return nil, false
+	return nil
 }
 
 func (state *exeState) setVariable(name string, value any) {

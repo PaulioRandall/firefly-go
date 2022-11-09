@@ -8,8 +8,7 @@ import (
 func exeExpr(state *exeState, n ast.Expr) any {
 	switch v := n.(type) {
 	case ast.Variable:
-		val, _ := state.getVariable(v.Name)
-		return val
+		return state.getVariable(v.Name)
 	case ast.Literal:
 		return v.Value
 	case ast.BinaryOperation:

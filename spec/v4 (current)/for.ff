@@ -9,5 +9,5 @@ end
 
 for i, n in @range(1, 10)
 	// first: i=0 n=1
-	// Last: i=8, n=9
+	// Last: i=8 n=9
 end
