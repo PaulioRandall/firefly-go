@@ -20,13 +20,13 @@ func Execute(nodes []ast.Node) (exitCode int, e error) {
 		}
 	}()
 
-	state := newState()
-	exeNodes(state, nodes)
+	mem := NewMemory()
+	exeNodes(mem, nodes)
 
-	state.Println()
+	mem.Println()
 
-	if state.hasError() {
-		return 1, state.getError()
+	if mem.Error != nil {
+		return 1, mem.Error
 	}
 
 	return 0, nil

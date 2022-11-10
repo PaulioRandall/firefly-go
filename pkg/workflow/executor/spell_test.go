@@ -15,11 +15,11 @@ func Test_invokeSpell_1(t *testing.T) {
 		Params: nil,
 	}
 
-	state := newState()
+	mem := NewMemory()
 
 	exp := []any(nil)
 
-	act := invokeSpell(state, given)
+	act := invokeSpell(mem, given)
 
 	require.Equal(t, exp, act)
 }

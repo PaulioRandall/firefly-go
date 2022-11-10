@@ -4,19 +4,19 @@ import (
 	ast "github.com/PaulioRandall/firefly-go/pkg/models/ast2"
 )
 
-func exeStmts(state *exeState, nodes []ast.Stmt) {
+func exeStmts(mem *Memory, nodes []ast.Stmt) {
 	for _, n := range nodes {
-		exeNode(state, n)
+		exeNode(mem, n)
 	}
 }
 
-func exeStmt(state *exeState, n ast.Stmt) {
+func exeStmt(mem *Memory, n ast.Stmt) {
 	switch v := n.(type) {
 	case ast.Assign:
-		exeAssign(state, v)
+		exeAssign(mem, v)
 	case ast.If:
-		exeIf(state, v)
+		exeIf(mem, v)
 	default:
-		panic(ErrUnknownNode.Track("Unknown statement type"))
+		panic(ErrUnknownNode.Track("Unknown memment type"))
 	}
 }

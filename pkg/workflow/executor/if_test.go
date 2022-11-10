@@ -17,9 +17,9 @@ func Test_exeIf_1(t *testing.T) {
 		Body:      nil,
 	}
 
-	exp := newState()
+	exp := NewMemory()
 
-	act := newState()
+	act := NewMemory()
 	exeIf(act, given)
 
 	require.Equal(t, exp, act)
@@ -40,10 +40,10 @@ func Test_exeIf_2(t *testing.T) {
 		},
 	}
 
-	exp := newState()
-	exp.setVariable("x", true)
+	exp := NewMemory()
+	exp.Variables["x"] = true
 
-	act := newState()
+	act := NewMemory()
 	exeIf(act, given)
 
 	require.Equal(t, exp, act)
@@ -64,9 +64,9 @@ func Test_exeIf_3(t *testing.T) {
 		},
 	}
 
-	exp := newState()
+	exp := NewMemory()
 
-	act := newState()
+	act := NewMemory()
 	exeIf(act, given)
 
 	require.Equal(t, exp, act)

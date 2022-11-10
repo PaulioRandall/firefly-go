@@ -5,14 +5,14 @@ import (
 	//"github.com/PaulioRandall/firefly-go/pkg/utilities/debug"
 )
 
-func exeExpr(state *exeState, n ast.Expr) any {
+func exeExpr(mem *Memory, n ast.Expr) any {
 	switch v := n.(type) {
 	case ast.Variable:
-		return state.getVariable(v.Name)
+		return mem.Variables[v.Name]
 	case ast.Literal:
 		return v.Value
 	case ast.BinaryOperation:
-		return exeBinaryOperation(state, v)
+		return exeBinaryOperation(mem, v)
 	default:
 		panic(ErrUnknownNode.Track("Unknown expression type"))
 	}

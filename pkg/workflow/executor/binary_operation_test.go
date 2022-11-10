@@ -21,7 +21,7 @@ func doBinaryOperationTest(
 		Right:    right,
 	}
 
-	act := exeBinaryOperation(newState(), given)
+	act := exeBinaryOperation(NewMemory(), given)
 
 	require.Equal(t, exp, act)
 }
@@ -32,7 +32,7 @@ func doBinaryOperationTestWithState(
 	operator string,
 	right ast.Expr,
 	exp any,
-	state *exeState,
+	mem *Memory,
 ) {
 	given := ast.BinaryOperation{
 		Left:     left,
@@ -40,7 +40,7 @@ func doBinaryOperationTestWithState(
 		Right:    right,
 	}
 
-	act := exeBinaryOperation(state, given)
+	act := exeBinaryOperation(mem, given)
 
 	require.Equal(t, exp, act)
 }
@@ -296,9 +296,9 @@ func Test_exeBinaryOperation_31(t *testing.T) {
 	left := mockVariable("x")
 	right := mockVariable("y")
 
-	state := newState()
-	state.setVariable("x", float64(2))
-	state.setVariable("y", float64(2))
+	state := NewMemory()
+	state.Variables["x"] = float64(2)
+	state.Variables["y"] = float64(2)
 
 	doBinaryOperationTestWithState(t, left, "+", right, float64(4), state)
 }

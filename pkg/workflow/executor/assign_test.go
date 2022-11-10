@@ -16,10 +16,10 @@ func Test_exeAssign_1(t *testing.T) {
 		Src: mockLiterals(float64(1)),
 	}
 
-	exp := newState()
-	exp.setVariable("x", float64(1))
+	exp := NewMemory()
+	exp.Variables["x"] = float64(1)
 
-	act := newState()
+	act := NewMemory()
 	exeAssign(act, given)
 
 	require.Equal(t, exp, act)
@@ -33,10 +33,10 @@ func Test_exeAssign_2(t *testing.T) {
 		Src: mockLiterals("abc"),
 	}
 
-	exp := newState()
-	exp.setVariable("x", "abc")
+	exp := NewMemory()
+	exp.Variables["x"] = "abc"
 
-	act := newState()
+	act := NewMemory()
 	exeAssign(act, given)
 
 	require.Equal(t, exp, act)
@@ -50,10 +50,10 @@ func Test_exeAssign_3(t *testing.T) {
 		Src: mockLiterals(true),
 	}
 
-	exp := newState()
-	exp.setVariable("x", true)
+	exp := NewMemory()
+	exp.Variables["x"] = true
 
-	act := newState()
+	act := NewMemory()
 	exeAssign(act, given)
 
 	require.Equal(t, exp, act)
@@ -67,12 +67,12 @@ func Test_exeAssign_4(t *testing.T) {
 		Src: mockLiterals(float64(1), "abc", true),
 	}
 
-	exp := newState()
-	exp.setVariable("x", float64(1))
-	exp.setVariable("y", "abc")
-	exp.setVariable("z", true)
+	exp := NewMemory()
+	exp.Variables["x"] = float64(1)
+	exp.Variables["y"] = "abc"
+	exp.Variables["z"] = true
 
-	act := newState()
+	act := NewMemory()
 	exeAssign(act, given)
 
 	require.Equal(t, exp, act)

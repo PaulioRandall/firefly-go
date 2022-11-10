@@ -6,10 +6,10 @@ import (
 	ast "github.com/PaulioRandall/firefly-go/pkg/models/ast2"
 )
 
-func exeBinaryOperation(state *exeState, n ast.BinaryOperation) any {
+func exeBinaryOperation(mem *Memory, n ast.BinaryOperation) any {
 
-	left := exeExpr(state, n.Left)
-	right := exeExpr(state, n.Right)
+	left := exeExpr(mem, n.Left)
+	right := exeExpr(mem, n.Right)
 
 	switch n.Operator {
 	case "+":

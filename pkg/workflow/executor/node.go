@@ -10,16 +10,16 @@ var (
 	ErrUnknownNode = err.Trackable("Unknown Node")
 )
 
-func exeNodes(state *exeState, nodes []ast.Node) {
+func exeNodes(mem *Memory, nodes []ast.Node) {
 	for _, n := range nodes {
-		exeNode(state, n)
+		exeNode(mem, n)
 	}
 }
 
-func exeNode(state *exeState, n ast.Node) {
+func exeNode(mem *Memory, n ast.Node) {
 	switch v := n.(type) {
 	case ast.Stmt:
-		exeStmt(state, v)
+		exeStmt(mem, v)
 	default:
 		panic(ErrUnknownNode.Track("Unknown node type"))
 	}

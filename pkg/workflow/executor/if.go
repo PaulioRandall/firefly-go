@@ -4,8 +4,8 @@ import (
 	ast "github.com/PaulioRandall/firefly-go/pkg/models/ast2"
 )
 
-func exeIf(state *exeState, n ast.If) {
-	if exeExpr(state, n.Condition).(bool) {
-		exeStmts(state, n.Body)
+func exeIf(mem *Memory, n ast.If) {
+	if exeExpr(mem, n.Condition).(bool) {
+		exeStmts(mem, n.Body)
 	}
 }
