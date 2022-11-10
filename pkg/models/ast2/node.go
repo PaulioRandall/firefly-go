@@ -57,3 +57,11 @@ type BinaryOperation struct {
 
 func (n BinaryOperation) node() {}
 func (n BinaryOperation) expr() {}
+
+type SpellCall struct {
+	Name   string
+	Params []Expr
+}
+
+func (n SpellCall) node() {}
+func (n SpellCall) stmt() {}

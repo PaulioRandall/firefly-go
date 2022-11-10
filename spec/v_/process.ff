@@ -1,0 +1,7 @@
+
+// Invoke a process
+exitCode, output = $ "cp ./abc.txt ./xyz.txt" 
+
+// Invoke a process within a specific working directory
+// Directory changes apply to the process call only
+exitCode, output = $$ "../../dir/" "cp ./abc.txt ./xyz.txt" 

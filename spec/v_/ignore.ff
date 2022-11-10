@@ -1,0 +1,7 @@
+// Ignore the result of an expression, procedure, spell, or incantation
+
+// In this case the 'output' is ignored, this allows for potential optimisation
+// in the underlying implementation. The 'output' takes up memory. By
+// explicitly ignoring it we implicitly tell the compiler/executor to just not
+// capture it.
+exitCode, _ = $ "cp ./abc.txt ./xyz.txt"

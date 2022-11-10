@@ -6,6 +6,7 @@ import (
 
 type exeState struct {
 	variables map[string]any
+	spells    map[string]any
 	e         error
 }
 
@@ -15,8 +16,14 @@ func newState() *exeState {
 	}
 }
 
-func (state *exeState) setError(e error) {
-	state.e = e
+func (state *exeState) getVariable(name string) any {
+	v, _ := state.variables[name]
+	return v
+}
+
+func (state *exeState) getSpell(name string) any {
+	v, _ := state.spells[name]
+	return v
 }
 
 func (state *exeState) getError() error {
@@ -27,15 +34,12 @@ func (state *exeState) hasError() bool {
 	return state.e != nil
 }
 
-func (state *exeState) getVariable(name string) any {
-	if v, ok := state.variables[name]; ok {
-		return v
-	}
-	return nil
-}
-
 func (state *exeState) setVariable(name string, value any) {
 	state.variables[name] = value
+}
+
+func (state *exeState) setError(e error) {
+	state.e = e
 }
 
 func (state *exeState) Println() {

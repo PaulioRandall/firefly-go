@@ -1,0 +1,10 @@
+// Incantations are custom inbuilt procedures
+
+// Prints each arg (with space between)
+@print(v, v, v)
+
+// @print then appends a linefeed
+@println(v, v, v)
+
+// Returns a list of numbers from 'start' to 'end' (exclusive)
+@range(start, end)

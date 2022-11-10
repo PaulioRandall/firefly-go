@@ -1,0 +1,7 @@
+
+n = 1
+b = true
+s = "string"
+
+n, s, b = 1,   "string", true
+n, s, b = 2.2, "chars",  false

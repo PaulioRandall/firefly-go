@@ -1,0 +1,7 @@
+// Spells are custom inbuilt functions
+
+// Returns a list of the program arguments
+@args()
+
+// Returns the length of the arg (string, list, or map)
+@len(v)
