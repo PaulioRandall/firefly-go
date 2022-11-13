@@ -14,14 +14,19 @@ type Stmt interface {
 	stmt()
 }
 
-type Expr interface {
+type Returns interface {
 	Node
+	returns()
+}
+
+type Expr interface {
+	Returns
 	expr()
 }
 
 type Assign struct {
 	Dst []Variable
-	Src []Expr
+	Src []Expr // TODO: should be Returns
 }
 
 func (n Assign) node() {}
@@ -39,15 +44,17 @@ type Variable struct {
 	Name string
 }
 
-func (n Variable) node() {}
-func (n Variable) expr() {}
+func (n Variable) node()    {}
+func (n Variable) expr()    {}
+func (n Variable) returns() {}
 
 type Literal struct {
 	Value any
 }
 
-func (n Literal) node() {}
-func (n Literal) expr() {}
+func (n Literal) node()    {}
+func (n Literal) expr()    {}
+func (n Literal) returns() {}
 
 type BinaryOperation struct {
 	Left     Expr
@@ -55,13 +62,15 @@ type BinaryOperation struct {
 	Right    Expr
 }
 
-func (n BinaryOperation) node() {}
-func (n BinaryOperation) expr() {}
+func (n BinaryOperation) node()    {}
+func (n BinaryOperation) expr()    {}
+func (n BinaryOperation) returns() {}
 
 type SpellCall struct {
 	Name   string
 	Params []Expr
 }
 
-func (n SpellCall) node() {}
-func (n SpellCall) stmt() {}
+func (n SpellCall) node()    {}
+func (n SpellCall) stmt()    {}
+func (n SpellCall) returns() {}

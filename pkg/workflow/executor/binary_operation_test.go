@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	ast "github.com/PaulioRandall/firefly-go/pkg/models/ast2"
+	"github.com/PaulioRandall/firefly-go/pkg/models/memory"
 )
 
 func doBinaryOperationTest(
@@ -21,7 +22,7 @@ func doBinaryOperationTest(
 		Right:    right,
 	}
 
-	act := exeBinaryOperation(NewMemory(), given)
+	act := exeBinaryOperation(memory.NewMemory(), given)
 
 	require.Equal(t, exp, act)
 }
@@ -32,7 +33,7 @@ func doBinaryOperationTestWithState(
 	operator string,
 	right ast.Expr,
 	exp any,
-	mem *Memory,
+	mem *memory.Memory,
 ) {
 	given := ast.BinaryOperation{
 		Left:     left,
@@ -296,7 +297,7 @@ func Test_exeBinaryOperation_31(t *testing.T) {
 	left := mockVariable("x")
 	right := mockVariable("y")
 
-	state := NewMemory()
+	state := memory.NewMemory()
 	state.Variables["x"] = float64(2)
 	state.Variables["y"] = float64(2)
 

@@ -4,6 +4,7 @@ import (
 	"log"
 
 	ast "github.com/PaulioRandall/firefly-go/pkg/models/ast2"
+	"github.com/PaulioRandall/firefly-go/pkg/models/memory"
 )
 
 func Execute(nodes []ast.Node) (exitCode int, e error) {
@@ -20,7 +21,7 @@ func Execute(nodes []ast.Node) (exitCode int, e error) {
 		}
 	}()
 
-	mem := NewMemory()
+	mem := memory.NewMemory()
 	exeNodes(mem, nodes)
 
 	mem.Println()

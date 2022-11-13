@@ -4,9 +4,10 @@ import (
 	"math"
 
 	ast "github.com/PaulioRandall/firefly-go/pkg/models/ast2"
+	"github.com/PaulioRandall/firefly-go/pkg/models/memory"
 )
 
-func exeBinaryOperation(mem *Memory, n ast.BinaryOperation) any {
+func exeBinaryOperation(mem *memory.Memory, n ast.BinaryOperation) any {
 
 	left := exeExpr(mem, n.Left)
 	right := exeExpr(mem, n.Right)

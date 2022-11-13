@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	ast "github.com/PaulioRandall/firefly-go/pkg/models/ast2"
+	"github.com/PaulioRandall/firefly-go/pkg/models/memory"
 )
 
 func Test_exeIf_1(t *testing.T) {
@@ -17,9 +18,9 @@ func Test_exeIf_1(t *testing.T) {
 		Body:      nil,
 	}
 
-	exp := NewMemory()
+	exp := memory.NewMemory()
 
-	act := NewMemory()
+	act := memory.NewMemory()
 	exeIf(act, given)
 
 	require.Equal(t, exp, act)
@@ -40,10 +41,10 @@ func Test_exeIf_2(t *testing.T) {
 		},
 	}
 
-	exp := NewMemory()
+	exp := memory.NewMemory()
 	exp.Variables["x"] = true
 
-	act := NewMemory()
+	act := memory.NewMemory()
 	exeIf(act, given)
 
 	require.Equal(t, exp, act)
@@ -64,9 +65,9 @@ func Test_exeIf_3(t *testing.T) {
 		},
 	}
 
-	exp := NewMemory()
+	exp := memory.NewMemory()
 
-	act := NewMemory()
+	act := memory.NewMemory()
 	exeIf(act, given)
 
 	require.Equal(t, exp, act)

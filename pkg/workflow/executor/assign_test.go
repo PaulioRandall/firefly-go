@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	ast "github.com/PaulioRandall/firefly-go/pkg/models/ast2"
+	"github.com/PaulioRandall/firefly-go/pkg/models/memory"
 )
 
 func Test_exeAssign_1(t *testing.T) {
@@ -16,10 +17,10 @@ func Test_exeAssign_1(t *testing.T) {
 		Src: mockLiterals(float64(1)),
 	}
 
-	exp := NewMemory()
+	exp := memory.NewMemory()
 	exp.Variables["x"] = float64(1)
 
-	act := NewMemory()
+	act := memory.NewMemory()
 	exeAssign(act, given)
 
 	require.Equal(t, exp, act)
@@ -33,10 +34,10 @@ func Test_exeAssign_2(t *testing.T) {
 		Src: mockLiterals("abc"),
 	}
 
-	exp := NewMemory()
+	exp := memory.NewMemory()
 	exp.Variables["x"] = "abc"
 
-	act := NewMemory()
+	act := memory.NewMemory()
 	exeAssign(act, given)
 
 	require.Equal(t, exp, act)
@@ -50,10 +51,10 @@ func Test_exeAssign_3(t *testing.T) {
 		Src: mockLiterals(true),
 	}
 
-	exp := NewMemory()
+	exp := memory.NewMemory()
 	exp.Variables["x"] = true
 
-	act := NewMemory()
+	act := memory.NewMemory()
 	exeAssign(act, given)
 
 	require.Equal(t, exp, act)
@@ -67,12 +68,12 @@ func Test_exeAssign_4(t *testing.T) {
 		Src: mockLiterals(float64(1), "abc", true),
 	}
 
-	exp := NewMemory()
+	exp := memory.NewMemory()
 	exp.Variables["x"] = float64(1)
 	exp.Variables["y"] = "abc"
 	exp.Variables["z"] = true
 
-	act := NewMemory()
+	act := memory.NewMemory()
 	exeAssign(act, given)
 
 	require.Equal(t, exp, act)
