@@ -3,7 +3,8 @@ package scanner2
 import (
 	"testing"
 
-	//"github.com/PaulioRandall/go-trackerr"
+	"github.com/PaulioRandall/go-trackerr"
+
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 	"github.com/stretchr/testify/require"
 )
@@ -64,7 +65,7 @@ func doTestScan(s string) ([]token.Token, error) {
 
 func doSingleTokenTest(t *testing.T, given string, tt token.TokenType, v string) {
 	act, e := doTestScan(given)
-	require.Nil(t, e)
+	require.Nil(t, e, trackerr.ErrorStack(e))
 
 	exp := expSingleToken(tt, v)
 	require.Equal(t, exp, act)
@@ -90,4 +91,92 @@ func Test_1(t *testing.T) {
 
 func Test_2(t *testing.T) {
 	doSingleTokenTest(t, "\n", token.Newline, "\n")
+}
+
+func Test_3(t *testing.T) {
+	doSingleTokenTest(t, "+", token.Add, "+")
+}
+
+func Test_4(t *testing.T) {
+	doSingleTokenTest(t, "-", token.Sub, "-")
+}
+
+func Test_5(t *testing.T) {
+	doSingleTokenTest(t, "*", token.Mul, "*")
+}
+
+func Test_6(t *testing.T) {
+	doSingleTokenTest(t, "/", token.Div, "/")
+}
+
+func Test_7(t *testing.T) {
+	doSingleTokenTest(t, "%", token.Mod, "%")
+}
+
+func Test_8(t *testing.T) {
+	doSingleTokenTest(t, "<", token.Lt, "<")
+}
+
+func Test_9(t *testing.T) {
+	doSingleTokenTest(t, ">", token.Gt, ">")
+}
+
+func Test_10(t *testing.T) {
+	doSingleTokenTest(t, "<=", token.Lte, "<=")
+}
+
+func Test_11(t *testing.T) {
+	doSingleTokenTest(t, ">=", token.Gte, ">=")
+}
+
+func Test_12(t *testing.T) {
+	doSingleTokenTest(t, "==", token.Equ, "==")
+}
+
+func Test_13(t *testing.T) {
+	doSingleTokenTest(t, "!=", token.Neq, "!=")
+}
+
+func Test_14(t *testing.T) {
+	doSingleTokenTest(t, "=", token.Assign, "=")
+}
+
+func Test_15(t *testing.T) {
+	doSingleTokenTest(t, ":", token.Colon, ":")
+}
+
+func Test_16(t *testing.T) {
+	doSingleTokenTest(t, ";", token.Terminator, ";")
+}
+
+func Test_17(t *testing.T) {
+	doSingleTokenTest(t, ",", token.Comma, ",")
+}
+
+func Test_18(t *testing.T) {
+	doSingleTokenTest(t, "@", token.Spell, "@")
+}
+
+func Test_19(t *testing.T) {
+	doSingleTokenTest(t, "(", token.ParenOpen, "(")
+}
+
+func Test_20(t *testing.T) {
+	doSingleTokenTest(t, ")", token.ParenClose, ")")
+}
+
+func Test_21(t *testing.T) {
+	doSingleTokenTest(t, "{", token.BraceOpen, "{")
+}
+
+func Test_22(t *testing.T) {
+	doSingleTokenTest(t, "}", token.BraceClose, "}")
+}
+
+func Test_23(t *testing.T) {
+	doSingleTokenTest(t, "[", token.BracketOpen, "[")
+}
+
+func Test_24(t *testing.T) {
+	doSingleTokenTest(t, "]", token.BracketClose, "]")
 }

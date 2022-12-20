@@ -51,16 +51,72 @@ func Scan(r ReaderOfRunes, w WriterOfTokens) error {
 
 func scanNext(r ReaderOfRunes) (token.Token, error) {
 	zero := token.Token{}
-	ru := r.Read()
+	first := r.Read()
 
 	switch {
-	case isNewline(ru):
-		return makeToken(token.Newline, string(ru)), nil
-	default:
-		r.Putback(ru)
+	case isNewline(first):
+		return makeToken(token.Newline, str(first)), nil
 	}
 
-	return zero, ErrUnknownSymbol
+	if r.More() {
+		switch second := r.Read(); {
+		case first == '<' && second == '=':
+			return makeToken(token.Lte, str(first, second)), nil
+		case first == '>' && second == '=':
+			return makeToken(token.Gte, str(first, second)), nil
+		case first == '=' && second == '=':
+			return makeToken(token.Equ, str(first, second)), nil
+		case first == '!' && second == '=':
+			return makeToken(token.Neq, str(first, second)), nil
+		default:
+			r.Putback(second)
+		}
+	}
+
+	switch first {
+	case '+':
+		return makeToken(token.Add, str(first)), nil
+	case '-':
+		return makeToken(token.Sub, str(first)), nil
+	case '*':
+		return makeToken(token.Mul, str(first)), nil
+	case '/':
+		return makeToken(token.Div, str(first)), nil
+	case '%':
+		return makeToken(token.Mod, str(first)), nil
+
+	case '<':
+		return makeToken(token.Lt, str(first)), nil
+	case '>':
+		return makeToken(token.Gt, str(first)), nil
+
+	case '=':
+		return makeToken(token.Assign, str(first)), nil
+	case ':':
+		return makeToken(token.Colon, str(first)), nil
+	case ';':
+		return makeToken(token.Terminator, str(first)), nil
+	case ',':
+		return makeToken(token.Comma, str(first)), nil
+	case '@':
+		return makeToken(token.Spell, str(first)), nil
+
+	case '(':
+		return makeToken(token.ParenOpen, str(first)), nil
+	case ')':
+		return makeToken(token.ParenClose, str(first)), nil
+	case '{':
+		return makeToken(token.BraceOpen, str(first)), nil
+	case '}':
+		return makeToken(token.BraceClose, str(first)), nil
+	case '[':
+		return makeToken(token.BracketOpen, str(first)), nil
+	case ']':
+		return makeToken(token.BracketClose, str(first)), nil
+	}
+
+	r.Putback(first)
+	return zero, ErrUnknownSymbol.Because("Symbol starting %q could not be resolved", str(first))
 }
 
 func makeToken(tt token.TokenType, v string) token.Token {
@@ -68,6 +124,10 @@ func makeToken(tt token.TokenType, v string) token.Token {
 		TokenType: tt,
 		Value:     v,
 	}
+}
+
+func str(runes ...rune) string {
+	return string(runes)
 }
 
 func isNewline(ru rune) bool {
