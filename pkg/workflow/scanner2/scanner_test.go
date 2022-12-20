@@ -303,3 +303,84 @@ func Test_53(t *testing.T) {
 	_, e := doTestScan("0.a")
 	require.True(t, trackerr.AllOrdered(e, ErrScanning, ErrMissingFractional))
 }
+
+func Test_54(t *testing.T) {
+	doSingleTokenTest(t, "&&", token.And)
+}
+
+func Test_55(t *testing.T) {
+	doSingleTokenTest(t, "||", token.Or)
+}
+
+func Test_56(t *testing.T) {
+	_, e := doTestScan("~")
+	require.True(t, trackerr.AllOrdered(e, ErrScanning, ErrUnknownSymbol))
+}
+
+func Test_60(t *testing.T) {
+	doSingleTokenTest(t, "abc", token.Ident)
+}
+
+func Test_61(t *testing.T) {
+	doSingleTokenTest(t, "abc_xyz", token.Ident)
+}
+
+func Test_62(t *testing.T) {
+	doSingleTokenTest(t, "forest", token.Ident)
+}
+
+func Test_63(t *testing.T) {
+	doSingleTokenTest(t, "For", token.Ident)
+}
+
+func Test_64(t *testing.T) {
+	doSingleTokenTest(t, "FOR", token.Ident)
+}
+
+func Test_65(t *testing.T) {
+	doSingleTokenTest(t, "e", token.Ident)
+}
+
+func Test_70(t *testing.T) {
+	doSingleTokenTest(t, "if", token.If)
+}
+
+func Test_71(t *testing.T) {
+	doSingleTokenTest(t, "for", token.For)
+}
+
+func Test_72(t *testing.T) {
+	doSingleTokenTest(t, "in", token.In)
+}
+
+func Test_74(t *testing.T) {
+	doSingleTokenTest(t, "watch", token.Watch)
+}
+
+func Test_75(t *testing.T) {
+	doSingleTokenTest(t, "when", token.When)
+}
+
+func Test_76(t *testing.T) {
+	doSingleTokenTest(t, "is", token.Is)
+}
+
+func Test_110(t *testing.T) {
+	doSingleTokenTest(t, "def", token.Def)
+}
+
+func Test_77(t *testing.T) {
+	doSingleTokenTest(t, "F", token.Func)
+}
+
+func Test_78(t *testing.T) {
+	doSingleTokenTest(t, "P", token.Proc)
+}
+
+func Test_79(t *testing.T) {
+	doSingleTokenTest(t, "true", token.Bool)
+}
+
+func Test_80(t *testing.T) {
+	doSingleTokenTest(t, "false", token.Bool)
+}

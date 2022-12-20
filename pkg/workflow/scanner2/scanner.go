@@ -52,6 +52,8 @@ func scanNext(r ReaderOfRunes) (token.Token, error) {
 		return makeToken(token.Newline, str(first)), nil
 	case isSpace(first):
 		return scanWhitespace(r, first)
+	case isLetter(first):
+		return scanWord(r, first)
 	case isDigit(first):
 		return scanNumber(r, first)
 	case first == '"':
@@ -70,6 +72,10 @@ func scanNext(r ReaderOfRunes) (token.Token, error) {
 			return makeToken(token.Equ, str(first, second)), nil
 		case first == '!' && second == '=':
 			return makeToken(token.Neq, str(first, second)), nil
+		case first == '&' && second == '&':
+			return makeToken(token.And, str(first, second)), nil
+		case first == '|' && second == '|':
+			return makeToken(token.Or, str(first, second)), nil
 		default:
 			r.Putback(second)
 		}
@@ -118,7 +124,7 @@ func scanNext(r ReaderOfRunes) (token.Token, error) {
 	}
 
 	r.Putback(first)
-	return zeroToken, ErrUnknownSymbol.Because("Symbol starting %q could not be resolved", str(first))
+	return zeroToken, ErrUnknownSymbol.Because("Symbol could not be resolved")
 }
 
 // Whitespace := ? Any Unicode character from the space category except linefeed ?
@@ -188,9 +194,72 @@ func scanString(r ReaderOfRunes, first rune) (token.Token, error) {
 	return makeToken(token.String, string(runes)), nil
 }
 
+// Def   := "def"
+// If    := "if"
+// For   := "for"
+// In    := "in"
+// Watch := "watch"
+// When  := "when"
+// Is    := "is"
+// Func  := "F"
+// Proc  := "P"
+// End   := "end"
+//
+// Bool := "true" | "false"
+//
+// Ident     := IdentChar {IdentChar}
+// IdentChar := "_" | ? Any Unicode character from the letter category ?
+func scanWord(r ReaderOfRunes, first rune) (token.Token, error) {
+	runes := []rune{first}
+
+	for r.More() {
+		ru := r.Read()
+
+		if !isLetter(ru) {
+			r.Putback(ru)
+			break
+		}
+
+		runes = append(runes, ru)
+	}
+
+	tk := token.Token{
+		Value: string(runes),
+	}
+
+	switch tk.Value {
+	case "def":
+		tk.TokenType = token.Def
+	case "if":
+		tk.TokenType = token.If
+	case "for":
+		tk.TokenType = token.For
+	case "in":
+		tk.TokenType = token.In
+	case "watch":
+		tk.TokenType = token.Watch
+	case "when":
+		tk.TokenType = token.When
+	case "is":
+		tk.TokenType = token.Is
+	case "F":
+		tk.TokenType = token.Func
+	case "P":
+		tk.TokenType = token.Proc
+	case "end":
+		tk.TokenType = token.End
+	case "true", "false":
+		tk.TokenType = token.Bool
+	default:
+		tk.TokenType = token.Ident
+	}
+
+	return tk, nil
+}
+
 // Number  := Integer ["." Integer]
-// Integer := Digit {Digit}
-// Digit   := '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+// Int   := Digit {Digit}
+// Digit := '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
 func scanNumber(r ReaderOfRunes, first rune) (token.Token, error) {
 	r.Putback(first)
 	runes := scanInt(r)
@@ -249,6 +318,10 @@ func isNewline(ru rune) bool {
 
 func isSpace(ru rune) bool {
 	return unicode.IsSpace(ru)
+}
+
+func isLetter(ru rune) bool {
+	return unicode.IsLetter(ru) || ru == '_'
 }
 
 func isDigit(ru rune) bool {
