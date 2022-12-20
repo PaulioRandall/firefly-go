@@ -1,12 +1,13 @@
 package scanner2
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/PaulioRandall/go-trackerr"
+	"github.com/stretchr/testify/require"
 
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
-	"github.com/stretchr/testify/require"
 )
 
 type mockReader struct {
@@ -383,4 +384,155 @@ func Test_79(t *testing.T) {
 
 func Test_80(t *testing.T) {
 	doSingleTokenTest(t, "false", token.Bool)
+}
+
+func Test_200(t *testing.T) {
+	given := "x = 1"
+
+	exp := []token.Token{
+		makeToken(token.Ident, "x"),
+		makeToken(token.Space, " "),
+		makeToken(token.Assign, "="),
+		makeToken(token.Space, " "),
+		makeToken(token.Number, "1"),
+	}
+
+	act, e := doTestScan(given)
+
+	require.Nil(t, e)
+	require.Equal(t, exp, act)
+}
+
+func Test_201(t *testing.T) {
+
+	lines := []string{
+		`x = true`,
+		`y, z = 123.456, "string"`,
+		``,
+		`// A procedure`,
+		`def f P(a, b) c, d`,
+		`	when a`,
+		`		is 1: @println("one")`,
+		`		a == b: @println("a == b")`,
+		`		true: @println("meh")`,
+		`	end`,
+		`end`,
+		``,
+	}
+
+	exp := []token.Token{}
+	addToken := func(tt token.TokenType, v string) {
+		exp = append(exp, makeToken(tt, v))
+	}
+
+	// `x = true`
+	addToken(token.Ident, "x")
+	addToken(token.Space, " ")
+	addToken(token.Assign, "=")
+	addToken(token.Space, " ")
+	addToken(token.Bool, "true")
+	addToken(token.Newline, "\n")
+
+	// `y, z = 123.456, "string"`
+	addToken(token.Ident, "y")
+	addToken(token.Comma, ",")
+	addToken(token.Space, " ")
+	addToken(token.Ident, "z")
+	addToken(token.Space, " ")
+	addToken(token.Assign, "=")
+	addToken(token.Space, " ")
+	addToken(token.Number, "123.456")
+	addToken(token.Comma, ",")
+	addToken(token.Space, " ")
+	addToken(token.String, `"string"`)
+	addToken(token.Newline, "\n")
+
+	addToken(token.Newline, "\n")
+
+	// `// A procedure`
+	addToken(token.Comment, "// A procedure")
+	addToken(token.Newline, "\n")
+
+	// `def f P(a, b) c, d`
+	addToken(token.Def, "def")
+	addToken(token.Space, " ")
+	addToken(token.Ident, "f")
+	addToken(token.Space, " ")
+	addToken(token.Proc, "P")
+	addToken(token.ParenOpen, "(")
+	addToken(token.Ident, "a")
+	addToken(token.Comma, ",")
+	addToken(token.Space, " ")
+	addToken(token.Ident, "b")
+	addToken(token.ParenClose, ")")
+	addToken(token.Space, " ")
+	addToken(token.Ident, "c")
+	addToken(token.Comma, ",")
+	addToken(token.Space, " ")
+	addToken(token.Ident, "d")
+	addToken(token.Newline, "\n")
+
+	// `	when a`
+	addToken(token.Space, "\t")
+	addToken(token.When, "when")
+	addToken(token.Space, " ")
+	addToken(token.Ident, "a")
+	addToken(token.Newline, "\n")
+
+	// `		is 1: @println("one")`
+	addToken(token.Space, "\t\t")
+	addToken(token.Is, "is")
+	addToken(token.Space, " ")
+	addToken(token.Number, "1")
+	addToken(token.Colon, ":")
+	addToken(token.Space, " ")
+	addToken(token.Spell, "@")
+	addToken(token.Ident, "println")
+	addToken(token.ParenOpen, "(")
+	addToken(token.String, `"one"`)
+	addToken(token.ParenClose, ")")
+	addToken(token.Newline, "\n")
+
+	// `		a == b: @println("a == b")`
+	addToken(token.Space, "\t\t")
+	addToken(token.Ident, "a")
+	addToken(token.Space, " ")
+	addToken(token.Equ, "==")
+	addToken(token.Space, " ")
+	addToken(token.Ident, "b")
+	addToken(token.Colon, ":")
+	addToken(token.Space, " ")
+	addToken(token.Spell, "@")
+	addToken(token.Ident, "println")
+	addToken(token.ParenOpen, "(")
+	addToken(token.String, `"a == b"`)
+	addToken(token.ParenClose, ")")
+	addToken(token.Newline, "\n")
+
+	// `		true: @println("meh")`
+	addToken(token.Space, "\t\t")
+	addToken(token.Bool, "true")
+	addToken(token.Colon, ":")
+	addToken(token.Space, " ")
+	addToken(token.Spell, "@")
+	addToken(token.Ident, "println")
+	addToken(token.ParenOpen, "(")
+	addToken(token.String, `"meh"`)
+	addToken(token.ParenClose, ")")
+	addToken(token.Newline, "\n")
+
+	// `	end`
+	addToken(token.Space, "\t")
+	addToken(token.End, "end")
+	addToken(token.Newline, "\n")
+
+	// `end`
+	addToken(token.End, "end")
+	addToken(token.Newline, "\n")
+
+	given := strings.Join(lines, "\n")
+	act, e := doTestScan(given)
+
+	require.Nil(t, e)
+	require.Equal(t, exp, act)
 }
