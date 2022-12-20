@@ -1,4 +1,4 @@
-// Package scanner converts a string of runes into meaningful tokens
+// Package scanner converts a string of runes into meaningful tokens.
 package scanner
 
 import (
@@ -109,6 +109,7 @@ func acceptWhile(tb *tokenBuilder, f func(ru rune) bool) (bool, error) {
 	return accepted, nil
 }
 
+// Whitespace := ? Any Unicode character from the space category except linefeed ?
 func scanSpaces(tb *tokenBuilder, first rune) error {
 	if _, e := acceptWhile(tb, isSpace); e != nil {
 		return trackerr.Wrap(e, "Failed to scan spaces")
@@ -118,6 +119,8 @@ func scanSpaces(tb *tokenBuilder, first rune) error {
 	return nil
 }
 
+// Comment := "//" {Char} Linefeed
+// Char    := ? Any Unicode character except linefeed ?
 func scanComment(tb *tokenBuilder, first rune) error {
 	if e := tb.expect(rune('/'), "Sanity check!"); e != nil {
 		return trackerr.Wrap(e, "Failed to scan comment")
@@ -131,6 +134,9 @@ func scanComment(tb *tokenBuilder, first rune) error {
 	return nil
 }
 
+// Number  := Integer ["." Integer]
+// Integer := Digit {Digit}
+// Digit   := '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
 func scanNumber(tb *tokenBuilder, first rune) error {
 	tb.tt = token.Number
 
@@ -164,6 +170,8 @@ func scanNumberFraction(tb *tokenBuilder) error {
 	return nil
 }
 
+// String      := '"' {StringChar | '\"'} '"'
+// StringChar  := ? Any Unicode character from the letter category except double quote ?
 func scanString(tb *tokenBuilder, first rune) error {
 	if e := scanStringBody(tb); e != nil {
 		return trackerr.Wrap(e, "Failed to scan string body")
@@ -204,6 +212,19 @@ func scanStringBody(tb *tokenBuilder) error {
 	return nil
 }
 
+// Def       := "def"
+// If        := "if"
+// For       := "for"
+// In        := "in"
+// Watch     := "watch"
+// When      := "when"
+// Is        := "is"
+// E         := "E"
+// P         := "P"
+// End       := "end"
+// Bool      := "true" | "false"
+// Ident     := IdentChar {IdentChar}
+// IdentChar := "_" | ? Any Unicode character from the letter category ?
 func scanWord(tb *tokenBuilder, first rune) error {
 	if _, e := acceptWhile(tb, isWordLetter); e != nil {
 		return trackerr.Wrap(e, "Failed to scan variable or keyword")
@@ -239,6 +260,31 @@ func scanWord(tb *tokenBuilder, first rune) error {
 	return nil
 }
 
+// Terminator   := ";"
+// Assign       := "="
+// Comma        := ","
+// Colon        := ":"
+// Spell        := "@"
+//
+// Add          := "+"
+// Sub          := "-"
+// Mul          := "*"
+// Div          := "/"
+// Mod          := "%"
+//
+// LT           := "<"
+// GT           := ">"
+// LTE          := "<="
+// GTE          := ">="
+// EQU          := "=="
+// NEQ          := "!="
+//
+// ParenOpen    := "("
+// ParenClose   := ")"
+// BraceOpen    := "{"
+// BraceClose   := "}"
+// BracketOpen  := "["
+// BracketClose := "]"
 func scanOperator(tb *tokenBuilder, first, second rune) error {
 
 	one := func(tb *tokenBuilder, tt token.TokenType) error {
