@@ -4,12 +4,12 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/PaulioRandall/go-trackerr"
 	"github.com/stretchr/testify/require"
 
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/debug"
-	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 
 	"github.com/PaulioRandall/firefly-go/pkg/models/token/tokentest"
@@ -39,12 +39,12 @@ func assertScan(t *testing.T, given string, exp []token.Token) {
 	tokentest.RequireEqual(t, exp, w.List())
 }
 
-func assertError(t *testing.T, given string, exp error) {
+func assertError(t *testing.T, given string, exp ...error) {
 	r := inout.NewListReader([]rune(given))
 	w := inout.NewListWriter[token.Token]()
 
 	e := Scan(r, w)
-	require.True(t, err.Is(e, exp), "Expected %+v", exp.Error())
+	require.True(t, trackerr.AllOrdered(e, exp...))
 }
 
 func Test_1(t *testing.T) {
@@ -313,43 +313,43 @@ func Test_85(t *testing.T) {
 }
 
 func Test_100(t *testing.T) {
-	assertError(t, "~", ErrUnknownSymbol)
+	assertError(t, "~", ErrScanning, ErrUnknownSymbol)
 }
 
 func Test_101(t *testing.T) {
-	assertError(t, `"`, ErrUnterminatedString)
+	assertError(t, `"`, ErrScanning, ErrUnterminatedString)
 }
 
 func Test_102(t *testing.T) {
-	assertError(t, `"""`, ErrUnterminatedString)
+	assertError(t, `"""`, ErrScanning, ErrUnterminatedString)
 }
 
 func Test_103(t *testing.T) {
-	assertError(t, `"\`, ErrUnterminatedString)
+	assertError(t, `"\`, ErrScanning, ErrUnterminatedString)
 }
 
 func Test_104(t *testing.T) {
-	assertError(t, `"\"`, ErrUnterminatedString)
+	assertError(t, `"\"`, ErrScanning, ErrUnterminatedString)
 }
 
 func Test_105(t *testing.T) {
-	assertError(t, `"\\\"`, ErrUnterminatedString)
+	assertError(t, `"\\\"`, ErrScanning, ErrUnterminatedString)
 }
 
 func Test_106(t *testing.T) {
-	assertError(t, "=!", ErrUnknownSymbol)
+	assertError(t, "=!", ErrScanning, ErrUnknownSymbol)
 }
 
 func Test_107(t *testing.T) {
-	assertError(t, ".", ErrUnknownSymbol)
+	assertError(t, ".", ErrScanning, ErrUnknownSymbol)
 }
 
 func Test_108(t *testing.T) {
-	assertError(t, "0.", ErrMissingFractional)
+	assertError(t, "0.", ErrScanning, ErrMissingFractional)
 }
 
 func Test_109(t *testing.T) {
-	assertError(t, "0.a", ErrMissingFractional)
+	assertError(t, "0.a", ErrScanning, ErrMissingFractional)
 }
 
 func Test_110(t *testing.T) {

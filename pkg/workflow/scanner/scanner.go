@@ -4,9 +4,9 @@ package scanner
 import (
 	"unicode"
 
-	"github.com/PaulioRandall/firefly-go/pkg/models/token"
+	"github.com/PaulioRandall/go-trackerr"
 
-	"github.com/PaulioRandall/firefly-go/pkg/utilities/err"
+	"github.com/PaulioRandall/firefly-go/pkg/models/token"
 	"github.com/PaulioRandall/firefly-go/pkg/utilities/inout"
 )
 
@@ -18,27 +18,27 @@ const (
 )
 
 var (
-	ErrScanning           = err.Trackable("Token scanning failed")
-	ErrUnknownSymbol      = err.Trackable("Unknown symbol")
-	ErrUnterminatedString = err.Trackable("Unterminated string")
-	ErrMissingFractional  = err.Trackable("Missing fractional part of number")
+	ErrScanning           = trackerr.Checkpoint("Token scanning failed")
+	ErrUnknownSymbol      = trackerr.Track("Unknown symbol")
+	ErrUnterminatedString = trackerr.Track("Unterminated string")
+	ErrMissingFractional  = trackerr.Track("Missing fractional part of number")
 	zeroToken             token.Token
 )
 
 type ReaderOfRunes inout.Reader[rune]
-type WriterOfTokens = inout.Writer[token.Token]
+type WriterOfTokens inout.Writer[token.Token]
 
 func Scan(r ReaderOfRunes, w WriterOfTokens) error {
 	tb := newTokenBuilder(r)
 
 	for tb.More() {
 		if e := scanNext(&tb); e != nil {
-			return ErrScanning.Wrap(e, "Failed to scan token")
+			return ErrScanning.Wrap(e)
 		}
 
 		tk := tb.build()
 		if e := w.Write(tk); e != nil {
-			return ErrScanning.Wrap(e, "Could not write scanned token")
+			return ErrScanning.CausedBy(e, "Could not write scanned token")
 		}
 	}
 
@@ -49,18 +49,18 @@ func scanNext(tb *tokenBuilder) error {
 
 	first, e := tb.Read()
 	if e != nil {
-		return err.Wrap(e, "Failed to scan next token")
+		return e
 	}
 
 	second, e := tb.Peek()
-	if e != nil && err.Is(e, inout.EOF) {
+	if e != nil && trackerr.Is(e, inout.EOF) {
 		second, e = rune(0), nil
 	} else if e != nil {
-		return err.Wrap(e, "Failed to scan next token")
+		return e
 	}
 
 	if e = scanToken(tb, first, second); e != nil {
-		return err.Wrap(e, "Failed to scan next token")
+		return e
 	}
 
 	return nil
@@ -102,7 +102,7 @@ func acceptWhile(tb *tokenBuilder, f func(ru rune) bool) (bool, error) {
 		accepted = true
 
 		if e != nil {
-			return false, err.Wrap(e, "Failed to accept symbol")
+			return false, trackerr.Wrap(e, "Failed to accept symbol")
 		}
 	}
 
@@ -111,7 +111,7 @@ func acceptWhile(tb *tokenBuilder, f func(ru rune) bool) (bool, error) {
 
 func scanSpaces(tb *tokenBuilder, first rune) error {
 	if _, e := acceptWhile(tb, isSpace); e != nil {
-		return err.Wrap(e, "Failed to scan spaces")
+		return trackerr.Wrap(e, "Failed to scan spaces")
 	}
 
 	tb.tt = token.Space
@@ -120,11 +120,11 @@ func scanSpaces(tb *tokenBuilder, first rune) error {
 
 func scanComment(tb *tokenBuilder, first rune) error {
 	if e := tb.expect(rune('/'), "Sanity check!"); e != nil {
-		return err.Wrap(e, "Failed to scan comment")
+		return trackerr.Wrap(e, "Failed to scan comment")
 	}
 
 	if _, e := acceptWhile(tb, isNotNewline); e != nil {
-		return err.Wrap(e, "Failed to scan comment")
+		return trackerr.Wrap(e, "Failed to scan comment")
 	}
 
 	tb.tt = token.Comment
@@ -135,12 +135,12 @@ func scanNumber(tb *tokenBuilder, first rune) error {
 	tb.tt = token.Number
 
 	if _, e := acceptWhile(tb, isDigit); e != nil {
-		return err.Wrap(e, "Failed to scan significant part of number")
+		return trackerr.Wrap(e, "Failed to scan significant part of number")
 	}
 
 	hasFractional, e := tb.accept('.')
 	if e != nil {
-		return err.Wrap(e, "Failed to scan fractional delimiter in number")
+		return trackerr.Wrap(e, "Failed to scan fractional delimiter in number")
 	}
 
 	if hasFractional {
@@ -154,11 +154,11 @@ func scanNumberFraction(tb *tokenBuilder) error {
 	hasFractional, e := acceptWhile(tb, isDigit)
 
 	if e != nil {
-		return err.Wrap(e, "Failed to scan fractional part of number")
+		return trackerr.Wrap(e, "Failed to scan fractional part of number")
 	}
 
 	if !hasFractional {
-		return ErrMissingFractional.Track("Expected fractional digits")
+		return ErrMissingFractional.Because("Expected fractional digits")
 	}
 
 	return nil
@@ -166,11 +166,11 @@ func scanNumberFraction(tb *tokenBuilder) error {
 
 func scanString(tb *tokenBuilder, first rune) error {
 	if e := scanStringBody(tb); e != nil {
-		return err.Wrap(e, "Failed to scan string body")
+		return trackerr.Wrap(e, "Failed to scan string body")
 	}
 
 	if e := tb.expect(StringDelim, "Unterminated string"); e != nil {
-		return ErrUnterminatedString.Track("Failed to scan terminating string delimiter")
+		return ErrUnterminatedString.CausedBy(e, "Failed to scan terminating delimiter")
 	}
 
 	tb.tt = token.String
@@ -194,11 +194,11 @@ func scanStringBody(tb *tokenBuilder) error {
 	})
 
 	if e != nil {
-		return err.Wrap(e, "Failed to scan string body")
+		return trackerr.Wrap(e, "Failed to scan string body")
 	}
 
 	if !terminated {
-		return ErrUnterminatedString.Track("EOF before string terminated")
+		return ErrUnterminatedString.Because("EOF before string terminated")
 	}
 
 	return nil
@@ -206,7 +206,7 @@ func scanStringBody(tb *tokenBuilder) error {
 
 func scanWord(tb *tokenBuilder, first rune) error {
 	if _, e := acceptWhile(tb, isWordLetter); e != nil {
-		return err.Wrap(e, "Failed to scan variable or keyword")
+		return trackerr.Wrap(e, "Failed to scan variable or keyword")
 	}
 
 	switch tb.String() {
@@ -250,7 +250,7 @@ func scanOperator(tb *tokenBuilder, first, second rune) error {
 		tb.tt = tt
 
 		if _, e := tb.accept(second); e != nil {
-			return err.Wrap(e, "Failed to scan operator")
+			return trackerr.Wrap(e, "Failed to scan operator")
 		}
 
 		return nil
@@ -331,15 +331,15 @@ func scanOperator(tb *tokenBuilder, first, second rune) error {
 
 	default:
 		e := unknownSymbol(tb, first, second)
-		return err.Wrap(e, "Failed to scan operator")
+		return trackerr.Wrap(e, "Failed to scan operator")
 	}
 }
 
 func unknownSymbol(tb *tokenBuilder, first, second rune) error {
 	if second == rune(0) {
-		return ErrUnknownSymbol.TrackPosf(tb.start, "Unknown symbol %q", first)
+		return ErrUnknownSymbol.Because("Unknown symbol %q", first)
 	}
-	return ErrUnknownSymbol.TrackPosf(tb.start, "Unknown symbol %q", []rune{first, second})
+	return ErrUnknownSymbol.Because("Unknown symbol %q", []rune{first, second})
 }
 
 func isNewline(ru rune) bool {
