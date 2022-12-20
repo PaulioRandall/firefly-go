@@ -52,6 +52,8 @@ func scanNext(r ReaderOfRunes) (token.Token, error) {
 		return makeToken(token.Newline, str(first)), nil
 	case isSpace(first):
 		return scanWhitespace(r, first)
+	case isDigit(first):
+		return scanNumber(r, first)
 	case first == '"':
 		return scanString(r, first)
 	}
@@ -186,6 +188,50 @@ func scanString(r ReaderOfRunes, first rune) (token.Token, error) {
 	return makeToken(token.String, string(runes)), nil
 }
 
+// Number  := Integer ["." Integer]
+// Integer := Digit {Digit}
+// Digit   := '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+func scanNumber(r ReaderOfRunes, first rune) (token.Token, error) {
+	r.Putback(first)
+	runes := scanInt(r)
+
+	if !r.More() {
+		return makeToken(token.Number, string(runes)), nil
+	}
+
+	if ru := r.Read(); ru == '.' {
+		runes = append(runes, ru)
+	} else {
+		r.Putback(ru)
+		return makeToken(token.Number, string(runes)), nil
+	}
+
+	if fractional := scanInt(r); len(fractional) > 0 {
+		runes = append(runes, fractional...)
+	} else {
+		return zeroToken, ErrMissingFractional
+	}
+
+	return makeToken(token.Number, string(runes)), nil
+}
+
+func scanInt(r ReaderOfRunes) []rune {
+	var runes []rune
+
+	for r.More() {
+		ru := r.Read()
+
+		if !isDigit(ru) {
+			r.Putback(ru)
+			break
+		}
+
+		runes = append(runes, ru)
+	}
+
+	return runes
+}
+
 func makeToken(tt token.TokenType, v string) token.Token {
 	return token.Token{
 		TokenType: tt,
@@ -203,4 +249,13 @@ func isNewline(ru rune) bool {
 
 func isSpace(ru rune) bool {
 	return unicode.IsSpace(ru)
+}
+
+func isDigit(ru rune) bool {
+	switch ru {
+	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+		return true
+	default:
+		return false
+	}
 }

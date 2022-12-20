@@ -240,3 +240,66 @@ func Test_38(t *testing.T) {
 func Test_39(t *testing.T) {
 	doSingleTokenTest(t, `"\"\"\""`, token.String)
 }
+
+func Test_40(t *testing.T) {
+	_, e := doTestScan(`"`)
+	require.True(t, trackerr.AllOrdered(e, ErrScanning, ErrUnterminatedString))
+}
+
+func Test_41(t *testing.T) {
+	_, e := doTestScan(`"""`)
+	require.True(t, trackerr.AllOrdered(e, ErrScanning, ErrUnterminatedString))
+}
+
+func Test_42(t *testing.T) {
+	_, e := doTestScan(`"\`)
+	require.True(t, trackerr.AllOrdered(e, ErrScanning, ErrUnterminatedString))
+}
+
+func Test_43(t *testing.T) {
+	_, e := doTestScan(`"\"`)
+	require.True(t, trackerr.AllOrdered(e, ErrScanning, ErrUnterminatedString))
+}
+
+func Test_44(t *testing.T) {
+	_, e := doTestScan(`"\\\"`)
+	require.True(t, trackerr.AllOrdered(e, ErrScanning, ErrUnterminatedString))
+}
+
+func Test_45(t *testing.T) {
+	doSingleTokenTest(t, "0", token.Number)
+}
+
+func Test_46(t *testing.T) {
+	doSingleTokenTest(t, "0.00000", token.Number)
+}
+
+func Test_47(t *testing.T) {
+	doSingleTokenTest(t, "0.1", token.Number)
+}
+
+func Test_48(t *testing.T) {
+	doSingleTokenTest(t, "1", token.Number)
+}
+
+func Test_49(t *testing.T) {
+	doSingleTokenTest(t, "1.1234567890", token.Number)
+}
+
+func Test_50(t *testing.T) {
+	doSingleTokenTest(t, "123456789.987654321", token.Number)
+}
+
+func Test_51(t *testing.T) {
+	doSingleTokenTest(t, "9", token.Number)
+}
+
+func Test_52(t *testing.T) {
+	_, e := doTestScan("0.")
+	require.True(t, trackerr.AllOrdered(e, ErrScanning, ErrMissingFractional))
+}
+
+func Test_53(t *testing.T) {
+	_, e := doTestScan("0.a")
+	require.True(t, trackerr.AllOrdered(e, ErrScanning, ErrMissingFractional))
+}
