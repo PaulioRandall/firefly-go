@@ -2,18 +2,12 @@
 package scanner2
 
 import (
-	//"unicode"
+	"io"
+	"unicode"
 
 	"github.com/PaulioRandall/go-trackerr"
 
 	"github.com/PaulioRandall/firefly-go/pkg/models/token"
-)
-
-const (
-	StringEscape = '\\'
-	StringDelim  = '"'
-	Newline      = '\n'
-	Terminator   = ';'
 )
 
 var (
@@ -21,7 +15,8 @@ var (
 	ErrUnknownSymbol      = trackerr.Track("Unknown symbol")
 	ErrUnterminatedString = trackerr.Track("Unterminated string")
 	ErrMissingFractional  = trackerr.Track("Missing fractional part of number")
-	zeroToken             token.Token
+
+	zeroToken token.Token
 )
 
 type ReaderOfRunes interface {
@@ -50,16 +45,21 @@ func Scan(r ReaderOfRunes, w WriterOfTokens) error {
 }
 
 func scanNext(r ReaderOfRunes) (token.Token, error) {
-	zero := token.Token{}
 	first := r.Read()
 
 	switch {
 	case isNewline(first):
 		return makeToken(token.Newline, str(first)), nil
+	case isSpace(first):
+		return scanWhitespace(r, first)
+	case first == '"':
+		return scanString(r, first)
 	}
 
 	if r.More() {
 		switch second := r.Read(); {
+		case first == '/' && second == '/':
+			return scanComment(r, first, second)
 		case first == '<' && second == '=':
 			return makeToken(token.Lte, str(first, second)), nil
 		case first == '>' && second == '=':
@@ -116,7 +116,74 @@ func scanNext(r ReaderOfRunes) (token.Token, error) {
 	}
 
 	r.Putback(first)
-	return zero, ErrUnknownSymbol.Because("Symbol starting %q could not be resolved", str(first))
+	return zeroToken, ErrUnknownSymbol.Because("Symbol starting %q could not be resolved", str(first))
+}
+
+// Whitespace := ? Any Unicode character from the space category except linefeed ?
+func scanWhitespace(r ReaderOfRunes, first rune) (token.Token, error) {
+	runes := []rune{first}
+
+	for r.More() {
+		ru := r.Read()
+
+		if !isSpace(ru) {
+			r.Putback(ru)
+			break
+		}
+
+		runes = append(runes, ru)
+	}
+
+	return makeToken(token.Space, string(runes)), nil
+}
+
+// Comment := "//" {Char} Linefeed
+// Char    := ? Any Unicode character except linefeed ?
+func scanComment(r ReaderOfRunes, first, second rune) (token.Token, error) {
+	runes := []rune{first, second}
+
+	for r.More() {
+		ru := r.Read()
+
+		if isNewline(ru) {
+			r.Putback(ru)
+			break
+		}
+
+		runes = append(runes, ru)
+	}
+
+	return makeToken(token.Comment, string(runes)), nil
+}
+
+// String      := '"' {StringChar | '\"'} '"'
+// StringChar  := ? Any Unicode character from the letter category except double quote ?
+func scanString(r ReaderOfRunes, first rune) (token.Token, error) {
+	runes := []rune{first}
+	escaped := false
+	terminated := false
+
+	for r.More() {
+		ru := r.Read()
+		runes = append(runes, ru)
+
+		if !escaped && ru == '"' {
+			terminated = true
+			break
+		}
+
+		if isNewline(ru) {
+			break
+		}
+
+		escaped = !escaped && ru == '\\'
+	}
+
+	if !terminated {
+		return zeroToken, ErrUnterminatedString.Wrap(io.EOF)
+	}
+
+	return makeToken(token.String, string(runes)), nil
 }
 
 func makeToken(tt token.TokenType, v string) token.Token {
@@ -132,4 +199,8 @@ func str(runes ...rune) string {
 
 func isNewline(ru rune) bool {
 	return ru == '\n'
+}
+
+func isSpace(ru rune) bool {
+	return unicode.IsSpace(ru)
 }

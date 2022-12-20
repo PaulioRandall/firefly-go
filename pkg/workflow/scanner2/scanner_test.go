@@ -63,11 +63,11 @@ func doTestScan(s string) ([]token.Token, error) {
 	return w.tks, e
 }
 
-func doSingleTokenTest(t *testing.T, given string, tt token.TokenType, v string) {
+func doSingleTokenTest(t *testing.T, given string, tt token.TokenType) {
 	act, e := doTestScan(given)
 	require.Nil(t, e, trackerr.ErrorStack(e))
 
-	exp := expSingleToken(tt, v)
+	exp := expSingleToken(tt, given)
 	require.Equal(t, exp, act)
 }
 
@@ -90,93 +90,153 @@ func Test_1(t *testing.T) {
 }
 
 func Test_2(t *testing.T) {
-	doSingleTokenTest(t, "\n", token.Newline, "\n")
+	doSingleTokenTest(t, "\n", token.Newline)
 }
 
 func Test_3(t *testing.T) {
-	doSingleTokenTest(t, "+", token.Add, "+")
+	doSingleTokenTest(t, "+", token.Add)
 }
 
 func Test_4(t *testing.T) {
-	doSingleTokenTest(t, "-", token.Sub, "-")
+	doSingleTokenTest(t, "-", token.Sub)
 }
 
 func Test_5(t *testing.T) {
-	doSingleTokenTest(t, "*", token.Mul, "*")
+	doSingleTokenTest(t, "*", token.Mul)
 }
 
 func Test_6(t *testing.T) {
-	doSingleTokenTest(t, "/", token.Div, "/")
+	doSingleTokenTest(t, "/", token.Div)
 }
 
 func Test_7(t *testing.T) {
-	doSingleTokenTest(t, "%", token.Mod, "%")
+	doSingleTokenTest(t, "%", token.Mod)
 }
 
 func Test_8(t *testing.T) {
-	doSingleTokenTest(t, "<", token.Lt, "<")
+	doSingleTokenTest(t, "<", token.Lt)
 }
 
 func Test_9(t *testing.T) {
-	doSingleTokenTest(t, ">", token.Gt, ">")
+	doSingleTokenTest(t, ">", token.Gt)
 }
 
 func Test_10(t *testing.T) {
-	doSingleTokenTest(t, "<=", token.Lte, "<=")
+	doSingleTokenTest(t, "<=", token.Lte)
 }
 
 func Test_11(t *testing.T) {
-	doSingleTokenTest(t, ">=", token.Gte, ">=")
+	doSingleTokenTest(t, ">=", token.Gte)
 }
 
 func Test_12(t *testing.T) {
-	doSingleTokenTest(t, "==", token.Equ, "==")
+	doSingleTokenTest(t, "==", token.Equ)
 }
 
 func Test_13(t *testing.T) {
-	doSingleTokenTest(t, "!=", token.Neq, "!=")
+	doSingleTokenTest(t, "!=", token.Neq)
 }
 
 func Test_14(t *testing.T) {
-	doSingleTokenTest(t, "=", token.Assign, "=")
+	doSingleTokenTest(t, "=", token.Assign)
 }
 
 func Test_15(t *testing.T) {
-	doSingleTokenTest(t, ":", token.Colon, ":")
+	doSingleTokenTest(t, ":", token.Colon)
 }
 
 func Test_16(t *testing.T) {
-	doSingleTokenTest(t, ";", token.Terminator, ";")
+	doSingleTokenTest(t, ";", token.Terminator)
 }
 
 func Test_17(t *testing.T) {
-	doSingleTokenTest(t, ",", token.Comma, ",")
+	doSingleTokenTest(t, ",", token.Comma)
 }
 
 func Test_18(t *testing.T) {
-	doSingleTokenTest(t, "@", token.Spell, "@")
+	doSingleTokenTest(t, "@", token.Spell)
 }
 
 func Test_19(t *testing.T) {
-	doSingleTokenTest(t, "(", token.ParenOpen, "(")
+	doSingleTokenTest(t, "(", token.ParenOpen)
 }
 
 func Test_20(t *testing.T) {
-	doSingleTokenTest(t, ")", token.ParenClose, ")")
+	doSingleTokenTest(t, ")", token.ParenClose)
 }
 
 func Test_21(t *testing.T) {
-	doSingleTokenTest(t, "{", token.BraceOpen, "{")
+	doSingleTokenTest(t, "{", token.BraceOpen)
 }
 
 func Test_22(t *testing.T) {
-	doSingleTokenTest(t, "}", token.BraceClose, "}")
+	doSingleTokenTest(t, "}", token.BraceClose)
 }
 
 func Test_23(t *testing.T) {
-	doSingleTokenTest(t, "[", token.BracketOpen, "[")
+	doSingleTokenTest(t, "[", token.BracketOpen)
 }
 
 func Test_24(t *testing.T) {
-	doSingleTokenTest(t, "]", token.BracketClose, "]")
+	doSingleTokenTest(t, "]", token.BracketClose)
+}
+
+func Test_25(t *testing.T) {
+	doSingleTokenTest(t, " ", token.Space)
+}
+
+func Test_26(t *testing.T) {
+	doSingleTokenTest(t, "\t", token.Space)
+}
+
+func Test_27(t *testing.T) {
+	doSingleTokenTest(t, "\v", token.Space)
+}
+
+func Test_28(t *testing.T) {
+	doSingleTokenTest(t, "\r", token.Space)
+}
+
+func Test_29(t *testing.T) {
+	doSingleTokenTest(t, "\f", token.Space)
+}
+
+func Test_30(t *testing.T) {
+	doSingleTokenTest(t, "  \t\v \f\r   \v\v\t", token.Space)
+}
+
+func Test_31(t *testing.T) {
+	doSingleTokenTest(t, "//", token.Comment)
+}
+
+func Test_32(t *testing.T) {
+	doSingleTokenTest(t, "// abc", token.Comment)
+}
+
+func Test_33(t *testing.T) {
+	doSingleTokenTest(t, `""`, token.String)
+}
+
+func Test_34(t *testing.T) {
+	doSingleTokenTest(t, `"a"`, token.String)
+}
+
+func Test_35(t *testing.T) {
+	doSingleTokenTest(t, `"abc"`, token.String)
+}
+
+func Test_36(t *testing.T) {
+	doSingleTokenTest(t, `"   "`, token.String)
+}
+
+func Test_37(t *testing.T) {
+	doSingleTokenTest(t, `"\\"`, token.String)
+}
+
+func Test_38(t *testing.T) {
+	doSingleTokenTest(t, `"\\\\\\"`, token.String)
+}
+
+func Test_39(t *testing.T) {
+	doSingleTokenTest(t, `"\"\"\""`, token.String)
 }
