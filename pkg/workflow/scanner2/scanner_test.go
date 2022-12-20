@@ -26,7 +26,7 @@ func (r *mockReader) More() bool {
 
 func (r *mockReader) Read() rune {
 	if len(r.runes) == 0 {
-		return rune(0)
+		panic("Empty reader")
 	}
 
 	ru := r.runes[0]
@@ -46,16 +46,6 @@ func (w *mockWriter) Write(tk token.Token) error {
 	w.tks = append(w.tks, tk)
 	return nil
 }
-
-/*
-func assertError(t *testing.T, given string, exp ...error) {
-	r := inout.NewListReader([]rune(given))
-	w := inout.NewListWriter[token.Token]()
-
-	e := Scan(r, w)
-	require.True(t, trackerr.AllOrdered(e, exp...))
-}
-*/
 
 func doTestScan(s string) ([]token.Token, error) {
 	r := newMockReader(s)

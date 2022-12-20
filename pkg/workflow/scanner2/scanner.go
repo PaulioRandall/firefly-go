@@ -124,7 +124,7 @@ func scanNext(r ReaderOfRunes) (token.Token, error) {
 	}
 
 	r.Putback(first)
-	return zeroToken, ErrUnknownSymbol.Because("Symbol could not be resolved")
+	return zeroToken, ErrUnknownSymbol
 }
 
 // Whitespace := ? Any Unicode character from the space category except linefeed ?
